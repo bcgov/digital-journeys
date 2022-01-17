@@ -3,7 +3,7 @@
 # steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
 # base image
-FROM artifacts.developer.gov.bc.ca/docker-remote/node:12.2.0-alpine as build-stage
+FROM artifacts.developer.gov.bc.ca/docker-remote/node:17.3.1-alpine as build-stage
 
 # set working directory
 WORKDIR /app
