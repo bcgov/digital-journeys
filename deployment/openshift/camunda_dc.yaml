@@ -304,7 +304,7 @@ parameters:
   - name: FORMIO_SECRET
     description: Secrets are referred from this.
     required: true
-    value: forms-flow-ai
+    value: forms-flow-ai-secret
   - name: IMAGE_TAG
     description: The image tag to pull for the deployment.
     required: true
