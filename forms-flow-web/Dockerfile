@@ -1,14 +1,16 @@
 # base image
-FROM node:12.4.0-alpine as build-stage
+FROM node:14.18.3-alpine
 
 # set working directory
 WORKDIR /app
+ARG FORMIO_SOURCE_REPO_BRANCH
+ARG FORMIO_SOURCE_REPO_URL
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+    apk add --no-cache bash git openssh lsyncd
 
 # Clone code
 RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
@@ -24,13 +26,15 @@ COPY ./${CUSTOM_SRC_DIR}/  /app/${CUSTOM_SRC_DIR}/
 
 ARG CUSTOM_SVG_DIR=public/webfonts
 COPY ./${CUSTOM_SVG_DIR}/ /app/${CUSTOM_SVG_DIR}/
-
 RUN npm install
-RUN npm run build
 
-FROM nginx:1.17 as production-stage
-RUN mkdir /app
-COPY --from=build-stage /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./lsyncd.conf lsyncd.conf
+
 EXPOSE 8080:8080
-CMD ["nginx", "-g", "daemon off;"]
+
+RUN ls
+
+# CMD ["/bin/bash", "-c", "lsyncd -rsync /forms-flow/forms-flow-web /app; npm start"]
+# CMD ["/bin/bash", "-c", "npm start"]
+CMD ["/bin/bash", "-c", "lsyncd lsyncd.conf; npm start"]
+
