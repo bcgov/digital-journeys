@@ -203,7 +203,7 @@ parameters:
     description: The number of StatefulSet replicas to use.
     displayName: Replicas
     required: true
-    value: "3"
+    value: "1"
   - name: IMAGE_REGISTRY
     description: The base docker registry
     displayName: Docker Image Registry
