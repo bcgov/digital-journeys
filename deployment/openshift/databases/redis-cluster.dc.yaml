@@ -190,6 +190,7 @@ parameters:
     description: The name of the application which will use this.
     displayName: Application client name
     required: true
+    value: redash
   - name: NAME
     description: The name of the application for labelling all artifacts.
     displayName: Application Name
@@ -199,11 +200,12 @@ parameters:
     description: The name of this instance of the application
     displayName: Application Instance Name
     required: true
+    value: forms-flow
   - name: REPLICAS
     description: The number of StatefulSet replicas to use.
     displayName: Replicas
     required: true
-    value: "3"
+    value: "1"
   - name: IMAGE_REGISTRY
     description: The base docker registry
     displayName: Docker Image Registry

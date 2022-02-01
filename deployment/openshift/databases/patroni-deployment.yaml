@@ -201,24 +201,6 @@ objects:
                     if curl --fail http://localhost:8008/read-write; then
                       patronictl switchover --force
                     fi
-          livenessProbe:
-            exec:
-              command:
-                - /usr/bin/env
-                - bash
-                - -c
-                - |
-                  set -Eeuo pipefail && curl -s localhost:8008/liveness | jq -e ". | select(.state == \"running\")"
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3            
-          readinessProbe:
-            exec:
-              command:
-                - /usr/share/scripts/patroni/health_check.sh
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
           volumeMounts:
           - mountPath: /home/postgres/pgdata
             name: postgresql
@@ -287,7 +269,7 @@ parameters:
 - name: REPLICAS
   displayName: REPLICAS
   description: The number of statefulSet replicas to use.
-  value: '3'
+  value: '2'
 - description: Starting amount of CPU the container can use.
   displayName: CPU REQUEST
   name: CPU_REQUEST

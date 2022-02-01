@@ -8,7 +8,7 @@ objects:
       mail-config.properties: |
         # send mails via SMTP
         mail.transport.protocol=smtp
-        mail.smtp.host=${SMTP_SERVER}
+        mail.smtp.host=smtp.mailtrap.io
         mail.smtp.port=25
         mail.smtp.auth=false
         mail.smtp.ssl.enable=false
@@ -128,7 +128,7 @@ objects:
                       key: keycloak_clientsecret
                       name: ${FORMIO_SECRET}
                 - name: DEBUG
-                  value: "False"
+                  value: "True"
                 - name: MAIL_CONFIG
                   value: /app/mail-config.properties
                 - name: TZ
@@ -319,11 +319,11 @@ parameters:
   - name: DATABASE_SERVICE_NAME
     description: The Service name used to connect to the database.
     required: true
-    value: patroni-master
+    value: patroni
   - name: DATABASE_NAME
     description: The name of the database to connect to.
     required: true
-    value: camunda
+    value: app
   - name: DATABASE_PORT
     description: The port that the database is running on.
     required: true
@@ -404,7 +404,6 @@ parameters:
     value: "20000"
   - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
     description: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
-    required: true
   - name: FORMSFLOW_API_URL
     description: FORMSFLOW_API_URL
     required: true
