@@ -26,6 +26,9 @@ COPY ./${CUSTOM_SRC_DIR}/  /app/${CUSTOM_SRC_DIR}/
 
 ARG CUSTOM_SVG_DIR=public/webfonts
 COPY ./${CUSTOM_SVG_DIR}/ /app/${CUSTOM_SVG_DIR}/
+
+COPY ./package*.json .
+
 RUN npm install
 
 COPY ./lsyncd.conf lsyncd.conf
@@ -34,7 +37,5 @@ EXPOSE 8080:8080
 
 RUN ls
 
-# CMD ["/bin/bash", "-c", "lsyncd -rsync /forms-flow/forms-flow-web /app; npm start"]
-# CMD ["/bin/bash", "-c", "npm start"]
 CMD ["/bin/bash", "-c", "lsyncd lsyncd.conf; npm start"]
 
