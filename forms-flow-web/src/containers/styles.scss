@@ -1,0 +1,18 @@
+.page-navigation header {
+  display: flex;
+  align-items: center;
+
+  h1 {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .pg-menu-item:first-of-type {
+    flex: 1;
+  }
+
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+  }
+}
