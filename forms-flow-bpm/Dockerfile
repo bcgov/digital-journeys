@@ -25,7 +25,7 @@ WORKDIR /tmp/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B
 RUN cp -r /bpm/forms-flow-bpm/src/ /tmp/src/
 
-ARG CUSTOM_SRC_DIR=src/main/
+ARG CUSTOM_SRC_DIR=src/main
 
 # Override these files they have custom changes in the sbc_divapps directory
 COPY ./${CUSTOM_SRC_DIR}/  /tmp/${CUSTOM_SRC_DIR}/
