@@ -30,9 +30,9 @@ jobs:
     env:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
-      BRANCH: DGJ61-Automate-Build
+      BRANCH: DGJ62-Automate-Build
       BUILD_TAG: latest
-      APP: forms-flow
+      APP: forms-flow-web
     steps:
       # Checkout the PR branch
       - name: Print env
@@ -59,10 +59,7 @@ jobs:
           echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
                 oc -n ${BUILD_NAMESPACE} process -f web_bc.yml \
                 -p TAG=${BUILD_TAG} -p SOURCE_REPOSITORY_REF=${BRANCH} \
-                -p BASE_IMAGE_NAME="php" -p BASE_IMAGE_TAG="7.3-apache" \
-                -p BASE_IMAGE_REPO="aro.jfrog.io/moodle/" \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
-                -p SOURCE_REPOSITORY_REF="DGJ62-Automate-Build" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-web" \
                 -p NAME=${APP} | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
