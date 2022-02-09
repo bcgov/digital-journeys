@@ -10,7 +10,7 @@ WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
-
+RUN ls
 RUN ls /forms-flow-web
 RUN echo 'HOME'
 RUN ls /home
