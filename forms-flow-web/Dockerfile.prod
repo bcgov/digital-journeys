@@ -16,9 +16,10 @@ RUN apk update && apk upgrade && \
 
 # Clone code
 RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
-
+RUN ls
+RUN pwd
 # Apply changes from digital-journeys on top of the formsflow.ai source code
-RUN cp -rf ./* /web/forms-flow-web/
+RUN cp -rf /app/* /web/forms-flow-web/
 
 # Bring the combined source code directory into the current working directory
 RUN cp -rf /web/forms-flow-web/* /app/
