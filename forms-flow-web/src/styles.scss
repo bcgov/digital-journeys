@@ -17,31 +17,36 @@ $blue: #003366;
 // $indigo: #6610f2;
 // $purple: #613d7c;
 // $pink: #e83e8c;
-// $red: #ff0039;
+$red: #d8292f;
 // $orange: #f2661f;
-// $yellow: #fcba19;
-// $green: #3fb618;
+$yellow: #fcba19;
+$green: #2e8540;
 // $teal: #20c997;
 // $cyan: #9954bb;
 $lightblue: #4d61fc;
 
 $primary: $blue;
 // $secondary: $grey;
-// $success: $green;
-// $info: $lightblue;
+$success: $green;
+$info: #96c0e6;
 // $warning: $yellow;
-// $danger: $red;
+$danger: $red;
 // $light: $gray-100;
 // $dark: $gray-800;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+$textColor: #313132;
+$linkColor: #1a5a96;
+$whileBackgroundColor: #f2f2f2;
+$blueBackgroundColor: #38598a;
+$componentColor: #606060;
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap");
 @import url(https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css);
 @import url(https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css);
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 
 $bcgov-font-path: "/";
 @import "~@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
-
 
 .container,
 .container-sm,
@@ -56,7 +61,7 @@ $bcgov-font-path: "/";
   //height: 100vh;
   height: 100%;
 }
-.task-container{
+.task-container {
   height: 100% !important;
 }
 .logo {
@@ -77,7 +82,7 @@ body {
   font-size: 16px;
   font-family: Nunito Sans, SemiBold;
 }
-.loader-container{
+.loader-container {
   display: flex;
   height: 80vh;
   justify-content: center;
@@ -134,12 +139,12 @@ h5,
   font-size: 16px !important;
 }
 .bg-default {
-  background-color: #38598a;
-  border: #38598a;
+  background-color: $blueBackgroundColor;
+  border: $blueBackgroundColor;
   color: white !important;
 }
 .text-muted {
-  color: #868e96 !important;
+  color: #6c757d !important;
 }
 
 i.fa.fa-question-circle.text-muted {
@@ -147,24 +152,24 @@ i.fa.fa-question-circle.text-muted {
 }
 
 .panel-heading {
-  background-color: #38598a;
-  border: #38598a;
+  background-color: $blueBackgroundColor;
+  border: $blueBackgroundColor;
   color: white !important;
   padding: 0.75rem 1.25rem;
   margin-bottom: 8px;
 }
 .formio-error-wrapper,
 .has-error {
-  color: red;
+  color: $red;
   background-color: #fff;
-  border-color: red;
+  border-color: $red;
 
   label {
-    color: red;
+    color: $red;
   }
 }
 .formio-errors .error {
-  color: red;
+  color: $red;
 }
 .is-invalid {
   background-color: #ffd1d1;
@@ -245,7 +250,8 @@ i.fa.fa-question-circle.text-muted {
   //color: $lightblue !important;
   //border-bottom: 1px solid red;
   background-color: transparent;
-  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg) brightness(95%) contrast(101%);
+  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg)
+    brightness(95%) contrast(101%);
 }
 .inactive-tab {
   filter: brightness(0) invert(1);
@@ -255,7 +261,8 @@ i.fa.fa-question-circle.text-muted {
   // color: #fcba19 !important;
   //border-bottom: 1px solid red;
   background-color: transparent;
-  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg) brightness(95%) contrast(101%);
+  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg)
+    brightness(95%) contrast(101%);
 }
 .inactive-tab-dropdown > #dashboard-dropdown {
   //color: $lightblue !important;
@@ -267,9 +274,10 @@ i.fa.fa-question-circle.text-muted {
   //color: $lightblue !important;
   //border-bottom: 1px solid red;
   background-color: transparent;
-  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg) brightness(95%) contrast(101%);
+  filter: invert(80%) sepia(81%) saturate(4581%) hue-rotate(345deg)
+    brightness(95%) contrast(101%);
 }
-.dropdown-item:hover{
+.dropdown-item:hover {
   filter: none;
   background-color: #e9ecef;
 }
@@ -287,12 +295,12 @@ i.fa.fa-question-circle.text-muted {
   background-color: #e9ecef !important;
   color: #212529 !important;
 }
-.inactive-tab:hover{
-  color:  #fcba19;
+.inactive-tab:hover {
+  color: #fcba19;
   cursor: pointer;
 }
 #username:hover {
-  color:  #fcba19;
+  color: #fcba19;
   cursor: pointer;
 }
 .selected-tag {
@@ -337,14 +345,14 @@ i.fa.fa-question-circle.text-muted {
     left: 10%;
     right: 100%;
   }
-  .dashboard-icon-dropdown{
+  .dashboard-icon-dropdown {
     margin-bottom: 5px;
   }
-  .task-dropdown-icon{
+  .task-dropdown-icon {
     margin-bottom: 1px;
     color: white;
   }
-  .applications-icon-header{
+  .applications-icon-header {
     width: 23px;
     height: 23px;
     margin-bottom: 5px;
@@ -413,7 +421,7 @@ i.fa.fa-question-circle.text-muted {
 }
 .table-bordered thead th,
 .table-bordered thead td {
-  background-color: #f2f2f2 !important;
+  background-color: $whileBackgroundColor !important;
 }
 .navbar-dark.navbar-toggler {
   border-color: white;
@@ -426,7 +434,7 @@ i.fa.fa-question-circle.text-muted {
   height: 30px;
   width: 100%;
 }
-.back-icon{
+.back-icon {
   display: flex;
 }
 .sub-container {
@@ -438,15 +446,15 @@ i.fa.fa-question-circle.text-muted {
   margin-left: 10px !important;
   //display: flex;
 }
-.icon-wp-forms{
+.icon-wp-forms {
   height: 30px;
 }
-.forms-text{
+.forms-text {
   vertical-align: bottom;
   margin-left: 10px;
   margin-bottom: 0px;
 }
-.task-head-icons{
+.task-head-icons {
   height: 30px;
   width: 30px;
 }
@@ -455,10 +463,10 @@ i.fa.fa-question-circle.text-muted {
   font-size: 30px;
   margin-left: 10px !important;
 }
-.icon-wp-forms{
+.icon-wp-forms {
   height: 30px;
 }
-.forms-text{
+.forms-text {
   vertical-align: middle;
   margin-left: 10px;
 }
@@ -556,6 +564,120 @@ div[disabled] {
     display: none;
   }
 }
+
 .css-79elbk {
- // position: none;
+  // position: none;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 36px;
+  color: $textColor;
+}
+
+h1 {
+  font-size: 37.32px;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 31.1px;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 25.92px;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 21.6px;
+  font-weight: 700;
+}
+
+.form-control {
+  border: 2px solid $componentColor;
+}
+
+.form-control:focus {
+  outline: 4px solid #3b99fc;
+  outline-offset: 1px;
+}
+
+.field-required::after {
+  content: "";
+}
+
+.btn-primary {
+  background-color: $blue;
+}
+
+.btn-primary:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+.btn-primary:active {
+  opacity: 1;
+}
+
+.btn-primary:disabled {
+  background-color: $blue;
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: none;
+  border: none;
+}
+
+.btn-secondary {
+  color: $blue;
+  background: none;
+  border: 2px solid $blue;
+}
+
+.btn-secondary:hover {
+  text-decoration: underline;
+  background-color: $blue;
+  color: white;
+  opacity: 0.8;
+}
+
+.btn-secondary:active {
+  opacity: 1;
+}
+
+.btn-secondary:disabled {
+  background-color: white;
+  opacity: 0.3;
+  border: 2px solid $blue;
+  color: $blue;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+a {
+  color: $linkColor;
+}
+
+a:hover {
+  color: blue;
+  text-decoration: none;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.ui.selection.dropdown {
+  border: 2px solid #606060;
+}
+
+.ui.selection.dropdown:hover {
+  border: 2px solid #606060;
+}
+
+.ui.selection.dropdown:active,
+:focus {
+  outline: 4px solid #3b99fc;
+  outline-offset: 1px;
 }
