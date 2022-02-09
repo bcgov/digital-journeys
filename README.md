@@ -4,13 +4,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/bcgov/digital-journeys">
-    <img src="forms-flow-web/public/logo.svg" alt="Logo" width="100" height="100">
+    <img src="forms-flow-web/public/bcmark.png" alt="Logo" width="150" height="150">
   </a>
 
-  <h3 align="center">PSA - Digital Journeys</h3>
+  <h1 align="center">PSA - Digital Journeys</h1>
 
   <p align="center">
-    Form Builder and Workflow manager built on top of [formsflow.ai](https://github.com/AOT-Technologies/forms-flow-ai).
+    Form Builder and Workflow manager built on top of <a href="https://github.com/AOT-Technologies/forms-flow-ai">formsflow.ai</a>.
     <br />
     <a href="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca"><strong>Dev Env »</strong></a>
     <br />
@@ -25,8 +25,6 @@
 
 
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 This repo contains a BC Gov branded version of [formsflow.ai](https://github.com/AOT-Technologies/forms-flow-ai) that will support public facing and internal Digital Journeys used by PSA and their employees.
 
