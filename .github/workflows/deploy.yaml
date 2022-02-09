@@ -51,18 +51,18 @@ jobs:
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
 
-      # Build the app images
-      - name: Build App images
-        working-directory: "./deployment/openshift"
-        run: |
-          test -n "${BRANCH}"
-          test -n "${BUILD_NAMESPACE}"
-          echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
-                oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
-                -p SOURCE_REPOSITORY_REF=${BRANCH} \
-                -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
-                -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
-          oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
+      # # Build the app images
+      # - name: Build App images
+      #   working-directory: "./deployment/openshift"
+      #   run: |
+      #     test -n "${BRANCH}"
+      #     test -n "${BUILD_NAMESPACE}"
+      #     echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
+      #           oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
+      #           -p SOURCE_REPOSITORY_REF=${BRANCH} \
+      #           -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
+      #           -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
+      #     oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
 
 
        # Build the api images
