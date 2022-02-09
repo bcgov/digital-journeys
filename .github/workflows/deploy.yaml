@@ -6,7 +6,7 @@ on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ DGJ61-Automate-Build ]
+    branches: [ DGJ62-Automate-Build ]
 
 jobs:
   #Print variables for logging and debugging purposes
