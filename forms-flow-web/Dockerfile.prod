@@ -8,17 +8,9 @@ FROM artifacts.developer.gov.bc.ca/docker-remote/node:14.18.3-alpine as build-st
 # set working directory
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-RUN ls
-RUN ls /forms-flow-web
-RUN echo 'HOME'
-RUN ls /home
-RUN echo 'DEV'
-RUN ls /dev
-RUN echo 'APP'
-RUN ls /app
-RUN pwd
+COPY . /digital-journeys/
+
+RUN ls /digital-journeys
 
 
 RUN apk update && apk upgrade && \
@@ -27,11 +19,12 @@ RUN apk update && apk upgrade && \
 # Clone code
 RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
 
-# Apply changes from digital-journeys on top of the formsflow.ai source code
-RUN cp -rf /app/* /web/forms-flow-web/
-
 # Bring the combined source code directory into the current working directory
 RUN cp -rf /web/forms-flow-web/* /app/
+
+# Apply changes from digital-journeys on top of the formsflow.ai source code
+RUN cp -rf /digital-journeys/* /app/
+
 # RUN rm /app/public/formsflow.ai_icon.svg
 COPY /public/logo.svg /app/public/
 
