@@ -1,0 +1,27 @@
+@import "./themes.scss";
+@import "./base.scss";
+
+
+.app-container{
+  max-width: 1440px !important;
+}
+
+.react-bootstrap-table table {
+  table-layout: auto !important;
+  position:relative !important;
+}
+.react-bootstrap-table{
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#app {
+  background: $white;
+}
+
+#main {
+  overflow-y: hidden !important;
+  box-shadow: none !important;
+}
