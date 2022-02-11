@@ -122,7 +122,7 @@ objects:
                 name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: FORMSFLOW_API_CORS_ORIGINS
             value: '*'      
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${IMAGE_NAME}
           name: ${NAME}
         ports:
         - containerPort: 5000
@@ -140,7 +140,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
+          name: "${IMAGE_NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -183,6 +183,9 @@ parameters:
   - name: IMAGE_TAG
     description: The image tag to pull for the deployment.
     required: true  
+  - name: IMAGE_NAME
+    description: The image to pull for the deployment.
+    required: true    
   - name: IMAGE_NAMESPACE
     displayName: Image Namespace
     required: true
