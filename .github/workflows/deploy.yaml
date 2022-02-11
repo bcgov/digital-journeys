@@ -127,7 +127,7 @@ jobs:
                 -p MEMORY_LIMIT=2Gi \
                 -p KC_MOUNT_PATH="/usr/share/nginx/html/config/kc" \
                 -p MOUNT_PATH="/usr/share/nginx/html/config/"" \
-                -p FFAWEB_URL="digital-journeys-ci-cd-dev.apps.silver.devops.gov.bc.ca \
+                -p FFAWEB_URL="digital-journeys-ci-cd-dev.apps.silver.devops.gov.bc.ca" \
                 -p AUTH_SERVER_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca/auth" \
                 -p REACT_APP_CLIENT_ID="61e557ebe8a170e1b2bb566a" \
                 -p REACT_APP_STAFF_REVIEWER_ID="61e557ebe8a170e1b2bb5666" \
