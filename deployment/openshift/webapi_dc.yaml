@@ -3,7 +3,7 @@ kind: Template
 label:
     app: forms-flow-ai
 metadata:
-  name: forms-flow-webapi
+  name: ${NAME}
 objects:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
