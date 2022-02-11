@@ -109,59 +109,59 @@ jobs:
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
-      - name: Deploy APP
-        run: |
-          test -n "${NAMESPACE}"
-          test -n "${BUILD_NAMESPACE}"
-          test -n "${BRANCH}"
-          echo "Current namespace is ${NAMESPACE}"
-          #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
-          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-                -p APP_NAME=forms-flow-ai-ci-cd \
-                -p NAME=${APP} \
-                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p IMAGE_NAME=forms-flow-web \
-                -p TAG_NAME=latest \
-                -p CPU_REQUEST=100m \
-                -p CPU_LIMIT=250m \
-                -p MEMORY_REQUEST=100Mi \
-                -p MEMORY_LIMIT=2Gi \
-                -p KC_MOUNT_PATH="/usr/share/nginx/html/config/kc" \
-                -p MOUNT_PATH="/usr/share/nginx/html/config/" \
-                -p FFAWEB_URL="digital-journeys-ci-cd-dev.apps.silver.devops.gov.bc.ca" \
-                -p AUTH_SERVER_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca/auth" \
-                -p REACT_APP_CLIENT_ID="61e557ebe8a170e1b2bb566a" \
-                -p REACT_APP_STAFF_REVIEWER_ID="61e557ebe8a170e1b2bb5666" \
-                -p REACT_APP_STAFF_DESIGNER_ID="61e557ebe8a170e1b2bb565a" \
-                -p REACT_APP_USER_RESOURCE_FORM_ID="61e557ebe8a170e1b2bb566e" \
-                -p REACT_APP_API_SERVER_URL="https://digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_API_PROJECT_URL="https://digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_CAMUNDA_API_URI="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca/camunda" \
-                -p REACT_APP_WEB_BASE_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_ANONYMOUS_ID="61e08f2dfa47988d5b4a4c85" \
-                -p REACT_APP_WEBSOCKET_ENCRYPT_KEY="${{ secrets.REACT_APP_WEBSOCKET_ENCRYPT_KEY}}" \
-                -p REALM="psa-digital-journey-dev" \
-                -p REACT_APP_KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_APPLICATION_NAME="form-flow-web" \
-                -p REACT_APP_WEB_BASE_CUSTOM_URL="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_USER_ACCESS_PERMISSIONS="'{"accessAllowApplications":true, "accessAllowSubmissions":true}'" \
-                -p REACT_APP_FORMIO_JWT_SECRET="${{ secrets.REACT_APP_FORMIO_JWT_SECRET}}" \
-                -p DESIGNER_ROLE_ID="61e557ebe8a170e1b2bb565a" | \
-          oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
-          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-          ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
-          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-            $ROLLOUT_STATUS_CMD
-            ATTEMPTS=$((attempts + 1))
-            sleep 10
-          done
-          oc project ${NAMESPACE}     
-          echo "Listing pods.."
-          oc get pods|grep "${APP}"
-          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
+      # - name: Deploy APP
+      #   run: |
+      #     test -n "${NAMESPACE}"
+      #     test -n "${BUILD_NAMESPACE}"
+      #     test -n "${BRANCH}"
+      #     echo "Current namespace is ${NAMESPACE}"
+      #     #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
+      #     oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+      #           -p APP_NAME=forms-flow-ai-ci-cd \
+      #           -p NAME=${APP} \
+      #           -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+      #           -p IMAGE_NAME=forms-flow-web \
+      #           -p TAG_NAME=latest \
+      #           -p CPU_REQUEST=100m \
+      #           -p CPU_LIMIT=250m \
+      #           -p MEMORY_REQUEST=100Mi \
+      #           -p MEMORY_LIMIT=2Gi \
+      #           -p KC_MOUNT_PATH="/usr/share/nginx/html/config/kc" \
+      #           -p MOUNT_PATH="/usr/share/nginx/html/config/" \
+      #           -p FFAWEB_URL="digital-journeys-ci-cd-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p AUTH_SERVER_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca/auth" \
+      #           -p REACT_APP_CLIENT_ID="61e557ebe8a170e1b2bb566a" \
+      #           -p REACT_APP_STAFF_REVIEWER_ID="61e557ebe8a170e1b2bb5666" \
+      #           -p REACT_APP_STAFF_DESIGNER_ID="61e557ebe8a170e1b2bb565a" \
+      #           -p REACT_APP_USER_RESOURCE_FORM_ID="61e557ebe8a170e1b2bb566e" \
+      #           -p REACT_APP_API_SERVER_URL="https://digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p REACT_APP_API_PROJECT_URL="https://digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p REACT_APP_CAMUNDA_API_URI="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca/camunda" \
+      #           -p REACT_APP_WEB_BASE_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p REACT_APP_ANONYMOUS_ID="61e08f2dfa47988d5b4a4c85" \
+      #           -p REACT_APP_WEBSOCKET_ENCRYPT_KEY="${{ secrets.REACT_APP_WEBSOCKET_ENCRYPT_KEY}}" \
+      #           -p REALM="psa-digital-journey-dev" \
+      #           -p REACT_APP_KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p REACT_APP_APPLICATION_NAME="form-flow-web" \
+      #           -p REACT_APP_WEB_BASE_CUSTOM_URL="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca" \
+      #           -p REACT_APP_USER_ACCESS_PERMISSIONS="'{"accessAllowApplications":true, "accessAllowSubmissions":true}'" \
+      #           -p REACT_APP_FORMIO_JWT_SECRET="${{ secrets.REACT_APP_FORMIO_JWT_SECRET}}" \
+      #           -p DESIGNER_ROLE_ID="61e557ebe8a170e1b2bb565a" | \
+      #     oc -n ${NAMESPACE} apply -f -
+      #     #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+      #     ATTEMPTS=0
+      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+      #       $ROLLOUT_STATUS_CMD
+      #       ATTEMPTS=$((attempts + 1))
+      #       sleep 10
+      #     done
+      #     oc project ${NAMESPACE}     
+      #     echo "Listing pods.."
+      #     oc get pods|grep "${APP}"
+      #     export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+      #     echo "${APP} is exposed at 'https://'${ROUTE}" 
   
       - name: Deploy API
         run: |
