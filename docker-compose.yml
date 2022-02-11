@@ -126,8 +126,8 @@ services:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
       args:
-      - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-      - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
+        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
+        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     environment:
       - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
@@ -193,6 +193,7 @@ services:
       - "5000:5000"
     volumes:
       - ./:/app:cached,rw
+      - ".:/forms-flow"
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}

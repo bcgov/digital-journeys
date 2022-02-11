@@ -5,7 +5,7 @@
 FROM python:3.8
 
 RUN apt-get update \
-    && apt-get install -y git
+    && apt-get install -y git && apt-get install lsyncd -y
 
 ARG FORMIO_SOURCE_REPO_BRANCH
 ARG FORMIO_SOURCE_REPO_URL
@@ -22,8 +22,17 @@ RUN : \
     && pip install -r requirements.txt 
 
 RUN cp -r /api/forms-flow-api/* /forms-flow-api/app
+
+ARG CUSTOM_SRC_DIR=src
+
+# Override these files they have custom changes in the sbc_divapps directory
+COPY ./${CUSTOM_SRC_DIR}/ /forms-flow-api/app/${CUSTOM_SRC_DIR}/
+
 RUN pip install -e .
+
+COPY ./lsyncd.conf lsyncd.conf
 
 EXPOSE 5000
 RUN chmod u+x ./entrypoint
-ENTRYPOINT ["/bin/sh", "entrypoint"]
+
+CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint"]
