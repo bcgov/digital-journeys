@@ -120,6 +120,7 @@ jobs:
                 -p APP_NAME=forms-flow-ai \
                 -p NAME=${APP} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p IMAGE_NAME=forms-flow-web \
                 -p TAG_NAME=latest \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=250m \
