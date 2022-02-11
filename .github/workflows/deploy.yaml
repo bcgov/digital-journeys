@@ -171,6 +171,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
           echo "Passed"
+          oc -n ${NAMESPACE} project
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
