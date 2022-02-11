@@ -297,7 +297,7 @@ parameters:
     required: false
   - name: REACT_APP_FORMIO_JWT_SECRET
     displayName: REACT_APP_FORMIO_JWT_SECRET
-    description:FORMIO JWT Secret
+    description: FORMIO JWT Secret
     required: false
   - name: DESIGNER_ROLE_ID
     displayName: DESIGNER_ROLE_ID
