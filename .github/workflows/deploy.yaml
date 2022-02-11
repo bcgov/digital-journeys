@@ -151,7 +151,7 @@ jobs:
           oc rollout latest dc/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/'${APP}' -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -160,8 +160,8 @@ jobs:
           oc project ${NAMESPACE}     
           echo "Listing pods.."
           oc get pods|grep "${APP}"
-          export ROUTE="$(oc get route '${APP}' -o jsonpath='{.spec.host}')"
-          echo "'${APP}' is exposed at 'https://'${ROUTE}" 
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
   
       - name: Deploy API
         run: |
