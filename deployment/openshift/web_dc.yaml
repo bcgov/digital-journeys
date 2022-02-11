@@ -125,7 +125,7 @@ objects:
             from:
               kind: ImageStreamTag
               namespace: "${IMAGE_NAMESPACE}"
-              name: "${NAME}:${TAG_NAME}"
+              name: "${IMAGE_ANME}:${TAG_NAME}"
           type: ImageChange
     status: {}
 
