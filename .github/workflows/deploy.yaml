@@ -193,7 +193,7 @@ jobs:
           done
           oc project ${NAMESPACE}     
           echo "Listing pods.."
-          oc get pods|grep "${API}""
+          oc get pods|grep "${API}"
           export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
           echo "${API} is exposed at 'https://'${ROUTE}" 
 
