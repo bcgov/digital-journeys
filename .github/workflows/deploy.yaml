@@ -173,16 +173,16 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p IMAGE_TAG=latest \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=250m \
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \ 
           oc -n ${NAMESPACE} apply -f -
-          oc rollout latest dc/{API} -n ${NAMESPACE}
+          oc rollout latest dc/"${API}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/{API} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -191,6 +191,6 @@ jobs:
           oc project ${NAMESPACE}     
           echo "Listing pods.."
           oc get pods|grep {API}
-          export ROUTE="$(oc get route {API} -o jsonpath='{.spec.host}')"
+          export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
           echo "${API} is exposed at 'https://'${ROUTE}" 
 
