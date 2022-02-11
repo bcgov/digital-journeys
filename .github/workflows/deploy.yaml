@@ -117,7 +117,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-                -p APP_NAME=forms-flow-ai \
+                -p APP_NAME=forms-flow-ai-ci-cd \
                 -p NAME=${APP} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                 -p IMAGE_NAME=forms-flow-web \
@@ -148,10 +148,10 @@ jobs:
                 -p REACT_APP_FORMIO_JWT_SECRET="${{ secrets.REACT_APP_FORMIO_JWT_SECRET}}" \
                 -p DESIGNER_ROLE_ID="61e557ebe8a170e1b2bb565a" | \
           oc -n ${NAMESPACE} apply -f -
-          oc rollout latest dc/{APP} -n ${NAMESPACE}
+          oc rollout latest dc/"{APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/{APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status dc/"{APP}" -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
