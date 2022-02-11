@@ -192,8 +192,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./:/app:cached,rw
-      - ".:/forms-flow"
+      - ./forms-flow-api:/digital-journeys:cached,rw
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
