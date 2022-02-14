@@ -84,7 +84,7 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
-            <camunda:inputParameter name="subject">Telework Application for Review</camunda:inputParameter>
+            <camunda:inputParameter name="subject">FOR ACTION: A new Telework Agreement has been submitted</camunda:inputParameter>
             <camunda:inputParameter name="to">${managerEmployerEMail}</camunda:inputParameter>
             <camunda:inputParameter name="text">Hello
 
