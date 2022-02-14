@@ -77,15 +77,7 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0eqfxon" sourceRef="StartEvent_1" targetRef="Activity_13ovu4t">
       <bpmn:extensionElements>
-        <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
-          <camunda:field name="fields">
-            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_13ovu4t" name="Send Approval Email to Supervisor">
@@ -93,8 +85,20 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         <camunda:connector>
           <camunda:inputOutput>
             <camunda:inputParameter name="subject">Telework Application for Review</camunda:inputParameter>
-            <camunda:inputParameter name="to">${supervisorEmail}</camunda:inputParameter>
-            <camunda:inputParameter name="text">A new Telework application has been submitted by ${submitterName}.  Please review to approve or reject this request.</camunda:inputParameter>
+            <camunda:inputParameter name="to">${managerEmployerEMail}</camunda:inputParameter>
+            <camunda:inputParameter name="text">Hello
+
+
+For your review, please find attached a new Telework Agreement submitted by ${submitterName}.
+
+
+Go to the Manager/Supervisor Sign-Off Section at ${formUrl} to complete and submit this form.
+
+
+*If this Telework request is for 3 days or more, you must get approval from your ADM or delegate.
+
+
+Thank you</camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>mail-send</camunda:connectorId>
         </camunda:connector>

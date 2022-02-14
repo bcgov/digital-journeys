@@ -217,3 +217,4 @@ sketch
 # Databases
 postgres
 mongodb
+/forms-flow-bpm/src/main/resources/mail-config.properties
