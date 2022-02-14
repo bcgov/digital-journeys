@@ -75,7 +75,19 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0eqfxon" sourceRef="StartEvent_1" targetRef="Activity_13ovu4t" />
+    <bpmn:sequenceFlow id="Flow_0eqfxon" sourceRef="StartEvent_1" targetRef="Activity_13ovu4t">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_13ovu4t" name="Send Approval Email to Supervisor">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -94,6 +106,12 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="teleworkform">
+      <bpmndi:BPMNEdge id="Flow_0eqfxon_di" bpmnElement="Flow_0eqfxon">
+        <di:waypoint x="208" y="70" />
+        <di:waypoint x="260" y="70" />
+        <di:waypoint x="260" y="190" />
+        <di:waypoint x="310" y="190" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06i3h9p_di" bpmnElement="Flow_06i3h9p">
         <di:waypoint x="410" y="190" />
         <di:waypoint x="490" y="190" />
@@ -130,23 +148,17 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         <di:waypoint x="289" y="80" />
         <di:waypoint x="310" y="80" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0eqfxon_di" bpmnElement="Flow_0eqfxon">
-        <di:waypoint x="208" y="70" />
-        <di:waypoint x="260" y="70" />
-        <di:waypoint x="260" y="190" />
-        <di:waypoint x="310" y="190" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="172" y="52" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="151" y="95" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1i967b8_di" bpmnElement="Activity_0kai049">
-        <dc:Bounds x="310" y="40" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
         <dc:Bounds x="490" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
+        <dc:Bounds x="1022" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65j" isMarkerVisible="true">
         <dc:Bounds x="655" y="165" width="50" height="50" />
@@ -157,8 +169,8 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
       <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
         <dc:Bounds x="810" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="1022" y="172" width="36" height="36" />
+      <bpmndi:BPMNShape id="Activity_1i967b8_di" bpmnElement="Activity_0kai049">
+        <dc:Bounds x="310" y="40" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0hx226j_di" bpmnElement="Activity_13ovu4t">
         <dc:Bounds x="310" y="150" width="100" height="80" />
