@@ -49,7 +49,7 @@ objects:
     strategy:
       type: Docker
       dockerStrategy:
-        dockerfilePath: Dockerfile.prod
+        dockerfilePath: Dockerfile
         pullSecret:
           name: artifactory-credentials
         env:
