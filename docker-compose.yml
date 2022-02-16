@@ -126,8 +126,8 @@ services:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
       args:
-      - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-      - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
+        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
+        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     environment:
       - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
@@ -192,7 +192,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./:/app:cached,rw
+      - ./forms-flow-api:/digital-journeys:cached,rw
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
@@ -214,6 +214,8 @@ services:
       KEYCLOAK_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      EMPLOYEE_DATA_API_URL: ${EMPLOYEE_DATA_API_URL}
+      EMPLOYEE_DATA_AUTH_TOKEN: ${EMPLOYEE_DATA_AUTH_TOKEN}
     stdin_open: true # -i
     tty: true # -t
     networks:
