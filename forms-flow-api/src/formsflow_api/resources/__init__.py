@@ -15,7 +15,7 @@ from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
-from formsflow_api.resources.users import API as USER_API
+from formsflow_api.resources.employeeData import API as EMPLOYEE_DATA_API
 
 
 # This will add the Authorize button to the swagger docs
@@ -63,4 +63,4 @@ API.add_namespace(DASHBOARDS_API, path="/dashboards")
 API.add_namespace(FORM_API, path="/form")
 API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
-API.add_namespace(USER_API, path="/users")
+API.add_namespace(EMPLOYEE_DATA_API, path="/employee-data")
