@@ -1,5 +1,4 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
-import EmployeeDataModel from "../models/EmployeeDataModel";
 
 export const initialState = {
   data: {},
@@ -12,7 +11,7 @@ const employeeData = (state = initialState, action) => {
     case ACTION_CONSTANTS.EMPLOYEE_DATA:
       return {
         ...state,
-        data: new EmployeeDataModel(action.payload),
+        data: action.payload,
         error: null,
       };
     

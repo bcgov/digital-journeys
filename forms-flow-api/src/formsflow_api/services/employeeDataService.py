@@ -1,21 +1,29 @@
 import json
 import requests
 from http import HTTPStatus
+from flask import current_app
+from formsflow_api.models.employee_data import EmployeeData
 
 class EmployeeDataService: 
     
     @staticmethod
     def get_employee_data_from_bcgov(guid):
       #TODO: get auth token from bcgov using @param guid
+      
+      employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+      test_auth_token = current_app.config.get(
+          "EMPLOYEE_DATA_AUTH_TOKEN")
       try:
-        responseFromBCGov = requests.get('https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rsc/Datamart_Telework_employee_demo/',
-                       headers={'Authorization': 'Basic XXXXXXXXXXXXXXXXXXXX'})
+        response_from_BCGov = requests.get("{}?filter = GUID eq '{}'".format(employee_data_api_url, guid),
+                       headers={"Authorization": "Basic {}".format(test_auth_token)})
       except:
         return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
       
       #TODO: check response for data and return accordingly. No all users have data
-      employeeDataRes = responseFromBCGov.json()
-      employeeData = employeeDataRes['value'][0]
-      return employeeData
+      employee_data_res = response_from_BCGov.json()
+      emp_data = EmployeeData(employee_data_res["value"][0])
+
+      return emp_data.__dict__
+      
 
     
