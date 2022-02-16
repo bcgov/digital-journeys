@@ -1,4 +1,3 @@
-import json
 import requests
 from http import HTTPStatus
 from flask import current_app
@@ -15,7 +14,7 @@ class EmployeeDataService:
           "EMPLOYEE_DATA_AUTH_TOKEN")
       try:
         response_from_BCGov = requests.get("{}?filter = GUID eq '{}'".format(employee_data_api_url, guid),
-                       headers={"Authorization": "Basic {}".format(test_auth_token)})
+                       headers={"Authorization": test_auth_token})
       except:
         return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
       
