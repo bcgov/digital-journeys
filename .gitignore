@@ -209,6 +209,7 @@ node_modules
 bower_components
 
 *.sublime*
+.idea
 
 psd
 thumb

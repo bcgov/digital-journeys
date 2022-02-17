@@ -681,3 +681,21 @@ a:hover {
   outline: 4px solid #3b99fc;
   outline-offset: 1px;
 }
+
+.alert-info {
+  background-color: #F9F1C6;
+  padding: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  &:before {
+    margin-right: 11px;
+    content: url(./assets/warning.svg);
+  }
+;
+}
+
+.alert-info > p {
+  color: #6C4A00 !important;
+  margin: 0;
+}
