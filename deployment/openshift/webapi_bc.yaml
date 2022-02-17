@@ -48,6 +48,11 @@ objects:
       type: Docker
       dockerStrategy:
         dockerfilePath: Dockerfile.prod
+      env:
+        - name: FORMIO_SOURCE_REPO_URL
+          value: 'https://github.com/AOT-Technologies/forms-flow-ai.git'
+        - name: FORMIO_SOURCE_REPO_BRANCH
+          value: v4.0.4
     triggers:
       - type: ImageChange
         imageChange: {}
