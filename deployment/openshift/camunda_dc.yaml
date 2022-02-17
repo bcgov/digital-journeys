@@ -232,6 +232,11 @@ objects:
                   value: ${DATA_BUFFER_SIZE}
                 - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
                   value: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE}
+                - name: WEB_BASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      key: WEB_BASE_URL
+                      name: ${FORMIO_SECRET}
               imagePullPolicy: Always
               livenessProbe:
                 failureThreshold: 3
