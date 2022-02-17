@@ -33,7 +33,7 @@ Thank you</camunda:expression>
             <camunda:string>FOR ACTION: A new Telework Agreement has been submitted</camunda:string>
           </camunda:field>
           <camunda:field name="recipientEmail">
-            <camunda:expression>${managerEmployerEMail}</camunda:expression>
+            <camunda:expression>${managerEmail}</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
