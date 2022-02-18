@@ -12,8 +12,6 @@ ARG FORMIO_SOURCE_REPO_URL
 
 RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /api/
 
-COPY . /digital-journeys
-
 WORKDIR /forms-flow-api/app
 RUN cp /api/forms-flow-api/requirements.txt /forms-flow-api/app
 ENV PATH=/venv/bin:$PATH
@@ -24,7 +22,7 @@ RUN : \
     && pip install -r requirements.txt 
 
 RUN cp -r /api/forms-flow-api/* /forms-flow-api/app
-RUN cp -r /digital-journeys/* /forms-flow-api/app
+COPY . /forms-flow-api/app
 RUN pip install -e .
 
 EXPOSE 5000
