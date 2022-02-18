@@ -22,6 +22,7 @@ RUN : \
     && pip install -r requirements.txt 
 
 RUN cp -r /api/forms-flow-api/* /forms-flow-api/app
+COPY . /forms-flow-api/app
 RUN pip install -e .
 
 EXPOSE 5000
