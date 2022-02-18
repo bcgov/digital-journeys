@@ -40,12 +40,12 @@ objects:
               configMapKeyRef:
                 key: CAMUNDA_API_URI
                 name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: INSIGHTS_API_BASE
+          - name: INSIGHT_API_URL
             valueFrom:
               secretKeyRef:
                 key: INSIGHTS_API_BASE
                 name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: INSIGHTS_API_KEY
+          - name: INSIGHT_API_KEY
             valueFrom:
               secretKeyRef:
                 key: INSIGHTS_API_KEY
@@ -60,6 +60,16 @@ objects:
               secretKeyRef:
                 key: KEYCLOAK_ADMIN_PASSWORD
                 name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: KEYCLOAK_URL
+            valueFrom:
+              secretKeyRef:
+                key: keycloak_url
+                name: ${FORMSFLOW_CONFIG_NAME}-secret
+          - name: KEYCLOAK_URL_REALM
+            valueFrom:
+              secretKeyRef:
+                key: keycloak_realm
+                name: ${FORMSFLOW_CONFIG_NAME}-secret
           - name: BPM_CLIENT_ID
             valueFrom:
               secretKeyRef:

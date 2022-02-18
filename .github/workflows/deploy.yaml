@@ -6,7 +6,7 @@ on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ DGJ62-Automate-Build ]
+    branches: [ main ]
 
 jobs:
   #Print variables for logging and debugging purposes
@@ -30,7 +30,7 @@ jobs:
     env:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
-      BRANCH: DGJ62-Automate-Build
+      BRANCH: main
       BUILD_TAG: latest
       APP: forms-flow-web
       API: forms-flow-webapi
@@ -89,8 +89,8 @@ jobs:
       NAMESPACE: d89793-dev
       BUILD_NAMESPACE: d89793-tools
       BRANCH: DGJ62-Automate-Build
-      APP: forms-flow-web-ci-cd
-      API: forms-flow-webapi-ci-cd
+      APP: forms-flow-web
+      API: forms-flow-webapi
     needs:
       - build
     steps:
@@ -117,7 +117,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-                -p APP_NAME=forms-flow-ai-ci-cd \
+                -p APP_NAME=forms-flow-ai \
                 -p NAME=${APP} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                 -p IMAGE_NAME=forms-flow-web \
@@ -144,7 +144,7 @@ jobs:
                 -p REACT_APP_KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
                 -p REACT_APP_APPLICATION_NAME="form-flow-web" \
                 -p REACT_APP_WEB_BASE_CUSTOM_URL="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca" \
-                -p REACT_APP_USER_ACCESS_PERMISSIONS="'{"accessAllowApplications":true, "accessAllowSubmissions":true}'" \
+                -p REACT_APP_USER_ACCESS_PERMISSIONS='{"accessAllowApplications":true, "accessAllowSubmissions":true}' \
                 -p REACT_APP_FORMIO_JWT_SECRET="${{ secrets.REACT_APP_FORMIO_JWT_SECRET}}" \
                 -p DESIGNER_ROLE_ID="61e557ebe8a170e1b2bb565a" | \
           oc -n ${NAMESPACE} apply -f -
