@@ -79,7 +79,7 @@ h4 {
   overflow-x: hidden;
 }
 body {
-  font-size: 16px;
+  font-size: 18px;
   font-family: Nunito Sans, SemiBold;
 }
 .loader-container {
@@ -570,7 +570,7 @@ div[disabled] {
 }
 
 p {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
   margin-bottom: 36px;
   color: $textColor;
@@ -611,21 +611,36 @@ h4 {
 
 .btn-primary {
   background-color: $blue;
+  font-weight: 700;
+  padding: 12px 32px;
+  border-radius: 4px;
+  border: none;
 }
 
 .btn-primary:hover {
   text-decoration: underline;
   opacity: 0.8;
+  background-color: #336699;
 }
 .btn-primary:active {
   opacity: 1;
+  background-color: $blue !important;
+  border: none;
 }
 
+
 .btn-primary:disabled {
+  background-color: $blue !important;
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+
+.btn-primary:focus {
+  outline: 4px solid #3B99FC !important;
+  outline-offset: 1px;
   background-color: $blue;
-  opacity: 0.3;
-  cursor: not-allowed;
-  text-decoration: none;
   border: none;
 }
 
@@ -633,17 +648,38 @@ h4 {
   color: $blue;
   background: none;
   border: 2px solid $blue;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 10px 30px;
 }
 
 .btn-secondary:hover {
   text-decoration: underline;
-  background-color: $blue;
-  color: white;
+  background-color: $blue !important;
+  color: white !important;
   opacity: 0.8;
+  border: 2px solid $blue;
 }
 
 .btn-secondary:active {
   opacity: 1;
+  color: $blue !important;
+  background: none !important;
+  border: 2px solid $blue !important;
+}
+
+.btn-secondary:focus {
+  outline: 4px solid #3B99FC !important;
+  outline-offset: 1px;
+  background-color: white !important;
+  color: $blue !important;
+  border: 2px solid $blue;
+}
+
+.btn-secondary:hover:active {
+  background-color: $blue !important;
+  color: white !important;
+  border: 2px solid $blue;
 }
 
 .btn-secondary:disabled {
@@ -653,6 +689,17 @@ h4 {
   color: $blue;
   cursor: not-allowed;
   text-decoration: none;
+  border: 2px solid $blue;
+}
+
+.btn-secondary:disabled:hover {
+  background-color: white !important;
+  opacity: 0.3;
+  border: 2px solid $blue;
+  color: $blue !important;
+  cursor: not-allowed;
+  text-decoration: none;
+  border: 2px solid $blue;
 }
 
 a {
@@ -664,20 +711,34 @@ a:hover {
   text-decoration: none;
 }
 
+footer a:focus {
+  color: #fff !important;
+}
+
+header a:focus {
+  color: #fff !important;
+}
+
 .form-check-input {
   cursor: pointer;
 }
 
-.ui.selection.dropdown {
-  border: 2px solid #606060;
+div nav header div {
+  margin: 0 10px 0 0 !important; 
 }
 
-.ui.selection.dropdown:hover {
-  border: 2px solid #606060;
+
+div nav header div a {
+  cursor: pointer;
 }
 
-.ui.selection.dropdown:active,
-:focus {
-  outline: 4px solid #3b99fc;
-  outline-offset: 1px;
+header span h1 {
+  color: #fff;
+  font-size: 27px !important;
+  font-weight: 700 !important;
+  align-items: center !important;
+}
+
+header span:hover {
+  color: #fff;
 }

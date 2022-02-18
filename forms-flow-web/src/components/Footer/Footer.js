@@ -6,6 +6,10 @@ import Footer from "@button-inc/bcgov-theme/Footer";
 const BCGovFooter = React.memo(() => {
   const footerItems = [
     {
+      href: "/",
+      label: "Home",
+    },
+    {
       href: "https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535",
       label: "Disclaimer",
     },
@@ -32,7 +36,7 @@ const BCGovFooter = React.memo(() => {
       <ul>
         {footerItems.map((item) => (
           <li>
-            <a href={item.href} target='_blank'>
+            <a href={item.href}>
               {item.label}
             </a>
           </li>
