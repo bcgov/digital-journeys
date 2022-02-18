@@ -74,7 +74,7 @@ jobs:
           echo "BUILIDING ${API} with tag: ${BUILD_TAG}"
                 oc -n ${BUILD_NAMESPACE} process -f webapi_bc.yaml \
                 -p SOURCE_REPOSITORY_REF="" \
-                -p SOURCE_REPOSITORY_URL="https://github.com/AOT-Technologies/forms-flow-ai" \
+                -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-api" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${API} --no-cache --wait
 
