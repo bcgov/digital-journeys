@@ -30,6 +30,10 @@ const NavBar = React.memo(() => {
     dispatch(push(`/task`));
   }
 
+  const handleOnBannerClick = () => {
+    dispatch(push(`/`))
+  }
+
   const analyticsDropdown = () => (
     <NavDropdown
         className={pathname.match(/^\/metrics/)? 'active': null}
@@ -87,7 +91,7 @@ const NavBar = React.memo(() => {
       className="page-navigation"
       header="main"
       mobileBreakPoint={800}
-      onBannerClick={function noRefCheck(){}}
+      onBannerClick={handleOnBannerClick}
       title={
         <>
           {"Digital Journeys"}
@@ -96,11 +100,16 @@ const NavBar = React.memo(() => {
           ): null}
         </>
       }>
-        {isAuthenticated && <ul>
-          {navItems()
-            .filter(item => item)
-            .map(item => <li>{item}</li>)}
-        </ul>}
+        {isAuthenticated && <div>
+          <ul>
+            <div className="sign-out-button">
+              <Button onClick={logout} variant="outline-light">Sign Out</Button>
+            </div>
+            {navItems()
+              .filter(item => item)
+              .map(item => <li>{item}</li>)}
+          </ul>
+          </div>}
     </Navigation>
   );
 });
