@@ -245,12 +245,20 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
+  - name: KEYCLOAK_REALM
+    displayName: KEYCLOAK_REALM
+    description:
+      KEYCLOAK_REALM
+    required: false
+  - name: KEYCLOAK_URL
+    description: The URL used to connnect to the OIDC provider.
+    required: false
   - name: WEB_API_URL
     displayName: WEB_API_URL
     description:
       Web API URL without https prefix.
-    required: true
+    required: false
   - name: WEBAPI_DB_RESOURCE_NAME
     description: Name of database resources created for webapi.
-    required: true
+    required: false
     value: webapi-postgresql

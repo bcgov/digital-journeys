@@ -90,7 +90,7 @@ objects:
         spec:
           containers:
             - env:
-              image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+              image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
               name: ${NAME}
               ports:
                 - containerPort: 8080
@@ -292,4 +292,12 @@ parameters:
   - name: REACT_APP_WEB_BASE_CUSTOM_URL
     displayName: REACT_APP_WEB_BASE_CUSTOM_URL
     description: Clients can use this env variable to provide their custom URL
+    required: false
+  - name: REACT_APP_FORMIO_JWT_SECRET
+    displayName: REACT_APP_FORMIO_JWT_SECRET
+    description: FORMIO JWT Secret
+    required: false
+  - name: DESIGNER_ROLE_ID
+    displayName: DESIGNER_ROLE_ID
+    description: Desginer access role id
     required: false
