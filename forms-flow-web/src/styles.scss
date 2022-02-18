@@ -711,7 +711,11 @@ a:hover {
   text-decoration: none;
 }
 
-footer a, header a:focus {
+footer a:focus {
+  color: #fff !important;
+}
+
+header a:focus {
   color: #fff !important;
 }
 
