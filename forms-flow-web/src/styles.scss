@@ -696,6 +696,16 @@ a:hover {
 }
 
 .alert-info > p {
-  color: #6C4A00 !important;
+  color: #6C4A00;
   margin: 0;
 }
+
+.alert-info.formio-hidden {
+  padding: 0;
+  background-color: transparent;
+  &:before {
+    margin-right: 11px;
+    content: unset;
+  }
+}
+
