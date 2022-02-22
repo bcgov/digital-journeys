@@ -61,6 +61,31 @@ const View = React.memo((props) => {
     );
   }
 
+  const getDefaultValues = (data) => {
+    const filteredComponents = form?.components?.map(el => el.key)?.filter(comp => {
+      const dataArray = Object.keys(data);
+      if (comp.includes("_")) {
+        return dataArray.some(dataItem => comp.split("_")[0] === dataItem)
+      } 
+      return dataArray.some((el2) => comp === el2);
+    });
+
+    const defaultValuesArray = filteredComponents?.map(filteredComp => {
+      if (filteredComp.includes("_")) {
+        return {
+          [filteredComp]: data[filteredComp.split("_")[0]],
+        };
+      }
+      return { [filteredComp]: data[filteredComp] };
+    });
+
+    const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+    if (defaultValuesArray) {
+      return { data: defaultValuesObject };
+    }
+  };
+
   return (
     <div className='container'>
       <div className='main-header'>
@@ -86,15 +111,15 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading}
+        active={isFormSubmissionLoading || employeeData.loading}
         spinner
-        text='Loading...'
+        text={employeeData.loading ? "Loading user data..." : "Loading..."}
         className='col-12'
       >
         <div className='ml-4 mr-4'>
           <Form
             form={form}
-            submission={{ data: { ...employeeData.data} }}
+            submission={getDefaultValues(employeeData.data)}
             url={url}
             options={{ ...options }}
             hideComponents={hideComponents}
