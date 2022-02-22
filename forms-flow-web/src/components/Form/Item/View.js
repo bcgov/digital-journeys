@@ -171,7 +171,7 @@ const mapStateToProps = (state) => {
     user: state.user.userDetail,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,
-    errors: [selectError("form", state), selectError("submission", state), state.employeeData.error],
+    errors: [selectError("form", state), selectError("submission", state)],
     options: {
       noAlerts: false,
       i18n: {
