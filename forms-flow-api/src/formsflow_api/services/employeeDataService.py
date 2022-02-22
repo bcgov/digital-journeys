@@ -14,7 +14,7 @@ class EmployeeDataService:
           "EMPLOYEE_DATA_AUTH_TOKEN")
 
       try:
-        response_from_BCGov = requests.get("{}?filter=GUID eq '{}'".format(employee_data_api_url, guid),
+        response_from_BCGov = requests.get("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid),
                        headers={"Authorization": test_auth_token})
       except:
         return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
