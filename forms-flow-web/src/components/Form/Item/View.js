@@ -81,9 +81,7 @@ const View = React.memo((props) => {
 
     const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-    if (defaultValuesArray) {
       return { data: defaultValuesObject };
-    }
   };
 
   return (
