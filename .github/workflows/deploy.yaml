@@ -120,7 +120,6 @@ jobs:
                 -p APP_NAME=forms-flow-ai \
                 -p NAME=${APP} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p IMAGE_NAME=forms-flow-web \
                 -p TAG_NAME=latest \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=250m \
@@ -175,8 +174,7 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p IMAGE_NAME=forms-flow-webapi \
-                -p IMAGE_TAG=latest \
+                -p TAG_NAME=latest \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=250m \
                 -p MEMORY_REQUEST=100Mi \
