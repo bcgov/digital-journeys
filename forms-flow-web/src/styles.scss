@@ -742,3 +742,31 @@ header span h1 {
 header span:hover {
   color: #fff;
 }
+
+.alert-info {
+  background-color: #F9F1C6;
+  padding: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  &:before {
+    margin-right: 11px;
+    content: url(./assets/warning.svg);
+  }
+;
+}
+
+.alert-info > p {
+  color: #6C4A00;
+  margin: 0;
+}
+
+.alert-info.formio-hidden {
+  padding: 0;
+  background-color: transparent;
+  &:before {
+    margin-right: 11px;
+    content: unset;
+  }
+}
+
