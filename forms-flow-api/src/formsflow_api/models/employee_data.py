@@ -3,6 +3,8 @@ class EmployeeData():
    self.firstName = data["first_name"]
    self.lastName = data["last_name"]
    self.email = data["email"]
+   self.address1 = data["address1"]
+   self.address2 = data["address2"]
    self.officePhone = data["office_phone"]
    self.empId = data["EMPLID"]
    self.positionTitle = data["position_title"]
