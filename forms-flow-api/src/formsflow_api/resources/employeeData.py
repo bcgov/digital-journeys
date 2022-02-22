@@ -1,8 +1,6 @@
 """API endpoints for managing user API resource."""
 
 from http import HTTPStatus
-import json
-from queue import Empty
 from flask import g
 from flask_restx import Namespace, Resource
 from formsflow_api.utils import cors_preflight, profiletime
