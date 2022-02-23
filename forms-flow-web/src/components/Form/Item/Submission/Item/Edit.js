@@ -57,12 +57,12 @@ const Edit = React.memo((props) => {
   const submissionWithTask = _.merge({}, {
         data: {
             task: {
-                assignedToMe: task?.assignee && user?.preffered_username === task?.assignee,
+                assignedToMe: task?.assignee && user?.preferred_username === task?.assignee,
                 ...(task || {})
             }
         }
     }, submission);
-
+  
   return (
       <div className="container">
         <div className="main-header">
