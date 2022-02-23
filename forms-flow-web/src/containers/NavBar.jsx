@@ -19,6 +19,8 @@ const NavBar = React.memo(() => {
   const user = useSelector((state) => state.user.userDetail);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications= useSelector((state) => state.user.showApplications);
+
+  
   const dispatch = useDispatch();
 
   const logout = () => {
@@ -74,15 +76,14 @@ const NavBar = React.memo(() => {
           to='/application'>
         Applications
       </Link>: null,
-    getUserRolePermission(userRoles, STAFF_REVIEWER)? (
       <NavDropdown
           className={pathname.match(/^\/task/)? 'active': null}
           title="Tasks"
           id="task-dropdown"
           onClick={goToTask}>
+        Tasks
         <ServiceFlowFilterListDropDown/>
-      </NavDropdown>
-    ): null,
+      </NavDropdown>,
     getUserRolePermission(userRoles, STAFF_REVIEWER) ? analyticsDropdown(): null,
   ];
 
