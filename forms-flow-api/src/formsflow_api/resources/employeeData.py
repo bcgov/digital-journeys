@@ -1,7 +1,6 @@
 """API endpoints for managing user API resource."""
 
 from http import HTTPStatus
-import json
 from flask import g
 from flask_restx import Namespace, Resource
 from formsflow_api.utils import cors_preflight, profiletime
@@ -28,7 +27,7 @@ class EmployeeDataResource(Resource):
         except:
             return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-        if GUID is None:
+        if not GUID:
             return {"message": "user had no guid!"}, HTTPStatus.NOT_FOUND
 
         userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)

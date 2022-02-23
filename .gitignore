@@ -21,6 +21,9 @@ __pycache__/
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# Idea
+.idea
+
 # Local History for Visual Studio Code
 .history/
 
@@ -206,6 +209,7 @@ node_modules
 bower_components
 
 *.sublime*
+.idea
 
 psd
 thumb
@@ -214,3 +218,4 @@ sketch
 # Databases
 postgres
 mongodb
+/forms-flow-bpm/src/main/resources/mail-config.properties

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:process id="teleworkform" name="Telework Form" isExecutable="true" camunda:versionTag="4">
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
@@ -13,8 +13,31 @@
           <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create">
+          <camunda:field name="body">
+            <camunda:expression>Hello
+
+
+For your review, please find attached a new Telework Agreement submitted by ${submitterName}
+
+
+Go to the Manager/Supervisor Sign-Off Section at $BASE_URL/task/$TASK_ID to complete and submit this form.
+
+
+*If this Telework request is for 3 days or more, you must get approval from your ADM or delegate.
+
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>FOR ACTION: A new Telework Agreement has been submitted</camunda:string>
+          </camunda:field>
+          <camunda:field name="recipientEmail">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_06i3h9p</bpmn:incoming>
+      <bpmn:incoming>Flow_0eqfxon</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="Activity_0kai049">
@@ -60,7 +83,6 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_0pc6hcp" name="reject" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_06i3h9p" sourceRef="Activity_0kai049" targetRef="reviewer" />
     <bpmn:serviceTask id="Activity_0kai049" name="Send Confirmation Email to Submitter">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -73,67 +95,72 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:connector>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
-      <bpmn:outgoing>Flow_06i3h9p</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0eqfxon</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0eqfxon" sourceRef="Activity_0kai049" targetRef="reviewer">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="teleworkform">
-      <bpmndi:BPMNEdge id="Flow_06i3h9p_di" bpmnElement="Flow_06i3h9p">
+      <bpmndi:BPMNEdge id="Flow_0eqfxon_di" bpmnElement="Flow_0eqfxon">
         <di:waypoint x="410" y="80" />
         <di:waypoint x="490" y="80" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0pc6hcp_di" bpmnElement="SequenceFlow_0pc6hcp">
-        <di:waypoint x="680" y="142" />
-        <di:waypoint x="680" y="167" />
-        <di:waypoint x="810" y="167" />
+        <di:waypoint x="705" y="190" />
+        <di:waypoint x="758" y="190" />
+        <di:waypoint x="758" y="220" />
+        <di:waypoint x="810" y="220" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="730" y="150" width="27" height="14" />
+          <dc:Bounds x="730" y="203" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1x38yu4_di" bpmnElement="SequenceFlow_1x38yu4">
-        <di:waypoint x="705" y="117" />
-        <di:waypoint x="810" y="117" />
+        <di:waypoint x="705" y="190" />
+        <di:waypoint x="758" y="190" />
+        <di:waypoint x="758" y="170" />
+        <di:waypoint x="810" y="170" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="738" y="99" width="40" height="14" />
+          <dc:Bounds x="712" y="172" width="40" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_00bn1p7_di" bpmnElement="SequenceFlow_00bn1p7">
-        <di:waypoint x="910" y="137" />
-        <di:waypoint x="992" y="137" />
+        <di:waypoint x="910" y="190" />
+        <di:waypoint x="1022" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0jg4sg3_di" bpmnElement="SequenceFlow_0jg4sg3">
         <di:waypoint x="590" y="80" />
-        <di:waypoint x="623" y="80" />
-        <di:waypoint x="623" y="117" />
-        <di:waypoint x="655" y="117" />
+        <di:waypoint x="680" y="80" />
+        <di:waypoint x="680" y="165" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0ociprs_di" bpmnElement="SequenceFlow_0ociprs">
-        <di:waypoint x="208" y="70" />
-        <di:waypoint x="289" y="70" />
-        <di:waypoint x="289" y="80" />
+        <di:waypoint x="208" y="80" />
         <di:waypoint x="310" y="80" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="172" y="52" width="36" height="36" />
+        <dc:Bounds x="172" y="62" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="151" y="95" width="79" height="14" />
+          <dc:Bounds x="151" y="105" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
         <dc:Bounds x="490" y="40" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="992" y="119" width="36" height="36" />
+        <dc:Bounds x="1022" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65j" isMarkerVisible="true">
-        <dc:Bounds x="655" y="92" width="50" height="50" />
+        <dc:Bounds x="655" y="165" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="645" y="68" width="70" height="14" />
+          <dc:Bounds x="645" y="225" width="70" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
-        <dc:Bounds x="810" y="97" width="100" height="80" />
+        <dc:Bounds x="810" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1i967b8_di" bpmnElement="Activity_0kai049">
         <dc:Bounds x="310" y="40" width="100" height="80" />
