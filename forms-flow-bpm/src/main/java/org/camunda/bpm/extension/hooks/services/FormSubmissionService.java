@@ -80,7 +80,7 @@ public class FormSubmissionService {
         }
     }
 
-    public String grantSubmissionAccess(String formUrl, String user, List<String> permissions) {
+    public String grantSubmissionAccess(String formUrl, String user, List<String> permissions) throws IOException {
         String submission = readSubmission(formUrl);
 
         if(StringUtils.isBlank(submission)) {
@@ -96,24 +96,31 @@ public class FormSubmissionService {
 
             try {
                 JsonNode dataNode = mapper.readTree(submission);
-
                 accessNode = dataNode.get("access");
 
                 if(accessNode == null || !accessNode.isArray()) {
-
+                    return null;
                 } else {
-                    ObjectNode newPermission = mapper.createObjectNode();
-                    newPermission.put("type", permissions.get(0));
-                    newPermission.set("resources", mapper.createArrayNode().add(user));
-                    ((ArrayNode) accessNode).add(newPermission);
+                    JsonNode finalAccessNode = accessNode;
+                    permissions.forEach(permission -> {
+                        ObjectNode newPermission = mapper.createObjectNode();
+                        newPermission.put("type", permission);
+                        newPermission.set("resources", mapper.createArrayNode().add(user));
+                        ((ArrayNode) finalAccessNode).add(newPermission);
+                    });
                 }
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                throw new FormioServiceException("Unable to update permissions for: " + formUrl + ". Failed to parse access node");
             }
+        } else {
+            return null;
         }
 
-        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.PUT, submission);
-        
+
+        JsonNode toUpdate = mapper.createObjectNode().set("access", accessNode);
+
+        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.PUT, toUpdate);
+
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
             try {
                 JsonNode jsonNode = mapper.readTree(response.getBody());

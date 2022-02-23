@@ -38,7 +38,7 @@ Thank you</camunda:expression>
         </camunda:taskListener>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
           <camunda:field name="user">
-            <camunda:string>${managerEmail}</camunda:string>
+            <camunda:expression>${managerEmail}</camunda:expression>
           </camunda:field>
           <camunda:field name="permissions">
             <camunda:expression>["read", "write"]</camunda:expression>
@@ -59,6 +59,7 @@ Thank you</camunda:expression>
           </camunda:field>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="EndEvent_03cla68">

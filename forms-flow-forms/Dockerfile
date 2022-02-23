@@ -12,8 +12,8 @@ WORKDIR /forms-flow-forms/app
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)
-RUN apt update && \
-    apt install git
+RUN apt-get update && \
+    apt-get install -y git lsyncd
 
 ARG FORMIO_SOURCE_REPO_BRANCH
 ARG FORMIO_SOURCE_REPO_URL
@@ -32,6 +32,7 @@ RUN echo "prefix = $NPM_PACKAGES" >> ~/.npmrc
 # Include details of the required dependencies
 COPY ./package.json $NPM_PACKAGES/
 COPY ./package-lock.json $NPM_PACKAGES/
+COPY ./lsyncd.conf ./lsyncd.conf
 
 # Use "Continuous Integration" to install as-is from package-lock.json
 RUN npm ci --prefix=$NPM_PACKAGES
@@ -46,6 +47,7 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:*
 ENV DEBUG=""
 
+COPY . /digital-journeys
 RUN cp -r /forms/forms-flow-forms/* /forms-flow-forms/app
 
 RUN set -x \
@@ -53,4 +55,5 @@ RUN set -x \
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)
-ENTRYPOINT [ "node", "main.js" ]
+
+ENTRYPOINT ["/bin/bash", "-c", "lsyncd lsyncd.conf; npm start"]
