@@ -62,11 +62,34 @@ const View = React.memo((props) => {
   }
 
   const getDefaultValues = (data) => {
-    const filteredComponents = form?.components?.map(el => el.key)?.filter(comp => {
+    // A recursive function to get all the key properties of the form
+    function findAllKeys(obj, target) {
+      const keys = [];
+      const fnd = (obj) => {
+        if (!obj || Object.entries(obj).length === 0) {
+          return;
+        }
+        for (const [k, v] of Object.entries(obj)) {
+          if (k === target) {
+            keys.push(v);
+          }
+          if (typeof v === "object") {
+            fnd(v);
+          }
+        }
+      };
+      fnd(obj);
+      return keys;
+    }
+
+    const keys = findAllKeys(form?.components, "key");
+    const uniqueKeys = [... new Set(keys)];
+    
+    const filteredComponents = uniqueKeys?.filter((comp) => {
       const dataArray = Object.keys(data);
       if (comp.includes("_")) {
-        return dataArray.some(dataItem => comp.split("_")[0] === dataItem)
-      } 
+        return dataArray.some((dataItem) => comp.split("_")[0] === dataItem);
+      }
       return dataArray.some((el2) => comp === el2);
     });
 

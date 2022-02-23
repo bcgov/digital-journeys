@@ -1,5 +1,6 @@
 class EmployeeData():
   def __init__(self, data):
+   self.name = data["name"]
    self.firstName = data["first_name"]
    self.lastName = data["last_name"]
    self.email = data["email"]
