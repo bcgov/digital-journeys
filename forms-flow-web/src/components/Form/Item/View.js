@@ -64,9 +64,7 @@ const View = React.memo((props) => {
   const getDefaultValues = (data) => {
     if (
       Object.keys(data).length === 0 ||
-      form.components.length === 0 ||
-      isFormSubmissionLoading
-    ) {
+      form.components.length === 0) {
       return;
     }
 
@@ -227,6 +225,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getForm: () => dispatch(getForm("form", ownProps.match.params.formId)),
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
+      return;
       dispatch(
         saveSubmission(
           "submission",
