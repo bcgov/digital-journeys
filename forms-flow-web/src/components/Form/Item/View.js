@@ -225,7 +225,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getForm: () => dispatch(getForm("form", ownProps.match.params.formId)),
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
-      return;
       dispatch(
         saveSubmission(
           "submission",
