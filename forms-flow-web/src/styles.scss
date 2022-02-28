@@ -770,3 +770,7 @@ header span:hover {
   }
 }
 
+// Style applies to the tooltip icon
+i.fa.fa-question-circle.text-muted {
+  color: $linkColor !important;
+}
