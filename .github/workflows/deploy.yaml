@@ -253,7 +253,7 @@ jobs:
                 -p REACT_APP_API_SERVER_URL="https://digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" \
                 -p REACT_APP_API_PROJECT_URL="https://digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" \
                 -p REACT_APP_CAMUNDA_API_URI="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca/camunda" \
-                -p REACT_APP_WEB_BASE_URL="https://digital-journeys-forms-flow-api-test .apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_WEB_BASE_URL="https://digital-journeys-forms-flow-api-test.apps.silver.devops.gov.bc.ca" \
                 -p REACT_APP_ANONYMOUS_ID="61e08f2dfa47988d5b4a4c85" \
                 -p REACT_APP_WEBSOCKET_ENCRYPT_KEY="${{ secrets.REACT_APP_WEBSOCKET_ENCRYPT_KEY}}" \
                 -p REALM="psa-digital-journey-test" \
