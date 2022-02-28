@@ -62,6 +62,12 @@ const View = React.memo((props) => {
   }
 
   const getDefaultValues = (data) => {
+    if (
+      Object.keys(data).length === 0 ||
+      form.components.length === 0) {
+      return;
+    }
+
     // A recursive function to get all the key properties of the form
     function findAllKeys(obj, target) {
       const keys = [];
@@ -82,7 +88,7 @@ const View = React.memo((props) => {
       return keys;
     }
 
-    const keys = findAllKeys(form?.components, "key");
+    const keys = findAllKeys(form.components, "key");
     const uniqueKeys = [... new Set(keys)];
     
     const filteredComponents = uniqueKeys?.filter((comp) => {
@@ -134,7 +140,13 @@ const View = React.memo((props) => {
       <LoadingOverlay
         active={isFormSubmissionLoading || employeeData.loading}
         spinner
-        text={employeeData.loading ? "Loading user data..." : "Loading..."}
+        text={
+          employeeData.loading
+            ? "Loading user data..."
+            : isFormSubmissionLoading
+            ? "Submitting..."
+            : "Loading..."
+        }
         className='col-12'
       >
         <div className='ml-4 mr-4'>
