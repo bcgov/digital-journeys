@@ -31,13 +31,16 @@ public class FormPDFListener extends BaseListener implements TaskListener {
         try (Playwright playwright = Playwright.create()) {
             DelegateExecution execution = delegateTask.getExecution();
 
-            // Get Form Values
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables()));
 
+            // Instantiate the handlebars template
             Handlebars handlebars = new Handlebars();
             Template template = handlebars.compile("form");
 
-            // Data
+            // Get Form Values
+            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables()));
+            System.out.println(String.valueOf(dataMap));
+
+            // Create the data to be passed to the template
             Map<String, Object> data = new HashMap<>();
             data.put("formValues", dataMap );
 
