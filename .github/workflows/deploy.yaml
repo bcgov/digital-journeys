@@ -7,6 +7,17 @@ on:
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - production
 
 jobs:
   #Print variables for logging and debugging purposes
@@ -82,13 +93,15 @@ jobs:
 
    # Deploy App images in Dev
   deployDev:
+    if: ${{!github.event.inputs || github.event.inputs == 'dev'}}
     name: Deploy APP to Dev environment
+    environment: dev
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
       NAMESPACE: d89793-dev
       BUILD_NAMESPACE: d89793-tools
-      BRANCH: DGJ62-Automate-Build
+      BRANCH: main
       APP: forms-flow-web
       API: forms-flow-webapi
     needs:
@@ -162,6 +175,123 @@ jobs:
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
           echo "${APP} is exposed at 'https://'${ROUTE}" 
   
+      - name: Deploy API
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
+          echo "Passed"
+          oc -n ${NAMESPACE} project
+          oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
+                -p NAME=${API} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=latest \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=250m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${API}"
+          export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
+          echo "${API} is exposed at 'https://'${ROUTE}" 
+
+   # Deploy App and Api images in Test
+  deployTest:
+    name: Deploy APP to Test environment
+    if: ${{ github.event.inputs == 'test' }}
+    environment: test
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: d89793-test
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: main
+      APP: forms-flow-web
+      API: forms-flow-webapi
+    needs:
+      - build
+    steps:
+       # - name: Print env
+       #   run: |
+       #     echo BUILD ID: $BUILD_ID
+       #     echo BUILD NAMESPACE: $BUILD_NAMESPACE
+       #     echo BRANCH: $BRANCH
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
+          #oc policy add-role-to-group view system:serviceaccounts:950003-dev -n ${NAMESPACE} 
+          #oc policy add-role-to-group edit system:serviceaccounts:950003-dev -n ${NAMESPACE} 
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p APP_NAME=forms-flow-ai \
+                -p NAME=${APP} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=latest \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=250m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p KC_MOUNT_PATH="/usr/share/nginx/html/config/kc" \
+                -p MOUNT_PATH="/usr/share/nginx/html/config/" \
+                -p FFAWEB_URL="digital-journeys-test.apps.silver.devops.gov.bc.ca" \
+                -p AUTH_SERVER_URL="https://digital-journeys-forms-flow-api-test.apps.silver.devops.gov.bc.ca/auth" \
+                -p REACT_APP_CLIENT_ID="61e557ebe8a170e1b2bb566a" \
+                -p REACT_APP_STAFF_REVIEWER_ID="61e557ebe8a170e1b2bb5666" \
+                -p REACT_APP_STAFF_DESIGNER_ID="61e557ebe8a170e1b2bb565a" \
+                -p REACT_APP_USER_RESOURCE_FORM_ID="61e557ebe8a170e1b2bb566e" \
+                -p REACT_APP_API_SERVER_URL="https://digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_API_PROJECT_URL="https://digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_CAMUNDA_API_URI="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca/camunda" \
+                -p REACT_APP_WEB_BASE_URL="https://digital-journeys-forms-flow-api-test.apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_ANONYMOUS_ID="61e08f2dfa47988d5b4a4c85" \
+                -p REACT_APP_WEBSOCKET_ENCRYPT_KEY="${{ secrets.REACT_APP_WEBSOCKET_ENCRYPT_KEY}}" \
+                -p REALM="psa-digital-journey-test" \
+                -p REACT_APP_KEYCLOAK_URL="https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_APPLICATION_NAME="form-flow-web" \
+                -p REACT_APP_WEB_BASE_CUSTOM_URL="https://digital-journeys-test.apps.silver.devops.gov.bc.ca" \
+                -p REACT_APP_USER_ACCESS_PERMISSIONS='{"accessAllowApplications":true, "accessAllowSubmissions":true}' \
+                -p REACT_APP_FORMIO_JWT_SECRET="${{ secrets.REACT_APP_FORMIO_JWT_SECRET}}" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
+
       - name: Deploy API
         run: |
           test -n "${NAMESPACE}"
