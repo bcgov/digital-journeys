@@ -7,6 +7,17 @@ on:
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - production
 
 jobs:
   #Print variables for logging and debugging purposes
@@ -82,13 +93,15 @@ jobs:
 
    # Deploy App images in Dev
   deployDev:
+    if: ${{!github.event.inputs || github.event.inputs == 'dev'}}
     name: Deploy APP to Dev environment
+    environment: dev
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
       NAMESPACE: d89793-dev
       BUILD_NAMESPACE: d89793-tools
-      BRANCH: DGJ62-Automate-Build
+      BRANCH: main
       APP: forms-flow-web
       API: forms-flow-webapi
     needs:
@@ -198,8 +211,9 @@ jobs:
    # Deploy App and Api images in Test
   deployTest:
     name: Deploy APP to Test environment
+    if: ${{ github.event.inputs == 'test' }}
+    environment: test
     runs-on: ubuntu-latest
-    environment: TEST
     env:
       BUILD_ID: ${{ github.event.number }}
       NAMESPACE: d89793-test
@@ -208,7 +222,7 @@ jobs:
       APP: forms-flow-web
       API: forms-flow-webapi
     needs:
-      - deployDev
+      - build
     steps:
        # - name: Print env
        #   run: |
