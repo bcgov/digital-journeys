@@ -23,8 +23,11 @@
     "express": "^4.17.1",
     "formiojs": "^4.9.26",
     "fs-extra": "^9.0.1",
+    "helmet": "^5.0.2",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.15",
     "method-override": "^3.0.0",
+    "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "request": "^2.88.2",
     "uuid": "^8.1.0"

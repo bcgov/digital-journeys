@@ -5,12 +5,51 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const middleware = require('./middleware');
+const helmet = require('helmet')
+const morgan = require('morgan')
+const jwtDecode = require('jwt-decode');
+
 const app = express();
+app.use(helmet())
 app.use(cors());
+
 app.use(bodyParser.json({
   limit: (process.env.MAX_UPLOAD_SIZE || '16mb')
 }));
 app.use(methodOverride('X-HTTP-Method-Override'));
+
+
+morgan.token('user', function(req, res) {
+  const token = req.headers['x-jwt-token'] || req.query?.token;
+
+  if(!token) {
+    return 'anonymous';
+  }
+
+  const decoded = jwtDecode(token);
+  return decoded?.sub || decoded?.user?._id;
+});
+
+// Remove token query param from all routes.
+morgan.token('url', (req, res) => {
+  const url = req.path;
+  const queryParams = req.query;
+
+  Object.keys(queryParams).forEach(key => {
+    if (key.match(/secret|pass|token|key|pwd/i)) {
+      queryParams[key] = '<REDACTED>';
+    }
+  });
+
+  const qs = _.map(queryParams, (value, key) => `${key}=${value}`).join('&');
+
+  if(qs?.length) {
+    return url + '?' + qs;
+  }
+  return url;
+});
+
+app.use(morgan(':remote-addr :user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms'));
 
 app.get('/status', (req, res, next) => {
   res.json({version: pkg.version});

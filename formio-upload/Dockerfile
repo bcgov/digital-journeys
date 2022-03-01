@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:14.18.3-alpine
 MAINTAINER Form.io <support@form.io>
 
 COPY ./ /src
@@ -7,7 +7,7 @@ WORKDIR /src
 # Install git
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache --virtual .build-deps bash git make gcc g++ python
+    apk add --no-cache --virtual .build-deps bash git make gcc g++ python3 && ln -sf python3 /usr/bin/python
 
 RUN npm cache clean --force && \
     npm install && \

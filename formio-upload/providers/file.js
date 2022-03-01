@@ -22,6 +22,7 @@ class LocalProvider extends Provider {
 
       req.debug(`Sending file ${res.filePath}`);
       res.set('Content-Length', stat.size);
+      res.set('Content-Type', 'application/octet-stream');
       fs.createReadStream(path).pipe(res);
     });
   }
