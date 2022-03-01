@@ -6,12 +6,14 @@ import App from "./components/App";
 import StoreService from "./services/StoreService";
 // import UserService from "./services/UserService";
 
-import { Formio, Components} from 'react-formio';
+import { Formio, Components, Templates } from 'react-formio';
+import DGJFileUpload from './formComponents/FileUpload';
 import {AppConfig} from './config';
 //import * as serviceWorker from './serviceWorker';
 
 import components from './customFormioComponents';
 import './styles.scss';
+import UploadProvider from './formComponents/UploadProvider';
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -25,6 +27,13 @@ const history = StoreService.history;
 
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
+
+// Add custom file upload provider
+Formio.Providers.addProvider('storage', 'digital-journeys', UploadProvider);
 Components.setComponents(components);
+
+// Override the default file upload component with the custom one to provide
+// reasonable default values
+Components.setComponent('file', DGJFileUpload);
 
 ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));

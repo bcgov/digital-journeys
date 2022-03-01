@@ -222,3 +222,5 @@ sketch
 postgres
 mongodb
 /forms-flow-bpm/src/main/resources/mail-config.properties
+
+.file-uploads

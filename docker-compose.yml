@@ -158,6 +158,7 @@ services:
       - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
       - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
       - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
+      - REACT_APP_FORMIO_FILE_URL=${FORMIO_FILE_URL}
     volumes:
       - ".:/forms-flow"
       - "/forms-flow/node_modules"
@@ -180,6 +181,29 @@ services:
       - ./postgres/webapi:/var/lib/postgresql/data:cached
     networks:
       - forms-flow-network
+
+  forms-flow-file-upload:
+    container_name: forms-flow-file-upload
+    # image: formio/formio-upload
+    environment:
+      PORT: 4100
+      MAX_UPLOAD_SIZE: 16mb
+      PROVIDERS: file
+      UPLOAD_DIR: /uploads
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+    ports:
+      - 4100:4100
+    restart: always
+    networks:
+      - forms-flow-network
+    volumes:
+      - ./.file-uploads/upload:/uploads
+      - ./.file-uploads/tmp:/tmp
+      - ./formio-upload:/src
+    build:
+      context: ./formio-upload/
+      dockerfile: Dockerfile
+
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
