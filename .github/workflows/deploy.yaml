@@ -93,7 +93,7 @@ jobs:
 
    # Deploy App images in Dev
   deployDev:
-    if: ${{!github.event.inputs || github.event.inputs == 'dev'}}
+    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     name: Deploy APP to Dev environment
     environment: dev
     runs-on: ubuntu-latest
@@ -211,7 +211,7 @@ jobs:
    # Deploy App and Api images in Test
   deployTest:
     name: Deploy APP to Test environment
-    if: ${{ github.event.inputs == 'test' }}
+    if: ${{ github.event.inputs.environment == 'test' }}
     environment: test
     runs-on: ubuntu-latest
     env:
