@@ -28,6 +28,8 @@ RUN cp -rf /digital-journeys/src /tmp/
 
 COPY lsyncd.conf ./
 
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install-deps"
+RUN mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install-deps"
 EXPOSE 8080
 
 ENTRYPOINT ["/bin/bash", "-c", "lsyncd lsyncd.conf; mvn -s /usr/share/maven/ref/settings-docker.xml package; java -Djava.security.egd=file:/dev/./urandom -jar /tmp/target/forms-flow-bpm.jar"]

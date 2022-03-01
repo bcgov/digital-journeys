@@ -2,6 +2,8 @@ package org.camunda.bpm.extension.hooks.listeners;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
@@ -10,7 +12,6 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 import javax.inject.Named;
 import java.io.IOException;
@@ -31,14 +32,17 @@ public class FormPDFListener extends BaseListener implements TaskListener {
         try (Playwright playwright = Playwright.create()) {
             DelegateExecution execution = delegateTask.getExecution();
 
+            // Get Form Values
+            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+
+            // TODO: remove this println
+            System.out.println(dataMap.toString());
 
             // Instantiate the handlebars template
-            Handlebars handlebars = new Handlebars();
+            TemplateLoader loader = new ClassPathTemplateLoader("/templates", ".hbs");
+            Handlebars handlebars = new Handlebars(loader);
             Template template = handlebars.compile("form");
 
-            // Get Form Values
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables()));
-            System.out.println(String.valueOf(dataMap));
 
             // Create the data to be passed to the template
             Map<String, Object> data = new HashMap<>();
