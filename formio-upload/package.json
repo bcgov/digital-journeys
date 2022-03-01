@@ -1,0 +1,32 @@
+{
+  "name": "formio-upload",
+  "version": "1.2.0",
+  "description": "A file upload server/proxy for use with Form.io File components",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "deploy": "claudia create --name formio-upload --handler lambda.handler --config claudia.json --deploy-proxy-api --region us-west-2",
+    "update": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]' | sed 's/[\\.]/-/g');claudia update --config claudia.json --version \"v${VERSION}\"",
+    "build": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && docker build --squash --build-arg CACHE_DATE=$(date +%s) -t formio/formio-upload:$VERSION . && docker build --squash --build-arg CACHE_DATE=$(date +%s) -t formio/formio-upload:latest .",
+    "publish": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && docker push formio/formio-upload:$VERSION && docker push formio/formio-upload:latest;"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "alfresco-js-api-node": "^2.6.1",
+    "aws-serverless-express": "^3.3.8",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "formiojs": "^4.9.26",
+    "fs-extra": "^9.0.1",
+    "lodash": "^4.17.15",
+    "method-override": "^3.0.0",
+    "multer": "^1.4.2",
+    "request": "^2.88.2",
+    "uuid": "^8.1.0"
+  }
+}
