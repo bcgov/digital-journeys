@@ -137,7 +137,7 @@ jobs:
                 -p CPU_LIMIT=250m \
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi \
-                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}"
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
           oc -n ${NAMESPACE} apply -f -
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
@@ -232,7 +232,7 @@ jobs:
                 -p CPU_LIMIT=250m \
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi \
-                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}"
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
           oc -n ${NAMESPACE} apply -f -
           #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
