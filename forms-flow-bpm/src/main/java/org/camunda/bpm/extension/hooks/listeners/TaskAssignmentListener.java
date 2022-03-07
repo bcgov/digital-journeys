@@ -66,7 +66,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
     }
 
-    protected Message createMessage(String recipient, String body, String subject, String taskId, Session session) throws Exception {
+    public Message createMessage(String recipient, String body, String subject, String taskId, Session session) throws Exception {
         MailConfiguration configuration = getConfiguration();
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(configuration.getSender(), configuration.getSenderAlias()));
@@ -109,7 +109,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
      *
      * @return ConnectorRequestInterceptor
      */
-    private List<ConnectorRequestInterceptor> getInterceptors() {
+    public List<ConnectorRequestInterceptor> getInterceptors() {
         return new List<ConnectorRequestInterceptor>() {
             @Override
             public int size() {
@@ -234,7 +234,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
      *
      * @return SendMailRequest
      */
-    private SendMailRequest getRequest() {
+    public SendMailRequest getRequest() {
         return new SendMailRequest(new AbstractConnector<SendMailRequest, EmptyResponse>("mail-send") {
             @Override
             public SendMailRequest createRequest() {

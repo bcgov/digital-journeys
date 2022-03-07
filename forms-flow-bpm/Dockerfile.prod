@@ -4,7 +4,7 @@
 # -----------------------------------------------------------
 
 # Maven build
-FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
+FROM mcr.microsoft.com/openjdk/jdk:11-ubuntu AS ubuntu-jdk
 
 RUN apt-get update \
     && apt-get install -y git
@@ -40,7 +40,7 @@ ENV JAVA_VERSION jdk-11.0.3+7
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"
 
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install-deps"
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml exec:java -e -Dmain.class=com.microsoft.playwright.CLI -Dexec.args="install-deps"
 
 EXPOSE 8080
 # OpenShift has /app in the image, but it's missing when doing local development - Create it when missing

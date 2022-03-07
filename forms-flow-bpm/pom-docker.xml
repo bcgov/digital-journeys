@@ -19,6 +19,7 @@
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 		<project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<main.class>org.camunda.bpm.extension.CamundaApplication</main.class>
 
 		<!-- versions -->
 		<version.camundaKeycloak>2.2.1</version.camundaKeycloak>
@@ -398,7 +399,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.0.0</version>
 				<configuration>
-					<mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
+					<mainClass>${main.class}</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
