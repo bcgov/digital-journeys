@@ -41,4 +41,20 @@ export default class DGJFileUpload extends FileComponent{
       schema: DGJFileUpload.schema(),
     };
   }
+
+  // Fix a bug where the file upload component doesn't display if you remove a file that had an error
+  attach(element) {
+    this.loadRefs(element, {
+      fileStatusRemove: 'multiple',
+    });
+
+    this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
+      this.addEventListener(fileStatusRemove, 'click', (event) => {
+        // Force the file selector component to show once the errored file has been removed
+        this.fileDropHidden = false;
+      });
+    });
+
+    return super.attach(element);
+  }
 }
