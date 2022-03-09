@@ -6,20 +6,16 @@
     <title>Form</title>
 </head>
 <body>
-<p>${formValues}</p>
 <div id="formio"></div>
 <script type='text/javascript' src="https://unpkg.com/formiojs@4.13.1/dist/formio.full.min.js"></script>
 <script type='text/javascript'>
-    const data = ${formValues}
     Formio.icons = 'fontawesome'
     Formio.createForm(
         document.getElementById('formio'),
         ${formFields}).then(function (form) {
-            const submission = {
-                "data": JSON.parse(data)
-            }
-            form.submission = submission;
-
+            form.submission = {
+                "data": ${formValues}
+            };
         }
     )
     ;

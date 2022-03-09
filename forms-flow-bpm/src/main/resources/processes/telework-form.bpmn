@@ -44,7 +44,7 @@ Thank you</camunda:expression>
             <camunda:expression>["read", "write"]</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.FormPDFListener" event="create" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.FormPDFListener" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0eqfxon</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
