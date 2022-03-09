@@ -39,7 +39,8 @@ objects:
             "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}",
             "REACT_APP_WEB_BASE_CUSTOM_URL": "${REACT_APP_WEB_BASE_CUSTOM_URL}",
             "REACT_APP_FORMIO_JWT_SECRET": "${REACT_APP_FORMIO_JWT_SECRET}",
-            "REACT_APP_USER_ACCESS_PERMISSIONS": '${REACT_APP_USER_ACCESS_PERMISSIONS}'
+            "REACT_APP_USER_ACCESS_PERMISSIONS": '${REACT_APP_USER_ACCESS_PERMISSIONS}',
+            "REACT_APP_FORMIO_FILE_URL": "${REACT_APP_FORMIO_FILE_URL}"
           }
   -
     apiVersion: v1
@@ -134,6 +135,10 @@ parameters:
     description:
       Route to access Forms Flow AI Web site
     required: true
+  - name: REACT_APP_FORMIO_FILE_URL
+    displayName: REACT_APP_FORMIO_FILE_URL
+    description:
+      Route to access Formio file upload server
   - name: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     displayName: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     description:
