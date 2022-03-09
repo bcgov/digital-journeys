@@ -9,6 +9,8 @@ import freemarker.template.TemplateExceptionHandler;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.mail.EmptyResponse;
@@ -21,8 +23,11 @@ import org.camunda.bpm.extension.mail.service.MailServiceFactory;
 import org.camunda.connect.impl.AbstractConnector;
 import org.camunda.connect.spi.ConnectorRequestInterceptor;
 import org.camunda.connect.spi.ConnectorResponse;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -45,12 +50,16 @@ import java.util.*;
 public class FormPDFListener extends BaseListener implements TaskListener, IMessageEvent {
 
     protected MailConfiguration configuration;
-    @Value("${formsflow.ai.app.url}")
-    private String baseUrl;
+
+    private String formUrl;
+
     private TaskAssignmentListener taskAssignmentListener;
 
     @Autowired
     private FormSubmissionService formSubmissionService;
+
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
     public void notify(DelegateTask delegateTask) {
@@ -59,23 +68,39 @@ public class FormPDFListener extends BaseListener implements TaskListener, IMess
             // Get Form Values
             DelegateExecution execution = delegateTask.getExecution();
             String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
-            Map<String, Object> dataMap = formSubmissionService.retrieveFormValues(formUrlString);
-            Object recipient = dataMap.get("managerEmail");
+            String[] urlParts = formUrlString.split("/submission/");
+            formUrl = urlParts[0];
+            JSONObject formValues = formSubmissionService.retrieveFormJson(formUrlString);
+            JSONObject formValuesData = formValues.getJSONObject("data");
+            JSONObject formFields = formSubmissionService.retrieveFormJson(formUrl);
+
+            // TODO: implement recipient
+            Map<String, Object> valuesDataMap = formSubmissionService.retrieveFormValues(formUrlString);
+            Object recipient = valuesDataMap.get("managerEmail");
+
+            // Create the data to be passed to the template
+            Map<String, Object> data = new HashMap<>();
+            data.put("formFields", formFields );
+            data.put("formValues", formValuesData);
 
             // TODO: remove this println
             System.out.println(recipient.toString());
+
+            System.out.println("------------Fields----------------");
+            System.out.println(formFields);
+            System.out.println("------------Fields----------------");
+
+            System.out.println("------------Values----------------");
+            System.out.println(formValuesData);
+            System.out.println("------------Values----------------");
 
             // Generate the template from '/templates/form.html'
             Template template = getTemplate();
 
             // Save the template as output.html
             Writer fileWriter = new FileWriter(new File("output.html"));
-            template.process(dataMap, fileWriter);
+            template.process(data, fileWriter);
 
-            // Create the data to be passed to the template
-            Map<String, Object> data = new HashMap<>();
-            data.put("formURL", formUrlString);
-            data.put("runScript", true);
 
             // Render 'output.html' and save as 'form.pdf'
             RenderPage();
@@ -96,6 +121,16 @@ public class FormPDFListener extends BaseListener implements TaskListener, IMess
         }
 
 
+    }
+
+    public String getFormJSON() {
+        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
+        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            return response.getBody();
+        } else {
+            throw new FormioServiceException("Unable to read submission for: "+ formUrl+ ". Message Body: " +
+                    response.getBody());
+        }
     }
 
     public Message createMessage(String recipient, String body, String subject, String taskId, Session session) throws Exception {
@@ -157,8 +192,9 @@ public class FormPDFListener extends BaseListener implements TaskListener, IMess
 
             Browser browser = playwright.chromium().launch();
             Page page = browser.newPage();
-            page.setContent(result);
-            page.waitForSelector(".formio");
+
+            File f = new File("output.html");
+            page.navigate(f.toPath().toUri().toURL().toString());
 
             page.pdf(new Page.PdfOptions().setPath(Paths.get("form.pdf")));
             page.onConsoleMessage(msg -> System.out.println(msg.text()));

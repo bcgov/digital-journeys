@@ -60,9 +60,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.github.jknack</groupId>
-			<artifactId>handlebars</artifactId>
-			<version>4.1.2</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20211205</version>
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.playwright</groupId>
