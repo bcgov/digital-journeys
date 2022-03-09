@@ -207,7 +207,15 @@ server:
    * **value:** the subject of the email being sent.  This is in plain text.
    * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression` 
 
+### FormPDFListener
+* This can be used in any user task, assigned as a **Task Listener**
+* Set the **Event Type** based on when you want the email to be sent (ie. when the task is created, assigned to a user, updated etc.)
+* The **Listener Id** can be left blank
+* The **Listener Type** should be set to **Java Class**
+* In the **Java Class** section enter **org.camunda.bpm.extension.hooks.listeners.FormPDFListener**
 
+This Listener will email a pdf copy of the form in it's current state to both the submitting user and the manager.  
+Internally it looks for the fields `managerEmail` (for the manager) and `email` (for the submitting user), so make sure the form contains fields with these names if using this listener.
 ## Digital Journeys
 
 ### Form Values in Camunda
