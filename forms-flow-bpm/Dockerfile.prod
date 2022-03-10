@@ -54,11 +54,8 @@ RUN mvn -s /usr/share/maven/ref/settings-docker.xml exec:java -e -Dmain.class=co
 
 EXPOSE 8080
 # OpenShift has /app in the image, but it's missing when doing local development - Create it when missing
-RUN test ! -d /app && mkdir /app || :
-# Add spring boot application
-RUN mkdir -p /app
-COPY --from=MAVEN_TOOL_CHAIN /tmp/target/forms-flow-bpm*.jar ./app
-RUN chmod a+rwx -R /app
-WORKDIR /app
-VOLUME /tmp
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/forms-flow-bpm.jar"]
+# RUN test ! -d /tmp && mkdir /tmp || :
+# # Add spring boot application
+# RUN mkdir -p /tmp
+# RUN chmod a+rwx -R /tmp
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/tmp/forms-flow-bpm.jar"]
