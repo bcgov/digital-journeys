@@ -58,4 +58,4 @@ EXPOSE 8080
 # # Add spring boot application
 # RUN mkdir -p /tmp
 # RUN chmod a+rwx -R /tmp
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/tmp/forms-flow-bpm.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/tmp/target/forms-flow-bpm.jar"]
