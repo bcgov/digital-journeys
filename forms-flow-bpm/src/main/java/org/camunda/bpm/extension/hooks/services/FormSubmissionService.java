@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Qualifier("formSubmissionService")
@@ -159,15 +161,25 @@ public class FormSubmissionService {
         return StringUtils.substringBeforeLast(formUrl, "/");
     }
 
-    public Map<String, Object> retrieveFormValues(String formUrl) throws IOException {
-        Map<String, Object> fieldValues = new HashMap();
+    public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
+        return this.retrieveFormValues(formUrl, true);
+    }
+
+    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo) throws IOException {
+        Map<String,Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
         if (StringUtils.isNotEmpty(submission)) {
             JsonNode dataNode = getObjectMapper().readTree(submission);
             Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
-                if (StringUtils.endsWithIgnoreCase(entry.getKey(), "_file")) {
+
+                if(!withFileInfo && entry.getValue() != null && entry.getValue().isArray() && entry.getValue().get(0).has("originalName")) {
+                    ArrayNode vals = (ArrayNode) entry.getValue();
+                    String fileNames = StreamSupport.stream(vals.spliterator(), false).map(n -> n.get("originalName").asText())
+                            .collect(Collectors.joining(", "));
+                    fieldValues.put(entry.getKey(), fileNames);
+                } else if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
                     List<String> fileNames = new ArrayList();
                     if (entry.getValue().isArray()) {
                         for (JsonNode fileNode : entry.getValue()) {
