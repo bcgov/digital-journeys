@@ -35,6 +35,9 @@ Thank you</camunda:expression>
           <camunda:field name="recipientEmail">
             <camunda:expression>${managerEmail}</camunda:expression>
           </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>false</camunda:string>
+          </camunda:field>
         </camunda:taskListener>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
           <camunda:field name="user">
@@ -44,7 +47,20 @@ Thank you</camunda:expression>
             <camunda:expression>["read", "write"]</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.FormPDFListener" event="complete" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="complete">
+          <camunda:field name="body">
+            <camunda:expression>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:expression>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:expression>PDF copy of form</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${managerEmail},${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0eqfxon</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
