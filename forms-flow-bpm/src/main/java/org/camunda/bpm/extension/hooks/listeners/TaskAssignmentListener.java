@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.listeners;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.Margin;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -190,7 +191,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
             Page page = browser.newPage();
 
             page.navigate(file.toPath().toUri().toURL().toString());
-            Thread.sleep(500);
+            page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
             page.pdf(new Page.PdfOptions().setPath(Paths.get("form.pdf")).setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
         } catch (Exception e) {
