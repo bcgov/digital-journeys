@@ -251,13 +251,15 @@ services:
     networks:
       - forms-flow-network
 
-  forms-flow-mailhog:
-    container_name: forms-flow-mailhog
-    hostname: forms-flow-mailhog
-    image: mailhog/mailhog
+  docs:
+    build:
+      context: ./docs
+      dockerfile: Dockerfile.docs
+    container_name: digital-journeys-docs
+    volumes:
+        - ./:/docs
     ports:
-      - "1025:1025"
-      - "8025:8025"
+        - "8080:8000"
     networks:
       - forms-flow-network
 networks:
