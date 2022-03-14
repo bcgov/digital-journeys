@@ -25,3 +25,28 @@ This will send the given form submission (based on the `formUrl` execution varia
 Names of the fields that are sent to the ODS are taken from the "Property Name" found on each component in the Form Builder as seen below. All form fields are sent to the ODS as is, with the exception of any file uploads, where the file content itself is replaced with the name of the file uploaded (comma separated in case of multiple files).
 
 ![](images/api_name_form_builder.png)
+
+
+## Execution Variables
+By default, the platform makes the following variables available to use in a workflow for all Submissions:
+
+| Property       | Description                                                                      |
+|----------------|----------------------------------------------------------------------------------|
+| applicationId  | Unique identifier of the application                                             |
+| formUrl        | Full URL to the submission                                                       |
+| submitterName  | Identifier of the person submitting the application                              |
+| GUID           | BCGov GUID of the person that submitted the application (If logged in with IDIR) |
+| IDIR           | IDIR of the person that submitted the application (If logged in with IDIR)       |
+| submissionDate | Timestamp of when the application was submitted                                  |
+
+If any other properties from the submission will be used by the workflow, The `org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener` listener needs to be added at a step before the value is to be used. This Listener, makes all values from the submission available to be used by the workflow, based on the corresponding "Property Name" as defined in the Form builder.
+
+### How?
+
+1. Add a new "Execution listener" in the Listeners tab of a Sequence flow. 
+2. Set "Event Type" to `take`, "Listener Type" to `Java Class` and "Java Class" to `org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener`
+
+You can now use values from the form submission in any logic specified after the sequence flow this listener was added to.
+
+![](images/form_bpm_data_listener.png)
+
