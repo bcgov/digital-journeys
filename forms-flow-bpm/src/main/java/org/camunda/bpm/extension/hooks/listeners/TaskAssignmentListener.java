@@ -108,7 +108,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
 
@@ -123,8 +123,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         // Extract the emails for the manager and submitter
         Map<String, Object> valuesDataMap = formSubmissionService.retrieveFormValues(formUrlString);
-//        managerEmail = String.valueOf(valuesDataMap.get("managerEmail"));
-//        submitterEmail = String.valueOf(valuesDataMap.get("email"));
 
         // Create the data to be passed to the template
         Map<String, Object> data = new HashMap<>();
@@ -184,7 +182,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return template;
     }
 
-    private void RenderPage(File file) {
+    private void RenderPage(File file) throws Exception {
         try (Playwright playwright = Playwright.create()) {
 
             Browser browser = playwright.chromium().launch();
@@ -194,8 +192,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
             page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
             page.pdf(new Page.PdfOptions().setPath(Paths.get("form.pdf")).setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -361,10 +357,17 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     private InternetAddress[] getRecipients(DelegateExecution delegateExecution) throws AddressException {
         String[] recipientArray = String.valueOf(this.recipientEmails.getValue(delegateExecution)).split(",");
-        InternetAddress[] recipients = new InternetAddress[recipientArray.length];
-        for (int i = 0; i < recipientArray.length; i++) {
-            recipients[i] = InternetAddress.parse(recipientArray[i])[0];
-        }
+        InternetAddress[] recipients = Arrays.stream(recipientArray)
+                .map(r -> {
+                    try {
+                        return InternetAddress.parse(r)[0];
+                    } catch (AddressException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toArray(InternetAddress[]::new);
         return recipients;
     }
 
