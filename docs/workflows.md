@@ -2,6 +2,36 @@
 
 This document contains information and HOWTOs on custom Camunda extensions made for use for the PSA Digital Journeys project. This includes things like how to send an email as part of a Camunda workflow, and how to push submissions to the ODS.
 
+## Deploying Workflow to platform
+
+In order to deploy a new workflow to the platform, or update an existing one, you have to use the Camunda REST API.
+
+Instructions on how to do this using [Postman](https://www.postman.com), can be found in the [Formsflow.ai repository](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-bpm/postman-collections).
+
+**Notes**
+
+`baseUrl` and `keycloakTokenUrl` should be updated to the values in the following table based on the environment you're deploying to.
+
+| Environment | baseUrl                                                                    | keycloakTokenUrl                                                                                                                       |
+|-------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Dev         | https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca/camunda  | https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca/auth/realms/psa-digital-journey-dev/protocol/openid-connect/token   |
+| Test        | https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca/camunda | https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca/auth/realms/psa-digital-journey-test/protocol/openid-connect/token |
+| Production  | TBD                                                                        | TBD                                                                                                                                    |
+
+A value for the `client_secret` can be found using the Keycloak admin interface
+
+| Environment | Keycloak Admin Console                                                                                           |
+|-------------|------------------------------------------------------------------------------------------------------------------|
+| Dev         | https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca/auth/admin/psa-digital-journey-dev/console/   |
+| Test        | https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca/auth/admin/psa-digital-journey-test/console/ |
+| Production  | TBD                                                                                                              |
+
+1. Navigate to `Clients` -> `forms-flow-bpm`
+2. You can find the secret in the `Credentials` tab
+
+![](images/deploy_client.png)
+![](images/deploy_client_secret.png)
+
 ## Sending submission data to the Telus operational Data Store (ODS)
 
 In order to support analytics of submission data for digital Journeys, submission data is pushed from the Formsflow application to the ODS. This can be added to a Camunda workflow by using the custom `SendSubmissionToODSDelegate`.
