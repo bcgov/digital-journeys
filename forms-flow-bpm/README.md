@@ -198,16 +198,18 @@ server:
 >Note: Values from the submitted form are available in these fields if **FormBPMDataPipelineListener** was added to the preceding connector *see above*
 
 1. * **name:** recipientEmail 
-   * **value:** the api variable from the form that represents the intended recipient. 
+   * **value:** A list of the emails you wish this to be sent to separated by commas with no space (ie. ${managerEmail},${submitterEmail}})
    * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression` 
 2. * **name:** body 
    * **value:** the text of your email body.  This will be sent in plain text.  If you wish to include a link to the current task, you can enter `$BASE_URL` and `TASK_ID` when typing an address, and these will be replaced with the appropriate values when it is sent (ie. `$BASE_URL/task/$TASK_ID` would be sent as something like `http://www.address.com/task/88298-23873-23415-234512-12344`)
    * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression` 
 3. * **name:** subject 
    * **value:** the subject of the email being sent.  This is in plain text.
-   * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression` 
-
-
+   * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression`
+4. * **name:** attachSubmission
+   * **value:** Either **true** or **false**.  If this is true, a pdf copy of the filled form will be sent to all recipients
+   * **type:** `Expression` or `String` can be used here.  If you want plain text `String` is fine.  If you are using any of the form values, use `Expression`
+   
 ## Digital Journeys
 
 ### Form Values in Camunda

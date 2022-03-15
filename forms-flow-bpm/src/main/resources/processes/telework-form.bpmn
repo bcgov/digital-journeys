@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
   <bpmn:process id="teleworkform" name="Telework Form" isExecutable="true" camunda:versionTag="4">
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
@@ -32,8 +32,11 @@ Thank you</camunda:expression>
           <camunda:field name="subject">
             <camunda:string>FOR ACTION: A new Telework Agreement has been submitted</camunda:string>
           </camunda:field>
-          <camunda:field name="recipientEmail">
+          <camunda:field name="recipientEmails">
             <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>false</camunda:string>
           </camunda:field>
         </camunda:taskListener>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
@@ -42,6 +45,20 @@ Thank you</camunda:expression>
           </camunda:field>
           <camunda:field name="permissions">
             <camunda:expression>["read", "write"]</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="complete">
+          <camunda:field name="body">
+            <camunda:expression>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:expression>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:expression>PDF copy of form</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${managerEmail},${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
