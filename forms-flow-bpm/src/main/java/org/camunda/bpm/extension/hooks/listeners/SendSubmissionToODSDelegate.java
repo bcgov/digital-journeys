@@ -12,11 +12,11 @@ import org.springframework.http.HttpMethod;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import javax.inject.Named;
+import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 @Named("SendSubmissionToODSDelegate")
-public class SendSubmissionToODSDelegate implements JavaDelegate {
+public class SendSubmissionToODSDelegate extends BaseListener implements JavaDelegate {
     private final static Logger LOGGER = LoggerFactory.getLogger(SendSubmissionToODSDelegate.class);
 
     @Autowired
@@ -29,7 +29,15 @@ public class SendSubmissionToODSDelegate implements JavaDelegate {
     private String odsUrl;
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
+        try {
+            this.sendSubmissionToODS(execution);
+        } catch (IOException e) {
+            handleException(execution, ExceptionSource.EXECUTION, e);
+        }
+    }
+
+    private void sendSubmissionToODS(DelegateExecution execution) throws IOException {
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
 
         LOGGER.warn(String.format("Sending values of form to ODS %s", formUrl));
@@ -52,12 +60,10 @@ public class SendSubmissionToODSDelegate implements JavaDelegate {
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
-        System.out.println(json);
-
+        String json = objectMapper.writeValueAsString(values);
         String endpoint = (String) execution.getVariableLocal("endpoint");
 
-        this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, values);
+        this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
     }
 
     public String getEndpointUrl(String endpoint) {

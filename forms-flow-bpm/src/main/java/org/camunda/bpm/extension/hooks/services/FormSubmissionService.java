@@ -175,10 +175,15 @@ public class FormSubmissionService {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
 
                 if(!withFileInfo && entry.getValue() != null && entry.getValue().isArray() && entry.getValue().get(0).has("originalName")) {
+                    // Replace any file array values with a comma separated list of file names
                     ArrayNode vals = (ArrayNode) entry.getValue();
-                    String fileNames = StreamSupport.stream(vals.spliterator(), false).map(n -> n.get("originalName").asText())
+                    String fileNames = StreamSupport.stream(vals.spliterator(), false)
+                            .map(n -> n.get("originalName").asText())
                             .collect(Collectors.joining(", "));
                     fieldValues.put(entry.getKey(), fileNames);
+                } else if(!withFileInfo && entry.getValue() != null && !entry.getValue().toString().startsWith("data:image/png;base64,")) {
+                    // Replace any inline files with the type of image (signatures)
+                    fieldValues.put(entry.getKey(), "image/png;base64");
                 } else if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
                     List<String> fileNames = new ArrayList();
                     if (entry.getValue().isArray()) {

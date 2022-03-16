@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
   <bpmn:process id="teleworkform" name="Telework Form" isExecutable="true" camunda:versionTag="4">
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
@@ -70,7 +70,9 @@ Thank you</camunda:expression>
     <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="Activity_0kai049">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('employeeSignatureTimestamp', execution.getVariable('submissionDate'));</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('employeeSignatureTimestamp', execution.getVariable('submissionDate'));
+
+execution.setVariable('applicationStatus','New');</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
           <camunda:field name="fields">
