@@ -1,0 +1,54 @@
+site_name: 'PSA Digital Journeys'
+site_url: https://digital-journeys-dev.apps.silver.devops.gov.bc.ca
+site_description: >-
+  Web application to support PSA Digital Journeys
+repo_name: bcgov/digital-journeys
+repo_url: https://github.com/bcgov/digital-journeys
+edit_uri: ""
+
+theme:
+  name: 'material'
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+plugins:
+  - search
+  - macros
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  # Enable pmydown extensions https://facelessuser.github.io/pymdown-extensions/
+  - pymdownx.tabbed # Enable formatted tabs
+  - pymdownx.highlight # Highlight code blocks
+  - pymdownx.inlinehilite # Higlight inline code blocks
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+  - Forms: forms.md
+  - Workflows: workflows.md
+

@@ -37,6 +37,10 @@ formsflow.ai:
       accessTokenUri: ${FORMIO_URL}/user/login
       username: ${FORMIO_ROOT_EMAIL}
       password: ${FORMIO_ROOT_PASSWORD}
+  ods:
+    url: ${ODS_URL}
+    security:
+      token: ${ODS_AUTH_TOKEN}
   camunda:
     spring:
       webclient:
