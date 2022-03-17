@@ -54,12 +54,14 @@ EXPOSE 8080
 RUN test ! -d /app && mkdir /app || :
 # Add spring boot application
 RUN mkdir -p /app
+RUN mkdir -p /.cache
 COPY --from=ubuntu-jdk /tmp/target/forms-flow-bpm*.jar ./app
 RUN chmod a+rwx -R /app
+RUN chmod a+rwx -R /.cache
 
 WORKDIR /app
 VOLUME /tmp
 
-RUN java -cp /app/forms-flow-bpm.jar -Dloader.main=com.microsoft.playwright.CLI org.springframework.boot.loader.PropertiesLauncher install-deps
+RUN java -cp /app/forms-flow-bpm.jar -Dloader.main=com.microsoft.playwright.CLI org.springframework.boot.loader.PropertiesLauncher install-deps chromium
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/forms-flow-bpm.jar"]
