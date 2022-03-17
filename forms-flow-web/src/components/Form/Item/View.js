@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -44,6 +44,8 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
+  const [isInitialDataSet, setIsInitialDataSet] = useState(false)
+
   useEffect(() => {
     if (!isAuthenticated) {
       getForm();
@@ -64,7 +66,7 @@ const View = React.memo((props) => {
   const getDefaultValues = (data) => {
     if (
       Object.keys(data).length === 0 ||
-      form.components.length === 0) {
+      form.components.length === 0 || isInitialDataSet) {
       return;
     }
 
@@ -109,6 +111,8 @@ const View = React.memo((props) => {
     });
 
     const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+    setIsInitialDataSet(true);
 
     return { data: defaultValuesObject };
   };
