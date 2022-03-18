@@ -26,7 +26,7 @@ public class ODSAccessHandler implements IAccessHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(ODSAccessHandler.class);
 
     @Autowired
-    private WebClient webClient;
+    private WebClient unauthenticatedWebClient;
 
     @Value("${formsflow.ai.ods.security.token}")
     private String odsAuthHeader;
@@ -35,7 +35,7 @@ public class ODSAccessHandler implements IAccessHandler {
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
-        Mono<ResponseEntity<String>> entityMono = webClient.method(method).uri(url)
+        Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.method(method).uri(url)
                 .header("Authorization", odsAuthHeader)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
