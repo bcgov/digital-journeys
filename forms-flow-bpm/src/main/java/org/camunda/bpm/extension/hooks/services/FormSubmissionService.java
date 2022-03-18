@@ -181,9 +181,9 @@ public class FormSubmissionService {
                             .map(n -> n.get("originalName").asText())
                             .collect(Collectors.joining(", "));
                     fieldValues.put(entry.getKey(), fileNames);
-                } else if(!withFileInfo && entry.getValue() != null && !entry.getValue().toString().startsWith("data:image/png;base64,")) {
+                } else if(!withFileInfo && entry.getValue() != null && entry.getValue().asText().startsWith("data:image/png")) {
                     // Replace any inline files with the type of image (signatures)
-                    fieldValues.put(entry.getKey(), "image/png;base64");
+                    fieldValues.put(entry.getKey(), "data:image/png");
                 } else if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
                     List<String> fileNames = new ArrayList();
                     if (entry.getValue().isArray()) {
