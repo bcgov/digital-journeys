@@ -50,7 +50,7 @@ Thank you</camunda:expression>
           <camunda:field name="subject">
             <camunda:expression>FOR ACTION: A new Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been submitted</camunda:expression>
           </camunda:field>
-          <camunda:field name="recipientEmail">
+          <camunda:field name="recipientEmails">
             <camunda:expression>${managerEmail}</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
@@ -143,7 +143,7 @@ Thank you
           <camunda:field name="subject">
             <camunda:expression>FOR ACTION: A new Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been submitted</camunda:expression>
           </camunda:field>
-          <camunda:field name="recipientEmail">
+          <camunda:field name="recipientEmails">
             <camunda:expression>${managerEmail}</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
@@ -160,7 +160,7 @@ Thank you</camunda:expression>
           <camunda:field name="subject">
             <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated</camunda:expression>
           </camunda:field>
-          <camunda:field name="recipientEmail">
+          <camunda:field name="recipientEmails">
             <camunda:expression>${submitterName}</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
@@ -238,6 +238,21 @@ Thank you</camunda:expression>
         <di:waypoint x="420" y="80" />
         <di:waypoint x="562" y="80" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rsd3tn_di" bpmnElement="Flow_1rsd3tn">
+        <di:waypoint x="930" y="215" />
+        <di:waypoint x="930" y="330" />
+        <di:waypoint x="1080" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="903" y="270" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17ua41l_di" bpmnElement="Flow_17ua41l">
+        <di:waypoint x="955" y="190" />
+        <di:waypoint x="1070" y="190" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="974" y="172" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0pc6hcp_di" bpmnElement="SequenceFlow_0pc6hcpasdiouiuo">
         <di:waypoint x="750" y="215" />
         <di:waypoint x="750" y="350" />
@@ -279,29 +294,32 @@ Thank you</camunda:expression>
         <di:waypoint x="218" y="80" />
         <di:waypoint x="320" y="80" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17ua41l_di" bpmnElement="Flow_17ua41l">
-        <di:waypoint x="955" y="190" />
-        <di:waypoint x="1070" y="190" />
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="maternity-form-start">
+        <dc:Bounds x="182" y="62" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="974" y="172" width="79" height="14" />
+          <dc:Bounds x="161" y="105" width="79" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1rsd3tn_di" bpmnElement="Flow_1rsd3tn">
-        <di:waypoint x="930" y="215" />
-        <di:waypoint x="930" y="330" />
-        <di:waypoint x="1080" y="330" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="903" y="270" width="85" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="maternity-form-reviewe-submisson">
         <dc:Bounds x="562" y="40" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
+        <dc:Bounds x="1732" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65jkjojhg" isMarkerVisible="true">
         <dc:Bounds x="725" y="165" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="665" y="186" width="50" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="maternity-form-update-application-status-1">
+        <dc:Bounds x="1070" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dssqvo_di" bpmnElement="maternity-form-supervisor-updates-dates">
+        <dc:Bounds x="1240" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_016b14r_di" bpmnElement="maternity-form-update-application-status-2">
+        <dc:Bounds x="1440" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1o7r953_di" bpmnElement="Activity_1o7r953">
         <dc:Bounds x="1080" y="310" width="100" height="80" />
@@ -314,24 +332,6 @@ Thank you</camunda:expression>
         <bpmndi:BPMNLabel>
           <dc:Bounds x="888" y="135" width="86" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="maternity-form-update-application-status-1">
-        <dc:Bounds x="1070" y="150" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="1732" y="172" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_016b14r_di" bpmnElement="maternity-form-update-application-status-2">
-        <dc:Bounds x="1440" y="150" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="maternity-form-start">
-        <dc:Bounds x="182" y="62" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="161" y="105" width="79" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0dssqvo_di" bpmnElement="maternity-form-supervisor-updates-dates">
-        <dc:Bounds x="1240" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
