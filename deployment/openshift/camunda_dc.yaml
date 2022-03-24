@@ -209,6 +209,8 @@ objects:
                   value: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION}
                 - name: FORMIO_URL
                   value: ${FORMIO_URL}
+                - name: FORMIO_FILE_URL
+                  value: ${FORMIO_FILE_URL}
                 - name: CAMUNDA_ANALYTICS_JDBC_PASSWORD
                   valueFrom:
                     secretKeyRef:

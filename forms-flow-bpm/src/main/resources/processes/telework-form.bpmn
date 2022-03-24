@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="reviewer" name="Supervisor Reviews Submission" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
+    <bpmn:userTask id="reviewer" name="Supervisor Reviews Submission" camunda:asyncAfter="true" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -15,7 +15,7 @@ task.execution.setVariable('deleteReason', "completed");
 
 task.execution.setVariable('managerSignatureTimestamp', new Date());</camunda:script>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="manager_task_created">
           <camunda:field name="body">
             <camunda:expression>Hello
 
@@ -49,7 +49,7 @@ Thank you</camunda:expression>
             <camunda:expression>["read", "write"]</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="complete">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="complete" id="send_confirmation_manager">
           <camunda:field name="body">
             <camunda:expression>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:expression>
           </camunda:field>
@@ -57,7 +57,24 @@ Thank you</camunda:expression>
             <camunda:expression>PDF copy of form</camunda:expression>
           </camunda:field>
           <camunda:field name="recipientEmails">
-            <camunda:expression>${managerEmail},${submitterName}</camunda:expression>
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+          <camunda:field name="attachments">
+            <camunda:string>file</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="complete" id="send_confirmation_submitter">
+          <camunda:field name="body">
+            <camunda:string>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:string>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>PDF copy of form</camunda:string>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${email}</camunda:expression>
           </camunda:field>
           <camunda:field name="attachSubmission">
             <camunda:string>true</camunda:string>
@@ -118,7 +135,7 @@ execution.setVariable('applicationStatus','New');</camunda:script>
         <camunda:connector>
           <camunda:inputOutput>
             <camunda:inputParameter name="text">Thank you for your submission of the ${formName} form!</camunda:inputParameter>
-            <camunda:inputParameter name="to">${submitterName}</camunda:inputParameter>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
             <camunda:inputParameter name="subject">Thank you for your submission</camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>mail-send</camunda:connectorId>
