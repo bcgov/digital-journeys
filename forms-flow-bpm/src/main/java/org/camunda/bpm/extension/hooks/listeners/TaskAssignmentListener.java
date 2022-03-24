@@ -1,10 +1,10 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.Page.WaitForSelectorOptions;
-import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.Margin;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import freemarker.template.Configuration;
@@ -14,6 +14,8 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.hooks.model.Attachment;
+import org.camunda.bpm.extension.hooks.services.EmailAttachmentService;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.mail.EmptyResponse;
@@ -27,23 +29,30 @@ import org.camunda.bpm.extension.mail.service.MailServiceFactory;
 import org.camunda.connect.impl.AbstractConnector;
 import org.camunda.connect.spi.ConnectorRequestInterceptor;
 import org.camunda.connect.spi.ConnectorResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.AsyncTaskExecutor;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.inject.Named;
 import javax.mail.*;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.*;
+import javax.mail.util.ByteArrayDataSource;
 import javax.ws.rs.core.Application;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.net.MalformedURLException;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.lang.Thread.currentThread;
 
 @Named("TaskAssignmentListener")
 public class TaskAssignmentListener extends BaseListener implements TaskListener, IMessageEvent {
@@ -53,12 +62,19 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     private Expression body;
     private Expression subject;
     private Expression attachSubmission;
+    private Expression attachments;
 
     @Value("${formsflow.ai.app.url}")
     private String baseUrl;
 
     @Autowired
     private FormSubmissionService formSubmissionService;
+
+    @Autowired
+    private AsyncTaskExecutor playwrightExecutor;
+    
+    @Autowired
+    private EmailAttachmentService attachmentService;
 
     public void notify(DelegateTask delegateTask) {
 
@@ -69,38 +85,47 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
             String emailBody = getBody(delegateTask.getExecution());
             String emailSubject = getSubject(delegateTask.getExecution());
             String taskId = String.valueOf(delegateTask.getId());
+            String[] attachmentNames = getAttachmentNames(delegateTask.getExecution());
+            List<Attachment> attachments = new ArrayList<>();
             Boolean attachPdf = getAttachSubmission(delegateTask.getExecution());
+
             InternetAddress[] recipients = getRecipients(delegateTask.getExecution());
 
             // Create empty request and interceptors for the SendMailInvocation
             SendMailRequest request = getRequest();
             List<ConnectorRequestInterceptor> requestInterceptors = getInterceptors();
 
-            if (attachPdf) {
-                // Get the form fields and values data to use in the pdf template
-                Map<String, Object> data = getFormPdfData(delegateTask.getExecution());
 
-                // Generate the template from '/templates/form.html'
-                Template template = getTemplate();
+            Map<String, JSONObject> submission = null;
 
-                // Create a temporary 'output.html' file template
-                File f = null;
-                try {
-                    f = File.createTempFile("output", ".html");
-                    template.process(data, new FileWriter(f));
+            if(attachPdf || attachmentNames.length > 0) {
+                submission = getFormPdfData(delegateTask.getExecution());
+            }
 
-                    // Render the file as 'form.pdf'
-                    RenderPage(f);
-                } finally {
-                    if (f != null) {
-                        f.deleteOnExit();
-                    }
-                }
+            if(attachPdf) {
+                attachments.add(generatePDFForForm(delegateTask.getExecution(), submission));
+            }
+
+            System.out.println("attachments: ");
+            Arrays.stream(attachmentNames).forEach(System.out::println);
+
+            if(attachmentNames.length > 0) {
+                Map<String, JSONObject> finalSubmission = submission;
+                Arrays.stream(attachmentNames)
+                        .map(n -> {
+                            try {
+                                return fetchAttachmentForField(submissionId(delegateTask.getExecution()), n, finalSubmission.get("formValues"));
+                            } catch (MalformedURLException | JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .flatMap(Collection::stream)
+                        .forEach(attachments::add);
             }
 
             if (recipients.length > 0) {
                 try {
-                    Message message = createMessage(recipients, emailBody, emailSubject, taskId, attachPdf, mailService.getSession());
+                    Message message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
                     SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
 
                     invocation.proceed();
@@ -114,7 +139,86 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
     }
 
-    private Map<String, Object> getFormPdfData(DelegateExecution execution) throws IOException {
+    /**
+     * Retrieves the attachments associated with the given submission for form field `field`
+     */
+    private List<Attachment> fetchAttachmentForField(String submissionId, String field, JSONObject values) throws MalformedURLException, JsonProcessingException {
+        if(!values.has(field)) {
+            return new ArrayList<>();
+        }
+
+        Object val = values.get(field);
+
+        if(val == null) {
+            return new ArrayList<>();
+        }
+
+        JSONArray attachments;
+        if (val instanceof JSONArray) {
+            attachments = (JSONArray) val;
+        } else if(val instanceof JSONObject){
+            attachments = new JSONArray().put(val);
+        } else {
+            return new ArrayList<>();
+        }
+
+        return StreamSupport.stream(attachments.spliterator(), false)
+                .map(n -> {
+                    if(n instanceof JSONObject) {
+                        return (JSONObject)n;
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(n -> {
+                    if(n == null) {
+                        return false;
+                    }
+
+                    // Validate that the given value looks like a file.
+                    return n.get("originalName") != null
+                            && n.get("type") != null
+                            && n.get("url") != null;
+                })
+                .map(n -> {
+                    try {
+
+                        JSONObject fileDetails = (JSONObject) n.get("data");
+                        String formUrl = n.getString("url");
+                        fileDetails.put("submission", submissionId);
+
+                        // Retrieve attachment from file service
+                        DataSource source = this.attachmentService.getAttachment(formUrl, n);
+                        return new Attachment(n.getString("originalName"), n.getString("type"), source);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Attachment generatePDFForForm(DelegateExecution execution, Map<String, JSONObject> data) throws Exception {
+        // Generate the template from '/templates/form.html'
+        Template template = getTemplate();
+
+        // Create a temporary 'output.html' file template
+        File f = null;
+        try {
+            f = File.createTempFile("output", ".html");
+            template.process(data, new FileWriter(f));
+
+            // Render the file as 'form.pdf'
+            byte[] fileContent = RenderPage(f).get();
+
+            return new Attachment("form.pdf", "application/pdf", fileContent);
+        } finally {
+            if (f != null) {
+                f.deleteOnExit();
+            }
+        }
+    }
+
+    private Map<String, JSONObject> getFormPdfData(DelegateExecution execution) throws IOException {
         // Get Form Values
         String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
         JSONObject formValues = formSubmissionService.retrieveFormJson(formUrlString).getJSONObject("data");
@@ -123,17 +227,19 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         String formUrl = formUrlString.split("/submission/")[0];
         JSONObject formFields = formSubmissionService.retrieveFormJson(formUrl);
 
-        // Extract the emails for the manager and submitter
-        Map<String, Object> valuesDataMap = formSubmissionService.retrieveFormValues(formUrlString);
-
         // Create the data to be passed to the template
-        Map<String, Object> data = new HashMap<>();
+        Map<String, JSONObject> data = new HashMap<>();
         data.put("formFields", formFields);
         data.put("formValues", formValues);
         return data;
     }
 
-    public Message createMessage(InternetAddress[] recipients, String body, String subject, String taskId, Boolean attachPdf, Session session) throws Exception {
+    private String submissionId(DelegateExecution execution) {
+        String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
+        return formUrlString.split("/submission/")[1];
+    }
+
+    public Message createMessage(InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {
         MailConfiguration configuration = getConfiguration();
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(configuration.getSender(), configuration.getSenderAlias()));
@@ -154,15 +260,18 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
         multipart.addBodyPart(messageBodyPart);
 
-        // Create the pdf attachment if attach is true
-        if (attachPdf) {
-            messageBodyPart = new MimeBodyPart();
-            String filename = "form.pdf";
-            DataSource source = new FileDataSource(filename);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(filename);
-            multipart.addBodyPart(messageBodyPart);
-        }
+        // Add any attachments to the email
+        attachments.forEach(a -> {
+            MimeBodyPart attPart = new MimeBodyPart();
+            try {
+                attPart.setDataHandler(new DataHandler(a.getDataSource()));
+                attPart.setFileName(a.getFileName());
+                multipart.addBodyPart(attPart);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+
+        });
 
         message.setSentDate(new Date());
         message.setContent(multipart);
@@ -184,17 +293,24 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return template;
     }
 
-    private void RenderPage(File file) throws Exception {
-        try (Playwright playwright = Playwright.create()) {
+    private Future<byte[]> RenderPage(File file) throws Exception {
+        Future<byte[]> f = playwrightExecutor.submit(() -> {
+            Thread t = currentThread();
+            Browser b = ((PlaywrightThread) t).getBrowser();
+            try(BrowserContext c = b.newContext()) {
+                Page page = c.newPage();
 
-            Browser browser = playwright.chromium().launch();
-            Page page = browser.newPage();
+                try {
+                    page.navigate(file.toPath().toUri().toURL().toString());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+                page.waitForSelector("#formio-form-rendered", new WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
+                return page.pdf(new Page.PdfOptions().setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
+            }
+        });
 
-            page.navigate(file.toPath().toUri().toURL().toString());
-            page.waitForSelector("#formio-form-rendered", new WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
-
-            page.pdf(new Page.PdfOptions().setPath(Paths.get("form.pdf")).setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
-        }
+        return f;
     }
 
     /**
@@ -381,5 +497,15 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return Boolean.parseBoolean((String) this.attachSubmission.getValue(delegateExecution));
     }
 
+    private String[] getAttachmentNames(DelegateExecution delegateExecution) {
+        if(this.attachments == null) {
+            return new String[0];
+        }
+        Object attachmentValues = this.attachments.getValue(delegateExecution);
+        if(attachmentValues == null) {
+            return new String[0];
+        }
 
+        return ((String)attachmentValues).split(",");
+    }
 }
