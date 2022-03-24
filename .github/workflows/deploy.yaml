@@ -285,7 +285,7 @@ jobs:
 
    # Deploy App and Api images in Production
   deployProd:
-    name: Deploy APP to Test environment
+    name: Deploy APP to Production environment
     if: ${{ github.event.inputs.environment == 'production' }}
     environment: production
     runs-on: ubuntu-latest
