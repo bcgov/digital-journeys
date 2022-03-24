@@ -160,33 +160,32 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         return StreamSupport.stream(attachments.spliterator(), false)
-                .map(n -> {
-                    if(n instanceof JSONObject) {
-                        return (JSONObject)n;
+                .map(fileData -> {
+                    if(fileData instanceof JSONObject) {
+                        return (JSONObject)fileData;
                     } else {
                         return null;
                     }
                 })
-                .filter(n -> {
-                    if(n == null) {
+                .filter(fileData -> {
+                    if(fileData == null) {
                         return false;
                     }
 
                     // Validate that the given value looks like a file.
-                    return n.get("originalName") != null
-                            && n.get("type") != null
-                            && n.get("url") != null;
+                    return fileData.get("originalName") != null
+                            && fileData.get("type") != null
+                            && fileData.get("url") != null;
                 })
-                .map(n -> {
+                .map(fileData -> {
                     try {
-
-                        JSONObject fileDetails = (JSONObject) n.get("data");
-                        String formUrl = n.getString("url");
+                        JSONObject fileDetails = (JSONObject) fileData.get("data");
+                        String formUrl = fileData.getString("url");
                         fileDetails.put("submission", submissionId);
 
                         // Retrieve attachment from file service
-                        DataSource source = this.attachmentService.getAttachment(formUrl, n);
-                        return new Attachment(n.getString("originalName"), n.getString("type"), source);
+                        DataSource source = this.attachmentService.getAttachment(formUrl, fileData);
+                        return new Attachment(fileData.getString("originalName"), fileData.getString("type"), source);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
