@@ -9,6 +9,9 @@ formsflow.ai:
     url: NA
     security:
       token: NA
+  fileService:
+    url: NA
+
 
 camunda.bpm:
   job-execution.enabled: true

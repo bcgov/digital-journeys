@@ -41,6 +41,8 @@ formsflow.ai:
     url: ${ODS_URL}
     security:
       token: ${ODS_AUTH_TOKEN}
+  fileService:
+    url: ${FORMIO_FILE_URL}
   camunda:
     spring:
       webclient:

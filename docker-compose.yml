@@ -33,7 +33,7 @@ services:
       - "8000:8080"
     environment:
       - WEB_BASE_URL=${WEB_BASE_URL}
-      - ODS_URL=${EMPLOYEE_DATA_API_URL}
+      - ODS_URL=${ODS_URL}
       - ODS_AUTH_TOKEN=${EMPLOYEE_DATA_AUTH_TOKEN}
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
@@ -61,6 +61,7 @@ services:
       - CAMUNDA_APP_ROOT_LOG_FLAG=${CAMUNDA_APP_ROOT_LOG_FLAG:-error}
       - FORMSFLOW_API_URL=${FORMSFLOW_INTERNAL_API_URL}
       - FORMIO_URL=${FORMIO_INTERNAL_PROJECT_URL}
+      - FORMIO_FILE_URL=${FORMIO_FILE_URL}
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
       - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-*}
@@ -123,6 +124,24 @@ services:
 
     stdin_open: true # -i
     tty: true # -t
+    networks:
+      - forms-flow-network
+  mock-ods:
+    image: ealen/echo-server:0.5.1
+    environment:
+      - PORT=1090
+    ports:
+      - 1090:1090
+
+  forms-flow-mailhog:
+    container_name: forms-flow-mailhog
+    hostname: forms-flow-mailhog
+    image: mailhog/mailhog
+    # logging:
+    #   driver: 'none'  # disable saving logs
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - forms-flow-network
 

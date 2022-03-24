@@ -15,6 +15,7 @@
     Form Builder and Workflow manager built on top of <a href="https://github.com/AOT-Technologies/forms-flow-ai">formsflow.ai</a>.
     <br />
     <a href="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca"><strong>Dev Env »</strong></a>
+    <a href="https://bcgov.github.io/digital-journeys"><strong>Docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/bcgov/digital-journeys/issues">Backlog</a>
