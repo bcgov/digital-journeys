@@ -46,9 +46,6 @@ public class FileAccessHandler extends FormAccessHandler implements IAccessHandl
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
-        System.out.println("body yo");
-        System.out.println(payload);
-//        String baseUrl = URLEncoder.encode(formioUrl, StandardCharsets.UTF_8);
         return unauthenticatedWebClient.method(method)
                 .uri(url )
                 .accept(MediaType.APPLICATION_JSON)

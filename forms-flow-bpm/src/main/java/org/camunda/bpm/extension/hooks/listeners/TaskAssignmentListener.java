@@ -106,9 +106,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 attachments.add(generatePDFForForm(delegateTask.getExecution(), submission));
             }
 
-            System.out.println("attachments: ");
-            Arrays.stream(attachmentNames).forEach(System.out::println);
-
             if(attachmentNames.length > 0) {
                 Map<String, JSONObject> finalSubmission = submission;
                 Arrays.stream(attachmentNames)
