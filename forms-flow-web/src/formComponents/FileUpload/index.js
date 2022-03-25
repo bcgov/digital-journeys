@@ -8,7 +8,7 @@ const Field = Components.components.field;
  * Custom Form.io file upload component.
  * This is based on the default file upload component, but provides the following default values:
  * - Private Downloads
- * - File Pattern: image/*,application/pdf,message/rfc822
+ * - File Pattern: image/*,application/pdf,message/rfc822,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-outlook
  * - Max file size: 15MB
  * - Storage provider: digital-journeys
  */
@@ -22,10 +22,10 @@ export default class DGJFileUpload extends FileComponent{
       image: false,
       privateDownload: true,
       imageSize: '200',
-      filePattern: 'image/*,application/pdf,message/rfc822',
+      filePattern: 'image/*,application/pdf,message/rfc822,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-outlook',
       fileMinSize: '0KB',
       fileMaxSize: '15MB',
-      description: 'Supported file types: .eml, .pdf, common image formats',
+      description: 'Supported file types: .eml, .msg, .docx, .pdf, common image formats',
       uploadOnly: false,
       storage: 'digital-journeys',
     }, ...extend);
