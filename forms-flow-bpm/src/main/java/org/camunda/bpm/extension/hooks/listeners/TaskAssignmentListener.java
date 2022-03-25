@@ -10,10 +10,7 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.Expression;
-import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.extension.hooks.model.Attachment;
 import org.camunda.bpm.extension.hooks.services.EmailAttachmentService;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
@@ -51,11 +48,11 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 import static java.lang.Thread.currentThread;
 
 @Named("TaskAssignmentListener")
-public class TaskAssignmentListener extends BaseListener implements TaskListener, IMessageEvent {
+public class TaskAssignmentListener extends BaseListener implements TaskListener, ExecutionListener, JavaDelegate, IMessageEvent {
 
     protected MailConfiguration configuration;
     private Expression recipientEmails;
@@ -76,63 +73,81 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     @Autowired
     private EmailAttachmentService attachmentService;
 
-    public void notify(DelegateTask delegateTask) {
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        notify(execution);
+    }
 
-        MailService mailService = MailServiceFactory.getService(getConfiguration());
-
+    @Override
+    public void notify(DelegateExecution execution) throws Exception {
         try {
-            // Get the string value of the variables passed from the task
-            String emailBody = getBody(delegateTask.getExecution());
-            String emailSubject = getSubject(delegateTask.getExecution());
-            String taskId = String.valueOf(delegateTask.getId());
-            String[] attachmentNames = getAttachmentNames(delegateTask.getExecution());
-            List<Attachment> attachments = new ArrayList<>();
-            Boolean attachPdf = getAttachSubmission(delegateTask.getExecution());
+            sendEmail(execution, null);
+        } catch (Exception e) {
+            handleException(execution, ExceptionSource.EXECUTION, e);
+        }
 
-            InternetAddress[] recipients = getRecipients(delegateTask.getExecution());
+    }
 
-            // Create empty request and interceptors for the SendMailInvocation
-            SendMailRequest request = getRequest();
-            List<ConnectorRequestInterceptor> requestInterceptors = getInterceptors();
-
-
-            Map<String, JSONObject> submission = null;
-
-            if(attachPdf || attachmentNames.length > 0) {
-                submission = getFormPdfData(delegateTask.getExecution());
-            }
-
-            if(attachPdf) {
-                attachments.add(generatePDFForForm(delegateTask.getExecution(), submission));
-            }
-
-            if(attachmentNames.length > 0) {
-                Map<String, JSONObject> finalSubmission = submission;
-                Arrays.stream(attachmentNames)
-                        .map(n -> {
-                            try {
-                                return fetchAttachmentForField(submissionId(delegateTask.getExecution()), n, finalSubmission.get("formValues"));
-                            } catch (MalformedURLException | JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .flatMap(Collection::stream)
-                        .forEach(attachments::add);
-            }
-
-            if (recipients.length > 0) {
-                try {
-                    Message message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
-                    SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
-
-                    invocation.proceed();
-
-                } catch (Exception e) {
-                    throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
-                }
-            }
+    @Override
+    public void notify(DelegateTask delegateTask) {
+        try {
+            sendEmail(delegateTask.getExecution(), String.valueOf(delegateTask.getId()));
         } catch (Exception e) {
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
+        }
+
+    }
+
+    private void sendEmail(DelegateExecution execution, String taskId) throws Exception {
+        MailService mailService = MailServiceFactory.getService(getConfiguration());
+        // Get the string value of the variables passed from the task
+        String emailBody = getBody(execution);
+        String emailSubject = getSubject(execution);
+        String[] attachmentNames = getAttachmentNames(execution);
+        List<Attachment> attachments = new ArrayList<>();
+        Boolean attachPdf = getAttachSubmission(execution);
+
+        InternetAddress[] recipients = getRecipients(execution);
+
+        // Create empty request and interceptors for the SendMailInvocation
+        SendMailRequest request = getRequest();
+        List<ConnectorRequestInterceptor> requestInterceptors = getInterceptors();
+
+
+        Map<String, JSONObject> submission = null;
+
+        if(attachPdf || attachmentNames.length > 0) {
+            submission = getFormPdfData(execution);
+        }
+
+        if(attachPdf) {
+            attachments.add(generatePDFForForm(execution, submission));
+        }
+
+        if(attachmentNames.length > 0) {
+            Map<String, JSONObject> finalSubmission = submission;
+            Arrays.stream(attachmentNames)
+                    .map(n -> {
+                        try {
+                            return fetchAttachmentForField(submissionId(execution), n, finalSubmission.get("formValues"));
+                        } catch (MalformedURLException | JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .flatMap(Collection::stream)
+                    .forEach(attachments::add);
+        }
+
+        if (recipients.length > 0) {
+            try {
+                Message message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
+
+                invocation.proceed();
+
+            } catch (Exception e) {
+                throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -246,11 +261,14 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         Multipart multipart = new MimeMultipart();
 
         // Create the body text of the email
-        String bodyUrl = body.replace("$BASE_URL", baseUrl);
-        String finalBody = bodyUrl.replace("$TASK_ID", taskId);
+        body = body.replace("$BASE_URL", baseUrl);
+
+        if(taskId != null) {
+            body = body.replace("$TASK_ID", taskId);
+        }
         BodyPart messageBodyPart = new MimeBodyPart();
         if (!body.isEmpty()) {
-            messageBodyPart.setText(finalBody);
+            messageBodyPart.setText(body);
         } else {
             message.setText("");
         }
@@ -504,4 +522,9 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         return ((String)attachmentValues).split(",");
     }
+
+    public static TaskAssignmentListener getInstance() {
+        return new TaskAssignmentListener();
+    }
+
 }
