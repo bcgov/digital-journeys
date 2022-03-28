@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
+import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.commons.connector.support.FormAccessHandler;
 
@@ -32,6 +33,7 @@ import java.net.URLEncoder;
 public class FileAccessHandler extends FormAccessHandler implements IAccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(FileAccessHandler.class.getName());
+    static final int TOKEN_EXPIRY_CODE = 401;
 
     @Autowired
     private NamedParameterJdbcTemplate bpmJdbcTemplate;
@@ -60,4 +62,8 @@ public class FileAccessHandler extends FormAccessHandler implements IAccessHandl
                 .block();
     }
 
+    @Override
+    protected Integer getExpiryCode() {
+        return TOKEN_EXPIRY_CODE;
+    }
 }
