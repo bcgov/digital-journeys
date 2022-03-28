@@ -60,7 +60,6 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
         if(HttpMethod.PATCH.name().equals(method.name())) {
-            logger.info("payload="+payload);
             Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.patch()
                     .uri(getDecoratedServerUrl(url))
                     .bodyValue(payload)
