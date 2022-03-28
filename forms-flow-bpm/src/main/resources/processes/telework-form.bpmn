@@ -147,7 +147,7 @@ execution.setVariable('applicationStatus','New');</camunda:script>
           <camunda:expression>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:expression>
         </camunda:field>
         <camunda:field name="subject">
-          <camunda:string>PDF copy of ${formName}</camunda:string>
+          <camunda:expression>PDF Copy of ${formName}</camunda:expression>
         </camunda:field>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0g6bjba</bpmn:incoming>
@@ -165,7 +165,7 @@ execution.setVariable('applicationStatus','New');</camunda:script>
           <camunda:expression>This is a pdf copy of the form submitted by ${submitterName} for your records.</camunda:expression>
         </camunda:field>
         <camunda:field name="subject">
-          <camunda:string>PDF copy of form</camunda:string>
+          <camunda:expression>PDF Copy of ${formName}</camunda:expression>
         </camunda:field>
         <camunda:field name="recipientEmails">
           <camunda:expression>${managerEmail}</camunda:expression>
