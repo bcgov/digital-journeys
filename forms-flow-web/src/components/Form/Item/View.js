@@ -46,8 +46,6 @@ const View = React.memo((props) => {
   console.log(form);
   const dispatch = useDispatch();
 
-  const [isInitialDataSet, setIsInitialDataSet] = useState(false)
-
   useEffect(() => {
     if (!isAuthenticated) {
       getForm();
@@ -68,7 +66,7 @@ const View = React.memo((props) => {
   const getDefaultValues = (data) => {
     if (
       Object.keys(data)?.length === 0 ||
-      form.components?.length === 0 || isInitialDataSet) {
+      form.components?.length === 0) {
       return;
     }
 
@@ -113,11 +111,6 @@ const View = React.memo((props) => {
     });
 
     const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
-
-    console.log("defaultValuesObject", defaultValuesObject);
-    // setTimeout(() => {
-    //   setIsInitialDataSet(true);
-    // }, 4000);
 
     return { data: defaultValuesObject };
   };
