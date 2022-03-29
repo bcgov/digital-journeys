@@ -27,6 +27,7 @@ import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes"
 import { toast } from "react-toastify";
 
 const View = React.memo((props) => {
+  console.log("View renders...", props);
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -42,6 +43,7 @@ const View = React.memo((props) => {
     getEmployeeData,
     employeeData,
   } = props;
+  console.log(form);
   const dispatch = useDispatch();
 
   const [isInitialDataSet, setIsInitialDataSet] = useState(false)
@@ -112,7 +114,10 @@ const View = React.memo((props) => {
 
     const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-    setIsInitialDataSet(true);
+    console.log("defaultValuesObject", defaultValuesObject);
+    setTimeout(() => {
+      setIsInitialDataSet(true);
+    }, 4000);
 
     return { data: defaultValuesObject };
   };

@@ -24,5 +24,5 @@ class EmployeeDataService:
 
       if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
         emp_data = EmployeeData(employee_data_res["value"][0])
-        return emp_data.__dict__, HTTPStatus
+        return emp_data.__dict__
       return {"message": "No user data found"}, HTTPStatus.NOT_FOUND
