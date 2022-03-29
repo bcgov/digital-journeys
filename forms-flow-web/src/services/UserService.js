@@ -75,7 +75,7 @@ const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
     KeycloakData && KeycloakData.updateToken(-1).then((refreshed)=> {
       if (refreshed) {
-        store.dispatch(setUserToken(KeycloakData.token));
+        localStorage.setItem('authToken', KeycloakData.token);
       }
     }).catch( (error)=> {
       console.log(error);

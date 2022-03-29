@@ -67,8 +67,8 @@ const View = React.memo((props) => {
 
   const getDefaultValues = (data) => {
     if (
-      Object.keys(data).length === 0 ||
-      form.components.length === 0 || isInitialDataSet) {
+      Object.keys(data)?.length === 0 ||
+      form.components?.length === 0 || isInitialDataSet) {
       return;
     }
 
@@ -115,9 +115,9 @@ const View = React.memo((props) => {
     const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
     console.log("defaultValuesObject", defaultValuesObject);
-    setTimeout(() => {
-      setIsInitialDataSet(true);
-    }, 4000);
+    // setTimeout(() => {
+    //   setIsInitialDataSet(true);
+    // }, 4000);
 
     return { data: defaultValuesObject };
   };
