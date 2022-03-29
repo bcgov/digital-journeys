@@ -41,8 +41,10 @@ public class FileAccessHandler extends FormAccessHandler implements IAccessHandl
     @Autowired
     private WebClient unauthenticatedWebClient;
 
-    @Value("${formsflow.ai.formio.url}")
-    private String formioUrl;
+    @Override
+    public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
+        return exchange(url, method, payload, getAccessToken());
+    }
 
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {
