@@ -73,14 +73,17 @@ const initKeycloak = (store, ...rest) => {
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
-    KeycloakData && KeycloakData.updateToken(-1).then((refreshed)=> {
-      if (refreshed) {
-        localStorage.setItem('authToken', KeycloakData.token);
-      }
-    }).catch( (error)=> {
-      console.log(error);
-      userLogout();
-    });
+    KeycloakData &&
+      KeycloakData.updateToken(5)
+        .then((refreshed) => {
+          if (refreshed) {
+            localStorage.setItem("authToken", KeycloakData.token);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          userLogout();
+        });
   }, 5000);
 }
 
