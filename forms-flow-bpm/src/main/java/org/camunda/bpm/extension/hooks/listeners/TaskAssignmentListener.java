@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.AsyncTaskExecutor;
 
 import javax.activation.DataHandler;
@@ -52,6 +53,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import static java.lang.Thread.currentThread;
 
 @Named("TaskAssignmentListener")
+@Scope(value = "prototype")
 public class TaskAssignmentListener extends BaseListener implements TaskListener, ExecutionListener, JavaDelegate, IMessageEvent {
 
     protected MailConfiguration configuration;
