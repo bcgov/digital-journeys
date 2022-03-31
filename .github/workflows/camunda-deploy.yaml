@@ -1,0 +1,288 @@
+# Deploy Camunda On Openshift
+# Builds and Deploys merged PR's to persistent pods/services/routes/etc in the OpenShift Dev environment.
+name: Deploy on Openshift
+  
+on:
+  # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
+  push:
+    # Edit to the branch(es) you want to build and deploy on each push.
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - production
+
+jobs:
+  #Print variables for logging and debugging purposes
+  checkEnv:
+    name: Check Env variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Env Vars
+        run: |
+          echo Git Base Ref: ${{ github.base_ref }}
+          echo Git Build ID: ${{ github.event.number }}
+          echo Git Pull Request Ref: ${{ github.event.pull_request.head.sha }}
+          echo OC CLI Version: $(oc version)
+  
+  # #Build the app
+
+  build:
+    name: Build APP
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.pull_request.merged == true}}
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: main
+      BUILD_TAG: latest
+      APP: forms-flow-bpm
+    steps:
+      # Checkout the PR branch
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+
+      # Build the app images
+      - name: Build Camunda image
+        working-directory: "./deployment/openshift"
+        run: |
+          test -n "${BRANCH}"
+          test -n "${BUILD_NAMESPACE}"
+          echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
+                oc -n ${BUILD_NAMESPACE} process -f camunda_bc.yaml \
+                -p SOURCE_REPOSITORY_REF=${BRANCH} \
+                -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
+                -p SOURCE_CONTEXT_DIR="/forms-flow-bpm" | oc -n ${BUILD_NAMESPACE} apply -f -
+          oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
+
+
+
+   # Deploy Camunda image in Dev
+  deployDev:
+    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+    name: Deploy Camunda to Dev environment
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      BRANCH: main
+      APP: forms-flow-bpm
+      WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
+    needs:
+      - build
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo FFAWEB_URL: $FFAWEB_URL
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files-dev.apps.silver.devops.gov.bc.ca" \
+                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
+                -p DATABASE_SERVICE_NAME=patroni \
+                -p DATABASE_NAME=formsflow-bpm \
+                -p IMAGE_TAG=latest \
+                -p KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca" \
+                -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca" \
+                -p FORMIO_URL="https://digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_URL="digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca" \
+                -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+                -p WEBSOCKET_SECURITY_ORIGIN="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca" | \
+          oc -n ${NAMESPACE} apply -f -
+
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
+  
+
+   # Deploy Camunda in Test
+  deployTest:
+    name: Deploy Camunda to Test environment
+    if: ${{ github.event.inputs.environment == 'test' }}
+    environment: test
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      BRANCH: main
+      APP: forms-flow-bpm
+      WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
+    needs:
+      - build
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo FFAWEB_URL: $FFAWEB_URL
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files-test.apps.silver.devops.gov.bc.ca" \
+                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
+                -p DATABASE_SERVICE_NAME=patroni \
+                -p DATABASE_NAME=formsflow-bpm \
+                -p IMAGE_TAG=latest \
+                -p KEYCLOAK_URL="https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca" \
+                -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api-test.apps.silver.devops.gov.bc.ca" \
+                -p FORMIO_URL="https://digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_URL="digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca" \
+                -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+                -p WEBSOCKET_SECURITY_ORIGIN="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
+
+
+
+   # Deploy Camunda in Production
+  deployProd:
+    name: Deploy Camunda to Production environment
+    if: ${{ github.event.inputs.environment == 'production' }}
+    environment: production
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      BRANCH: main
+      APP: forms-flow-bpm
+      WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
+    needs:
+      - build
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files.apps.silver.devops.gov.bc.ca" \
+                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
+                -p DATABASE_SERVICE_NAME=patroni \
+                -p DATABASE_NAME=app \
+                -p IMAGE_TAG=latest \
+                -p KEYCLOAK_URL="https://digital-journeys-keycloak.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca" \
+                -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api.apps.silver.devops.gov.bc.ca" \
+                -p FORMIO_URL="https://digital-journeys-forms-flow.apps.silver.devops.gov.bc.ca" \
+                -p CAMUNDA_URL="digital-journeys-camunda.apps.silver.devops.gov.bc.ca" \
+                -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+                -p WEBSOCKET_SECURITY_ORIGIN="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow.apps.silver.devops.gov.bc.ca" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
+
