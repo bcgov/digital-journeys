@@ -57,7 +57,7 @@ objects:
        strategy:
          dockerStrategy:
            pullSecret:
-             name: artifactory-creds
+             name: artifactory-credentials
            dockerfilePath: Dockerfile.prod
            buildArgs:
             - name: FORMIO_SOURCE_REPO_BRANCH
