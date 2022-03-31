@@ -52,11 +52,11 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false);
 
         if(idir != null) {
-            values.put("IDIR", String.valueOf(idir));
+            values.put("idir", String.valueOf(idir));
         }
 
         if(guid != null) {
-            values.put("GUID", String.valueOf(guid));
+            values.put("guid", String.valueOf(guid));
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
