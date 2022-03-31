@@ -3,37 +3,6 @@ kind: Template
 metadata:
   name: forms-flow-bpm
 objects:
-  - apiVersion: v1
-    data:
-      mail-config.properties: |
-        # send mails via SMTP
-        mail.transport.protocol=smtp
-        mail.smtp.host=${SMTP_SERVER}
-        mail.smtp.port=25
-        mail.smtp.auth=false
-        mail.smtp.ssl.enable=false
-        #mail.smtp.socketFactory.port=465
-        #mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
-        # poll mails via IMAPS
-        #mail.store.protocol=imaps
-        # mail.imaps.host=imap.gmail.com
-        #mail.imaps.port=993
-        #mail.imaps.timeout=10000
-        # additional config
-        #mail.poll.folder=INBOX
-        mail.sender=donotreply@gov.bc.ca
-        mail.sender.alias=DoNotReply
-        mail.attachment.download=true
-        mail.attachment.path=attachments
-        # credentials
-        mail.user=
-        mail.password=
-    kind: ConfigMap
-    metadata:
-      labels:
-        app: ${NAME}
-      name: ${NAME}-mail-config
-
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
@@ -239,6 +208,17 @@ objects:
                     secretKeyRef:
                       key: WEB_BASE_URL
                       name: ${FORMIO_SECRET}
+                - name: ODS_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: ODS_URL
+                - name: ODS_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: EMPLOYEE_DATA_AUTH_TOKEN
+
               imagePullPolicy: Always
               livenessProbe:
                 failureThreshold: 3
@@ -266,10 +246,10 @@ objects:
                 timeoutSeconds: 3
               resources:
                 limits:
-                  cpu: 1
+                  cpu: ${CPU_LIMIT}
                   memory: 5Gi
                 requests:
-                  cpu: 1
+                  cpu: ${CPU_REQUEST}
                   memory: 2Gi
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
@@ -415,6 +395,9 @@ parameters:
   - name: FORMSFLOW_API_URL
     description: FORMSFLOW_API_URL
     required: true
+  - name: FORMIO_FILE_URL
+    description: FORMIO_FILE_URL
+    required: true
   - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
     description: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
     required: true
@@ -462,8 +445,16 @@ parameters:
   - name: DATA_BUFFER_SIZE
     description: Configure a limit on the number of bytes that can be buffered for webclient
     required: true
-    value: "2097152"
+    value: "2"
   - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
     description: Maximum result size for Keycloak user queries
     required: true
     value: "250"
+  - name: CPU_REQUEST
+    description: CPU Request for container
+    required: true
+    value: "300m"
+  - name: CPU_LIMIT
+    description: CPU Limit for container
+    required: true
+    value: "700m"

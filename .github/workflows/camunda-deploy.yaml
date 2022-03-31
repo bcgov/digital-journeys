@@ -115,10 +115,13 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files-dev.apps.silver.devops.gov.bc.ca" \
                 -p TOOLS_WORKSPACE=${NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
-                -p DATABASE_NAME=app \
+                -p DATABASE_NAME=formsflow-bpm \
                 -p IMAGE_TAG=latest \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca" \
@@ -182,10 +185,13 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files-test.apps.silver.devops.gov.bc.ca" \
                 -p TOOLS_WORKSPACE=${NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
-                -p DATABASE_NAME=app \
+                -p DATABASE_NAME=formsflow-bpm \
                 -p IMAGE_TAG=latest \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca" \
@@ -249,6 +255,9 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
+                -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
+                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p FORMIO_FILE_URL="https://digital-journeys-files.apps.silver.devops.gov.bc.ca" \
                 -p TOOLS_WORKSPACE=${NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
