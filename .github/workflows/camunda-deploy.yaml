@@ -118,7 +118,7 @@ jobs:
                 -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
                 -p CAMUNDA_JDBC_USER=formsflowbpm \
                 -p FORMIO_FILE_URL="https://digital-journeys-files-dev.apps.silver.devops.gov.bc.ca" \
-                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
@@ -188,7 +188,7 @@ jobs:
                 -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
                 -p CAMUNDA_JDBC_USER=formsflowbpm \
                 -p FORMIO_FILE_URL="https://digital-journeys-files-test.apps.silver.devops.gov.bc.ca" \
-                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
@@ -258,7 +258,7 @@ jobs:
                 -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
                 -p CAMUNDA_JDBC_USER=formsflowbpm \
                 -p FORMIO_FILE_URL="https://digital-journeys-files.apps.silver.devops.gov.bc.ca" \
-                -p TOOLS_WORKSPACE=${NAMESPACE} \
+                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=app \
