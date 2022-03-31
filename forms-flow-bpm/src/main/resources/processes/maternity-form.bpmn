@@ -4,7 +4,7 @@
     <bpmn:startEvent id="maternity-form-start" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprsasd</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="maternity-form-reviewe-submisson" name="Supervisor Reviews Submission" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
+    <bpmn:userTask id="maternity-form-reviewe-submisson" name="Supervisor Reviews Submission and Receive an Email" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -33,16 +33,10 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
             <camunda:expression>Hello
 
 
-
-
 For your review, please find attached a new Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application submitted by ${submitterName}
 
 
-
-
 Go to the Manager/Supervisor Sign-Off Section at $BASE_URL/task/$TASK_ID to complete and submit this form.
-
-
 
 
 Thank you</camunda:expression>
@@ -52,6 +46,9 @@ Thank you</camunda:expression>
           </camunda:field>
           <camunda:field name="recipientEmails">
             <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>false</camunda:string>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
@@ -92,11 +89,11 @@ Thank you</camunda:expression>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_17ua41l</bpmn:incoming>
+      <bpmn:incoming>Flow_1czq08e</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_00bn1p7asd</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_00bn1p7asd" sourceRef="maternity-form-update-application-status-1" targetRef="maternity-form-supervisor-updates-dates" />
-    <bpmn:userTask id="maternity-form-supervisor-updates-dates" name="Supervisor Updates Dates" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
+    <bpmn:userTask id="maternity-form-supervisor-updates-dates" name="Supervisor receive email and Updates Dates" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
         <camunda:taskListener event="complete">
           <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', 'Dates Updated');
@@ -113,13 +110,15 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
             <camunda:expression>["read", "write"]</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create">
+          <camunda:field name="subject">
+            <camunda:expression>FOR ACTION: Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application</camunda:expression>
+          </camunda:field>
           <camunda:field name="body">
-            <camunda:expression>Hello
+            <camunda:expression>Hello,
 
 
 For your review, please find attached a new Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application submitted by ${submitterName}
-
 
 
 If the child's birthdate or placement has already occurred:
@@ -131,37 +130,16 @@ Hold this application until the child is born or placed.
 Confirm the actual birth or placement date with the employee, and make any necessary changes to dates as per employee request.
 
 
-Submit the approved application along with proof of birth or placement via an AskMyHR service request using the categories: My Team or Organization &gt; Leave &amp; Time Off &gt; Maternity, Parental, Adoption.
-
-
 Please go to the Updated Dates Sign-off Section at $BASE_URL/task/$TASK_ID to complete and submit this form.
-
-
-Thank you
-</camunda:expression>
-          </camunda:field>
-          <camunda:field name="subject">
-            <camunda:expression>FOR ACTION: A new Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been submitted</camunda:expression>
-          </camunda:field>
-          <camunda:field name="recipientEmails">
-            <camunda:expression>${managerEmail}</camunda:expression>
-          </camunda:field>
-        </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create">
-          <camunda:field name="body">
-            <camunda:expression>Hello,
-
-
-Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave submission has been approved.
 
 
 Thank you</camunda:expression>
           </camunda:field>
-          <camunda:field name="subject">
-            <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated</camunda:expression>
-          </camunda:field>
           <camunda:field name="recipientEmails">
-            <camunda:expression>${submitterName}</camunda:expression>
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
@@ -178,7 +156,7 @@ Thank you</camunda:expression>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_02gna2m</bpmn:incoming>
+      <bpmn:incoming>Flow_1d67msy</bpmn:incoming>
       <bpmn:outgoing>Flow_0mt4en8</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_1o7r953" name="Update Application Status">
@@ -191,17 +169,17 @@ Thank you</camunda:expression>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_0pc6hcpasdiouiuo</bpmn:incoming>
-      <bpmn:incoming>Flow_1rsd3tn</bpmn:incoming>
+      <bpmn:incoming>Flow_1ot3huf</bpmn:incoming>
+      <bpmn:incoming>Flow_1pj7drz</bpmn:incoming>
       <bpmn:outgoing>Flow_1i4i0cc</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1i4i0cc" sourceRef="Activity_1o7r953" targetRef="EndEvent_03cla68" />
-    <bpmn:sequenceFlow id="Flow_02gna2m" sourceRef="maternity-form-supervisor-updates-dates" targetRef="maternity-form-update-application-status-2" />
+    <bpmn:sequenceFlow id="Flow_02gna2m" sourceRef="maternity-form-supervisor-updates-dates" targetRef="Activity_07wkf65" />
     <bpmn:sequenceFlow id="Flow_0mt4en8" sourceRef="maternity-form-update-application-status-2" targetRef="EndEvent_03cla68" />
     <bpmn:sequenceFlow id="Flow_07ygluz" name="Approved" sourceRef="ExclusiveGateway_0l1c65jkjojhg" targetRef="Gateway_1haagvf">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0pc6hcpasdiouiuo" name="Rejected" sourceRef="ExclusiveGateway_0l1c65jkjojhg" targetRef="Activity_1o7r953">
+    <bpmn:sequenceFlow id="SequenceFlow_0pc6hcpasdiouiuo" name="Rejected" sourceRef="ExclusiveGateway_0l1c65jkjojhg" targetRef="Activity_0zgvile">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="maternity-form-send-confirmation-email" name="Send Confirmation Email to Submitter">
@@ -223,42 +201,241 @@ Thank you</camunda:expression>
       <bpmn:outgoing>Flow_17ua41l</bpmn:outgoing>
       <bpmn:outgoing>Flow_1rsd3tn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_17ua41l" name="isParentalLeave" sourceRef="Gateway_1haagvf" targetRef="maternity-form-update-application-status-1">
+    <bpmn:sequenceFlow id="Flow_17ua41l" name="isParentalLeave" sourceRef="Gateway_1haagvf" targetRef="Activity_1pnr5gu">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isOnlyParentalLeave == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1rsd3tn" name="isNotParentalLeave" sourceRef="Gateway_1haagvf" targetRef="Activity_1o7r953">
+    <bpmn:sequenceFlow id="Flow_1rsd3tn" name="isNotParentalLeave" sourceRef="Gateway_1haagvf" targetRef="Activity_0fz7g6k">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${isOnlyParentalLeave == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_03tmc9z" sourceRef="maternity-form-send-confirmation-email" targetRef="maternity-form-reviewe-submisson" />
+    <bpmn:task id="Activity_0zgvile" name="Submitter and Supervisor receive Emails">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption leave and/or Allowance Application has been rejected.</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+Your Maternity, Parental, Pre-Placement Adoption leave and/or Allowance Application has been rejected. Please contact your supervisor directly if you have any questions.
+
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>You have rejected a Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+
+You have rejected a Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application submitted by ${submitterName}. Please follow up with your employee directly if you have any questions.
+
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0pc6hcpasdiouiuo</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pj7drz</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1pj7drz" sourceRef="Activity_0zgvile" targetRef="Activity_1o7r953" />
+    <bpmn:task id="Activity_0fz7g6k" name="Submitter and Supervisor receive emails">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been Approved</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+
+Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave submission has been approved.
+
+
+
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>FOR ACTION: Submit Approved Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+
+Please submit the approved application via an AskMyHR service request using the categories: My Team or Organization &gt; Leave &amp; Time Off &gt; Maternity, Parental, Adoption.
+
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rsd3tn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ot3huf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1ot3huf" sourceRef="Activity_0fz7g6k" targetRef="Activity_1o7r953" />
+    <bpmn:task id="Activity_1pnr5gu" name="Submitter receive email">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been approved</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+
+Your application has been approved.
+
+
+Once your child is born or placed, please contact your supervisor to confirm their birth or placement date as well as provide proof of birth or placement.
+
+
+If your child has already been born or placed, please provide your supervisor with proof of birth or placement immediately.
+
+
+Thank you
+
+</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17ua41l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1czq08e</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1czq08e" sourceRef="Activity_1pnr5gu" targetRef="maternity-form-update-application-status-1" />
+    <bpmn:task id="Activity_07wkf65" name="Submitter and Supervisor receive emails">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated with the date changes</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+Your Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated with the date changes. 
+
+
+Please make sure to send proof of birth or proof of placement to your supervisor as soon as possible.
+
+
+Thank you
+
+</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${submitterName}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="start">
+          <camunda:field name="subject">
+            <camunda:expression>A Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated with the date changes</camunda:expression>
+          </camunda:field>
+          <camunda:field name="body">
+            <camunda:expression>Hello,
+
+
+A Maternity, Parental, Pre-Placement Adoption Leave and/or Allowance Application Leave has been updated with the date changes.
+
+
+Submit the approved application along with proof of birth or placement via an AskMyHR service request using the categories: My Team or Organization &gt; Leave &amp; Time Off &gt; Maternity, Parental, Adoption.
+
+Thank you</camunda:expression>
+          </camunda:field>
+          <camunda:field name="recipientEmails">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="attachSubmission">
+            <camunda:string>true</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02gna2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d67msy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1d67msy" sourceRef="Activity_07wkf65" targetRef="maternity-form-update-application-status-2" />
   </bpmn:process>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="test-maternity-form">
+      <bpmndi:BPMNEdge id="Flow_1d67msy_di" bpmnElement="Flow_1d67msy">
+        <di:waypoint x="1710" y="190" />
+        <di:waypoint x="1780" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1czq08e_di" bpmnElement="Flow_1czq08e">
+        <di:waypoint x="1200" y="190" />
+        <di:waypoint x="1260" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ot3huf_di" bpmnElement="Flow_1ot3huf">
+        <di:waypoint x="930" y="430" />
+        <di:waypoint x="930" y="500" />
+        <di:waypoint x="1150" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pj7drz_di" bpmnElement="Flow_1pj7drz">
+        <di:waypoint x="880" y="520" />
+        <di:waypoint x="1150" y="520" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03tmc9z_di" bpmnElement="Flow_03tmc9z">
-        <di:waypoint x="420" y="80" />
+        <di:waypoint x="450" y="80" />
         <di:waypoint x="562" y="80" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1rsd3tn_di" bpmnElement="Flow_1rsd3tn">
         <di:waypoint x="930" y="215" />
-        <di:waypoint x="930" y="330" />
-        <di:waypoint x="1080" y="330" />
+        <di:waypoint x="930" y="350" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="903" y="270" width="85" height="27" />
+          <dc:Bounds x="937" y="286" width="85" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_17ua41l_di" bpmnElement="Flow_17ua41l">
         <di:waypoint x="955" y="190" />
-        <di:waypoint x="1070" y="190" />
+        <di:waypoint x="1100" y="190" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="974" y="172" width="79" height="14" />
+          <dc:Bounds x="965" y="172" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0pc6hcp_di" bpmnElement="SequenceFlow_0pc6hcpasdiouiuo">
         <di:waypoint x="750" y="215" />
-        <di:waypoint x="750" y="350" />
-        <di:waypoint x="1080" y="350" />
+        <di:waypoint x="750" y="520" />
+        <di:waypoint x="780" y="520" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="904" y="353" width="44" height="14" />
+          <dc:Bounds x="698" y="283" width="44" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_07ygluz_di" bpmnElement="Flow_07ygluz">
@@ -269,21 +446,21 @@ Thank you</camunda:expression>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0mt4en8_di" bpmnElement="Flow_0mt4en8">
-        <di:waypoint x="1540" y="190" />
-        <di:waypoint x="1732" y="190" />
+        <di:waypoint x="1880" y="190" />
+        <di:waypoint x="1972" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02gna2m_di" bpmnElement="Flow_02gna2m">
-        <di:waypoint x="1340" y="190" />
-        <di:waypoint x="1440" y="190" />
+        <di:waypoint x="1530" y="190" />
+        <di:waypoint x="1610" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1i4i0cc_di" bpmnElement="Flow_1i4i0cc">
-        <di:waypoint x="1180" y="350" />
-        <di:waypoint x="1750" y="350" />
-        <di:waypoint x="1750" y="208" />
+        <di:waypoint x="1250" y="520" />
+        <di:waypoint x="1990" y="520" />
+        <di:waypoint x="1990" y="208" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_00bn1p7_di" bpmnElement="SequenceFlow_00bn1p7asd">
-        <di:waypoint x="1170" y="190" />
-        <di:waypoint x="1240" y="190" />
+        <di:waypoint x="1360" y="190" />
+        <di:waypoint x="1430" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0jg4sg3_di" bpmnElement="SequenceFlow_0jg4sg3asd">
         <di:waypoint x="662" y="80" />
@@ -292,7 +469,7 @@ Thank you</camunda:expression>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0ociprs_di" bpmnElement="SequenceFlow_0ociprsasd">
         <di:waypoint x="218" y="80" />
-        <di:waypoint x="320" y="80" />
+        <di:waypoint x="350" y="80" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="maternity-form-start">
         <dc:Bounds x="182" y="62" width="36" height="36" />
@@ -304,7 +481,7 @@ Thank you</camunda:expression>
         <dc:Bounds x="562" y="40" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="1732" y="172" width="36" height="36" />
+        <dc:Bounds x="1972" y="172" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65jkjojhg" isMarkerVisible="true">
         <dc:Bounds x="725" y="165" width="50" height="50" />
@@ -312,26 +489,38 @@ Thank you</camunda:expression>
           <dc:Bounds x="665" y="186" width="50" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="maternity-form-update-application-status-1">
-        <dc:Bounds x="1070" y="150" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0dssqvo_di" bpmnElement="maternity-form-supervisor-updates-dates">
-        <dc:Bounds x="1240" y="150" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_016b14r_di" bpmnElement="maternity-form-update-application-status-2">
-        <dc:Bounds x="1440" y="150" width="100" height="80" />
+        <dc:Bounds x="1780" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1o7r953_di" bpmnElement="Activity_1o7r953">
-        <dc:Bounds x="1080" y="310" width="100" height="80" />
+        <dc:Bounds x="1150" y="480" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="maternity-form-send-confirmation-email_di" bpmnElement="maternity-form-send-confirmation-email">
-        <dc:Bounds x="320" y="40" width="100" height="80" />
+        <dc:Bounds x="350" y="40" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1haagvf_di" bpmnElement="Gateway_1haagvf" isMarkerVisible="true">
         <dc:Bounds x="905" y="165" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="888" y="135" width="86" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zgvile_di" bpmnElement="Activity_0zgvile">
+        <dc:Bounds x="780" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fz7g6k_di" bpmnElement="Activity_0fz7g6k">
+        <dc:Bounds x="880" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pnr5gu_di" bpmnElement="Activity_1pnr5gu">
+        <dc:Bounds x="1100" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07wkf65_di" bpmnElement="Activity_07wkf65">
+        <dc:Bounds x="1610" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="maternity-form-update-application-status-1">
+        <dc:Bounds x="1260" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dssqvo_di" bpmnElement="maternity-form-supervisor-updates-dates">
+        <dc:Bounds x="1430" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
