@@ -12,7 +12,7 @@
         <camunda:taskListener event="complete">
           <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
 task.execution.setVariable('deleteReason', 'completed');
-task.execution.setVariable('managerSignatureTimestamp', new Date().toISOString());
+task.execution.setVariable('managersSignatureTimestamp', new Date().toISOString());
 
 </camunda:script>
         </camunda:taskListener>
@@ -84,7 +84,7 @@ execution.setVariable('applicationStatus','New');</camunda:script>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
           <camunda:field name="fields">
-            <camunda:expression>["applicationId","applicationStatus", "managerSignatureTimestamp"]</camunda:expression>
+            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
           </camunda:field>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
