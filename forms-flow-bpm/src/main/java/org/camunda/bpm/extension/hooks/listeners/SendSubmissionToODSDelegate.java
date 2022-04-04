@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Named("SendSubmissionToODSDelegate")
 public class SendSubmissionToODSDelegate extends BaseListener implements JavaDelegate {
-    private final static Logger LOGGER = LoggerFactory.getLogger(SendSubmissionToODSDelegate.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SendSubmissionToODSDelegate.class.getName());
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -39,8 +39,9 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
 
     private void sendSubmissionToODS(DelegateExecution execution) throws IOException {
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
+        String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
 
-        LOGGER.warn(String.format("Sending values of form to ODS %s", formUrl));
+        LOGGER.warn(String.format("Sending values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
 
         if(formUrl == null || formUrl.length() == 0) {
             return;
@@ -61,9 +62,15 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(values);
-        String endpoint = (String) execution.getVariableLocal("endpoint");
+
+        boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
+
+        if(debug) {
+            System.out.println(json);
+        }
 
         this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
+        LOGGER.warn(String.format("Sent values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
     }
 
     public String getEndpointUrl(String endpoint) {
