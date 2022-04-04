@@ -12,6 +12,7 @@ class EmployeeData():
    self.address1 = data["address1"]
    self.address2 = data["address2"]
    self.postal = data["postal"]
+   self.city = data["city"]
    self.officePhone = data["office_phone"]
    self.empId = data["EMPLID"]
    self.positionTitle = data["position_title"]
