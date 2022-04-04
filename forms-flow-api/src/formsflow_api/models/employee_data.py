@@ -1,4 +1,9 @@
+####
+# Mapping of data from the ODS that is made available for use in the Form Builder
+###
 class EmployeeData():
+  # data: Response retrieved from the ODS
+  # Spec of possible values can be found at: https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rst#Datamart_Telework_employee_demo
   def __init__(self, data):
    self.name = data["name"]
    self.firstName = data["first_name"]
@@ -6,6 +11,7 @@ class EmployeeData():
    self.email = data["email"]
    self.address1 = data["address1"]
    self.address2 = data["address2"]
+   self.postal = data["postal"]
    self.officePhone = data["office_phone"]
    self.empId = data["EMPLID"]
    self.positionTitle = data["position_title"]
