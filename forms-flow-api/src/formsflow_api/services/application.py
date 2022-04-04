@@ -58,8 +58,6 @@ class ApplicationService:
 
                 application.update({"process_instance_id": camunda_start_task["id"]})
             except TypeError as camunda_error:
-                print('hiiiiiiiii')
-                print(camunda_error)
                 response = {
                     "message": "Camunda workflow not able to create a task",
                     "error": camunda_error,
@@ -354,10 +352,8 @@ class ApplicationService:
     @staticmethod
     def update_application(application_id: int, data):
         """Update application."""
-        print ("Updating appyo")
         application = Application.find_by_id(application_id=application_id)
         if application:
-            print('found app')
             application.update(data)
         else:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
