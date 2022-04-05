@@ -87,6 +87,9 @@ objects:
           from:
             kind: ImageStreamTag
             name: postgres:${PG_VERSION}
+          buildArgs:
+              - name: "patroniv"
+                value: "2.0.1"
         type: Docker
       triggers:
         - type: ConfigChange
