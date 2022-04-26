@@ -84,8 +84,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
-      NAMESPACE: ${{ secrets.NAMESPACE }}
-      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      NAMESPACE: d89793-${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: d89793-${{ secrets.BUILD_NAMESPACE }}
       BRANCH: main
       APP: forms-flow-bpm
       WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
