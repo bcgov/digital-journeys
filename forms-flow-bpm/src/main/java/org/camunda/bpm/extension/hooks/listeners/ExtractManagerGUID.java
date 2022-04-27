@@ -7,10 +7,8 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication; 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import javax.inject.Named;
@@ -30,23 +28,6 @@ public class ExtractManagerGUID  extends BaseListener implements TaskListener, E
 
     @Override
     public void notify(DelegateExecution execution) {
-        try {
-            syncFormVariables(execution);
-        } catch (IOException e) {
-            handleException(execution, ExceptionSource.EXECUTION, e);
-        }
-    }
-
-    @Override
-    public void notify(DelegateTask delegateTask) {
-        try {
-            syncFormVariables(delegateTask.getExecution());
-        } catch (IOException e) {
-            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
-        }
-    }
-
-    private void syncFormVariables(DelegateExecution execution) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
@@ -54,7 +35,6 @@ public class ExtractManagerGUID  extends BaseListener implements TaskListener, E
         String idir = oidcUser.getClaimAsString("idir");
 
         execution.setVariable("managerGuid", guid);
-        execution.setVariable("managerIdir", idir);    
-
+        execution.setVariable("managerIdir", idir);       
     }
 }
