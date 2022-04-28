@@ -8,9 +8,6 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import javax.servlet.http.HttpServletRequest;
-
 
 import java.util.ArrayList;
 import java.util.List;
