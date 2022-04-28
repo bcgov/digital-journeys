@@ -8,7 +8,6 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
