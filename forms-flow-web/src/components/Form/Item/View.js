@@ -150,10 +150,17 @@ const View = React.memo((props) => {
         className='col-12'
       >
         <div className='ml-4 mr-4'>
-          <div class="btn-right">
-            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary">
-                <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
-            </button>
+          <div class="row">
+            <div class="btn-right">
+              <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onclick="pdfprint()">
+                  <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
+              </button>
+            </div>
+            <script>
+              function pdfprint() {
+                alert("Preparing PDF Generation.");
+              }
+            </script>
           </div>
           <Form
             form={form}
