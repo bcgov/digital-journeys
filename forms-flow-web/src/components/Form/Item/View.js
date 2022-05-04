@@ -156,11 +156,6 @@ const View = React.memo((props) => {
                   <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
               </button>
             </div>
-            <script>
-              function pdfprint() {
-                alert("Preparing PDF Generation.");
-              }
-            </script>
           </div>
           <Form
             form={form}
@@ -277,3 +272,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(View);
+
+function pdfprint() {
+  alert("Preparing PDF Generation.");
+}
