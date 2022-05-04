@@ -72,6 +72,11 @@ const Edit = React.memo((props) => {
           >
           </SubmissionError>
           <h3 className="task-head">{form.title}</h3>
+          <div class="btn-right">
+            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary">
+                <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
+            </button>
+          </div>
         </div>
         <Errors errors={errors} />
         <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
