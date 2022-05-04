@@ -19,7 +19,7 @@ objects:
       selector:
         app: ${APP_NAME}
       strategy:
-        type: Rolling
+        type: Recreate
         rollingParams:
           updatePeriodSeconds: 1
           intervalSeconds: 1
