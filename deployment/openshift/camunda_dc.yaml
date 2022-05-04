@@ -453,8 +453,8 @@ parameters:
   - name: CPU_REQUEST
     description: CPU Request for container
     required: true
-    value: "300m"
+    value: "200m"
   - name: CPU_LIMIT
     description: CPU Limit for container
     required: true
-    value: "500"
+    value: "300"
