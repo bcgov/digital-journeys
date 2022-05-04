@@ -25,7 +25,6 @@ import { applicationCreate } from "../../../apiManager/services/applicationServi
 import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
-import jsPDF from "jspdf";
 
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
@@ -151,13 +150,6 @@ const View = React.memo((props) => {
         className='col-12'
       >
         <div className='ml-4 mr-4'>
-          <div class="row">
-            <div class="btn-right">
-              <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onclick="pdfprint()">
-                  <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
-              </button>
-            </div>
-          </div>
           <Form
             form={form}
             submission={getDefaultValues(employeeData.data)}
@@ -172,17 +164,6 @@ const View = React.memo((props) => {
     </div>
   );
 });
-
-generatePDF = () => {
-  var doc = new jsPDF('p', 'pt');
-  
-  doc.text(20, 20, 'This is the first title.')
-  doc.addFont('helvetica', 'normal')
-  doc.text(20, 60, 'This is the second title.')
-  doc.text(20, 100, 'This is the thrid title.')      
-  
-  doc.save('demo.pdf')
-}
 
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
