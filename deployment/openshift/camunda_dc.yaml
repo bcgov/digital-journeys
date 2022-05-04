@@ -457,4 +457,4 @@ parameters:
   - name: CPU_LIMIT
     description: CPU Limit for container
     required: true
-    value: "700m"
+    value: "500"
