@@ -25,6 +25,7 @@ import { applicationCreate } from "../../../apiManager/services/applicationServi
 import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
+import jsPDF from "jspdf";
 
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
@@ -172,6 +173,17 @@ const View = React.memo((props) => {
   );
 });
 
+generatePDF = () => {
+  var doc = new jsPDF('p', 'pt');
+  
+  doc.text(20, 20, 'This is the first title.')
+  doc.addFont('helvetica', 'normal')
+  doc.text(20, 60, 'This is the second title.')
+  doc.text(20, 100, 'This is the thrid title.')      
+  
+  doc.save('demo.pdf')
+}
+
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     let user = getState().user.userDetail;
@@ -272,7 +284,3 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(View);
-
-function pdfprint() {
-  alert("Preparing PDF Generation.");
-}
