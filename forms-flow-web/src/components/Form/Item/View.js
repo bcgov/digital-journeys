@@ -33,7 +33,7 @@ const View = React.memo((props) => {
   //render pdf       
   const pdfDownload = e => {
     e.preventDefault();
-    let doc = new jsPDF("p", 'mm', 'A4');
+    let doc = new jsPDF('l', 'mm', [297, 210]);
     doc.html(document.getElementById('formview'), {
       callback: () => {
         doc.save('forms.pdf');
