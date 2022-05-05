@@ -30,6 +30,17 @@ import { jsPDF } from 'jspdf';
 
 
 const View = React.memo((props) => {
+  //render pdf       
+  const pdfDownload = e => {
+    e.preventDefault()
+    let doc = new jsPDF("landscape", 'pt', 'A4');
+    doc.html(document.getElementById('formview'), {
+      callback: () => {
+        doc.save('forms.pdf');
+      }
+    });
+  }
+
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -90,21 +101,6 @@ const View = React.memo((props) => {
       fnd(obj);
       return keys;
     }
-
-    //render pdf
-       
-    const pdfDownload = e => {
-      e.preventDefault()
-      let doc = new jsPDF("landscape", 'pt', 'A4');
-      doc.html(document.getElementById('formview'), {
-        callback: () => {
-          doc.save('forms.pdf');
-        }
-      });
-    }
-
-
-
     const keys = findAllKeys(form.components, "key");
     const uniqueKeys = [... new Set(keys)];
     
