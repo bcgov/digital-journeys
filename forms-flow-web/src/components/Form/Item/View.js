@@ -175,19 +175,6 @@ const View = React.memo((props) => {
   );
 });
 
-//jspdf render pdf
-const pdfRef = useRef(null);
-
-const handleDownload = () => {
-        const content = pdfRef.current;
-
-        const doc = new jsPDF();
-        doc.html(content, {
-            callback: function (doc) {
-                doc.save('form.pdf');
-            }
-        });
-};
 
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
