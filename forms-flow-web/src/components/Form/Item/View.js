@@ -92,7 +92,7 @@ const View = React.memo((props) => {
     }
 
     //render pdf
-    const pdfRef = useRef(null);
+    const pdfRef = useRef();
 
       const handleDownload = () => {
           const content = pdfRef.current;
