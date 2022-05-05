@@ -28,6 +28,7 @@ import { toast } from "react-toastify";
 
 import { jsPDF } from 'jspdf';
 
+
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
@@ -89,6 +90,22 @@ const View = React.memo((props) => {
       fnd(obj);
       return keys;
     }
+
+    //render pdf
+    const pdfRef = useRef(null);
+
+      const handleDownload = () => {
+          const content = pdfRef.current;
+
+          const doc = new jsPDF();
+          doc.html(content, {
+              callback: function (doc) {
+                  doc.save('forms.pdf');
+              }
+          });
+      };
+
+
 
     const keys = findAllKeys(form.components, "key");
     const uniqueKeys = [... new Set(keys)];
