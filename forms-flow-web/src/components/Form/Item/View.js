@@ -92,18 +92,16 @@ const View = React.memo((props) => {
     }
 
     //render pdf
-    const pdfRef = useRef();
-
-      const handleDownload = () => {
-          const content = pdfRef.current;
-
-          const doc = new jsPDF();
-          doc.html(content, {
-              callback: function (doc) {
-                  doc.save('forms.pdf');
-              }
-          });
-      };
+       
+    const pdfDownload = e => {
+      e.preventDefault()
+      let doc = new jsPDF("landscape", 'pt', 'A4');
+      doc.html(document.getElementById('formview'), {
+        callback: () => {
+          doc.save('forms.pdf');
+        }
+      });
+    }
 
 
 
@@ -170,12 +168,12 @@ const View = React.memo((props) => {
       >
         <div class="row">
           <div class="btn-right">
-            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onClick="">
+            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onClick={pdfDownload}>
                 <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
         </div>
-        <div className='ml-4 mr-4'>       
+        <div className='ml-4 mr-4' id='formview'>       
           <Form
             form={form}
             submission={getDefaultValues(employeeData.data)}
