@@ -26,6 +26,9 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 
+import { useRef } from 'react';
+import { jsPDF } from 'jspdf';
+
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
@@ -149,7 +152,14 @@ const View = React.memo((props) => {
         }
         className='col-12'
       >
-        <div className='ml-4 mr-4'>
+        <div class="row">
+            <div class="btn-right">
+              <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onClick={handleDownload}>
+                  <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
+              </button>
+            </div>
+        </div>
+        <div className='ml-4 mr-4' ref={pdfRef}>          
           <Form
             form={form}
             submission={getDefaultValues(employeeData.data)}
@@ -164,6 +174,20 @@ const View = React.memo((props) => {
     </div>
   );
 });
+
+//jspdf render pdf
+const pdfRef = useRef(null);
+
+const handleDownload = () => {
+        const content = pdfRef.current;
+
+        const doc = new jsPDF();
+        doc.html(content, {
+            callback: function (doc) {
+                doc.save('form.pdf');
+            }
+        });
+};
 
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
