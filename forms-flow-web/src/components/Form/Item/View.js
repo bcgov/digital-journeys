@@ -115,20 +115,6 @@ const View = React.memo((props) => {
     return { data: defaultValuesObject };
   };
 
-  //jspdf render pdf
-  const pdfRef = useRef(null);
-
-  const handleDownload = () => {
-          const content = pdfRef.current;
-
-          const doc = new jsPDF();
-          doc.html(content, {
-              callback: function (doc) {
-                  doc.save('form.pdf');
-              }
-          });
-  };
-
   return (
     <div className='container'>
       <div className='main-header'>
@@ -167,12 +153,12 @@ const View = React.memo((props) => {
       >
         <div class="row">
           <div class="btn-right">
-            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary">
+            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onClick="">
                 <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
         </div>
-        <div className='ml-4 mr-4'>          
+        <div className='ml-4 mr-4'>       
           <Form
             form={form}
             submission={getDefaultValues(employeeData.data)}
