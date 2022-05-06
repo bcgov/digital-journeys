@@ -30,7 +30,9 @@ import { jsPDF } from 'jspdf';
 
 
 const View = React.memo((props) => {
-  //render pdf       
+
+  //render pdf  
+  /*    
   const pdfDownload = e => {
     e.preventDefault()
     let doc = new jsPDF("landscape", 'pt', 'A4');
@@ -39,6 +41,17 @@ const View = React.memo((props) => {
         doc.save('forms.pdf');
       }
     });
+  }
+  */
+  function pdfDownload() {
+    const input = document.getElementById('formview');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save("download.pdf");
+      });
   }
 
   const isFormSubmissionLoading = useSelector(
