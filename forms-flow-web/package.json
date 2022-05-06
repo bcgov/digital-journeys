@@ -46,6 +46,7 @@
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
     "formiojs": "^4.13.1",
+    "html2canvas": "^1.4.1",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",
