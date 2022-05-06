@@ -27,6 +27,7 @@ import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes"
 import { toast } from "react-toastify";
 
 import { jsPDF } from 'jspdf';
+import {html2canvas} from 'html2canvas';
 
 
 const View = React.memo((props) => {
