@@ -32,8 +32,8 @@ import { jsPDF } from 'jspdf';
 const View = React.memo((props) => {
   //render pdf       
   const pdfDownload = e => {
-    e.preventDefault();
-    let doc = new jsPDF('l', 'mm', [297, 210]);
+    e.preventDefault()
+    let doc = new jsPDF("landscape", 'pt', 'A4');
     doc.html(document.getElementById('formview'), {
       callback: () => {
         doc.save('forms.pdf');
