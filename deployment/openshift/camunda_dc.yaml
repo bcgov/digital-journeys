@@ -247,10 +247,10 @@ objects:
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
-                  memory: 5Gi
+                  memory: ${MEMORY_LIMIT}
                 requests:
                   cpu: ${CPU_REQUEST}
-                  memory: 2Gi
+                  memory: ${MEMORY_REQUEST}
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               volumeMounts:
@@ -450,6 +450,14 @@ parameters:
     description: Maximum result size for Keycloak user queries
     required: true
     value: "250"
+  - name: MEMORY_REQUEST
+    description: MEMORY Request for container
+    required: true
+    value: "1Gi"
+  - name: MEMORY_LIMIT
+    description: MEMORY Limit for container
+    required: true
+    value: "3Gi"
   - name: CPU_REQUEST
     description: CPU Request for container
     required: true
