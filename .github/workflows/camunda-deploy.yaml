@@ -261,7 +261,7 @@ jobs:
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
-                -p DATABASE_NAME=app \
+                -p DATABASE_NAME=formsflow-bpm \
                 -p IMAGE_TAG=latest \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca" \
