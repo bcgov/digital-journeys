@@ -256,7 +256,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/camunda_dc.yaml \
                 -p CAMUNDA_ANALYTICS_JDBC_URL=jdbc:postgresql://patroni:5432/formsflow-bpm \
-                -p CAMUNDA_JDBC_USER=formsflowbpm \
+                -p CAMUNDA_JDBC_USER=formsflow-bpm \
                 -p FORMIO_FILE_URL="https://digital-journeys-files.apps.silver.devops.gov.bc.ca" \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
