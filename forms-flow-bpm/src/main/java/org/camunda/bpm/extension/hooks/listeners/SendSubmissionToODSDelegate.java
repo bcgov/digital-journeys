@@ -50,8 +50,8 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         Object idir = execution.getVariable("IDIR");
         Object guid = execution.getVariable("GUID");
     
-        Object managerIdir = execution.getVariable("managerIdir");
-        Object managerGuid = execution.getVariable("managerGuid");
+        Object managerIdir = execution.getVariable("manager_idir");
+        Object managerGuid = execution.getVariable("manager_guid");
 
 
         Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false);
@@ -65,11 +65,11 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         }
 
         if(managerIdir != null) {
-            values.put("managerIdir", String.valueOf(managerIdir));
+            values.put("manager_idir", String.valueOf(managerIdir));
         }
 
         if(managerGuid != null) {
-            values.put("managerGuid", String.valueOf(managerGuid));
+            values.put("manager_guid", String.valueOf(managerGuid));
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
