@@ -49,6 +49,10 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
 
         Object idir = execution.getVariable("IDIR");
         Object guid = execution.getVariable("GUID");
+    
+        Object managerIdir = execution.getVariable("managerIdir");
+        Object managerGuid = execution.getVariable("managerGuid");
+
 
         Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false);
 
@@ -60,13 +64,21 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
             values.put("guid", String.valueOf(guid));
         }
 
+        if(managerIdir != null) {
+            values.put("managerIdir", String.valueOf(managerIdir));
+        }
+
+        if(managerGuid != null) {
+            values.put("managerGuid", String.valueOf(managerGuid));
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(values);
 
         boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
 
         if(debug) {
-            System.out.println(json);
+            System.out.println("Sending valuse to ODS: " + json);
         }
 
         this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.util.ObjectUtils;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import net.minidev.json.JSONArray;
@@ -62,12 +63,17 @@ public class ExtractManagerGuid  extends BaseListener implements TaskListener, E
     private void syncFormVariables(DelegateExecution execution) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
-        String guid = oidcUser.getClaimAsString("bcgovguid");
-        String idir = oidcUser.getClaimAsString("idir");
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
 
-        execution.setVariable("managerGuid", guid);
-        execution.setVariable("managerIdir", idir);    
+            String guid = jwt.getClaimAsString("bcgovguid");
+            String idir = jwt.getClaimAsString("idir");
 
+            execution.setVariable("managerGuid", guid);
+            execution.setVariable("managerIdir", idir);
+        }
+        else {
+            System.err.println("No authentication found!");
+        }
     }
 }
