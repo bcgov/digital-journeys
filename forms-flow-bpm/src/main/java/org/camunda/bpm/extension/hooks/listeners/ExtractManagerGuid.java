@@ -69,8 +69,8 @@ public class ExtractManagerGuid  extends BaseListener implements TaskListener, E
             String guid = jwt.getClaimAsString("bcgovguid");
             String idir = jwt.getClaimAsString("idir");
 
-            execution.setVariable("managerGuid", guid);
-            execution.setVariable("managerIdir", idir);
+            execution.setVariable("manager_guid", guid);
+            execution.setVariable("manager_idir", idir);
         }
         else {
             System.err.println("No authentication found!");
