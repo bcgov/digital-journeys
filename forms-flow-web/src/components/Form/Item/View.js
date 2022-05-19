@@ -27,19 +27,23 @@ import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes"
 import { toast } from "react-toastify";
 
 import { jsPDF } from 'jspdf';
-import {html2canvas} from 'html2canvas';
-
 
 const View = React.memo((props) => {
 
-  //render pdf   
   const pdfDownload = e => {
-    e.preventDefault()
-    let doc = new jsPDF("landscape", 'pt', 'A4');
-    doc.html(document.getElementById('formview'), {
+    const pdfPageHeight = 4000;
+    const mainPrintableContainer = document.getElementById('formview');
+
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'px',
+      format: [mainPrintableContainer.offsetWidth, pdfPageHeight],
+    });
+
+    doc.html(mainPrintableContainer, {
       callback: () => {
         doc.save('forms.pdf');
-      }
+      },
     });
   }
 
@@ -171,7 +175,7 @@ const View = React.memo((props) => {
             </button>
           </div>
         </div>
-        <div className='ml-4 mr-4' id='formview'>       
+        <div className='ml-4 mr-4' id='formview'>
           <Form
             form={form}
             submission={getDefaultValues(employeeData.data)}

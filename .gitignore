@@ -21,6 +21,9 @@ __pycache__/
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# A gitigored directory for local files
+.local-files/*
+
 # Idea
 .idea
 
