@@ -2,7 +2,7 @@
 # if the application is built from a source repo other than aot , use the custom copying.
 # steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
-FROM python:3.8
+FROM python:3.8-slim-bullseye
 
 RUN apt-get update \
     && apt-get install -y git && apt-get install lsyncd -y
