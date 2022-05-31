@@ -3,39 +3,14 @@ import {connect, useSelector} from 'react-redux'
 import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
 import {Button} from "react-bootstrap";
-import { jsPDF } from 'jspdf';
 
 
+import { exportToPdf } from '../../../../../services/PdfService';
 import Loading from '../../../../../containers/Loading'
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 
 const View = React.memo((props) => {
-
-  const pdfDownload = () => {
-    const pdfPageHeight = 4000;
-    const mainPrintableContainer = document.getElementById('main');
-    const pageHeader = document.getElementById('main-header');
-    
-    // Hide the page header before creating the PDF
-    pageHeader.style.visibility = "hidden";
-    
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'px',
-      format: [mainPrintableContainer.offsetWidth, pdfPageHeight],
-    });
-
-    doc.html(mainPrintableContainer, {
-    callback: () => {
-        doc.save('forms.pdf');
-        // Show the page header again after creating the PDF
-        pageHeader.style.visibility = "visible";
-    },
-  });
-    
-  }
-
 
   const {
     hideComponents,
@@ -56,13 +31,14 @@ const View = React.memo((props) => {
       <div className="main-header" id='main-header'>
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
-          <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={pdfDownload}>
+          <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" 
+            onClick={() => exportToPdf({formId: "formview"})}>
           <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>
       <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
-        <div className="sub-container" id='formview'>
+        <div className="sub-container ml-4 mr-4" id='formview'>
           <Form
             form={form}
             submission={submission}
