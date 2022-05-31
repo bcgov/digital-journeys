@@ -25,27 +25,9 @@ import { applicationCreate } from "../../../apiManager/services/applicationServi
 import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
-
-import { jsPDF } from 'jspdf';
+import { exportToPdf } from '../../../services/PdfService'
 
 const View = React.memo((props) => {
-
-  const pdfDownload = e => {
-    const pdfPageHeight = 4000;
-    const mainPrintableContainer = document.getElementById('formview');
-
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'px',
-      format: [mainPrintableContainer.offsetWidth, pdfPageHeight],
-    });
-
-    doc.html(mainPrintableContainer, {
-      callback: () => {
-        doc.save('forms.pdf');
-      },
-    });
-  }
 
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
@@ -157,7 +139,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading || employeeData.loading}
+        // active={isFormSubmissionLoading || employeeData.loading}
         spinner
         text={
           employeeData.loading
@@ -170,7 +152,9 @@ const View = React.memo((props) => {
       >
         <div class="row">
           <div class="btn-right">
-            <button type="button" class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" onClick={pdfDownload}>
+            <button type="button" 
+              class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" 
+              onClick={() => exportToPdf({formId: 'formview'})}>
                 <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
