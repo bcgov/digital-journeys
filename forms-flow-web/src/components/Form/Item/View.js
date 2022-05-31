@@ -139,7 +139,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        // active={isFormSubmissionLoading || employeeData.loading}
+        active={isFormSubmissionLoading || employeeData.loading}
         spinner
         text={
           employeeData.loading
