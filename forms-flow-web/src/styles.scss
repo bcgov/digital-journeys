@@ -778,3 +778,57 @@ i.fa.fa-question-circle.text-muted {
 fieldset {
   border: 0px !important;
 }
+
+// --START--- Style to enable scrollbar on the form -----
+.no-scroll {
+    overflow: visible !important;
+}
+
+.scrollable-page {
+    scrollbar-width: thin !important;
+    overflow-y: visible !important;
+    position: relative !important;
+}
+// --END--- Style to enable scrollbar on the form -----
+
+.form-group fieldset {
+    width: 100%;
+}
+
+@media print {
+
+  .main-header {
+    display: none;
+  }
+
+  ._loading_overlay_wrapper {
+    padding: 0;
+  }
+
+  #formview {
+    margin: 0;
+  }
+
+  #main {
+    min-height: unset;
+    overflow-y: visible !important;
+  }
+
+  .pg-footer {
+    display: none;
+  }
+
+  .sub-container.ml-4.mr-4 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .form-group.formio-component {
+    min-width: 100%;
+  }
+
+  button:not([type="submit"]) {
+    display: none;
+  }
+
+}
