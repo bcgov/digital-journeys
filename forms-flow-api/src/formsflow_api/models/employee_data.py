@@ -5,6 +5,7 @@ class EmployeeData():
   # data: Response retrieved from the ODS
   # Spec of possible values can be found at: https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rst#Datamart_Telework_employee_demo
   def __init__(self, data):
+   self.displayName = data["first_name"] + " " + data["last_name"]
    self.name = data["name"]
    self.firstName = data["first_name"]
    self.lastName = data["last_name"]
