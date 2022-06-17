@@ -45,9 +45,10 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
 
 | Property Name            | Description |
 | ------------------------ | ----------- |
-| `name`                     | first and last name of employee|
+| `name`                     | first and last name of employee as retuned from ODS|
 | `firstName`                | first name of employee|
 | `lastName`                 | last name of employee|
+| `displayName`              | A calculated value based on `firstName` + `lastName` of employee|
 | `email`                    | email of employee|
 | `address1`                 | home address1 of employee|
 | `address2`                 | home address2 of employee|
