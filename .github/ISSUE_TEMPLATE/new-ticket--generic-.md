@@ -15,4 +15,4 @@ A short, simple description of a feature or issue told from the perspective of t
 Steps needed to achieve this feature. 
 
 **Acceptance Criteria**
-The checklist the project manager uses to decide whether a story is done. Objective and discrete answers (such as a yes/no) that can be tested.
+The checklist the product owner uses to decide whether a story is done. Objective and discrete answers (such as a yes/no) that can be tested.
