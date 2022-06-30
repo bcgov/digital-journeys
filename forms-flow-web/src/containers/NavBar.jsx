@@ -80,7 +80,7 @@ const NavBar = React.memo(() => {
       </Link>: null,
       <NavDropdown
           className={pathname.match(/^\/task/)? 'active': null}
-          title="Tasks"
+          title="Review and Process Applications"
           id="task-dropdown"
           onClick={goToTask}>
         Tasks
