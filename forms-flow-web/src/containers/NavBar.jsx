@@ -86,7 +86,7 @@ const NavBar = React.memo(() => {
         Tasks
         <ServiceFlowFilterListDropDown/>
       </NavDropdown>,
-    (getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, STAFF_REVIEWER)) ? analyticsDropdown(): null,
+    (!getUserRolePermission(userRoles, STAFF_REVIEWER)) ? analyticsDropdown(): null,
   ];
 
   return (
