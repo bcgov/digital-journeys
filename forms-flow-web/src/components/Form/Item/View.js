@@ -122,11 +122,6 @@ const View = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        {isAuthenticated ? (
-          <Link to='/form'>
-            <i className='fa fa-chevron-left fa-lg' />
-          </Link>
-        ) : null}
         {/*          <span className="ml-3">
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
