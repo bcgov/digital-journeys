@@ -45,7 +45,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: 'forms-flow-web:latest'
+        name: 'forms-flow-web:${TAG}'
     strategy:
       type: Docker
       dockerStrategy:
