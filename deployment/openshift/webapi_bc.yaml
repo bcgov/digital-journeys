@@ -18,6 +18,11 @@ parameters:
     displayName: Git context directory
     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
     value: /forms-flow-api
+  - name: TAG
+    displayName: Output Tag for the application image
+    description: Set this to the appropriate tag depending upon the environmnet you are building
+    required: true
+    
 objects:
 -
   apiVersion: build.openshift.io/v1
