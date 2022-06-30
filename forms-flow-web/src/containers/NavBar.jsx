@@ -58,7 +58,8 @@ const NavBar = React.memo(() => {
   );
 
   const navItems = () => [
-    !getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+    <button onClick={() => console.log(getUserRolePermission(userRoles, CLIENT))}>click me</button>,
+    (!getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, CLIENT)) ? (
       <Link
           className={pathname.match(/^\/form/)? 'active': null}
           to='/form'>
@@ -72,7 +73,7 @@ const NavBar = React.memo(() => {
         Admin
       </Link>
     ): null,
-    showApplications && ((getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT) && !getUserRolePermission(userRoles, STAFF_REVIEWER))) ?
+    showApplications && (( !getUserRolePermission(userRoles, CLIENT) && !getUserRolePermission(userRoles, STAFF_REVIEWER))) ?
       <Link 
           className={pathname.match(/^\/application/)? 'active': null}
           to='/application'>
@@ -86,7 +87,7 @@ const NavBar = React.memo(() => {
         Tasks
         <ServiceFlowFilterListDropDown/>
       </NavDropdown>,
-    (!getUserRolePermission(userRoles, STAFF_REVIEWER)) ? analyticsDropdown(): null,
+    (!getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, CLIENT)) ? analyticsDropdown(): null,
   ];
 
   return (
