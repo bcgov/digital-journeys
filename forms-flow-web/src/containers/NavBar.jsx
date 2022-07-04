@@ -28,10 +28,6 @@ const NavBar = React.memo(() => {
       UserService.userLogout();
   }
 
-  const goToTask = () => {
-    dispatch(push(`/task`));
-  }
-
   const handleOnBannerClick = () => {
     dispatch(push(`/`))
   }
@@ -78,15 +74,13 @@ const NavBar = React.memo(() => {
           to='/application'>
         Applications
       </Link>: null,
-      <NavDropdown
-          className={pathname.match(/^\/task/)? 'active': null}
-          title="Review and Process Applications"
-          id="task-dropdown"
-          onClick={goToTask}>
-        Tasks
-        <ServiceFlowFilterListDropDown/>
-      </NavDropdown>,
     (!getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, CLIENT)) ? analyticsDropdown(): null,
+      <Link
+          className={pathname.match(/^\/task/)? 'active': null}
+          to='/task'>
+        Review and Process Applications
+      </Link>,
+    getUserRolePermission(userRoles, STAFF_REVIEWER) ? analyticsDropdown(): null,
   ];
 
   return (
