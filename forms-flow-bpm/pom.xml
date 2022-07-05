@@ -310,13 +310,6 @@
 			<version>5.3.4</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
-		<dependency>
-				<groupId>org.keycloak</groupId>
-				<artifactId>keycloak-admin-client</artifactId>
-				<version>18.0.1</version>
-		</dependency>
-
 	</dependencies>
 
 	<repositories>
