@@ -73,14 +73,15 @@ const NavBar = React.memo(() => {
           className={pathname.match(/^\/application/)? 'active': null}
           to='/application'>
         Applications
-      </Link>: null,
+      </Link>
+    : null,
+    <Link
+      className={pathname.match(/^\/task/)? 'active': null}
+      to='/task'
+    >
+      Review and Process Applications
+    </Link>,
     (!getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, CLIENT)) ? analyticsDropdown(): null,
-      <Link
-          className={pathname.match(/^\/task/)? 'active': null}
-          to='/task'>
-        Review and Process Applications
-      </Link>,
-    getUserRolePermission(userRoles, STAFF_REVIEWER) ? analyticsDropdown(): null,
   ];
 
   return (
