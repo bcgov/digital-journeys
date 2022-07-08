@@ -22,6 +22,8 @@ import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
 import {setFormSubmissionLoading} from "../../../actions/formActions";
+import {getUserRoleName, getUserRolePermission, getUserInsightsPermission} from "../../../helper/user";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../../../constants/constants";
 
 
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -37,6 +39,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const firstResult = useSelector(state=> state.bpmTasks.firstResult);
+  const userRoles = useSelector((state) => state.user.roles);
   const [processKey, setProcessKey]= useState('');
   const [processInstanceId, setProcessInstanceId]=useState('');
 
@@ -165,30 +168,36 @@ const ServiceFlowTaskDetails = React.memo(() => {
        >
        <TaskHeader />
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
-         <Tab eventKey="form" title="Form">
-           <LoadingOverlay active={task?.assignee!==currentUser}
-                           styles={{
-                             overlay: (base) => ({
-                               ...base,
-                               background: 'rgba(0, 0, 0, 0.2)',
-                               cursor:"not-allowed !important"
-                             })
-                           }}>
-             {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
-           </LoadingOverlay>
-         </Tab>
-         <Tab eventKey="history" title="History">
-           <History applicationId={task?.applicationId}/>
-         </Tab>
-         <Tab eventKey="diagram" title="Diagram">
-           <div>
-             <ProcessDiagram
-               process_key={processKey}
-               processInstanceId={processInstanceId}
-               // markers={processActivityList}
-             />
-           </div>
-         </Tab>
+          <Tab eventKey="form" title="Form">
+            <LoadingOverlay active={task?.assignee!==currentUser}
+                            styles={{
+                              overlay: (base) => ({
+                                ...base,
+                                background: 'rgba(0, 0, 0, 0.2)',
+                                cursor:"not-allowed !important"
+                              })
+                            }}>
+              {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
+            </LoadingOverlay>
+          </Tab>
+          {
+          !getUserRolePermission(userRoles, STAFF_REVIEWER) 
+            &&
+            <>
+              <Tab eventKey="history" title="History">
+                <History applicationId={task?.applicationId}/>
+              </Tab>
+              <Tab eventKey="diagram" title="Diagram">
+                <div>
+                  <ProcessDiagram
+                    process_key={processKey}
+                    processInstanceId={processInstanceId}
+                    // markers={processActivityList}
+                  />
+                </div>
+              </Tab>
+            </>
+          }
        </Tabs>
        </LoadingOverlay>
      </div>)
