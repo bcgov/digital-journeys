@@ -4,6 +4,8 @@
 1. [Calculated Form Values](#calculated-form-values)
    1. [Examples](#examples)
 2. [Auto-populate form fields](#how-to-auto-populate-form-fields-with-the-user-data)
+3. [Uploading a form](#uploading-a-form
+)
 
 ## Calculated Form Values
 
@@ -68,3 +70,22 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
 | `supervisorPositionTitle`  | position title of employee's supervisor|
 
 ![img-2.png](images/img-2.png)
+
+## Uploading a form
+### Migrating a form to a new environement
+  1. For this work, you need a `designer` role in the two environments.
+  2. In the first environment you are migrating the form from, download the form by finding the form in the list of forms and clicking `Download Form`. The form will be saved in `JSON` format on your computer.
+  3. Go to the target environment:
+   - If there is no previous version of that form in the target environment, you only need to upload the downloaded form on the `Forms` page through the `Upload Form` button.
+   - If there is a previous version of that form in the target environment, you need first delete the previous version of the form and then upload the downloaded form. Please backup the previous version of the form before deleting it by downloading and saving it to your computer.
+  4. Add the necessary workflow and then publish the form if that is the desired behaviour. 
+
+### Creating a duplicate form
+ 1. For this work you need a `designer` role.
+ 2. Download the form you want to duplicate and save it to your computer. The form will be saved in `JSON` format on your computer.
+ 3. Open the `JSON` file (in a text editor or an online text editor compatible with `JSON` format) and change the following fields. For example, if the form you're duplicating is called `Telework` then change the following fields and save the file:
+   - `title`: change it to something else like `Telework-test-1`.
+   - `name`: change it to something else like `Telework-test-1`.
+   - `path`: change it to something else like `Telework-test-1`.
+4. Upload the file to the `Forms` page through the `Upload Form` button. You the will see the new form along with the old form in the list of forms. 
+5. Add the necessary workflow and then publish the form if that is the desired behaviour. You can assign the same workflow to the duplicated form or assign a different workflow.
