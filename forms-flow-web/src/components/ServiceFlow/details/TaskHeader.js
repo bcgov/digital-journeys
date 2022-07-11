@@ -168,9 +168,9 @@ const TaskHeader = React.memo(() => {
       <Row className="ml-0" >
       <span data-title="Application Id" className="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
-      <Row className="actionable mb-4">
-        { !getUserRolePermission(userRoles, STAFF_REVIEWER) 
-            &&
+      { !getUserRolePermission(userRoles, STAFF_REVIEWER) 
+          &&
+        <Row className="actionable mb-4">
           <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
             <DatePicker
               selected={followUpDate}
@@ -192,9 +192,6 @@ const TaskHeader = React.memo(() => {
               customInput={<FollowUpDateInput/>}
             />
           </Col>
-        }
-        { !getUserRolePermission(userRoles, STAFF_REVIEWER) 
-            &&
           <Col sm={dueDate?2:"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
             <DatePicker
               selected={dueDate}
@@ -217,13 +214,10 @@ const TaskHeader = React.memo(() => {
               customInput={<DueDateInput/>}
             />
           </Col>
-        }
-        <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={"groups"}>
-          <i className="fa fa-group mr-1"/>
-          { taskGroups.length === 0? <span>Add groups</span>:<span className="group-align">{getGroups(taskGroups)}</span>}
-        </Col>
-        { !getUserRolePermission(userRoles, STAFF_REVIEWER) 
-            &&
+          <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={"groups"}>
+            <i className="fa fa-group mr-1"/>
+            { taskGroups.length === 0? <span>Add groups</span>:<span className="group-align">{getGroups(taskGroups)}</span>}
+          </Col>
           <Col className="right-side">
             {isEditAssignee?(task?.assignee? <span>
                 <UserSelectionDebounce onClose={()=>setIsEditAssignee(false)}
@@ -240,8 +234,8 @@ const TaskHeader = React.memo(() => {
               </>)
             }
           </Col>
-        }
-      </Row>
+        </Row>
+      }
     </>
   );
 });
