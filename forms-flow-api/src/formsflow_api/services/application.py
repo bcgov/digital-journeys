@@ -33,24 +33,35 @@ class ApplicationService:
         data["application_name"] = mapper.form_name
         application = Application.create_from_dict(data)
 
-        # Add the users bcgov guid to the camunda execution variables (for IDIR users)
-        user_guid = g.token_info.get("bcgovguid")
-        idir = g.token_info.get("idir")
-
         if "process_instance_id" in data:
             application.update({"process_instance_id": data["process_instance_id"]})
         else:
-            payload = {
-                "variables": {
-                    "applicationId": {"value": application.id},
-                    "formUrl": {"value": application.form_url},
-                    "formName": {"value": application.application_name},
-                    "submitterName": {"value": application.created_by},
-                    "GUID": {"value": user_guid},
-                    "IDIR": {"value": idir},
-                    "submissionDate": {"value": application.created.__str__()},
+            # Add the users bcgov guid to the camunda execution variables (for IDIR users)
+            if (token is not None):
+                user_guid = g.token_info.get("bcgovguid")
+                idir = g.token_info.get("idir")
+
+                payload = {
+                    "variables": {
+                        "applicationId": {"value": application.id},
+                        "formUrl": {"value": application.form_url},
+                        "formName": {"value": application.application_name},
+                        "submitterName": {"value": application.created_by},
+                        "GUID": {"value": user_guid},
+                        "IDIR": {"value": idir},
+                        "submissionDate": {"value": application.created.__str__()},
+                    }
                 }
-            }
+            else:
+                payload = {
+                    "variables": {
+                        "applicationId": {"value": application.id},
+                        "formUrl": {"value": application.form_url},
+                        "formName": {"value": application.application_name},
+                        "submitterName": {"value": application.created_by},
+                        "submissionDate": {"value": application.created.__str__()},
+                    }
+                }
             try:
                 camunda_start_task = BPMService.post_process_start(
                     process_key=mapper.process_key, payload=payload, token=token
