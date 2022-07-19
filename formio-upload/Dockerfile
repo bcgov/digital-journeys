@@ -1,18 +1,24 @@
-FROM node:14.18.3-alpine
+FROM node:16.16.0-alpine
 MAINTAINER Form.io <support@form.io>
 
 COPY ./ /src
 WORKDIR /src
 
-# Install git
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache --virtual .build-deps bash git make gcc g++ python3 && ln -sf python3 /usr/bin/python
+# Install dependencies required
+# for puppeteer
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
 
-RUN npm cache clean --force && \
-    npm install && \
-    npm uninstall -g npm && \
-    apk del .build-deps
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN npm install
+
 
 EXPOSE      80
 ENTRYPOINT  ["node", "index"]
