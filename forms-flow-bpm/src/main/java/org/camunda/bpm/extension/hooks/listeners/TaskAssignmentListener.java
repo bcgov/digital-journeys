@@ -11,6 +11,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.model.Attachment;
 import org.camunda.bpm.extension.hooks.services.EmailAttachmentService;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
@@ -28,6 +29,8 @@ import org.camunda.connect.spi.ConnectorRequestInterceptor;
 import org.camunda.connect.spi.ConnectorResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -56,6 +59,9 @@ import static java.lang.Thread.currentThread;
 @Scope(value = "prototype")
 public class TaskAssignmentListener extends BaseListener implements TaskListener, ExecutionListener, JavaDelegate, IMessageEvent {
 
+    private final Logger logger = LoggerFactory.getLogger(TaskAssignmentListener.class.getName());
+
+
     protected MailConfiguration configuration;
     private Expression recipientEmails;
     private Expression body;
@@ -75,6 +81,9 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     @Autowired
     private EmailAttachmentService attachmentService;
 
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
+
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         notify(execution);
@@ -85,6 +94,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         try {
             sendEmail(execution, null);
         } catch (Exception e) {
+            logger.error("Failed task", e);
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
 
@@ -95,6 +105,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         try {
             sendEmail(delegateTask.getExecution(), String.valueOf(delegateTask.getId()));
         } catch (Exception e) {
+
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
 
@@ -123,7 +134,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         if(attachPdf) {
-            attachments.add(generatePDFForForm(execution, submission));
+            attachments.add(generatePDFForForm(formId(execution), submissionId(execution)));
         }
 
         if(attachmentNames.length > 0) {
@@ -210,25 +221,10 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 .collect(Collectors.toList());
     }
 
-    private Attachment generatePDFForForm(DelegateExecution execution, Map<String, JSONObject> data) throws Exception {
-        // Generate the template from '/templates/form.html'
-        Template template = getTemplate();
+    private Attachment generatePDFForForm(String formId, String submissionId) throws Exception {
+        DataSource pdf = this.attachmentService.generatePdf(formId, submissionId);
 
-        // Create a temporary 'output.html' file template
-        File f = null;
-        try {
-            f = File.createTempFile("output", ".html");
-            template.process(data, new FileWriter(f));
-
-            // Render the file as 'form.pdf'
-            byte[] fileContent = RenderPage(f).get();
-
-            return new Attachment("form.pdf", "application/pdf", fileContent);
-        } finally {
-            if (f != null) {
-                f.deleteOnExit();
-            }
-        }
+        return new Attachment("form.pdf", "application.pdf", pdf);
     }
 
     private Map<String, JSONObject> getFormPdfData(DelegateExecution execution) throws IOException {
@@ -250,6 +246,11 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     private String submissionId(DelegateExecution execution) {
         String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
         return formUrlString.split("/submission/")[1];
+    }
+
+    private String formId(DelegateExecution execution) {
+        String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
+        return formUrlString.split("/submission/")[0].split("/form/")[1];
     }
 
     public Message createMessage(InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {

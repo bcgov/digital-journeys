@@ -4,6 +4,9 @@ package org.camunda.bpm.extension.commons.connector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import reactor.core.publisher.Mono;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -41,7 +44,11 @@ public class HTTPServiceInvoker {
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
-            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
+        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
+    }
+
+    public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
+        return accessHandlerFactory.getService(getServiceId(url)).exchangeForFile(url, method, payload);
     }
 
     private String getServiceId(String url) {
