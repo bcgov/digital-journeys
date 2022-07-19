@@ -139,7 +139,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       dispatch(setBPMTaskDetailLoader(true));
       dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId,actionType),(err)=>{
         if(!err){
-          reloadTasks();
+          dispatch(push('/success?type=approval'))
         }else{
           dispatch(setBPMTaskDetailLoader(false));
         }

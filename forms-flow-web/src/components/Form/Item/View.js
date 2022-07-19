@@ -307,8 +307,8 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
-              dispatch(push(`/form`));
+              // toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
+              dispatch(push(`/success?type=submission`));
             } else {
               dispatch(setFormSubmissionLoading(false));
             }

@@ -1,0 +1,23 @@
+.success-body {
+  display: flex;
+  font-family: 'BCSans','Noto Sans','Verdana','Arial',sans-serif;
+  flex-wrap: wrap;
+}
+.title-row {
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: space-between;
+}
+.success-content {
+  display: flex;
+  padding-left: 20px;
+  flex-wrap: wrap;
+}
+.success-content-intro {
+  font-size: 24px;
+  font-weight: 600;
+  padding-bottom: 20px;
+}
+.success-content-body {
+  padding-left: 20px;
+}
