@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="reviewer" name="Supervisor Reviews Submission" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
+    <bpmn:userTask id="reviewer" name="Review ${name}'s Request" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
