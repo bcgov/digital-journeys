@@ -1,6 +1,6 @@
 # Static Deploy On Openshift
 # Builds and Deploys merged PR's to persistent pods/services/routes/etc in the OpenShift Dev environment.
-name: Deploy web app/api to Openshift
+name: Test GA workflow for image tagging
   
 on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
@@ -28,7 +28,7 @@ jobs:
       - name: Print Env Vars
         if: ${{!github.event.inputs.environment}}
         run: |
-          echo "BUILD_TAG=dev" >> GITHUB_ENV  
+          echo "BUILD_TAG=dev" >> $GITHUB_ENV  
           echo Git Base Ref: ${{ github.base_ref }}
           echo Git Build ID: ${{ github.event.number }}
           echo OC CLI Version: $(oc version)
