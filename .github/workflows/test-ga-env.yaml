@@ -22,12 +22,15 @@ on:
 jobs:
   #Print variables for logging and debugging purposes
   checkEnv:
+    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     name: Check Env variables
     runs-on: ubuntu-latest
+    env:
+      BUILD_TAG: ${{ github.event.inputs.environment }}
     steps:
       - name: Print Env Vars
         run: |
           echo Git Base Ref: ${{ github.base_ref }}
           echo Git Build ID: ${{ github.event.number }}
           echo OC CLI Version: $(oc version)
-          echo Env: ${{ github.event.inputs.environment }}
+          echo Env: ${BUILD_TAG}
