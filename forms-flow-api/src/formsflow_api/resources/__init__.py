@@ -6,6 +6,7 @@ from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
 from formsflow_api.exceptions import BusinessException
+from formsflow_api.resources.anonymous_application import API as PUBLIC_API
 from formsflow_api.resources.application import API as APPLICATION_API
 from formsflow_api.resources.application_history import API as APPLICATION_HISTORY_API
 from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
@@ -64,3 +65,4 @@ API.add_namespace(FORM_API, path="/form")
 API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(EMPLOYEE_DATA_API, path="/employee-data")
+API.add_namespace(PUBLIC_API, path="/public")

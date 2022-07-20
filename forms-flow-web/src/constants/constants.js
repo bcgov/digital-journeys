@@ -73,6 +73,14 @@ export const ROLES = [
   },
 ];
 
+export const FORM_ACCESS =[{
+  type: "read_all",
+  roles:  [CLIENT_ID,
+    STAFF_REVIEWER_ID,
+    STAFF_DESIGNER_ID
+      ]
+  }]
+
 export const OPERATIONS = {
   insert: {
     action: "insert",

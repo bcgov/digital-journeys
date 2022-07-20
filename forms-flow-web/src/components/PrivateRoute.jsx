@@ -10,6 +10,7 @@ import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 
 const Form = lazy(() => import('./Form'));
+const Success = lazy(() => import('./Form/Item/Submission/Success/SuccessPage'))
 const ServiceFlow = lazy(() => import('./ServiceFlow'));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
@@ -60,6 +61,7 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading/>}>
           <Switch>
             <Route path="/form" component={Form}/>
+            <Route path="/success" component={Success}/>
             <Route path="/admin" component={Admin}/>
             <Route path="/formflow" component={Form}/>
             <ClientReviewerRoute path="/application" component={Application}/>
