@@ -23,9 +23,41 @@
         font-weight: 700;
         src: url('./fonts/BCSans-BoldItalic.woff') format('woff');
       }
-      
-      div {
-        font-family: 'BCSans';
+
+      .card > .card-header {
+        display: block;
+      }
+
+      .formio-component-panel {
+        border: none !important;
+      }
+
+      /** Prevent Page breaks inside these components **/
+      .formio-component, .formio-form-group {
+        page-break-inside:avoid;
+      }
+
+      /** Allow page breaks within the bigger components that potentially have multiple children */
+      .formio-component-form { page-break-inside:auto; }
+
+      .formio-component-panel, .formio-component-panel .card-body {
+            break-inside: auto !important;
+      }
+
+      .formio-component.formio-component-fieldset,
+      .formio-component-well.formio-form-group,
+      .formio-component.formio-component-content,
+      .formio-component-tabs.formio-form-group,
+      .formio-component-columns.formio-form-group,
+      .formio-component.formio-component-datagrid {
+          page-break-inside: auto;
+      }
+      .formio-component-panel .card {
+          display: block !important;
+      }
+
+      .formio-component.formio-component-datagrid tr {
+          page-break-inside: avoid;
       }
 
     </style>
@@ -35,14 +67,17 @@
   <body>
     <div id="formio" style="margin-left: 16px; margin-right: 16px;"></div>
     <script type="text/javascript">
-      window.createForm = (formData, submissionData) => {
-        console.log(submissionData)
+      window.createForm = (formData, submissionData, viewportSize) => {
+        if(!submissionData.task) {
+          submissionData.task = {};
+        }
+
+        // Make sure to render all sections hidden behind the assigned to me flag
+        submissionData.task.assignedToMe = true;
         Formio.icons = 'fontawesome';
+
+        // Create formio form
         return Formio.createForm(document.getElementById('formio'), formData).then(form => {
-          console.log("form has been created");
-
-          console.log(JSON.stringify(submissionData));
-
           form.submission = submissionData;
 
           setTimeout(function() {
@@ -54,35 +89,6 @@
 
         })
       }
-    </script>
-    <script>
-      const exportToPdf = (options) => {
-        console.log('Exporting pdf')
-        const pdfPageHeight = 1070;
-        const pdfPageWidth = 1024;
-        const mainPrintableContainer = document.getElementById(options.formId);
-        var opt = {
-          margin: [60, 0, 64, 0],
-          filename: `form-exported-${new Date().getTime()}.pdf`,
-          // filename: `form-exported-1.pdf`,
-          pagebreak: {mode: ['avoid-all']},
-          image: { type: 'jpeg', quality: 0.50 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'px', format: [pdfPageWidth, pdfPageHeight], orientation: 'portrait' }
-        };
-        return html2pdf().set(opt).from(mainPrintableContainer).output('blob').then(function (pdf) {
-          console.log("pdf has been created");
-
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsBinaryString(pdf);
-          });
-          return pdf;
-        });
-      };
-      window.exportToPdf = exportToPdf;
     </script>
   </body>
 </html>

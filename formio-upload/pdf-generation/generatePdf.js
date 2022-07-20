@@ -23,6 +23,7 @@ const externalStyles = [
   'pdf-generation/styles/font-awesome-4.7.0.min.css',
   'pdf-generation/styles/formio-4.13.1.full.min.css',
   'pdf-generation/styles/semantic-2.4.1.min.css',
+  'pdf-generation/styles/styles.css',
 ]
 
 // Pool of puppeteer browsers to choose from
@@ -48,13 +49,18 @@ module.exports = async function generatePdf(formData, submissionData) {
   try {
     page = await browserPool.newPage();
     page.on('pageerror', ({ message }) => log(message))
-    
-    await loadFormioPage(page);    
+
+    page.setViewport({
+      width: 1024,
+      height: 1070
+    });
+
+    await loadFormioPage(page);
 
     // Render the given Formio submission
-    await page.evaluate(async (formData, submissionData) => {
-      await window.createForm(formData, submissionData);
-    }, formData, submissionData);
+    await page.evaluate(async (formData, submissionData, viewportHeight) => {
+      await window.createForm(formData, submissionData, viewportHeight);
+    }, formData, submissionData, 600);
     
     // Wait for the submission to finish rendering
     await page.waitForSelector('#formio-form-rendered');
@@ -62,9 +68,19 @@ module.exports = async function generatePdf(formData, submissionData) {
     // Export pdf using `html2pdf.js` - this returns the pdf as a byte string.
     // This is used in place of the built in puppeteer pdf functionality as it
     // handles page breaks in a gracefuly way that works seamlessly with Formio forms.
-    return await page.evaluate(async () => { 
-      return await window.exportToPdf({ formId: "formio" });
+
+    const pdf = await page.pdf({
+        format: 'letter',
+        printBackground: true,
+        margin: {
+          top: '60px',
+          right: '0px',
+          bottom: '64px',
+          left: '0px'
+      },
     });
+    
+    return pdf.toString('binary');
   } finally {
     if(page) {
       await page.close();
