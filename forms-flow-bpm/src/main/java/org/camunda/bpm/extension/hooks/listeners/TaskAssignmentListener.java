@@ -1,6 +1,8 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import camundajar.impl.scala.collection.ClassTagIterableFactory.Delegate;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -55,12 +57,14 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     private final Logger logger = LoggerFactory.getLogger(TaskAssignmentListener.class.getName());
 
+    public static final String[] INVALID_CHARS = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|", "[", "]", "\"", ";","=", "," };
 
     protected MailConfiguration configuration;
     private Expression recipientEmails;
     private Expression body;
     private Expression subject;
     private Expression attachSubmission;
+    private Expression attachSubmissionName;
     private Expression attachments;
 
     @Value("${formsflow.ai.app.url}")
@@ -125,7 +129,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         if(attachPdf) {
-            attachments.add(generatePDFForForm(formId(execution), submissionId(execution)));
+            attachments.add(generatePDFForForm(formId(execution), submissionId(execution), getAttachSubmissionName(execution)));
         }
 
         if(attachmentNames.length > 0) {
@@ -212,10 +216,10 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 .collect(Collectors.toList());
     }
 
-    private Attachment generatePDFForForm(String formId, String submissionId) throws Exception {
+    private Attachment generatePDFForForm(String formId, String submissionId, String fileName) throws Exception {
         DataSource pdf = this.attachmentService.generatePdf(formId, submissionId);
 
-        return new Attachment("form.pdf", "application.pdf", pdf);
+        return new Attachment(fileName, "application/pdf", pdf);
     }
 
     private Map<String, JSONObject> getFormPdfData(DelegateExecution execution) throws IOException {
@@ -485,6 +489,19 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return Boolean.parseBoolean((String) this.attachSubmission.getValue(delegateExecution));
     }
 
+    private String getAttachSubmissionName(DelegateExecution delegateExecution) {
+        if(this.attachSubmissionName == null || this.attachSubmissionName.getValue(delegateExecution) == null) {
+            return "form.pdf";
+        }
+        String fileName = (String) this.attachSubmissionName.getValue(delegateExecution);
+
+        if(fileName == null) {
+            return "form.pdf";
+        }
+
+        return sanitizeFileName(fileName) + ".pdf";
+    }
+
     private String[] getAttachmentNames(DelegateExecution delegateExecution) {
         if(this.attachments == null) {
             return new String[0];
@@ -499,6 +516,14 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     public static TaskAssignmentListener getInstance() {
         return new TaskAssignmentListener();
+    }
+
+    private static String sanitizeFileName(String fn) {
+        for(String c: INVALID_CHARS) {
+            fn = fn.replace(c, "");
+        }
+
+        return fn;
     }
 
 }

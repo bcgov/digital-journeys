@@ -17,7 +17,7 @@ class LocalProvider extends Provider {
     path = `${uploadDir}/${decodeURIComponent(path)}`;
     fs.stat(path, function(err, stat) {
       if (err) {
-        return next(err);
+        return res.status(400).send(err.message || err);
       }
 
       req.debug(`Sending file ${res.filePath}`);
