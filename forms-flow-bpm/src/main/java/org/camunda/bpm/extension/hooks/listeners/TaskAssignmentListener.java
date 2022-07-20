@@ -1,12 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Page.WaitForSelectorOptions;
-import com.microsoft.playwright.options.Margin;
-import com.microsoft.playwright.options.WaitForSelectorState;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -74,9 +68,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-
-    @Autowired
-    private AsyncTaskExecutor playwrightExecutor;
     
     @Autowired
     private EmailAttachmentService attachmentService;
@@ -308,26 +299,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         cfg.setFallbackOnNullLoopVariable(false);
         Template template = cfg.getTemplate("/form.html");
         return template;
-    }
-
-    private Future<byte[]> RenderPage(File file) throws Exception {
-        Future<byte[]> f = playwrightExecutor.submit(() -> {
-            Thread t = currentThread();
-            Browser b = ((PlaywrightThread) t).getBrowser();
-            try(BrowserContext c = b.newContext()) {
-                Page page = c.newPage();
-
-                try {
-                    page.navigate(file.toPath().toUri().toURL().toString());
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-                page.waitForSelector("#formio-form-rendered", new WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
-                return page.pdf(new Page.PdfOptions().setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
-            }
-        });
-
-        return f;
     }
 
     /**
