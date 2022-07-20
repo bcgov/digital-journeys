@@ -18,7 +18,6 @@ import {
   setFilterListParams,
   setSelectedBPMFilter, setSelectedTaskID
 } from "../../actions/bpmTaskActions";
-import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
@@ -132,13 +131,10 @@ export default React.memo(() => {
 
 
   return (
-    <Container fluid id="main" className="pt-0">
+    <Container fluid id="main" className="pt-3">
       <Row>
-        <Col lg={3} xs={12} sm={12} md={4} xl={3}>
+        <Col lg={3} xs={12} sm={12} md={4} xl={3} >
           <section>
-            <header className="task-section-top">
-              <TaskSortSelectedList/>
-            </header>
               <ServiceFlowTaskList/>
           </section>
         </Col>
