@@ -47,7 +47,7 @@ formsflow.ai:
     spring:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
-        connectionTimeout: 5000
+        connectionTimeout: 120000
   app:
     url: ${WEB_BASE_URL}
 

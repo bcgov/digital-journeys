@@ -206,12 +206,17 @@ services:
   forms-flow-file-upload:
     container_name: forms-flow-file-upload
     # image: formio/formio-upload
+    entrypoint:
+      - node
+      - ./node_modules/nodemon/bin/nodemon.js
+      - index
     environment:
       PORT: 4100
       MAX_UPLOAD_SIZE: 16mb
       PROVIDERS: file
       UPLOAD_DIR: /uploads
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      DEBUG: '*,-puppeteer:*'
     ports:
       - 4100:4100
     restart: always
@@ -221,6 +226,7 @@ services:
       - ./.file-uploads/upload:/uploads
       - ./.file-uploads/tmp:/tmp
       - ./formio-upload:/src
+      - /src/node_modules
     build:
       context: ./formio-upload/
       dockerfile: Dockerfile

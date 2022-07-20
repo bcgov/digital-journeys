@@ -1,0 +1,91 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style type="text/css">
+      @font-face {
+        font-family: 'BCSans';
+        font-style: normal;
+        src: url('./fonts/BCSans-Regular.woff') format('woff');
+      }
+      @font-face {
+        font-family: 'BCSans';
+        font-style: italic;
+        src: url('./fonts/BCSans-Italic.woff') format('woff');
+      }
+      @font-face {
+        font-family: 'BCSans';
+        font-weight: 700;
+        src: url('./fonts/BCSans-Bold.woff') format('woff');
+      }
+      @font-face {
+        font-family: 'BCSans';
+        font-style: italic;
+        font-weight: 700;
+        src: url('./fonts/BCSans-BoldItalic.woff') format('woff');
+      }
+
+      .card > .card-header {
+        display: block;
+      }
+
+      .formio-component-panel {
+        border: none !important;
+      }
+
+      /** Prevent Page breaks inside these components **/
+      .formio-component, .formio-form-group {
+        page-break-inside:avoid;
+      }
+
+      /** Allow page breaks within the bigger components that potentially have multiple children */
+      .formio-component-form { page-break-inside:auto; }
+
+      .formio-component-panel, .formio-component-panel .card-body {
+            break-inside: auto !important;
+      }
+
+      .formio-component.formio-component-fieldset,
+      .formio-component-well.formio-form-group,
+      .formio-component.formio-component-content,
+      .formio-component-tabs.formio-form-group,
+      .formio-component-columns.formio-form-group,
+      .formio-component.formio-component-datagrid {
+          page-break-inside: auto;
+      }
+      .formio-component-panel .card {
+          display: block !important;
+      }
+
+      .formio-component.formio-component-datagrid tr {
+          page-break-inside: avoid;
+      }
+
+    </style>
+    <title>Form</title>
+  </head>
+  
+  <body>
+    <div id="formio" style="margin-left: 16px; margin-right: 16px;"></div>
+    <script type="text/javascript">
+      window.createForm = (formData, submissionData, viewportSize) => {
+        // Make sure to render all sections hidden behind the assigned to me flag
+        submissionData.data.generatingPDF = true;
+        submissionData.generatingPDF = true;
+        Formio.icons = 'fontawesome';
+
+        // Create formio form
+        return Formio.createForm(document.getElementById('formio'), formData).then(form => {
+          form.submission = submissionData;
+
+          setTimeout(function() {
+            var successDiv = document.createElement('div');
+
+            successDiv.setAttribute("id", 'formio-form-rendered');
+            document.body.appendChild(successDiv);
+          }, 0);
+
+        })
+      }
+    </script>
+  </body>
+</html>

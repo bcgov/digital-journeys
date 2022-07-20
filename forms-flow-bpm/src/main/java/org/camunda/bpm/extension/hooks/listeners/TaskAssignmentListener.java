@@ -1,16 +1,13 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Page.WaitForSelectorOptions;
-import com.microsoft.playwright.options.Margin;
-import com.microsoft.playwright.options.WaitForSelectorState;
+
+import camundajar.impl.scala.collection.ClassTagIterableFactory.Delegate;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.model.Attachment;
 import org.camunda.bpm.extension.hooks.services.EmailAttachmentService;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
@@ -28,6 +25,8 @@ import org.camunda.connect.spi.ConnectorRequestInterceptor;
 import org.camunda.connect.spi.ConnectorResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -56,11 +55,16 @@ import static java.lang.Thread.currentThread;
 @Scope(value = "prototype")
 public class TaskAssignmentListener extends BaseListener implements TaskListener, ExecutionListener, JavaDelegate, IMessageEvent {
 
+    private final Logger logger = LoggerFactory.getLogger(TaskAssignmentListener.class.getName());
+
+    public static final String[] INVALID_CHARS = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|", "[", "]", "\"", ";","=", "," };
+
     protected MailConfiguration configuration;
     private Expression recipientEmails;
     private Expression body;
     private Expression subject;
     private Expression attachSubmission;
+    private Expression attachSubmissionName;
     private Expression attachments;
 
     @Value("${formsflow.ai.app.url}")
@@ -68,12 +72,12 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-
-    @Autowired
-    private AsyncTaskExecutor playwrightExecutor;
     
     @Autowired
     private EmailAttachmentService attachmentService;
+
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -85,6 +89,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         try {
             sendEmail(execution, null);
         } catch (Exception e) {
+            logger.error("Failed task", e);
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
 
@@ -95,6 +100,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         try {
             sendEmail(delegateTask.getExecution(), String.valueOf(delegateTask.getId()));
         } catch (Exception e) {
+
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
 
@@ -123,7 +129,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         if(attachPdf) {
-            attachments.add(generatePDFForForm(execution, submission));
+            attachments.add(generatePDFForForm(formId(execution), submissionId(execution), getAttachSubmissionName(execution)));
         }
 
         if(attachmentNames.length > 0) {
@@ -210,25 +216,10 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 .collect(Collectors.toList());
     }
 
-    private Attachment generatePDFForForm(DelegateExecution execution, Map<String, JSONObject> data) throws Exception {
-        // Generate the template from '/templates/form.html'
-        Template template = getTemplate();
+    private Attachment generatePDFForForm(String formId, String submissionId, String fileName) throws Exception {
+        DataSource pdf = this.attachmentService.generatePdf(formId, submissionId);
 
-        // Create a temporary 'output.html' file template
-        File f = null;
-        try {
-            f = File.createTempFile("output", ".html");
-            template.process(data, new FileWriter(f));
-
-            // Render the file as 'form.pdf'
-            byte[] fileContent = RenderPage(f).get();
-
-            return new Attachment("form.pdf", "application/pdf", fileContent);
-        } finally {
-            if (f != null) {
-                f.deleteOnExit();
-            }
-        }
+        return new Attachment(fileName, "application/pdf", pdf);
     }
 
     private Map<String, JSONObject> getFormPdfData(DelegateExecution execution) throws IOException {
@@ -250,6 +241,11 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     private String submissionId(DelegateExecution execution) {
         String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
         return formUrlString.split("/submission/")[1];
+    }
+
+    private String formId(DelegateExecution execution) {
+        String formUrlString = String.valueOf(execution.getVariables().get("formUrl"));
+        return formUrlString.split("/submission/")[0].split("/form/")[1];
     }
 
     public Message createMessage(InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {
@@ -307,26 +303,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         cfg.setFallbackOnNullLoopVariable(false);
         Template template = cfg.getTemplate("/form.html");
         return template;
-    }
-
-    private Future<byte[]> RenderPage(File file) throws Exception {
-        Future<byte[]> f = playwrightExecutor.submit(() -> {
-            Thread t = currentThread();
-            Browser b = ((PlaywrightThread) t).getBrowser();
-            try(BrowserContext c = b.newContext()) {
-                Page page = c.newPage();
-
-                try {
-                    page.navigate(file.toPath().toUri().toURL().toString());
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-                page.waitForSelector("#formio-form-rendered", new WaitForSelectorOptions().setState(WaitForSelectorState.ATTACHED));
-                return page.pdf(new Page.PdfOptions().setMargin(new Margin().setRight("40px").setLeft("40px").setTop("40px").setBottom("40px")));
-            }
-        });
-
-        return f;
     }
 
     /**
@@ -513,6 +489,19 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return Boolean.parseBoolean((String) this.attachSubmission.getValue(delegateExecution));
     }
 
+    private String getAttachSubmissionName(DelegateExecution delegateExecution) {
+        if(this.attachSubmissionName == null || this.attachSubmissionName.getValue(delegateExecution) == null) {
+            return "form.pdf";
+        }
+        String fileName = (String) this.attachSubmissionName.getValue(delegateExecution);
+
+        if(fileName == null) {
+            return "form.pdf";
+        }
+
+        return sanitizeFileName(fileName) + ".pdf";
+    }
+
     private String[] getAttachmentNames(DelegateExecution delegateExecution) {
         if(this.attachments == null) {
             return new String[0];
@@ -527,6 +516,14 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
     public static TaskAssignmentListener getInstance() {
         return new TaskAssignmentListener();
+    }
+
+    private static String sanitizeFileName(String fn) {
+        for(String c: INVALID_CHARS) {
+            fn = fn.replace(c, "");
+        }
+
+        return fn;
     }
 
 }

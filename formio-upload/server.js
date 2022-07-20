@@ -8,6 +8,9 @@ const middleware = require('./middleware');
 const helmet = require('helmet')
 const morgan = require('morgan')
 const jwtDecode = require('jwt-decode');
+const debug = require('debug');
+
+const log = debug('endpoint');
 
 const app = express();
 app.use(helmet())
@@ -54,6 +57,22 @@ app.use(morgan(':remote-addr :user :method :url HTTP/:http-version :status :res[
 app.get('/status', (req, res, next) => {
   res.json({version: pkg.version});
 });
+
+/**
+ * Generate a pdf version of the given file
+ */
+app.get(`/file/pdf`, (req, res, next) => {
+  if (!req.query.token && !req.headers['x-jwt-token']) {
+    return res.status(401).send('Unauthorized');
+  }
+  
+  next();
+},
+  middleware.init('generatePdf'),
+  middleware.auth,
+  middleware.generatePdf,
+)
+
 
 /**
  * Add a new upload provider.

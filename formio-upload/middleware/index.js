@@ -3,5 +3,6 @@ module.exports = {
   auth: require('./auth'),
   upload: require('./upload'),
   tempToken: require('./tempToken'),
-  cleanup: require('./cleanup')
+  cleanup: require('./cleanup'),
+  generatePdf: require('./generatePdf'),
 };

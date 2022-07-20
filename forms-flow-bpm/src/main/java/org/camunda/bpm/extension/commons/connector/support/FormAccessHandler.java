@@ -1,6 +1,9 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
+
+import java.time.Duration;
+
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -18,6 +21,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 
 
 /**
@@ -40,6 +44,21 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     @Autowired
     private WebClient unauthenticatedWebClient;
 
+    public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
+        String accessToken = getAccessToken();
+
+        payload = (payload == null) ? new JsonObject().toString() : payload;
+
+        return unauthenticatedWebClient.method(method)
+                .uri(url )
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("x-jwt-token", accessToken)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError,
+                    response -> Mono.error(new FormioServiceException(response.toString())))
+                .bodyToMono(byte[].class);
+    }
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         String accessToken = getToken();

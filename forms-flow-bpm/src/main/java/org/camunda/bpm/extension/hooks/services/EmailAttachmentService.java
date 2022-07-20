@@ -2,19 +2,25 @@ package org.camunda.bpm.extension.hooks.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import reactor.core.publisher.Mono;
+
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.activation.URLDataSource;
+import javax.mail.util.ByteArrayDataSource;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +30,12 @@ public class EmailAttachmentService {
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Value("${formsflow.ai.fileService.url}")
+    private String fileServiceUrl;
+
+    @Value("${formsflow.ai.formio.url}")
+    private String formioUrl;
 
     /**
      * Retrieves the given attachment from the Formio file service as a URLDataSource
@@ -50,5 +62,13 @@ public class EmailAttachmentService {
         }
 
         return null;
+    }
+
+    public ByteArrayDataSource generatePdf(String formId, String submissionid) throws IOException {
+        String url = String.format("%s/pdf?form=%s&submission=%s&baseUrl=%s", fileServiceUrl,/*fileServiceUrl.replace("/file", ""),*/ formId, submissionid, formioUrl);
+
+        Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.GET, null);
+
+        return new ByteArrayDataSource(pdfFile.block(), "application/pdf");
     }
 }

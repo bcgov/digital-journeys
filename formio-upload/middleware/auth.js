@@ -5,16 +5,16 @@ module.exports = function authenticate(req, res, next) {
   req.debug('Authenticating');
   
   // Require an auth token to get the file.
-  if (req.method === 'GET' && !req.query.token) {
+  if (req.method === 'GET' && !req.query.token && !req.headers['x-jwt-token']) {
     return res.status(401).send('Unauthorized');
   }
 
-  if (req.query.token) {
+  if (req.query.token || req.headers['x-jwt-token']) {
     request.get({
       url: `${req.query.baseUrl}/form/${req.query.form}/submission/${req.query.submission}`,
       json: true,
       headers: {
-        'x-jwt-token': req.query.token
+        'x-jwt-token': req.query.token || req.headers['x-jwt-token']
       }
 
     }, (err, response, body) => {
@@ -24,6 +24,8 @@ module.exports = function authenticate(req, res, next) {
       if (!body._id) {
         return res.status(401).send('Unauthorized');
       }
+
+      req.submission = body;
 
       // We are able to load the submission, so we are authenticated to download this file.
       return next();
