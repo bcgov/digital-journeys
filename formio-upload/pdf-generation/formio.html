@@ -68,12 +68,9 @@
     <div id="formio" style="margin-left: 16px; margin-right: 16px;"></div>
     <script type="text/javascript">
       window.createForm = (formData, submissionData, viewportSize) => {
-        if(!submissionData.task) {
-          submissionData.task = {};
-        }
-
         // Make sure to render all sections hidden behind the assigned to me flag
-        submissionData.task.assignedToMe = true;
+        submissionData.data.generatingPDF = true;
+        submissionData.generatingPDF = true;
         Formio.icons = 'fontawesome';
 
         // Create formio form
