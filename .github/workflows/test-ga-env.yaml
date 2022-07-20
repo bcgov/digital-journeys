@@ -33,4 +33,4 @@ jobs:
           echo Git Build ID: ${{ github.event.number }}
           echo OC CLI Version: $(oc version)
           cat $GITHUB_ENV
-          echo Env: env.BUILD_TAG
+          echo Env: $(env.BUILD_TAG)
