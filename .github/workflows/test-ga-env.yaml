@@ -26,7 +26,7 @@ jobs:
     name: Check Env variables
     runs-on: ubuntu-latest
     env:
-      BUILD_TAG: ${{ github.event.inputs.environment }}
+      BUILD_TAG: dev
     steps:
       - name: Print Env Vars
         run: |
