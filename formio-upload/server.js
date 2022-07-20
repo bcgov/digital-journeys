@@ -61,7 +61,7 @@ app.get('/status', (req, res, next) => {
 /**
  * Generate a pdf version of the given file
  */
-app.get(`/file/pdf`, (req, res, next) => {
+app.get(`/pdf`, (req, res, next) => {
   if (!req.query.token && !req.headers['x-jwt-token']) {
     return res.status(401).send('Unauthorized');
   }
