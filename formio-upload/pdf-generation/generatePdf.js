@@ -11,7 +11,6 @@ const puppeteer = require('puppeteer');
  */
 const externalScripts = [
   'pdf-generation/scripts/formio-4.13.1.full.min.js',
-  'pdf-generation/scripts/html2pdf-0.10.1.bundle.min.js',
 ];
 
 /**
