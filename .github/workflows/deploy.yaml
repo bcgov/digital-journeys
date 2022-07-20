@@ -42,7 +42,7 @@ jobs:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
       BRANCH: main
-      BUILD_TAG: latest
+      BUILD_TAG: ${{ github.event.inputs.environment }}
       APP: forms-flow-web
       API: forms-flow-webapi
     steps:
@@ -71,6 +71,7 @@ jobs:
           echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
                 oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
                 -p SOURCE_REPOSITORY_REF=${BRANCH} \
+                -p TAG=${BUILD_TAG} \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
@@ -85,6 +86,7 @@ jobs:
           echo "BUILIDING ${API} with tag: ${BUILD_TAG}"
                 oc -n ${BUILD_NAMESPACE} process -f webapi_bc.yaml \
                 -p SOURCE_REPOSITORY_REF="" \
+                -p TAG=${BUILD_TAG}  \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-api" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${API} --no-cache --wait
@@ -132,7 +134,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=dev \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -166,7 +168,7 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=dev \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -227,7 +229,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=test \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -261,7 +263,7 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=test \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -323,7 +325,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=prod \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -357,7 +359,7 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=latest \
+                -p TAG_NAME=prod \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
