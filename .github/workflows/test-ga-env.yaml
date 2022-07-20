@@ -33,4 +33,4 @@ jobs:
           echo Git Base Ref: ${{ github.base_ref }}
           echo Git Build ID: ${{ github.event.number }}
           echo OC CLI Version: $(oc version)
-          echo Env: ${BUILD_TAG}
+          echo Env: ${{ env.BUILD_TAG }}
