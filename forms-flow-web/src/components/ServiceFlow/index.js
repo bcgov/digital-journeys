@@ -18,7 +18,6 @@ import {
   setFilterListParams,
   setSelectedBPMFilter, setSelectedTaskID
 } from "../../actions/bpmTaskActions";
-import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
