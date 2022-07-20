@@ -23,7 +23,7 @@ const externalStyles = [
   'pdf-generation/styles/font-awesome-4.7.0.min.css',
   'pdf-generation/styles/formio-4.13.1.full.min.css',
   'pdf-generation/styles/semantic-2.4.1.min.css',
-  'pdf-generation/styles/styles.css',
+  'pdf-generation/styles/digital-journeys-0-1-0-min.css',
 ]
 
 // Pool of puppeteer browsers to choose from
