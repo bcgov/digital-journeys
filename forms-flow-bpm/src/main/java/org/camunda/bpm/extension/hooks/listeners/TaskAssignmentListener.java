@@ -266,7 +266,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
         BodyPart messageBodyPart = new MimeBodyPart();
         if (!body.isEmpty()) {
-            messageBodyPart.setText(body);
+            messageBodyPart.setContent(body, "text/html");
         } else {
             message.setText("");
         }
@@ -462,11 +462,31 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     }
 
     private String getSubject(DelegateExecution delegateExecution) {
-        return String.valueOf(this.subject.getValue(delegateExecution));
+        Object subject = delegateExecution.getVariable("subject");
+
+        if(subject == null) {
+            return String.valueOf(this.subject.getValue(delegateExecution));
+        }
+
+        return String.valueOf(subject);
     }
 
+    private String[] getRecipientsValue(DelegateExecution delegateExecution) {
+        Object recipientEmails = delegateExecution.getVariable("recipientEmails");
+        if(recipientEmails == null) {
+            recipientEmails = this.recipientEmails.getValue(delegateExecution);
+        }
+
+        String[] recipientArray = String.valueOf(recipientEmails).split(",");
+
+        return recipientArray;
+    }
+    
+
+
+
     private InternetAddress[] getRecipients(DelegateExecution delegateExecution) throws AddressException {
-        String[] recipientArray = String.valueOf(this.recipientEmails.getValue(delegateExecution)).split(",");
+        String[] recipientArray = getRecipientsValue(delegateExecution);
         InternetAddress[] recipients = Arrays.stream(recipientArray)
                 .map(r -> {
                     try {
@@ -482,27 +502,56 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     }
 
     private String getBody(DelegateExecution delegateExecution) {
-        return String.valueOf(this.body.getValue(delegateExecution));
+        Object body = delegateExecution.getVariable("body");
+
+        if(body == null) {
+            return String.valueOf(this.body.getValue(delegateExecution));
+        }
+
+        return String.valueOf(body);
+    }
+
+    private String getAttachSubmissionNameValue(DelegateExecution execution) {
+
+        Object attachSubmissionName = execution.getVariable("attachSubmissionName");
+
+        if(attachSubmissionName != null) {
+            return String.valueOf(attachSubmissionName);
+        }
+
+        if(this.attachSubmissionName == null || this.attachSubmissionName.getValue(execution) == null) {
+            return null;
+        }
+
+        return (String) this.attachSubmissionName.getValue(execution);
     }
 
     private Boolean getAttachSubmission(DelegateExecution delegateExecution) {
-        return Boolean.parseBoolean((String) this.attachSubmission.getValue(delegateExecution));
+        Object attachSubmission = delegateExecution.getVariable("attachSubmission");
+        if(attachSubmission == null) {
+            if(this.attachSubmission == null) { return false; }
+            attachSubmission = this.attachSubmission.getValue(delegateExecution);
+        }
+
+        return Boolean.parseBoolean(String.valueOf(attachSubmission));
     }
 
     private String getAttachSubmissionName(DelegateExecution delegateExecution) {
-        if(this.attachSubmissionName == null || this.attachSubmissionName.getValue(delegateExecution) == null) {
-            return "form.pdf";
-        }
-        String fileName = (String) this.attachSubmissionName.getValue(delegateExecution);
-
-        if(fileName == null) {
+        String attachSubmissionName = getAttachSubmissionNameValue(delegateExecution);
+        if(attachSubmissionName == null) {
             return "form.pdf";
         }
 
-        return sanitizeFileName(fileName) + ".pdf";
+        return sanitizeFileName(attachSubmissionName) + ".pdf";
     }
 
     private String[] getAttachmentNames(DelegateExecution delegateExecution) {
+        Object attachments = delegateExecution.getVariable("attachments");
+
+        if(attachments != null) {
+            return ((String)attachments).split(",");
+        } 
+
         if(this.attachments == null) {
             return new String[0];
         }
@@ -525,5 +574,4 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         return fn;
     }
-
 }
