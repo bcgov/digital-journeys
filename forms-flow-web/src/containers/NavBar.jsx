@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission, getUserInsightsPermission} from "../helper/user";
 import { useHistory } from "react-router-dom";
-import Navigation from "./Overrides/Navigation";
+import Navigation from "@button-inc/bcgov-theme/Navigation";
 
 import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";
@@ -63,7 +63,6 @@ const NavBar = React.memo(() => {
     ) : null,
     getUserRolePermission(userRoles, STAFF_DESIGNER)? (
       <Link
-          style={{ padding: '0 15px 0 20px'}}
           className={pathname.match(/^\/admin/)? 'active': null}
           to='/admin'>
         Admin
