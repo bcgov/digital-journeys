@@ -35,4 +35,29 @@ jobs:
           cat $GITHUB_ENV
           echo 1 ${{ env.BUILD_TAG }}
       - name: Print Build tag
-        run: echo "2 ${{ env.BUILD_TAG }}"
+        run: echo "In checkEnv ${{ env.BUILD_TAG }}"
+
+   # #Build the app
+
+  build:
+    name: Build APP
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.pull_request.merged == true}}
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: main
+      BUILD_TAG: ${{ github.event.inputs.environment }}
+      APP: forms-flow-web
+      API: forms-flow-webapi
+    steps:
+      # Checkout the PR branch
+      - name: Set Build TAG
+        if: ${{!github.event.inputs.environment}}
+        run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo "In build ${{ env.BUILD_TAG }}"
