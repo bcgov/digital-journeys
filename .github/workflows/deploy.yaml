@@ -47,6 +47,13 @@ jobs:
       API: forms-flow-webapi
     steps:
       # Checkout the PR branch
+      - name: Set Build TAG for dev
+        if: ${{!github.event.inputs.environment}}
+        run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+      - name: Set BUILD TAG for test and prod
+        if: ${{github.event.inputs.environment}}
+        run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+
       - name: Print env
         run: |
           echo BUILD ID: $BUILD_ID
@@ -68,10 +75,10 @@ jobs:
         run: |
           test -n "${BRANCH}"
           test -n "${BUILD_NAMESPACE}"
-          echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
+          echo "BUILIDING ${APP} with tag: ${{ env.BUILD_TAG }}"
                 oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
                 -p SOURCE_REPOSITORY_REF=${BRANCH} \
-                -p TAG=${BUILD_TAG} \
+                -p TAG=${{ env.BUILD_TAG }} \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
@@ -83,10 +90,10 @@ jobs:
         run: |
           test -n "${BRANCH}"
           test -n "${BUILD_NAMESPACE}"
-          echo "BUILIDING ${API} with tag: ${BUILD_TAG}"
+          echo "BUILIDING ${API} with tag: ${{ env.BUILD_TAG }}"
                 oc -n ${BUILD_NAMESPACE} process -f webapi_bc.yaml \
                 -p SOURCE_REPOSITORY_REF="" \
-                -p TAG=${BUILD_TAG}  \
+                -p TAG=${{ env.BUILD_TAG }}  \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-api" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${API} --no-cache --wait
