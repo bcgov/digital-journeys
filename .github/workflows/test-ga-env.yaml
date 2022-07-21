@@ -35,4 +35,4 @@ jobs:
           cat $GITHUB_ENV
           echo 1 ${{ env.BUILD_TAG }}
       - name: Print Build tag
-         run: echo 2 ${{ env.BUILD_TAG }}
+        run: echo "2 ${{ env.BUILD_TAG }}"
