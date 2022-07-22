@@ -19,6 +19,10 @@ parameters:
     displayName: Git context directory
     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
     value: /forms-flow-bpm
+  - name: TAG
+    displayName: Output Tag for the application image
+    description: Set this to the appropriate tag depending upon the environmnet you are building
+    required: true
 objects:
   -  kind: ImageStream
      apiVersion: v1
@@ -38,7 +42,7 @@ objects:
        output:
          to:
            kind: ImageStreamTag
-           name: 'forms-flow-bpm:latest'
+           name: 'forms-flow-bpm:${TAG}'
        postCommit: {}
        resources:
          limits:
