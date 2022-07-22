@@ -93,12 +93,12 @@ const url = (formio) => {
     title: 'Digital Journeys',
     name: 'digital-journeys',
     uploadFile(file, name, dir, progressCallback, url, options, fileKey, groupPermissions, groupId, abortCallback) {
-      const uploadRequest = function(form) {
-
+      const uploadRequest = function(form, submissionId) {
         return xhrRequest(FORMIO_FILE_URL, name, {
           baseUrl: encodeURIComponent(formio.projectUrl),
           project: form ? form.project || 'dgj' : '',
-          form: form ? form._id : ''
+          form: form ? form._id : '',
+          submission: submissionId || '',
         }, {
           [fileKey]:file,
           name,
@@ -119,8 +119,11 @@ const url = (formio) => {
           };
         });
       };
+
+
+
       if (formio.formId) {
-        return formio.loadForm().then((form) => uploadRequest(form));
+        return formio.loadForm().then((form) => uploadRequest(form, formio.submissionId));
       }
       else {
         return uploadRequest();
