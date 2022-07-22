@@ -179,7 +179,7 @@ services:
       - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
       - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
       - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
-      - REACT_APP_FORMIO_FILE_URL=${FORMIO_FILE_URL}
+      - REACT_APP_FORMIO_FILE_URL=${FORMIO_FILE_URL_ATTACHMENTS}
     volumes:
       - ".:/forms-flow"
       - "/forms-flow/node_modules"
