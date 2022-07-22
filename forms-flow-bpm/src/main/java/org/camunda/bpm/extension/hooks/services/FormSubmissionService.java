@@ -81,6 +81,17 @@ public class FormSubmissionService {
         }
     }
 
+    public void deleteSubmission(String submissionUrl) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseEntity<String> response = httpServiceInvoker.execute(submissionUrl, HttpMethod.DELETE, null);
+        if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        } else {
+            throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
+                    response.getBody());
+        }
+    }
+
     public String grantSubmissionAccess(String formUrl, String user, List<String> permissions) throws IOException {
         String submission = readSubmission(formUrl);
 
@@ -154,7 +165,7 @@ public class FormSubmissionService {
         }
     }
 
-    private String getSubmissionUrl(String formUrl) {
+    public String getSubmissionUrl(String formUrl) {
         if (StringUtils.endsWith(formUrl, "submission")) {
             return formUrl;
         }

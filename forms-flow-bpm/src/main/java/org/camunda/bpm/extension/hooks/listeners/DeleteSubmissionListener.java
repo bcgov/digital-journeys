@@ -31,15 +31,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Arrays;
 
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.representations.idm.RealmRepresentation;
-import org.keycloak.representations.idm.GroupRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.GroupsResource;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.admin.client.resource.UserResource;
-
+import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 
 
 
@@ -71,7 +63,24 @@ public class DeleteSubmissionListener  extends BaseListener implements TaskListe
     }
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
-        System.out.println("DeleteSubmissionListener.syncFormVariables");
+        String formUrl = String.valueOf(execution.getVariables().get("formUrl"));
+        deleteSubmission(formUrl);
 
+        // String submissionUrl = formSubmissionService.getSubmissionUrl(formUrl);
+        // System.out.println("submissionUrl: " + submissionUrl);
+       
+        // String submission = formSubmissionService.readSubmission(formUrl);
+        // System.out.println("submission: " + submission);
+
+    }
+
+    private void deleteSubmission(String formUrl) {
+        try {
+            formSubmissionService.deleteSubmission(formUrl);    
+        } catch (Exception e) {
+            System.out.println("Error deleting submission: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
     }
 }
