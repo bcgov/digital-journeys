@@ -1,29 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-    <link rel="manifest" href="/public/manifest.json">
-    <link rel="shortcut icon" href="/public/favicon.ico">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="description" content="forms-flow-web" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#536878" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <title>Digital Journeys</title>
   </head>
-  <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="app"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+  <body class="no-scroll">
+    <div id="app" class="scrollable-page"></div>
+    <script src="%PUBLIC_URL%/config/config.js"></script>
+    <script>
+      // Check that service workers are supported
+      let newWorker;
+
+      if ('serviceWorker' in navigator) {
+        // Register the service worker
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          reg.addEventListener('updatefound', () => {
+            // An updated service worker has appeared in reg.installing!
+            newWorker = reg.installing;
+
+            newWorker.addEventListener('statechange', () => {
+
+              // Has service worker state changed?
+              switch (newWorker.state) {
+                case 'installed':
+
+                  // There is a new service worker available, show the notification
+                  if (navigator.serviceWorker.controller) {
+                    newWorker.postMessage({ action: 'skipWaiting' });
+                  }
+
+                  break;
+              }
+            });
+          });
+        },(err) => {
+            console.log("Worker registration failed", err);
+        }).catch((err) => {
+          console.log(err);
+        });
+        let refreshing;
+        // The event listener that is fired when the service worker updates
+        // Here we reload the page
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (refreshing) return;
+          window.location.reload();
+          refreshing = true;
+        });
+      }else{
+          console.log("Service Worker is not supported by browser.");
+      }
+    </script>
+    <style>
+      .scrollable-page {
+        position: fixed;
+        overflow-y: scroll;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+      }
+      .scrollable-page::-webkit-scrollbar {
+    display: none;
+}
+      .no-scroll{
+        overflow: hidden;
+      }
+    </style>
+    <noscript>This website requires JavaScript.</noscript>
   </body>
 </html>
