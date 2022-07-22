@@ -46,6 +46,12 @@ jobs:
       APP: forms-flow-bpm
     steps:
       # Checkout the PR branch
+      - name: Set Build TAG for dev
+        if: ${{!github.event.inputs.environment}}
+        run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+      - name: Set BUILD TAG for test and prod
+        if: ${{github.event.inputs.environment}}
+        run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       - name: Print env
         run: |
           echo BUILD ID: $BUILD_ID
@@ -67,9 +73,10 @@ jobs:
         run: |
           test -n "${BRANCH}"
           test -n "${BUILD_NAMESPACE}"
-          echo "BUILIDING ${APP} with tag: ${BUILD_TAG}"
+          echo "BUILIDING ${APP} with tag: ${{ env.BUILD_TAG }}"
                 oc -n ${BUILD_NAMESPACE} process -f camunda_bc.yaml \
                 -p SOURCE_REPOSITORY_REF=${BRANCH} \
+                -p TAG=${{ env.BUILD_TAG }} \
                 -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
                 -p SOURCE_CONTEXT_DIR="/forms-flow-bpm" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
@@ -122,7 +129,7 @@ jobs:
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
-                -p IMAGE_TAG=latest \
+                -p IMAGE_TAG=dev \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak-dev.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca" \
                 -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca" \
@@ -192,7 +199,7 @@ jobs:
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
-                -p IMAGE_TAG=latest \
+                -p IMAGE_TAG=test \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak-test.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca" \
                 -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api-test.apps.silver.devops.gov.bc.ca" \
@@ -262,7 +269,7 @@ jobs:
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
-                -p IMAGE_TAG=latest \
+                -p IMAGE_TAG=prod \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca" \
                 -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api.apps.silver.devops.gov.bc.ca" \

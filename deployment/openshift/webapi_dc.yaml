@@ -142,7 +142,7 @@ objects:
               secretKeyRef:
                 key: EMPLOYEE_DATA_AUTH_TOKEN
                 name: ${FORMSFLOW_CONFIG_NAME}-config      
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
         ports:
         - containerPort: 5000
