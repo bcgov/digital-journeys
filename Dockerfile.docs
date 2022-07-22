@@ -1,0 +1,7 @@
+FROM squidfunk/mkdocs-material AS mkdocs
+# RUN pip install mkdocs-monorepo-plugin
+RUN pip install mkdocs-macros-plugin
+RUN pip install pymdown-extensions
+
+ENTRYPOINT ["mkdocs"]
+CMD ["serve", "--dev-addr=0.0.0.0:8000"]
