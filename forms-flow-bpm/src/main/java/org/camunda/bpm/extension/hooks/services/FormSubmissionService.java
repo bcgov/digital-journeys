@@ -185,7 +185,10 @@ public class FormSubmissionService {
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
 
-                if(!withFileInfo && entry.getValue() != null && entry.getValue().isArray() && entry.getValue().get(0).has("originalName")) {
+                if(!withFileInfo && entry.getValue() != null 
+                    && entry.getValue().isArray() 
+                    && entry.getValue().get(0) != null 
+                    && entry.getValue().get(0).has("originalName")) {
                     // Replace any file array values with a comma separated list of file names
                     ArrayNode vals = (ArrayNode) entry.getValue();
                     String fileNames = StreamSupport.stream(vals.spliterator(), false)
