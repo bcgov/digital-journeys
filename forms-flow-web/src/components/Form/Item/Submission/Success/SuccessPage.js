@@ -34,7 +34,10 @@ export default React.memo(() => {
 
               <li>If you have any questions about the status of your telework agreement request, please check with your supervisor or delegate.</li>
 
-              <li>For questions or feedback about the Telework form or other PSA forms, please contact the <a href="mailto:DigitalJourneys@gov.bc.ca">Digital Journeys team</a>.</li>
+              <li>For questions or feedback about the Telework form or other PSA forms, please <a href="mailto:DigitalJourneys@gov.bc.ca">contact the Digital Journeys team</a>.</li>
+
+              <li>You may now close this window</li>
+
             </ul>
           </div>
         </>
@@ -42,7 +45,7 @@ export default React.memo(() => {
     } else if (search.includes('approval')) {
       return (
         <>
-          <span className="success-content-intro">Thank you for submitting reviewing and completing this telework agreement request.</span>
+          <span className="success-content-intro">Thank you for reviewing and completing this telework agreement request.</span>
           <div className="success-content-body">
             <ul>
               <li>The employee has been notified by email of your decision and has received a pdf copy of the completed telework agreement.</li>
@@ -51,7 +54,9 @@ export default React.memo(() => {
 
               <li>The attachments can be stored in your personal files or according to your ministry's record-keeping policy.</li>
 
-              <li>For questions or feedback about the Telework form or other PSA forms, please contact the <a href="mailto:DigitalJourneys@gov.bc.ca">Digital Journeys team</a>.</li>
+              <li>For questions or feedback about the Telework agreement or other PSA forms, please <a href="mailto:DigitalJourneys@gov.bc.ca">contact the Digital Journeys team</a>.</li>
+              
+              <li>You may now close this window</li>
             </ul>
           </div>
         </>
@@ -65,7 +70,6 @@ export default React.memo(() => {
       <div className="success-body">
         <div className="title-row">
           <img src={Logo} alt="Logo" width="260"/>
-          <div>APPLICATION</div>
         </div>
         <div className="success-content">
           {
