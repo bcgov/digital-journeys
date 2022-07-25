@@ -75,9 +75,6 @@ const ServiceFlowTaskList = React.memo(() => {
                     "name"
                   )}
                 </div>
-                <div data-title="Task assignee" className="col-6 pr-0 text-right">
-                  {task.assignee}
-                </div>
               </Row>
               <Row className="task-row-3" style={{marginBottom:"-8px"}}>
                 <Col
@@ -93,17 +90,6 @@ const ServiceFlowTaskList = React.memo(() => {
                     ? `Follow-up ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
                  <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}>  Created {moment(task.created).fromNow()}</span>
-                </Col>
-                <Col
-                  lg={4}
-                  xs={4}
-                  sm={4}
-                  md={4}
-                  xl={4}
-                  className="pr-0 text-right tooltips"
-                  dat-title="priority"
-                >
-                  {task.priority}
                 </Col>
               </Row>
               {
