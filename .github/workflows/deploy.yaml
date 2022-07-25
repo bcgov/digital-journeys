@@ -332,7 +332,7 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=prod \
+                -p TAG_NAME=production \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
@@ -366,7 +366,7 @@ jobs:
           oc -n ${NAMESPACE} process -f deployment/openshift/webapi_dc.yaml \
                 -p NAME=${API} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=prod \
+                -p TAG_NAME=production \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
