@@ -269,7 +269,7 @@ jobs:
                 -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
                 -p DATABASE_SERVICE_NAME=patroni \
                 -p DATABASE_NAME=formsflow-bpm \
-                -p IMAGE_TAG=prod \
+                -p IMAGE_TAG=production \
                 -p KEYCLOAK_URL="https://digital-journeys-keycloak.apps.silver.devops.gov.bc.ca" \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca" \
                 -p FORMSFLOW_API_URL="https://digital-journeys-forms-flow-api.apps.silver.devops.gov.bc.ca" \
