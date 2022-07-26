@@ -28,8 +28,7 @@ public class DeleteApplicationListener extends BaseListener implements Execution
     @Override
     public void notify(DelegateExecution execution) {
         try {
-            System.out.println("in DeleteApplicationListener.notify() 1");
-            invokeApplicationService(execution);
+            deleteApplication(execution);
         } catch (IOException e) {
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
@@ -38,39 +37,25 @@ public class DeleteApplicationListener extends BaseListener implements Execution
     @Override
     public void notify(DelegateTask delegateTask) {
         try {
-            System.out.println("in DeleteApplicationListener.notify() 2");
-            invokeApplicationService(delegateTask.getExecution());
+            deleteApplication(delegateTask.getExecution());
         } catch (IOException e) {
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
-    }
-
-    /**
-     * This method invokes the HTTP service invoker for application.
-     *
-     * @param execution
-     */
-    public void invokeApplicationService(DelegateExecution execution) throws IOException {
-        String applicaitonUrl = getApplicationUrl(execution);
-        deleteApplication(applicaitonUrl);
     }
 
     private String getApplicationUrl(DelegateExecution execution){
         return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
     }
 
-    private void deleteApplication(String applicationUrl) throws IOException {
+    private void deleteApplication(DelegateExecution execution) throws IOException {
+        System.out.println("DeleteApplication started");
+        String applicationUrl = getApplicationUrl(execution);
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("before  httpServiceInvoker.execute");
         ResponseEntity<String> response = httpServiceInvoker.execute(applicationUrl, HttpMethod.DELETE, null);
-        System.out.println("after  httpServiceInvoker.execute response: " + response);
         if (response.getStatusCode().value() == HttpStatus.OK.value()) {
-            System.out.println("response.getStatusCode");
+            System.out.println("Application was deleted successfully: " + applicationUrl);
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            System.out.println("jsonNode: " + jsonNode);
         } else {
-            System.out.println("Unable to delete application for: " + applicationUrl + ". Message Body: " +
-                    response.getBody());
             throw new ApplicationServiceException("Unable to delete application for: " + applicationUrl + ". Message Body: " +
                     response.getBody());
         }

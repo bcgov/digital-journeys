@@ -5,11 +5,11 @@ import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.IOException;
-import javax.inject.Named;
+import org.springframework.stereotype.Component;
 
 
-@Named("DeleteCompletedSubmissionListener")
-public class DeleteCompletedSubmissionListener extends BaseListener implements TaskListener, ExecutionListener {
+@Component
+public class DeleteSubmissionListener extends BaseListener implements TaskListener, ExecutionListener {
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -33,6 +33,7 @@ public class DeleteCompletedSubmissionListener extends BaseListener implements T
     }
 
     private void deleteSubmission(DelegateExecution execution) throws IOException {
+        System.out.println("DeleteSubmissionListener.deleteSubmission Started");
         try {
             String formUrl = String.valueOf(execution.getVariables().get("formUrl"));
             formSubmissionService.deleteSubmission(formUrl);    

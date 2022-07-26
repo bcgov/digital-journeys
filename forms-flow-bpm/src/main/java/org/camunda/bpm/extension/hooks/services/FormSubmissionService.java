@@ -85,6 +85,7 @@ public class FormSubmissionService {
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseEntity<String> response = httpServiceInvoker.execute(submissionUrl, HttpMethod.DELETE, null);
         if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+            System.out.println("Submission was deleted successfully: " +  submissionUrl);
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
         } else {
             throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
