@@ -1,0 +1,108 @@
+name: Deploy backup container to Openshift
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+        - dev
+        - test
+        - production
+
+jobs:
+  # build the backup mongo container
+  build:
+    name: 'Build APP'
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      BUILD_NAMESPACE: d89793-tools
+      BUILD_TAG: latest
+      DB_BACKUP_APP: mongodb-backup
+    steps:
+      # Checkout the PR branch
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+      
+      # - name: Checkout Target Branch
+      #   uses: actions/checkout@v1
+      
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      # Build backup container
+      - name: Build backup image
+        working-directory: './deployment/openshift'
+        run: |
+          oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
+          -p NAME=${DB_BACKUP_APP} \
+          -p TAG=${BUILD_TAG} \
+          -p BASE_IMAGE_NAME="mongodb-36-rhel7" \
+          -p BASE_IMAGE_TAG="1" \
+          -p BASE_IMAGE_REPO="registry.redhat.io/rhscl/" \
+          -p GITHUB_AUTH_TOKEN=${{secrets.AUTH_TOKEN}} \
+          -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
+          -p SOURCE_REPOSITORY_REF="master" \
+          -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
+
+          oc -n ${BUILD_NAMESPACE} start-build bc/${DB_BACKUP_APP} --wait
+
+  # deploy the backup image in Dev
+  deployDev:
+    if: ${{github.event.inputs.environment == 'dev'}}
+    name: Deploy DB_BACKUP_APP to Dev environment
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: d89793-dev
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: automated-db-backups
+      DB_BACKUP_APP: mongodb-backup
+      DB_NAME: formiodb
+    needs:
+      - build
+    steps:
+      # - name: Checkout Target Branch
+      #   uses: actions/checkout@v1
+      
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy Backup container - MongoDB Dev
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/db-backup-deploy.yaml \
+          -p NAME=${DB_BACKUP_APP} \
+          -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
+          -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
+          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+
+          sleep 30
+          oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
+
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/db-backup -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
