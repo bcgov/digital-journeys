@@ -6,16 +6,6 @@ on:
       - automated-db-backups
 
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - test
-        - production
 
 jobs:
   # build the backup mongo container
@@ -62,7 +52,6 @@ jobs:
 
   # deploy the backup image in Dev
   deployDev:
-    if: ${{github.event.inputs.environment == 'dev'}}
     name: Deploy DB_BACKUP_APP to Dev environment
     runs-on: ubuntu-latest
     env:
