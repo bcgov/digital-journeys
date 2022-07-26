@@ -166,7 +166,7 @@ public class FormSubmissionService {
         }
     }
 
-    public String getSubmissionUrl(String formUrl) {
+    private String getSubmissionUrl(String formUrl) {
         if (StringUtils.endsWith(formUrl, "submission")) {
             return formUrl;
         }
