@@ -17,12 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 
-/**
- * This class updates the application state and also capture audit.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
- */
+
 @Component
 public class DeleteApplicationListener extends BaseListener implements ExecutionListener, TaskListener {
 
