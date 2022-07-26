@@ -30,7 +30,7 @@ objects:
       name: ${NAME}-config
     data:
       backup.conf: |
-        mongo=mongodb/${DB_NAME}
+        mongo=${DATABASE_SERVICE_NAME}/${DB_NAME}
         0 9 * * * default ./backup.sh -s
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
