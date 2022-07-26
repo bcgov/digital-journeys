@@ -45,7 +45,7 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: './deployment/openshift'
+        working-directory: 'deployment/openshift'
         run: |
           oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
           -p NAME=${DB_BACKUP_APP} \
