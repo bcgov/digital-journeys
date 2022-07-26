@@ -109,7 +109,7 @@ jobs:
       DB_BACKUP_APP: mongodb-backup
       DB_NAME: formiodb
     needs:
-      - build
+      - deployDev
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
@@ -156,7 +156,7 @@ jobs:
       DB_BACKUP_APP: mongodb-backup
       DB_NAME: formiodb
     needs:
-      - build
+      - deployTest
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
