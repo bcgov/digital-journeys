@@ -79,6 +79,11 @@ info:
     version: "11"
 
 camunda.bpm:
+  generic-properties:
+    properties:
+      historyCleanupBatchWindowStartTime: "01:00"
+      historyCleanupBatchWindowEndTime: "05:00"
+
   history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}
   authorization:
     enabled: ${CAMUNDA_AUTHORIZATION_FLAG:true}
