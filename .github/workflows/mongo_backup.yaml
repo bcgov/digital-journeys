@@ -53,7 +53,6 @@ jobs:
           -p BASE_IMAGE_NAME="mongodb-36-rhel7" \
           -p BASE_IMAGE_TAG="1" \
           -p BASE_IMAGE_REPO="registry.redhat.io/rhscl/" \
-          -p GITHUB_AUTH_TOKEN=${{secrets.AUTH_TOKEN}} \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
           -p SOURCE_REPOSITORY_REF="master" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 

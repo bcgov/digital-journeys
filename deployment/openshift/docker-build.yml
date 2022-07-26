@@ -63,9 +63,6 @@ objects:
           from:
             kind: ImageStreamTag
             name: ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-          buildArgs: 
-            - name: GITHUB_AUTH_TOKEN
-              value: ${GITHUB_AUTH_TOKEN}
         type: Docker
 parameters:
   - name: NAME
@@ -93,5 +90,3 @@ parameters:
     value: "2"
   - name: MEMORY_REQUEST
     value: "8Gi"
-  - name: GITHUB_AUTH_TOKEN
-    required: true
