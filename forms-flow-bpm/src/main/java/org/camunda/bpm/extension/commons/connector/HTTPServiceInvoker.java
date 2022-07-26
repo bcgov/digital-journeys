@@ -44,7 +44,6 @@ public class HTTPServiceInvoker {
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
-        System.out.println("execute: " + payload);
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
@@ -53,10 +52,7 @@ public class HTTPServiceInvoker {
     }
 
     private String getServiceId(String url) {
-        System.out.println("url: " + url);
-        System.out.println("api.url: " + getProperties().getProperty("api.url"));
         if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
-            System.out.println("returning applicationAccessHandler");
             return "applicationAccessHandler";
         } else if (StringUtils.contains(url, odsUrl)) {
             return "ODSAccessHandler";

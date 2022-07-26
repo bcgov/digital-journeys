@@ -6,12 +6,14 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 
@@ -54,31 +56,29 @@ public class DeleteApplicationListener extends BaseListener implements Execution
      * @param execution
      */
     public void invokeApplicationService(DelegateExecution execution) throws IOException {
-        System.out.println("in Delete ApplicationStateListener.invokeApplicationService()");
-        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
-        if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
+        String applicaitonUrl = getApplicationUrl(execution);
+        deleteApplication(applicaitonUrl);
+    }
+
+    private String getApplicationUrl(DelegateExecution execution){
+        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
+    }
+
+    private void deleteApplication(String applicationUrl) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println("before  httpServiceInvoker.execute");
+        ResponseEntity<String> response = httpServiceInvoker.execute(applicationUrl, HttpMethod.DELETE, null);
+        System.out.println("after  httpServiceInvoker.execute response: " + response);
+        if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+            System.out.println("response.getStatusCode");
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            System.out.println("jsonNode: " + jsonNode);
+        } else {
+            System.out.println("Unable to delete application for: " + applicationUrl + ". Message Body: " +
+                    response.getBody());
+            throw new ApplicationServiceException("Unable to delete application for: " + applicationUrl + ". Message Body: " +
                     response.getBody());
         }
     }
 
-    /**
-     * Prepares and returns the Application object.
-     * @param execution
-     * @return
-     */
-    private Application prepareApplication(DelegateExecution execution) {
-        String applicationStatus = String.valueOf(execution.getVariable("applicationStatus"));
-        String formUrl = String.valueOf(execution.getVariable("formUrl"));
-        return new Application(applicationStatus, formUrl);
-    }
-
-    /**
-     * Returns the endpoint of application API.
-     * @param execution
-     * @return
-     */
-    private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
-    }
 }
