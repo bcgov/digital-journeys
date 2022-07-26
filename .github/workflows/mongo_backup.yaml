@@ -91,7 +91,7 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
 
-          oc -n ${NAMESPACE} process -f deployment/openshift/databases/db-backup-deploy.yaml \
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-backup-deploy.yaml \
           -p NAME=${DB_BACKUP_APP} \
           -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
