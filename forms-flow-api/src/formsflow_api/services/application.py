@@ -368,6 +368,15 @@ class ApplicationService:
             application.update(data)
         else:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
+    
+    @staticmethod
+    def delete_application(application_id: int):
+        """Delete application."""
+        application = Application.find_by_id(application_id=application_id)
+        if application:
+            application.delete()
+        else:
+            raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_aggregated_applications(from_date: str, to_date: str):

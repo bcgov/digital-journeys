@@ -81,6 +81,18 @@ public class FormSubmissionService {
         }
     }
 
+    public void deleteSubmission(String submissionUrl) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseEntity<String> response = httpServiceInvoker.execute(submissionUrl, HttpMethod.DELETE, null);
+        if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+            System.out.println("Submission was deleted successfully: " +  submissionUrl);
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        } else {
+            throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
+                    response.getBody());
+        }
+    }
+
     public String grantSubmissionAccess(String formUrl, String user, List<String> permissions) throws IOException {
         String submission = readSubmission(formUrl);
 
@@ -174,7 +186,10 @@ public class FormSubmissionService {
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
 
-                if(!withFileInfo && entry.getValue() != null && entry.getValue().isArray() && entry.getValue().get(0).has("originalName")) {
+                if(!withFileInfo && entry.getValue() != null 
+                    && entry.getValue().isArray() 
+                    && entry.getValue().get(0) != null 
+                    && entry.getValue().get(0).has("originalName")) {
                     // Replace any file array values with a comma separated list of file names
                     ArrayNode vals = (ArrayNode) entry.getValue();
                     String fileNames = StreamSupport.stream(vals.spliterator(), false)
