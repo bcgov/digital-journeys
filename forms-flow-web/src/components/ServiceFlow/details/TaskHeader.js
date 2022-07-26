@@ -168,7 +168,7 @@ const TaskHeader = React.memo(() => {
       <Row className="ml-0" >
       <span data-title="Application Id" className="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
-      { !getUserRolePermission(userRoles, STAFF_REVIEWER) 
+      {/* { getUserRolePermission(userRoles, STAFF_REVIEWER) 
           &&
         <Row className="actionable mb-4">
           <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
@@ -235,7 +235,7 @@ const TaskHeader = React.memo(() => {
             }
           </Col>
         </Row>
-      }
+      } */}
     </>
   );
 });
