@@ -33,8 +33,8 @@ jobs:
           echo BUILD ID: $BUILD_ID
           echo BUILD NAMESPACE: $BUILD_NAMESPACE
       
-      # - name: Checkout Target Branch
-      #   uses: actions/checkout@v1
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
       
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
@@ -45,7 +45,7 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: 'deployment/openshift'
+        working-directory: './deployment/openshift'
         run: |
           oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
           -p NAME=${DB_BACKUP_APP} \
@@ -75,8 +75,8 @@ jobs:
     needs:
       - build
     steps:
-      # - name: Checkout Target Branch
-      #   uses: actions/checkout@v1
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
       
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
