@@ -97,3 +97,97 @@ jobs:
             ATTEMPTS=$((attempts + 1))
             sleep 10
           done
+
+  deployTest:
+    name: Deploy DB_BACKUP_APP to Test environment
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: d89793-test
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: automated-db-backups
+      DB_BACKUP_APP: mongodb-backup
+      DB_NAME: formiodb
+    needs:
+      - build
+    steps:
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+      
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy Backup container - MongoDB
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-backup-deploy.yaml \
+          -p NAME=${DB_BACKUP_APP} \
+          -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
+          -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
+          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+
+          sleep 30
+          oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
+
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${DB_BACKUP_APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+
+  deployProd:
+    name: Deploy DB_BACKUP_APP to Prod environment
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: d89793-prod
+      BUILD_NAMESPACE: d89793-tools
+      BRANCH: automated-db-backups
+      DB_BACKUP_APP: mongodb-backup
+      DB_NAME: formiodb
+    needs:
+      - build
+    steps:
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+      
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy Backup container
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-backup-deploy.yaml \
+          -p NAME=${DB_BACKUP_APP} \
+          -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
+          -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
+          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+
+          sleep 30
+          oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
+
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${DB_BACKUP_APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
