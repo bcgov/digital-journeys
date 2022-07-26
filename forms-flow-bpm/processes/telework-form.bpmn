@@ -52,7 +52,7 @@ Thank you.</camunda:expression>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ExtractManagerGuid" event="complete" id="getManagerGuid" />
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.UserGroupAssignmentListener" event="create" id="user-group-assigned">
           <camunda:field name="groupPath">
-            <camunda:string>/formsflow/formsflow-reviewer</camunda:string>
+            <camunda:string>/formsflow/manager</camunda:string>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>

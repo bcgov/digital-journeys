@@ -22,3 +22,11 @@
     display: none;
   }
 }
+
+.pg-menu-container + .pg-menu-container {
+  padding: 0;
+}
+
+.menu-padded {
+  padding: 5px 0 5px 0;
+}

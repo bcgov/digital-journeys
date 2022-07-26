@@ -8,7 +8,7 @@ import { useHistory } from "react-router-dom";
 import Navigation from "@button-inc/bcgov-theme/Navigation";
 
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER, MANAGER_GROUP} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 
@@ -75,7 +75,7 @@ const NavBar = React.memo(() => {
         Applications
       </Link>
     : null,
-    <Link
+    (getUserRolePermission(userRoles, MANAGER_GROUP) || getUserRolePermission(userRoles, STAFF_REVIEWER)) && <Link
       className={pathname.match(/^\/task/)? 'active': null}
       to='/task'
     >
@@ -83,6 +83,10 @@ const NavBar = React.memo(() => {
     </Link>,
     (!getUserRolePermission(userRoles, STAFF_REVIEWER) && !getUserRolePermission(userRoles, CLIENT)) ? analyticsDropdown(): null,
   ];
+
+  const items = navItems()
+    .filter(item => item)
+    .map(item => <li>{item}</li>);
 
   return (
     <Navigation
@@ -98,14 +102,12 @@ const NavBar = React.memo(() => {
           ): null}
         </>
       }>
-        {isAuthenticated && <div>
+        {isAuthenticated && <div class={items?.length? 'menu-padded': ''}>
           <ul>
             <div className="sign-out-button">
               <Button onClick={logout} variant="outline-light">Sign Out</Button>
             </div>
-            {navItems()
-              .filter(item => item)
-              .map(item => <li>{item}</li>)}
+            {items}
           </ul>
           </div>}
     </Navigation>

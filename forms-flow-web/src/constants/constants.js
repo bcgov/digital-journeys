@@ -35,6 +35,7 @@ export const STAFF_REVIEWER =
   process.env.REACT_APP_STAFF_REVIEWER_ROLE;
 export const ANONYMOUS_USER = "anonymous";
 
+export const MANAGER_GROUP = 'manager';
 
 export const FORMIO_JWT_SECRET =
   (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET;
