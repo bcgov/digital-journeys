@@ -73,7 +73,7 @@ jobs:
       - name: Log in to OpenShift
         run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
-      - name: Deploy Backup container - MongoDB Dev
+      - name: Deploy Backup container
         run: |
           test -n "${NAMESPACE}"
           test -n "${BUILD_NAMESPACE}"
