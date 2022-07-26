@@ -1,6 +1,10 @@
 name: Deploy backup container to Openshift
 
 on:
+  push:
+    branches:
+      - automated-db-backups
+
   workflow_dispatch:
     inputs:
       environment:
