@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class DeleteSubmissionListener extends BaseListener implements TaskListener, ExecutionListener {
+public class DeleteSubmissionListener extends BaseListener implements JavaDelegate {
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -27,7 +27,7 @@ public class DeleteSubmissionListener extends BaseListener implements TaskListen
     private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
-    public void notify(DelegateExecution execution) {
+    public void execute(DelegateExecution execution) throws Exception {
         try {
             deleteSubmission(execution);
             deleteApplication(execution);
@@ -36,25 +36,9 @@ public class DeleteSubmissionListener extends BaseListener implements TaskListen
         }
     }
 
-    @Override
-    public void notify(DelegateTask delegateTask) {
-        try {
-            deleteSubmission(delegateTask.getExecution());
-            deleteApplication(delegateTask.getExecution());
-        } catch (IOException e) {
-            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
-        }
-    }
-
     private void deleteSubmission(DelegateExecution execution) throws IOException {
-        System.out.println("DeleteSubmissionListener.deleteSubmission Started");
-        try {
-            String formUrl = String.valueOf(execution.getVariables().get("formUrl"));
-            formSubmissionService.deleteSubmission(formUrl);    
-        } catch (Exception e) {
-            System.out.println("Error deleting submission: " + e.getMessage());
-            e.printStackTrace();
-        }    
+        String formUrl = String.valueOf(execution.getVariables().get("formUrl"));
+        formSubmissionService.deleteSubmission(formUrl);    
     }
 
     private String getApplicationUrl(DelegateExecution execution){
@@ -62,7 +46,6 @@ public class DeleteSubmissionListener extends BaseListener implements TaskListen
     }
 
     private void deleteApplication(DelegateExecution execution) throws IOException {
-        System.out.println("DeleteApplication started");
         String applicationUrl = getApplicationUrl(execution);
         ObjectMapper objectMapper = new ObjectMapper();
         ResponseEntity<String> response = httpServiceInvoker.execute(applicationUrl, HttpMethod.DELETE, null);
