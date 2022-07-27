@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission, getUserInsightsPermission} from "../helper/user";
 import { useHistory } from "react-router-dom";
-import Navigation from "./Override/Navigation";
+import Navigation from "@button-inc/bcgov-theme/Navigation";
 
 import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER, MANAGER_GROUP} from "../constants/constants";

@@ -245,7 +245,7 @@ const View = React.memo((props) => {
         }
         className='col-12'
       >
-        <div class="row" style={{paddingRight: '42px'}}>
+        <div class="row">
           <div class="btn-right">
             <button type="button" 
               class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" 
