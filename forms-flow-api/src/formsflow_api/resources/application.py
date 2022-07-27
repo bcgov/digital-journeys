@@ -181,7 +181,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    @auth.has_one_of_roles(["camunda-client"])
+    @auth.has_one_of_bpm_roles(["camunda-client"])
     def delete(application_id):
         """Delete application by id."""
         try:
