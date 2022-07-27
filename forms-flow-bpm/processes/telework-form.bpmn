@@ -1,10 +1,599 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.1.0">
-  <bpmn:process id="teleworkform" name="Telework Form" isExecutable="true" camunda:versionTag="4" camunda:historyTimeToLive="0">
+  <bpmn:process id="teleworkform" name="Telework Form" isExecutable="true" camunda:versionTag="5" camunda:historyTimeToLive="0">
+    <bpmn:exclusiveGateway id="Gateway_1n4q2wg" name="Action Taken?">
+      <bpmn:incoming>Flow_0e1bxmx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ur35fj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0s3kt6z</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_0e6fwnw" name="Update Application Status">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ur35fj</bpmn:incoming>
+      <bpmn:incoming>Flow_0s3kt6z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qaoere</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1dbuope" sourceRef="Activity_049b3in" targetRef="Activity_1u5rf0q">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0e1bxmx" sourceRef="Activity_1u5rf0q" targetRef="Gateway_1n4q2wg" />
+    <bpmn:sequenceFlow id="Flow_1ur35fj" name="approve" sourceRef="Gateway_1n4q2wg" targetRef="Activity_0e6fwnw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0s3kt6z" name="reject" sourceRef="Gateway_1n4q2wg" targetRef="Activity_0e6fwnw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0r292rm">
+      <bpmn:incoming>Flow_11xqzld</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w44o0u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02maupv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1w44o0u" name="Occasional" sourceRef="Gateway_0r292rm" targetRef="Activity_1sfqc06">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${NoFormalSchedule == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1h5f4rh">
+      <bpmn:incoming>Flow_02maupv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rsk9jl</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1hzoshb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_02maupv" name="Not occasional" sourceRef="Gateway_0r292rm" targetRef="Gateway_1h5f4rh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${NoFormalSchedule == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0rsk9jl" name="Less than 3" sourceRef="Gateway_1h5f4rh" targetRef="Activity_049b3in">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${numberOfDaysTeleworkingInAWeek &lt; 3}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1hzoshb" name="3 or more&#10;&#10;" sourceRef="Gateway_1h5f4rh" targetRef="Activity_0g9elbh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${numberOfDaysTeleworkingInAWeek &gt;= 3}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:parallelGateway id="Gateway_13rslu5">
+      <bpmn:incoming>Flow_0zlcy4w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qvek8u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0z4g8bq</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_0bnqump">
+      <bpmn:incoming>Flow_1oucu2s</bpmn:incoming>
+      <bpmn:incoming>Flow_0rfdwhv</bpmn:incoming>
+      <bpmn:outgoing>Flow_195oqpn</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_1i86xd2">
+      <bpmn:incoming>Flow_0z4g8bq</bpmn:incoming>
+      <bpmn:outgoing>Flow_04g164j</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15pa8l8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_0jq3cou">
+      <bpmn:incoming>Flow_1qvek8u</bpmn:incoming>
+      <bpmn:outgoing>Flow_17yu1de</bpmn:outgoing>
+      <bpmn:outgoing>Flow_07th41b</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_195oqpn" sourceRef="Gateway_0bnqump" targetRef="Gateway_0r4tehr" />
+    <bpmn:sequenceFlow id="Flow_17yu1de" sourceRef="Gateway_0jq3cou" targetRef="Activity_0mju9zo">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1qvek8u" sourceRef="Gateway_13rslu5" targetRef="Gateway_0jq3cou" />
+    <bpmn:sequenceFlow id="Flow_0z4g8bq" sourceRef="Gateway_13rslu5" targetRef="Gateway_1i86xd2" />
+    <bpmn:sequenceFlow id="Flow_04g164j" sourceRef="Gateway_1i86xd2" targetRef="Activity_1ddf1uh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15pa8l8" sourceRef="Gateway_1i86xd2" targetRef="Activity_0s1st27">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_07th41b" sourceRef="Gateway_0jq3cou" targetRef="Activity_0pqhh06">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zlcy4w" sourceRef="Activity_1a008jh" targetRef="Gateway_13rslu5" />
+    <bpmn:exclusiveGateway id="Gateway_1v91qvy" name="Action Taken?">
+      <bpmn:incoming>Flow_1h1ox4j</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vemlea</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1w0nwn5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_0dkp4z6" name="Update Application Status">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1vemlea</bpmn:incoming>
+      <bpmn:incoming>Flow_1w0nwn5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x1vaoy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1h1ox4j" sourceRef="Activity_0m5hztb" targetRef="Gateway_1v91qvy" />
+    <bpmn:sequenceFlow id="Flow_1vemlea" name="approve" sourceRef="Gateway_1v91qvy" targetRef="Activity_0dkp4z6">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1w0nwn5" name="reject" sourceRef="Gateway_1v91qvy" targetRef="Activity_0dkp4z6">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_18agks9" sourceRef="Activity_0g9elbh" targetRef="Activity_0m5hztb" />
     <bpmn:startEvent id="StartEvent_1" name="Submitted Form">
-      <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11xqzld</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="reviewer" name="Review ${name}&#39;s Request" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
+    <bpmn:sequenceFlow id="Flow_11xqzld" sourceRef="StartEvent_1" targetRef="Gateway_0r292rm">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('employeeSignatureTimestamp', execution.getVariable('submissionDate'));
+
+execution.setVariable('applicationStatus','New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus", "employeeSignatureTimestamp"]
+
+</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_09eynxk" name="Action Taken?">
+      <bpmn:incoming>Flow_06kfygq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0am9cb5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_01mwlk0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_1a008jh" name="Update Application Status">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0am9cb5</bpmn:incoming>
+      <bpmn:incoming>Flow_01mwlk0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zlcy4w</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Activity_1sfqc06" name="Send Confirmation Email to Submitter" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Thank you ${name} for submitting a telework agreement request for an occasional telework schedule.&lt;/p&gt;
+&lt;p&gt; ${supervisorName} has been notified and is reviewing your request. &lt;strong&gt;This email does not confirm approval of your telework request.&lt;/strong&gt;
+&lt;/p&gt;
+&lt;p&gt;You will receive another email after ${supervisorName} submits their decision. 
+&lt;/p&gt;
+&lt;p&gt;If you have not received an email confirming their decision within 15 days, please discuss the status of your telework agreement with them. 
+&lt;/p&gt;
+&lt;p&gt;
+Your request expires in 30 calendar days. If your request has not been processed within 30 calendar days you will need to submit a new request.
+&lt;/p&gt;
+&lt;p&gt;
+If you have any questions about the status of your telework agreement request, please check with ${supervisorName}.
+&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Thank you for submitting your telework agreement request</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1w44o0u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u5pcba</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1u5pcba" sourceRef="Activity_1sfqc06" targetRef="Activity_03vvnor">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06kfygq" sourceRef="Activity_03vvnor" targetRef="Gateway_09eynxk" />
+    <bpmn:sequenceFlow id="Flow_0am9cb5" name="approve" sourceRef="Gateway_09eynxk" targetRef="Activity_1a008jh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01mwlk0" name="reject" sourceRef="Gateway_09eynxk" targetRef="Activity_1a008jh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_049b3in" name="Send Confirmation Email to Submitter" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Thank you ${name} for submitting a telework agreement request for ${numberOfDaysTeleworkingInAWeek} telework day(s).  ${supervisorName} has been notified and is reviewing your request. &lt;strong&gt;This email does not confirm approval of your telework request.&lt;/strong&gt;
+&lt;/p&gt;
+&lt;p&gt;
+You will receive another email after ${supervisorName} submits their decision. 
+&lt;/p&gt;
+&lt;p&gt;
+If you have not received an email confirming their decision within 15 days, please discuss the status of your telework agreement with them.
+ &lt;/p&gt;
+&lt;p&gt;
+Your request expires in 30 calendar days. If your request has not been processed within 30 calendar days you will need to submit a new request.
+&lt;/p&gt;
+&lt;p&gt;
+If you have any questions about the status of your telework agreement request, please check with ${supervisorName}.&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Thank you for submitting your telework agreement request</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rsk9jl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dbuope</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0g9elbh" name="Send Confirmation Email to Submitter" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Thank you ${name} for submitting a telework agreement request for ${numberOfDaysTeleworkingInAWeek} telework days.  ${supervisorName} has been notified and is reviewing your request. &lt;strong&gt;This email does not confirm approval of your telework request.&lt;/strong&gt;
+&lt;/p&gt;
+&lt;p&gt;
+You will receive another email after ${supervisorName} submits their decision. 
+&lt;/p&gt;
+&lt;p&gt;
+If you have not received an email confirming their decision within 15 days, please discuss the status of your telework agreement with them.
+ &lt;/p&gt;
+&lt;p&gt;
+Your request expires in 30 calendar days. If your request has not been processed within 30 calendar days you will need to submit a new request.
+&lt;/p&gt;
+&lt;p&gt;
+If you have any questions about the status of your telework agreement request, please check with ${supervisorName}.&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Thank you for submitting your telework agreement request</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hzoshb</bpmn:incoming>
+      <bpmn:outgoing>Flow_18agks9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_03ewduq" sourceRef="Activity_0s1st27" targetRef="Gateway_17fcyih" />
+    <bpmn:sequenceFlow id="Flow_0h6k7pl" sourceRef="Activity_1ddf1uh" targetRef="Gateway_17fcyih" />
+    <bpmn:sequenceFlow id="Flow_1b1t1w1" sourceRef="Activity_0mju9zo" targetRef="Gateway_1vvsv23" />
+    <bpmn:sequenceFlow id="Flow_1x10xgm" sourceRef="Activity_0pqhh06" targetRef="Gateway_1vvsv23" />
+    <bpmn:serviceTask id="Activity_0y1mfrt" name="Send Submission to ODS" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.SendSubmissionToODSDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endpoint">Datamart_Telework_app_telework_info</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bkdg2p</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nqaf3u</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1nz1hfl">
+        <bpmn:targetRef>DataStoreReference_1hen0rm</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:dataStoreReference id="DataStoreReference_1hen0rm" name="ODS" />
+    <bpmn:parallelGateway id="Gateway_1ldatg0">
+      <bpmn:incoming>Flow_1qaoere</bpmn:incoming>
+      <bpmn:outgoing>Flow_11jm9lu</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1y70ffl</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_0mjizbj">
+      <bpmn:incoming>Flow_1nrryxu</bpmn:incoming>
+      <bpmn:incoming>Flow_11s968d</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n4e36c</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_0mm4twf">
+      <bpmn:incoming>Flow_1y70ffl</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m1sbgm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_00ncru6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_1s7tg7j">
+      <bpmn:incoming>Flow_11jm9lu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q7wkjj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fghb34</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1rq2s67">
+      <bpmn:incoming>Flow_0ptyhn1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0n4e36c" sourceRef="Gateway_0mjizbj" targetRef="Gateway_0r4tehr" />
+    <bpmn:sequenceFlow id="Flow_0nqaf3u" sourceRef="Activity_0y1mfrt" targetRef="Activity_0gww4mm" />
+    <bpmn:sequenceFlow id="Flow_11jm9lu" sourceRef="Gateway_1ldatg0" targetRef="Gateway_1s7tg7j" />
+    <bpmn:sequenceFlow id="Flow_1y70ffl" sourceRef="Gateway_1ldatg0" targetRef="Gateway_0mm4twf" />
+    <bpmn:sequenceFlow id="Flow_1sd0lhh" sourceRef="Activity_16z5h4g" targetRef="Gateway_1nt3u4h" />
+    <bpmn:sequenceFlow id="Flow_0fj5gjz" sourceRef="Activity_0z6rzpw" targetRef="Gateway_1nt3u4h" />
+    <bpmn:sequenceFlow id="Flow_1cc9v3w" sourceRef="Activity_0ylaop4" targetRef="Gateway_17dym1y" />
+    <bpmn:sequenceFlow id="Flow_0irqnwn" sourceRef="Activity_0gyiyir" targetRef="Gateway_17dym1y" />
+    <bpmn:sequenceFlow id="Flow_1m1sbgm" sourceRef="Gateway_0mm4twf" targetRef="Activity_0z6rzpw">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_00ncru6" sourceRef="Gateway_0mm4twf" targetRef="Activity_16z5h4g">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1q7wkjj" sourceRef="Gateway_1s7tg7j" targetRef="Activity_0ylaop4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1fghb34" sourceRef="Gateway_1s7tg7j" targetRef="Activity_0gyiyir">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:parallelGateway id="Gateway_1virq7e">
+      <bpmn:incoming>Flow_1x1vaoy</bpmn:incoming>
+      <bpmn:outgoing>Flow_02kop10</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0j0s9ja</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="Gateway_1tar0fk">
+      <bpmn:incoming>Flow_0igkto1</bpmn:incoming>
+      <bpmn:incoming>Flow_0lknqyr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1re76ew</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_0t0aez2">
+      <bpmn:incoming>Flow_0j0s9ja</bpmn:incoming>
+      <bpmn:outgoing>Flow_17o7ihn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zicn0v</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_15v6olh">
+      <bpmn:incoming>Flow_02kop10</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zbqzr0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1oa9sp1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_02kop10" sourceRef="Gateway_1virq7e" targetRef="Gateway_15v6olh" />
+    <bpmn:sequenceFlow id="Flow_0j0s9ja" sourceRef="Gateway_1virq7e" targetRef="Gateway_0t0aez2" />
+    <bpmn:sequenceFlow id="Flow_12p4o2t" sourceRef="Activity_1xt63zv" targetRef="Gateway_0c14l7e" />
+    <bpmn:sequenceFlow id="Flow_17m4c57" sourceRef="Activity_1g1v0lh" targetRef="Gateway_0c14l7e" />
+    <bpmn:sequenceFlow id="Flow_0xqymy4" sourceRef="Activity_0dj9wef" targetRef="Gateway_0pp0pi5" />
+    <bpmn:sequenceFlow id="Flow_0s86k7u" sourceRef="Activity_1izkpe2" targetRef="Gateway_0pp0pi5" />
+    <bpmn:sequenceFlow id="Flow_17o7ihn" sourceRef="Gateway_0t0aez2" targetRef="Activity_1g1v0lh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zicn0v" sourceRef="Gateway_0t0aez2" targetRef="Activity_1xt63zv">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0zbqzr0" sourceRef="Gateway_15v6olh" targetRef="Activity_0dj9wef">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1oa9sp1" sourceRef="Gateway_15v6olh" targetRef="Activity_1izkpe2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1x1vaoy" sourceRef="Activity_0dkp4z6" targetRef="Gateway_1virq7e" />
+    <bpmn:sequenceFlow id="Flow_1qaoere" sourceRef="Activity_0e6fwnw" targetRef="Gateway_1ldatg0" />
+    <bpmn:serviceTask id="Activity_0s1st27" name="Send Confirmation Email to Submitter - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;${supervisorName} has approved your telework request.&lt;/p&gt;
+&lt;p&gt;Please review any comments in the attached form and save the PDF for your records. ${supervisorName} has also been provided a copy of this approved telework agreement.&lt;/p&gt;
+&lt;p&gt;Your approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, &lt;strong&gt;you must submit a new telework request.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For data privacy reasons, the digital request and all employee information is automatically deleted.&lt;/p&gt;
+&lt;p&gt;If you have any questions about teleworking or this telework agreement, please contact ${supervisorName}.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15pa8l8</bpmn:incoming>
+      <bpmn:outgoing>Flow_03ewduq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1ddf1uh" name="Send Confirmation Email to Submitter - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;Your telework request has been denied.&lt;/p&gt;
+&lt;p&gt;Please contact ${supervisorName} to discuss the reasons. You may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04g164j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h6k7pl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0mju9zo" name="Send Confirmation Email to Manager - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s approved telework agreement. Please keep it for your employee records file. Your decision and the completed PDF have also been provided to ${name}.
+&lt;/p&gt; 
+&lt;p&gt;${name}'s approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, a new request must be submitted.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17yu1de</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b1t1w1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0pqhh06" name="Send Submission to Manager - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s telework agreement that you rejected. &lt;strong&gt;Please keep it for your employee records file.&lt;/strong&gt; Your decision and the completed PDF have also been provided to ${name}.&lt;/p&gt;
+&lt;p&gt;As you denied your employee's request, you may want to discuss the reasons with them and, where applicable, advise the employee that they may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the .
+&lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07th41b</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x10xgm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0z6rzpw" name="Send Confirmation Email to Submitter - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;Your telework request has been denied.&lt;/p&gt;
+&lt;p&gt;Please contact ${supervisorName} to discuss the reasons. You may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1m1sbgm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fj5gjz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_16z5h4g" name="Send Confirmation Email to Submitter - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;${supervisorName} has approved your telework request.&lt;/p&gt;
+&lt;p&gt;Please review any comments in the attached form and save the PDF for your records. ${supervisorName} has also been provided a copy of this approved telework agreement.&lt;/p&gt;
+&lt;p&gt;Your approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, &lt;strong&gt;you must submit a new telework request.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For data privacy reasons, the digital request and all employee information is automatically deleted.&lt;/p&gt;
+&lt;p&gt;If you have any questions about teleworking or this telework agreement, please contact ${supervisorName}.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00ncru6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sd0lhh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0ylaop4" name="Send Confirmation Email to Manager - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s approved telework agreement. Please keep it for your employee records file. Your decision and the completed PDF have also been provided to ${name}.
+&lt;/p&gt; 
+&lt;p&gt;${name}'s approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, a new request must be submitted.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1q7wkjj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cc9v3w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0gyiyir" name="Send Submission to Manager - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s telework agreement that you rejected. &lt;strong&gt;Please keep it for your employee records file.&lt;/strong&gt; Your decision and the completed PDF have also been provided to ${name}.&lt;/p&gt;
+&lt;p&gt;As you denied your employee's request, you may want to discuss the reasons with them and, where applicable, advise the employee that they may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fghb34</bpmn:incoming>
+      <bpmn:outgoing>Flow_0irqnwn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1g1v0lh" name="Send Confirmation Email to Submitter - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;Your telework request has been denied.&lt;/p&gt;
+&lt;p&gt;Please contact ${supervisorName} to discuss the reasons. You may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17o7ihn</bpmn:incoming>
+      <bpmn:outgoing>Flow_17m4c57</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1xt63zv" name="Send Confirmation Email to Submitter - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Hello ${name},&lt;/p&gt;
+&lt;p&gt;${supervisorName} has approved your telework request.&lt;/p&gt;
+&lt;p&gt;Please review any comments in the attached form and save the PDF for your records. ${supervisorName} has also been provided a copy of this approved telework agreement.&lt;/p&gt;
+&lt;p&gt;Your approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, &lt;strong&gt;you must submit a new telework request.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For data privacy reasons, the digital request and all employee information is automatically deleted.&lt;/p&gt;
+&lt;p&gt;If you have any questions about teleworking or this telework agreement, please contact ${supervisorName}.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">Your telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zicn0v</bpmn:incoming>
+      <bpmn:outgoing>Flow_12p4o2t</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0dj9wef" name="Send Confirmation Email to Manager - Approved" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s approved telework agreement. Please keep it for your employee records file. Your decision and the completed PDF have also been provided to ${name}.&lt;/p&gt; 
+&lt;p&gt;${name}'s approved telework agreement is valid for one year from ${remote_date.split("T")[0]}. If circumstances change and modifications to the signed agreement are needed, a new request must be submitted.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement has been approved, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zbqzr0</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xqymy4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1izkpe2" name="Send Submission to Manager - Denied" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;Attached is a PDF copy of ${name}'s telework agreement that you rejected. &lt;strong&gt;Please keep it for your employee records file.&lt;/strong&gt; Your decision and the completed PDF have also been provided to ${name}.&lt;/p&gt;
+&lt;p&gt;As you denied your employee's request, you may want to discuss the reasons with them and, where applicable, advise the employee that they may have the opportunity to again be considered for a telework arrangement in the future.&lt;/p&gt;
+&lt;p&gt;For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;
+
+</camunda:inputParameter>
+          <camunda:inputParameter name="subject">A telework agreement request has been denied, PDF documentation attached</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1oa9sp1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s86k7u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_03vvnor" name="Review ${name}&#39;s Request" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -16,31 +605,7 @@ task.execution.setVariable('managersSignatureTimestamp', new Date().toISOString(
 
 </camunda:script>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="manager_task_created">
-          <camunda:field name="body">
-            <camunda:expression>Hello ${supervisorName}, 
-
-A new Telework Agreement has been submitted by ${name}  (${email}).
-
-Please review this submission in the Manager/Supervisor Sign-Off section of the Agreement at $BASE_URL/task/$TASK_ID to complete and submit this form. 
-
-*If this request is for 3 or more Telework days, you must get approval from your ADM or delegate.
-
-Thank you.</camunda:expression>
-          </camunda:field>
-          <camunda:field name="subject">
-            <camunda:string>FOR ACTION: A new Telework Agreement has been submitted</camunda:string>
-          </camunda:field>
-          <camunda:field name="recipientEmails">
-            <camunda:expression>${managerEmail}</camunda:expression>
-          </camunda:field>
-          <camunda:field name="attachSubmission">
-            <camunda:string>true</camunda:string>
-          </camunda:field>
-          <camunda:field name="attachSubmissionName">
-            <camunda:expression>${formName}_${name}_${applicationStatus}</camunda:expression>
-          </camunda:field>
-        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="manager_task_created" />
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
           <camunda:field name="user">
             <camunda:expression>${managerEmail}</camunda:expression>
@@ -50,294 +615,752 @@ Thank you.</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ExtractManagerGuid" event="complete" id="getManagerGuid" />
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.UserGroupAssignmentListener" event="create" id="user-group-assigned">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.UserGroupAssignmentListener" event="create" id="user-group-assigned1">
           <camunda:field name="groupPath">
             <camunda:string>/formsflow/manager</camunda:string>
           </camunda:field>
         </camunda:taskListener>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0eqfxon</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="Activity_0kai049">
-      <bpmn:extensionElements>
-        <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('employeeSignatureTimestamp', execution.getVariable('submissionDate'));
-
-execution.setVariable('applicationStatus','New');</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
-          <camunda:field name="fields">
-            <camunda:expression>["applicationId","applicationStatus", "employeeSignatureTimestamp"]</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
-      </bpmn:extensionElements>
-    </bpmn:sequenceFlow>
-    <bpmn:endEvent id="EndEvent_03cla68">
-      <bpmn:incoming>Flow_01iapsa</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0l1c65j" name="Action Taken?">
-      <bpmn:incoming>SequenceFlow_0jg4sg3</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1x38yu4</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0pc6hcp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="ExclusiveGateway_0l1c65j" />
-    <bpmn:task id="Task_1hko8r7" name="Update Application Status" camunda:asyncAfter="true">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
-          <camunda:field name="fields">
-            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
-      </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_1x38yu4</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0pc6hcp</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_00bn1p7</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_00bn1p7" sourceRef="Task_1hko8r7" targetRef="Gateway_1cbqsut" />
-    <bpmn:sequenceFlow id="SequenceFlow_1x38yu4" name="approve" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved'}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0pc6hcp" name="reject" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Rejected'}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0kai049" name="Send Confirmation Email to Submitter">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="text">Thank you for your submission of the ${formName} form!</camunda:inputParameter>
-            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
-            <camunda:inputParameter name="subject">Thank you for submitting your Telework Agreement request.</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>mail-send</camunda:connectorId>
-        </camunda:connector>
-      </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
-      <bpmn:outgoing>Flow_0eqfxon</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0eqfxon" sourceRef="Activity_0kai049" targetRef="reviewer">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
-      </bpmn:extensionElements>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01iapsa" sourceRef="send_to_ods" targetRef="EndEvent_03cla68" />
-    <bpmn:serviceTask id="send_to_ods" name="Send Submission to ODS" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.SendSubmissionToODSDelegate">
-      <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="endpoint">Datamart_Telework_app_telework_info</camunda:inputParameter>
-          <camunda:inputParameter name="debug">true</camunda:inputParameter>
+          <camunda:inputParameter name="body">&lt;p&gt;${name} (${email}) has requested an occasional telework schedule. The included PDF is for reference only. 
+&lt;/p&gt;
+&lt;p&gt;
+Please review the submission, and complete the supervisor sign-off section of the agreement at $BASE_URL/task/$TASK_ID within 15  days. 
+&lt;/p&gt;
+&lt;p&gt;
+This link and the submission expire in 30 calendar days, after which ${name} will  need to submit a new request.
+&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">FOR ACTION: a new telework agreement has been submitted</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_107tioi</bpmn:incoming>
-      <bpmn:outgoing>Flow_01iapsa</bpmn:outgoing>
-      <bpmn:dataOutputAssociation id="DataOutputAssociation_0n0lg8r">
-        <bpmn:targetRef>DataStoreReference_0iew98f</bpmn:targetRef>
-      </bpmn:dataOutputAssociation>
-    </bpmn:serviceTask>
-    <bpmn:dataStoreReference id="DataStoreReference_0iew98f" name="ODS" />
-    <bpmn:serviceTask id="Activity_0cnvjyo" name="Send Submission PDF to Submitter" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:incoming>Flow_1u5pcba</bpmn:incoming>
+      <bpmn:outgoing>Flow_06kfygq</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1u5rf0q" name="Review ${name}&#39;s Request" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
-        <camunda:field name="attachSubmission">
-          <camunda:string>true</camunda:string>
-        </camunda:field>
-        <camunda:field name="recipientEmails">
-          <camunda:expression>${email}</camunda:expression>
-        </camunda:field>
-        <camunda:field name="body">
-          <camunda:expression>Hello ${name},
+        <camunda:formData>
+          <camunda:formField id="action" label="Action" type="string" />
+        </camunda:formData>
+        <camunda:taskListener event="complete">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
+task.execution.setVariable('deleteReason', 'completed');
+task.execution.setVariable('managersSignatureTimestamp', new Date().toISOString());
 
-Your Telework submission was ${action}. Please see the comments in the form or check with your Manager/Supervisor or delegate, ${supervisorName}, who reviewed your submission. 
+</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="manager_task_created" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
+          <camunda:field name="user">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="permissions">
+            <camunda:expression>["read", "write"]</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ExtractManagerGuid" event="complete" id="getManagerGuid" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.UserGroupAssignmentListener" event="create" id="user-group-assigned2">
+          <camunda:field name="groupPath">
+            <camunda:string>/formsflow/manager</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;${name} (${email}) has requested ${numberOfDaysTeleworkingInAWeek} weekly telework day(s). The included PDF is for reference only.&lt;/p&gt; 
+&lt;p&gt;Please review the submission, and complete the supervisor sign-off section of the agreement at  $BASE_URL/task/$TASK_ID within 15  days. 
+&lt;/p&gt;
+&lt;p&gt;
+This link and the submission expire in 30 calendar days, after which ${name} will need to submit a new request.
+&lt;/p&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">FOR ACTION: a new telework agreement has been submitted</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
 
-Thank you.  </camunda:expression>
-        </camunda:field>
-        <camunda:field name="subject">
-          <camunda:expression>Telework Agreement decision and PDF documentation</camunda:expression>
-        </camunda:field>
-        <camunda:field name="attachSubmissionName">
-          <camunda:expression>${formName}_${name}_${applicationStatus}</camunda:expression>
-        </camunda:field>
+</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0g6bjba</bpmn:incoming>
-      <bpmn:outgoing>Flow_0gikngm</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0udx9dh" name="Send Submission PDF to Manager" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:incoming>Flow_1dbuope</bpmn:incoming>
+      <bpmn:outgoing>Flow_0e1bxmx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0m5hztb" name="Review ${name}&#39;s Request" camunda:assignee="${managerEmail}" camunda:candidateUsers="${managerEmail}">
       <bpmn:extensionElements>
-        <camunda:field name="attachSubmission">
-          <camunda:string>true</camunda:string>
-        </camunda:field>
-        <camunda:field name="attachments">
-          <camunda:string>file</camunda:string>
-        </camunda:field>
-        <camunda:field name="body">
-          <camunda:expression>This is a pdf copy of the Telework Agreement form submitted by ${name} with your decision of ${action} for your records.</camunda:expression>
-        </camunda:field>
-        <camunda:field name="subject">
-          <camunda:string>Telework Agreement decision and PDF documentation</camunda:string>
-        </camunda:field>
-        <camunda:field name="recipientEmails">
-          <camunda:expression>${managerEmail}</camunda:expression>
-        </camunda:field>
-        <camunda:field name="attachSubmissionName">
-          <camunda:expression>${formName}_${name}_${applicationStatus}</camunda:expression>
-        </camunda:field>
+        <camunda:formData>
+          <camunda:formField id="action" label="Action" type="string" />
+        </camunda:formData>
+        <camunda:taskListener event="complete">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
+task.execution.setVariable('deleteReason', 'completed');
+task.execution.setVariable('managersSignatureTimestamp', new Date().toISOString());
+
+</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener" event="create" id="manager_task_created" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
+          <camunda:field name="user">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+          <camunda:field name="permissions">
+            <camunda:expression>["read", "write"]</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ExtractManagerGuid" event="complete" id="getManagerGuid" />
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.UserGroupAssignmentListener" event="create" id="user-group-assigned3">
+          <camunda:field name="groupPath">
+            <camunda:string>/formsflow/manager</camunda:string>
+          </camunda:field>
+        </camunda:taskListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">&lt;p&gt;A new telework agreement request has been submitted by ${name} (${email}) requesting ${numberOfDaysTeleworkingInAWeek} weekly telework days. &lt;/p&gt;
+&lt;br&gt;
+&lt;strong&gt;This request requires ADM approval.&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Please review the attached PDF and address any issues with ${name} before requesting ADM approval and use it to discuss this case with your ADM.&lt;/li&gt;
+&lt;/ul&gt; 
+&lt;br&gt;
+&lt;strong&gt;After obtaining proof of ADM approval:&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Open the request at this link: $BASE_URL/task/$TASK_ID &lt;/li&gt;
+&lt;li&gt;Complete the supervisor sign-off section of the agreement &lt;/li&gt;
+&lt;li&gt;Upload proof of ADM approval&lt;/li&gt; 
+&lt;li&gt;Supported file types for ADM approval are:&lt;/li&gt;
+&lt;ul&gt;
+&lt;li&gt;.eml (saved email file)&lt;/li&gt;
+&lt;li&gt;.msg (saved outlook email file)&lt;/li&gt;
+&lt;li&gt;.docx&lt;/li&gt;
+&lt;li&gt;.pdf&lt;/li&gt;
+&lt;li&gt;common image formats&lt;/li&gt;
+ &lt;/ul&gt;
+&lt;li&gt;Submit your decision. &lt;strong&gt;A suggested timeline for approval is 15 days.&lt;/strong&gt; For data privacy reasons, the digital request and all employee information will automatically delete after 30 calendar days, meaning &lt;strong&gt;your employee will need to submit a new request.&lt;/strong&gt; &lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;
+For questions or feedback about the Telework agreement or other PSA forms, please contact the &lt;a href="mailto:DigitalJourneys@gov.bc.ca"&gt;Digital Journeys team&lt;/a&gt;.&lt;/p&gt;</camunda:inputParameter>
+          <camunda:inputParameter name="subject">FOR ACTION: a new telework agreement has been submitted</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${managerEmail}</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmissionName">${formName}_${name}_${applicationStatus}
+
+</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1qpbb9j</bpmn:incoming>
-      <bpmn:outgoing>Flow_07pivsl</bpmn:outgoing>
+      <bpmn:incoming>Flow_18agks9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1h1ox4j</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_17fcyih">
+      <bpmn:incoming>Flow_0h6k7pl</bpmn:incoming>
+      <bpmn:incoming>Flow_03ewduq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oucu2s</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1oucu2s" sourceRef="Gateway_17fcyih" targetRef="Gateway_0bnqump" />
+    <bpmn:exclusiveGateway id="Gateway_1vvsv23">
+      <bpmn:incoming>Flow_1b1t1w1</bpmn:incoming>
+      <bpmn:incoming>Flow_1x10xgm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rfdwhv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0rfdwhv" sourceRef="Gateway_1vvsv23" targetRef="Gateway_0bnqump" />
+    <bpmn:exclusiveGateway id="Gateway_1nt3u4h">
+      <bpmn:incoming>Flow_0fj5gjz</bpmn:incoming>
+      <bpmn:incoming>Flow_1sd0lhh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nrryxu</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1nrryxu" sourceRef="Gateway_1nt3u4h" targetRef="Gateway_0mjizbj" />
+    <bpmn:exclusiveGateway id="Gateway_17dym1y">
+      <bpmn:incoming>Flow_0irqnwn</bpmn:incoming>
+      <bpmn:incoming>Flow_1cc9v3w</bpmn:incoming>
+      <bpmn:outgoing>Flow_11s968d</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_11s968d" sourceRef="Gateway_17dym1y" targetRef="Gateway_0mjizbj" />
+    <bpmn:exclusiveGateway id="Gateway_0c14l7e">
+      <bpmn:incoming>Flow_17m4c57</bpmn:incoming>
+      <bpmn:incoming>Flow_12p4o2t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0igkto1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0igkto1" sourceRef="Gateway_0c14l7e" targetRef="Gateway_1tar0fk" />
+    <bpmn:exclusiveGateway id="Gateway_0pp0pi5">
+      <bpmn:incoming>Flow_0s86k7u</bpmn:incoming>
+      <bpmn:incoming>Flow_0xqymy4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lknqyr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0lknqyr" sourceRef="Gateway_0pp0pi5" targetRef="Gateway_1tar0fk" />
+    <bpmn:exclusiveGateway id="Gateway_0r4tehr">
+      <bpmn:incoming>Flow_0n4e36c</bpmn:incoming>
+      <bpmn:incoming>Flow_195oqpn</bpmn:incoming>
+      <bpmn:incoming>Flow_1re76ew</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bkdg2p</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0bkdg2p" sourceRef="Gateway_0r4tehr" targetRef="Activity_0y1mfrt" />
+    <bpmn:sequenceFlow id="Flow_1re76ew" sourceRef="Gateway_1tar0fk" targetRef="Gateway_0r4tehr" />
+    <bpmn:sequenceFlow id="Flow_0ptyhn1" sourceRef="Activity_0gww4mm" targetRef="Event_1rq2s67" />
+    <bpmn:serviceTask id="Activity_0gww4mm" name="Delete Submission" camunda:class="org.camunda.bpm.extension.hooks.listeners.DeleteSubmissionListener">
+      <bpmn:incoming>Flow_0nqaf3u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ptyhn1</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:parallelGateway id="Gateway_1cbqsut">
-      <bpmn:incoming>SequenceFlow_00bn1p7</bpmn:incoming>
-      <bpmn:outgoing>Flow_0g6bjba</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1qpbb9j</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_0g6bjba" sourceRef="Gateway_1cbqsut" targetRef="Activity_0cnvjyo" />
-    <bpmn:sequenceFlow id="Flow_1qpbb9j" sourceRef="Gateway_1cbqsut" targetRef="Activity_0udx9dh" />
-    <bpmn:sequenceFlow id="Flow_0gikngm" sourceRef="Activity_0cnvjyo" targetRef="Gateway_1gqg4sz" />
-    <bpmn:parallelGateway id="Gateway_1gqg4sz">
-      <bpmn:incoming>Flow_0gikngm</bpmn:incoming>
-      <bpmn:incoming>Flow_07pivsl</bpmn:incoming>
-      <bpmn:outgoing>Flow_107tioi</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_07pivsl" sourceRef="Activity_0udx9dh" targetRef="Gateway_1gqg4sz" />
-    <bpmn:sequenceFlow id="Flow_107tioi" sourceRef="Gateway_1gqg4sz" targetRef="send_to_ods" />
-    <bpmn:textAnnotation id="TextAnnotation_1vplb42">
+    <bpmn:textAnnotation id="TextAnnotation_1teg9e6">
       <bpmn:text>Attached Uploaded ADM Approval Record if required</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1tytyjh" sourceRef="Activity_0udx9dh" targetRef="TextAnnotation_1vplb42" />
-    <bpmn:textAnnotation id="TextAnnotation_10vy6xw">
+    <bpmn:textAnnotation id="TextAnnotation_1dpmopj">
       <bpmn:text>Sends Email to Manager when task is created</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_066hahd" sourceRef="reviewer" targetRef="TextAnnotation_10vy6xw" />
+    <bpmn:textAnnotation id="TextAnnotation_08tnmuv">
+      <bpmn:text>Is it occasional? Y/N</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1m0o4sp" sourceRef="TextAnnotation_08tnmuv" targetRef="Gateway_0r292rm" />
+    <bpmn:textAnnotation id="TextAnnotation_0n8lxvh">
+      <bpmn:text>Is it &lt; 3 days? Y/N</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1q6nu2g" sourceRef="TextAnnotation_0n8lxvh" targetRef="Gateway_1h5f4rh" />
+    <bpmn:textAnnotation id="TextAnnotation_0w9ivj6">
+      <bpmn:text>Attached Uploaded ADM Approval Record if required</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1rj0ujt">
+      <bpmn:text>Sends Email to Manager when task is created</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1c81i4l">
+      <bpmn:text>Occasional</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0vgxhnu">
+      <bpmn:text>Less than three days</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1n9ftf7">
+      <bpmn:text>Three or more days</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1d43ff9">
+      <bpmn:text>Sends Email to Manager when task is created</bpmn:text>
+    </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="teleworkform">
-      <bpmndi:BPMNEdge id="Flow_107tioi_di" bpmnElement="Flow_107tioi">
-        <di:waypoint x="1005" y="260" />
-        <di:waypoint x="1050" y="260" />
+      <bpmndi:BPMNEdge id="Flow_1re76ew_di" bpmnElement="Flow_1re76ew">
+        <di:waypoint x="1351" y="2021" />
+        <di:waypoint x="1402" y="2021" />
+        <di:waypoint x="1402" y="1257" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07pivsl_di" bpmnElement="Flow_07pivsl">
-        <di:waypoint x="920" y="330" />
-        <di:waypoint x="980" y="330" />
-        <di:waypoint x="980" y="285" />
+      <bpmndi:BPMNEdge id="Flow_0bkdg2p_di" bpmnElement="Flow_0bkdg2p">
+        <di:waypoint x="1427" y="1232" />
+        <di:waypoint x="1470" y="1232" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0gikngm_di" bpmnElement="Flow_0gikngm">
-        <di:waypoint x="920" y="190" />
-        <di:waypoint x="980" y="190" />
-        <di:waypoint x="980" y="235" />
+      <bpmndi:BPMNEdge id="Flow_0lknqyr_di" bpmnElement="Flow_0lknqyr">
+        <di:waypoint x="1326" y="2105" />
+        <di:waypoint x="1326" y="2046" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qpbb9j_di" bpmnElement="Flow_1qpbb9j">
-        <di:waypoint x="790" y="285" />
-        <di:waypoint x="790" y="330" />
-        <di:waypoint x="820" y="330" />
+      <bpmndi:BPMNEdge id="Flow_0igkto1_di" bpmnElement="Flow_0igkto1">
+        <di:waypoint x="1326" y="1895" />
+        <di:waypoint x="1326" y="1996" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0g6bjba_di" bpmnElement="Flow_0g6bjba">
-        <di:waypoint x="790" y="235" />
-        <di:waypoint x="790" y="190" />
-        <di:waypoint x="820" y="190" />
+      <bpmndi:BPMNEdge id="Flow_11s968d_di" bpmnElement="Flow_11s968d">
+        <di:waypoint x="1308" y="1365" />
+        <di:waypoint x="1308" y="1255" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_01iapsa_di" bpmnElement="Flow_01iapsa">
-        <di:waypoint x="1150" y="260" />
-        <di:waypoint x="1282" y="260" />
+      <bpmndi:BPMNEdge id="Flow_1nrryxu_di" bpmnElement="Flow_1nrryxu">
+        <di:waypoint x="1308" y="1055" />
+        <di:waypoint x="1308" y="1205" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0eqfxon_di" bpmnElement="Flow_0eqfxon">
-        <di:waypoint x="340" y="260" />
-        <di:waypoint x="380" y="260" />
+      <bpmndi:BPMNEdge id="Flow_0rfdwhv_di" bpmnElement="Flow_0rfdwhv">
+        <di:waypoint x="1278" y="575" />
+        <di:waypoint x="1278" y="515" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0pc6hcp_di" bpmnElement="SequenceFlow_0pc6hcp">
-        <di:waypoint x="565" y="260" />
-        <di:waypoint x="593" y="260" />
-        <di:waypoint x="593" y="290" />
-        <di:waypoint x="620" y="290" />
+      <bpmndi:BPMNEdge id="Flow_1oucu2s_di" bpmnElement="Flow_1oucu2s">
+        <di:waypoint x="1278" y="305" />
+        <di:waypoint x="1278" y="465" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qaoere_di" bpmnElement="Flow_1qaoere">
+        <di:waypoint x="1030" y="1230" />
+        <di:waypoint x="1093" y="1230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x1vaoy_di" bpmnElement="Flow_1x1vaoy">
+        <di:waypoint x="1050" y="2020" />
+        <di:waypoint x="1081" y="2020" />
+        <di:waypoint x="1081" y="2021" />
+        <di:waypoint x="1111" y="2021" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oa9sp1_di" bpmnElement="Flow_1oa9sp1">
+        <di:waypoint x="1142" y="2330" />
+        <di:waypoint x="1230" y="2330" />
+        <di:waypoint x="1230" y="2311" />
+        <di:waypoint x="1276" y="2311" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zbqzr0_di" bpmnElement="Flow_0zbqzr0">
+        <di:waypoint x="1161" y="2311" />
+        <di:waypoint x="1219" y="2311" />
+        <di:waypoint x="1219" y="2251" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zicn0v_di" bpmnElement="Flow_0zicn0v">
+        <di:waypoint x="1163" y="1771" />
+        <di:waypoint x="1219" y="1771" />
+        <di:waypoint x="1219" y="1801" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17o7ihn_di" bpmnElement="Flow_17o7ihn">
+        <di:waypoint x="1138" y="1746" />
+        <di:waypoint x="1138" y="1721" />
+        <di:waypoint x="1276" y="1721" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s86k7u_di" bpmnElement="Flow_0s86k7u">
+        <di:waypoint x="1326" y="2271" />
+        <di:waypoint x="1326" y="2155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xqymy4_di" bpmnElement="Flow_0xqymy4">
+        <di:waypoint x="1219" y="2171" />
+        <di:waypoint x="1219" y="2130" />
+        <di:waypoint x="1300" y="2130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17m4c57_di" bpmnElement="Flow_17m4c57">
+        <di:waypoint x="1326" y="1761" />
+        <di:waypoint x="1326" y="1845" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12p4o2t_di" bpmnElement="Flow_12p4o2t">
+        <di:waypoint x="1269" y="1870" />
+        <di:waypoint x="1301" y="1870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j0s9ja_di" bpmnElement="Flow_0j0s9ja">
+        <di:waypoint x="1136" y="1996" />
+        <di:waypoint x="1136" y="1896" />
+        <di:waypoint x="1138" y="1896" />
+        <di:waypoint x="1138" y="1796" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02kop10_di" bpmnElement="Flow_02kop10">
+        <di:waypoint x="1136" y="2046" />
+        <di:waypoint x="1136" y="2286" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fghb34_di" bpmnElement="Flow_1fghb34">
+        <di:waypoint x="1143" y="1520" />
+        <di:waypoint x="1258" y="1520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q7wkjj_di" bpmnElement="Flow_1q7wkjj">
+        <di:waypoint x="1143" y="1520" />
+        <di:waypoint x="1201" y="1520" />
+        <di:waypoint x="1201" y="1460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00ncru6_di" bpmnElement="Flow_00ncru6">
+        <di:waypoint x="1143" y="968" />
+        <di:waypoint x="1201" y="968" />
+        <di:waypoint x="1201" y="998" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m1sbgm_di" bpmnElement="Flow_1m1sbgm">
+        <di:waypoint x="1118" y="943" />
+        <di:waypoint x="1118" y="898" />
+        <di:waypoint x="1258" y="898" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0irqnwn_di" bpmnElement="Flow_0irqnwn">
+        <di:waypoint x="1308" y="1480" />
+        <di:waypoint x="1308" y="1415" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cc9v3w_di" bpmnElement="Flow_1cc9v3w">
+        <di:waypoint x="1251" y="1390" />
+        <di:waypoint x="1283" y="1390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fj5gjz_di" bpmnElement="Flow_0fj5gjz">
+        <di:waypoint x="1308" y="938" />
+        <di:waypoint x="1308" y="1005" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sd0lhh_di" bpmnElement="Flow_1sd0lhh">
+        <di:waypoint x="1251" y="1030" />
+        <di:waypoint x="1283" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y70ffl_di" bpmnElement="Flow_1y70ffl">
+        <di:waypoint x="1118" y="1205" />
+        <di:waypoint x="1118" y="993" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11jm9lu_di" bpmnElement="Flow_11jm9lu">
+        <di:waypoint x="1118" y="1255" />
+        <di:waypoint x="1118" y="1495" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nqaf3u_di" bpmnElement="Flow_0nqaf3u">
+        <di:waypoint x="1570" y="1232" />
+        <di:waypoint x="1650" y="1232" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n4e36c_di" bpmnElement="Flow_0n4e36c">
+        <di:waypoint x="1333" y="1230" />
+        <di:waypoint x="1379" y="1230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x10xgm_di" bpmnElement="Flow_1x10xgm">
+        <di:waypoint x="1278" y="740" />
+        <di:waypoint x="1278" y="625" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b1t1w1_di" bpmnElement="Flow_1b1t1w1">
+        <di:waypoint x="1171" y="640" />
+        <di:waypoint x="1171" y="600" />
+        <di:waypoint x="1253" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h6k7pl_di" bpmnElement="Flow_0h6k7pl">
+        <di:waypoint x="1278" y="160" />
+        <di:waypoint x="1278" y="255" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ewduq_di" bpmnElement="Flow_03ewduq">
+        <di:waypoint x="1221" y="280" />
+        <di:waypoint x="1253" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01mwlk0_di" bpmnElement="Flow_01mwlk0">
+        <di:waypoint x="815" y="490" />
+        <di:waypoint x="843" y="490" />
+        <di:waypoint x="843" y="520" />
+        <di:waypoint x="870" y="520" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="579" y="303" width="27" height="14" />
+          <dc:Bounds x="829" y="533" width="28" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1x38yu4_di" bpmnElement="SequenceFlow_1x38yu4">
-        <di:waypoint x="565" y="260" />
-        <di:waypoint x="593" y="260" />
-        <di:waypoint x="593" y="240" />
-        <di:waypoint x="620" y="240" />
+      <bpmndi:BPMNEdge id="Flow_0am9cb5_di" bpmnElement="Flow_0am9cb5">
+        <di:waypoint x="815" y="490" />
+        <di:waypoint x="843" y="490" />
+        <di:waypoint x="843" y="470" />
+        <di:waypoint x="870" y="470" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="573" y="213" width="40" height="14" />
+          <dc:Bounds x="823" y="443" width="41" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_00bn1p7_di" bpmnElement="SequenceFlow_00bn1p7">
-        <di:waypoint x="720" y="260" />
-        <di:waypoint x="765" y="260" />
+      <bpmndi:BPMNEdge id="Flow_06kfygq_di" bpmnElement="Flow_06kfygq">
+        <di:waypoint x="730" y="490" />
+        <di:waypoint x="765" y="490" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0jg4sg3_di" bpmnElement="SequenceFlow_0jg4sg3">
-        <di:waypoint x="480" y="260" />
-        <di:waypoint x="515" y="260" />
+      <bpmndi:BPMNEdge id="Flow_1u5pcba_di" bpmnElement="Flow_1u5pcba">
+        <di:waypoint x="590" y="490" />
+        <di:waypoint x="630" y="490" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0ociprs_di" bpmnElement="SequenceFlow_0ociprs">
-        <di:waypoint x="208" y="260" />
-        <di:waypoint x="240" y="260" />
+      <bpmndi:BPMNEdge id="Flow_11xqzld_di" bpmnElement="Flow_11xqzld">
+        <di:waypoint x="228" y="1240" />
+        <di:waypoint x="285" y="1240" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="172" y="242" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_18agks9_di" bpmnElement="Flow_18agks9">
+        <di:waypoint x="619" y="2020" />
+        <di:waypoint x="690" y="2020" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w0nwn5_di" bpmnElement="Flow_1w0nwn5">
+        <di:waypoint x="895" y="2020" />
+        <di:waypoint x="923" y="2020" />
+        <di:waypoint x="923" y="2050" />
+        <di:waypoint x="950" y="2050" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="151" y="285" width="79" height="14" />
+          <dc:Bounds x="909" y="2063" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vemlea_di" bpmnElement="Flow_1vemlea">
+        <di:waypoint x="895" y="2020" />
+        <di:waypoint x="923" y="2020" />
+        <di:waypoint x="923" y="2000" />
+        <di:waypoint x="950" y="2000" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="903" y="1973" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h1ox4j_di" bpmnElement="Flow_1h1ox4j">
+        <di:waypoint x="790" y="2020" />
+        <di:waypoint x="845" y="2020" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zlcy4w_di" bpmnElement="Flow_0zlcy4w">
+        <di:waypoint x="970" y="490" />
+        <di:waypoint x="1063" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07th41b_di" bpmnElement="Flow_07th41b">
+        <di:waypoint x="1093" y="800" />
+        <di:waypoint x="1228" y="800" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15pa8l8_di" bpmnElement="Flow_15pa8l8">
+        <di:waypoint x="1113" y="190" />
+        <di:waypoint x="1171" y="190" />
+        <di:waypoint x="1171" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04g164j_di" bpmnElement="Flow_04g164j">
+        <di:waypoint x="1088" y="165" />
+        <di:waypoint x="1088" y="120" />
+        <di:waypoint x="1228" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z4g8bq_di" bpmnElement="Flow_0z4g8bq">
+        <di:waypoint x="1088" y="465" />
+        <di:waypoint x="1088" y="215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qvek8u_di" bpmnElement="Flow_1qvek8u">
+        <di:waypoint x="1088" y="515" />
+        <di:waypoint x="1088" y="755" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17yu1de_di" bpmnElement="Flow_17yu1de">
+        <di:waypoint x="1113" y="780" />
+        <di:waypoint x="1171" y="780" />
+        <di:waypoint x="1171" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_195oqpn_di" bpmnElement="Flow_195oqpn">
+        <di:waypoint x="1303" y="490" />
+        <di:waypoint x="1402" y="490" />
+        <di:waypoint x="1402" y="1207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hzoshb_di" bpmnElement="Flow_1hzoshb">
+        <di:waypoint x="400" y="1395" />
+        <di:waypoint x="400" y="2020" />
+        <di:waypoint x="519" y="2020" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="416" y="1555" width="48" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rsk9jl_di" bpmnElement="Flow_0rsk9jl">
+        <di:waypoint x="400" y="1345" />
+        <di:waypoint x="400" y="1232" />
+        <di:waypoint x="540" y="1232" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="411" y="1288" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02maupv_di" bpmnElement="Flow_02maupv">
+        <di:waypoint x="310" y="1265" />
+        <di:waypoint x="310" y="1370" />
+        <di:waypoint x="375" y="1370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="233" y="1333" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w44o0u_di" bpmnElement="Flow_1w44o0u">
+        <di:waypoint x="310" y="1215" />
+        <di:waypoint x="310" y="490" />
+        <di:waypoint x="490" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="242" y="985" width="55" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s3kt6z_di" bpmnElement="Flow_0s3kt6z">
+        <di:waypoint x="875" y="1230" />
+        <di:waypoint x="903" y="1230" />
+        <di:waypoint x="903" y="1260" />
+        <di:waypoint x="930" y="1260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="889" y="1273" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ur35fj_di" bpmnElement="Flow_1ur35fj">
+        <di:waypoint x="875" y="1230" />
+        <di:waypoint x="903" y="1230" />
+        <di:waypoint x="903" y="1210" />
+        <di:waypoint x="930" y="1210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="883" y="1183" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e1bxmx_di" bpmnElement="Flow_0e1bxmx">
+        <di:waypoint x="790" y="1232" />
+        <di:waypoint x="808" y="1232" />
+        <di:waypoint x="808" y="1230" />
+        <di:waypoint x="825" y="1230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dbuope_di" bpmnElement="Flow_1dbuope">
+        <di:waypoint x="640" y="1232" />
+        <di:waypoint x="690" y="1232" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ptyhn1_di" bpmnElement="Flow_0ptyhn1">
+        <di:waypoint x="1750" y="1232" />
+        <di:waypoint x="1822" y="1232" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_1n4q2wg_di" bpmnElement="Gateway_1n4q2wg" isMarkerVisible="true">
+        <dc:Bounds x="825" y="1205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="815" y="1181" width="69" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
-        <dc:Bounds x="380" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0e6fwnw_di" bpmnElement="Activity_0e6fwnw">
+        <dc:Bounds x="930" y="1190" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="1282" y="242" width="36" height="36" />
+      <bpmndi:BPMNShape id="Gateway_0r292rm_di" bpmnElement="Gateway_0r292rm" isMarkerVisible="true">
+        <dc:Bounds x="285" y="1215" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65j" isMarkerVisible="true">
-        <dc:Bounds x="515" y="235" width="50" height="50" />
+      <bpmndi:BPMNShape id="Gateway_1h5f4rh_di" bpmnElement="Gateway_1h5f4rh" isMarkerVisible="true">
+        <dc:Bounds x="375" y="1345" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_13rslu5_di" bpmnElement="Gateway_13rslu5">
+        <dc:Bounds x="1063" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0bnqump_di" bpmnElement="Gateway_0bnqump">
+        <dc:Bounds x="1253" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1i86xd2_di" bpmnElement="Gateway_1i86xd2" isMarkerVisible="true">
+        <dc:Bounds x="1063" y="165" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jq3cou_di" bpmnElement="Gateway_0jq3cou" isMarkerVisible="true">
+        <dc:Bounds x="1063" y="755" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1v91qvy_di" bpmnElement="Gateway_1v91qvy" isMarkerVisible="true">
+        <dc:Bounds x="845" y="1995" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="505" y="285" width="70" height="14" />
+          <dc:Bounds x="835" y="1971" width="69" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
-        <dc:Bounds x="620" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0dkp4z6_di" bpmnElement="Activity_0dkp4z6">
+        <dc:Bounds x="950" y="1980" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1i967b8_di" bpmnElement="Activity_0kai049">
-        <dc:Bounds x="240" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0qjfbs1_di" bpmnElement="send_to_ods">
-        <dc:Bounds x="1050" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataStoreReference_0iew98f_di" bpmnElement="DataStoreReference_0iew98f">
-        <dc:Bounds x="1075" y="105" width="50" height="50" />
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="1222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1088" y="81" width="24" height="14" />
+          <dc:Bounds x="171" y="1265" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1pmly6k_di" bpmnElement="Activity_0cnvjyo">
-        <dc:Bounds x="820" y="150" width="100" height="80" />
+      <bpmndi:BPMNShape id="Gateway_09eynxk_di" bpmnElement="Gateway_09eynxk" isMarkerVisible="true">
+        <dc:Bounds x="765" y="465" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="755" y="441" width="69" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1rq77c4_di" bpmnElement="Activity_0udx9dh">
-        <dc:Bounds x="820" y="290" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1a008jh_di" bpmnElement="Activity_1a008jh">
+        <dc:Bounds x="870" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1wuscnx_di" bpmnElement="Gateway_1cbqsut">
-        <dc:Bounds x="765" y="235" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_1sfqc06_di" bpmnElement="Activity_1sfqc06">
+        <dc:Bounds x="490" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0urz316_di" bpmnElement="Gateway_1gqg4sz">
-        <dc:Bounds x="955" y="235" width="50" height="50" />
+      <bpmndi:BPMNShape id="Activity_049b3in_di" bpmnElement="Activity_049b3in">
+        <dc:Bounds x="540" y="1192" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1vplb42_di" bpmnElement="TextAnnotation_1vplb42">
-        <dc:Bounds x="820" y="390" width="130" height="50" />
+      <bpmndi:BPMNShape id="Activity_0g9elbh_di" bpmnElement="Activity_0g9elbh">
+        <dc:Bounds x="519" y="1980" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_10vy6xl_di" bpmnElement="TextAnnotation_10vy6xw">
-        <dc:Bounds x="380" y="140" width="100" height="54" />
+      <bpmndi:BPMNShape id="Activity_0y1mfrt_di" bpmnElement="Activity_0y1mfrt">
+        <dc:Bounds x="1470" y="1192" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0n0lg8r_di" bpmnElement="DataOutputAssociation_0n0lg8r">
-        <di:waypoint x="1100" y="220" />
-        <di:waypoint x="1100" y="155" />
+      <bpmndi:BPMNShape id="DataStoreReference_1hen0rm_di" bpmnElement="DataStoreReference_1hen0rm">
+        <dc:Bounds x="1495" y="1075" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1508" y="1051" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ldatg0_di" bpmnElement="Gateway_1ldatg0">
+        <dc:Bounds x="1093" y="1205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mjizbj_di" bpmnElement="Gateway_0mjizbj">
+        <dc:Bounds x="1283" y="1205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mm4twf_di" bpmnElement="Gateway_0mm4twf" isMarkerVisible="true">
+        <dc:Bounds x="1093" y="943" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1s7tg7j_di" bpmnElement="Gateway_1s7tg7j" isMarkerVisible="true">
+        <dc:Bounds x="1093" y="1495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1virq7e_di" bpmnElement="Gateway_1virq7e">
+        <dc:Bounds x="1111" y="1996" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tar0fk_di" bpmnElement="Gateway_1tar0fk">
+        <dc:Bounds x="1301" y="1996" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0t0aez2_di" bpmnElement="Gateway_0t0aez2" isMarkerVisible="true">
+        <dc:Bounds x="1113" y="1746" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15v6olh_di" bpmnElement="Gateway_15v6olh" isMarkerVisible="true">
+        <dc:Bounds x="1111" y="2286" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lls2l4_di" bpmnElement="Activity_0s1st27">
+        <dc:Bounds x="1121" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vqunec_di" bpmnElement="Activity_1ddf1uh">
+        <dc:Bounds x="1228" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dhmhp4_di" bpmnElement="Activity_0mju9zo">
+        <dc:Bounds x="1121" y="640" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sl2pbx_di" bpmnElement="Activity_0pqhh06">
+        <dc:Bounds x="1228" y="740" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f4xew5_di" bpmnElement="Activity_0z6rzpw">
+        <dc:Bounds x="1258" y="858" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bsnxqw_di" bpmnElement="Activity_16z5h4g">
+        <dc:Bounds x="1151" y="998" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_184pkdj_di" bpmnElement="Activity_0ylaop4">
+        <dc:Bounds x="1151" y="1380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15p6lf5_di" bpmnElement="Activity_0gyiyir">
+        <dc:Bounds x="1258" y="1480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11shogy_di" bpmnElement="Activity_1g1v0lh">
+        <dc:Bounds x="1276" y="1681" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cpa252_di" bpmnElement="Activity_1xt63zv">
+        <dc:Bounds x="1169" y="1801" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1snh15m_di" bpmnElement="Activity_0dj9wef">
+        <dc:Bounds x="1169" y="2171" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tawbuh_di" bpmnElement="Activity_1izkpe2">
+        <dc:Bounds x="1276" y="2271" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03vvnor_di" bpmnElement="Activity_03vvnor">
+        <dc:Bounds x="630" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1u5rf0q_di" bpmnElement="Activity_1u5rf0q">
+        <dc:Bounds x="690" y="1192" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0m5hztb_di" bpmnElement="Activity_0m5hztb">
+        <dc:Bounds x="690" y="1980" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_17fcyih_di" bpmnElement="Gateway_17fcyih" isMarkerVisible="true">
+        <dc:Bounds x="1253" y="255" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1vvsv23_di" bpmnElement="Gateway_1vvsv23" isMarkerVisible="true">
+        <dc:Bounds x="1253" y="575" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1nt3u4h_di" bpmnElement="Gateway_1nt3u4h" isMarkerVisible="true">
+        <dc:Bounds x="1283" y="1005" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_17dym1y_di" bpmnElement="Gateway_17dym1y" isMarkerVisible="true">
+        <dc:Bounds x="1283" y="1365" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0c14l7e_di" bpmnElement="Gateway_0c14l7e" isMarkerVisible="true">
+        <dc:Bounds x="1301" y="1845" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0pp0pi5_di" bpmnElement="Gateway_0pp0pi5" isMarkerVisible="true">
+        <dc:Bounds x="1301" y="2105" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0r4tehr_di" bpmnElement="Gateway_0r4tehr" isMarkerVisible="true">
+        <dc:Bounds x="1377" y="1207" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1teg9e6_di" bpmnElement="TextAnnotation_1teg9e6">
+        <dc:Bounds x="1168" y="1610" width="130" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1dpmopj_di" bpmnElement="TextAnnotation_1dpmopj">
+        <dc:Bounds x="690" y="1080" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_08tnmuv_di" bpmnElement="TextAnnotation_08tnmuv">
+        <dc:Bounds x="390" y="1150" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0n8lxvh_di" bpmnElement="TextAnnotation_0n8lxvh">
+        <dc:Bounds x="500" y="1340" width="80" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0w9ivj6_di" bpmnElement="TextAnnotation_0w9ivj6">
+        <dc:Bounds x="1188" y="2400" width="130" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1rj0ujt_di" bpmnElement="TextAnnotation_1rj0ujt">
+        <dc:Bounds x="710" y="1900" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1c81i4l_di" bpmnElement="TextAnnotation_1c81i4l">
+        <dc:Bounds x="480" y="333" width="100" height="25" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0vgxhnu_di" bpmnElement="TextAnnotation_0vgxhnu">
+        <dc:Bounds x="690" y="1360" width="100" height="37" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1n9ftf7_di" bpmnElement="TextAnnotation_1n9ftf7">
+        <dc:Bounds x="540" y="2150" width="100" height="37" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1d43ff9_di" bpmnElement="TextAnnotation_1d43ff9">
+        <dc:Bounds x="630" y="370" width="100" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rq2s67_di" bpmnElement="Event_1rq2s67">
+        <dc:Bounds x="1822" y="1214" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06hd9ee_di" bpmnElement="Activity_0gww4mm">
+        <dc:Bounds x="1650" y="1192" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1nz1hfl_di" bpmnElement="DataOutputAssociation_1nz1hfl">
+        <di:waypoint x="1520" y="1192" />
+        <di:waypoint x="1520" y="1125" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1tytyjh_di" bpmnElement="Association_1tytyjh">
-        <di:waypoint x="870" y="370" />
-        <di:waypoint x="870" y="390" />
+      <bpmndi:BPMNEdge id="Association_1m0o4sp_di" bpmnElement="Association_1m0o4sp">
+        <di:waypoint x="403" y="1190" />
+        <di:waypoint x="326" y="1231" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_066hahd_di" bpmnElement="Association_066hahd">
-        <di:waypoint x="430" y="220" />
-        <di:waypoint x="430" y="194" />
+      <bpmndi:BPMNEdge id="Association_1q6nu2g_di" bpmnElement="Association_1q6nu2g">
+        <di:waypoint x="500" y="1362" />
+        <di:waypoint x="423" y="1368" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
