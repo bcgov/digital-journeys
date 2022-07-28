@@ -28,7 +28,7 @@ export default React.memo(() => {
 
               <li>You will receive another email after your supervisor/delegate submits their decision with a pdf attachment of the completed submission.</li>
                 
-              <li>The pdf can be stored on your personal files or according to your ministry's record-keeping policy.</li>
+              <li>The pdf can be stored on your personnel files or according to your ministry's record-keeping policy.</li>
 
               <li>If you have not received an email confirming their decision within 15 days, please discuss the status of your telework agreement with them.</li>
 
@@ -54,7 +54,7 @@ export default React.memo(() => {
 
               <li>You will receive by email a pdf copy of the Telework Agreement, as well as an attachment with ADM approval if the request was for three or more Telework days.</li>
 
-              <li>The attachments can be stored in your personal files or according to your ministry's record-keeping policy.</li>
+              <li>The attachments can be stored in your personnel files or according to your ministry's record-keeping policy.</li>
 
               <li>For questions or feedback about the Telework agreement or other PSA forms, please <a href="mailto:DigitalJourneys@gov.bc.ca">contact the Digital Journeys team</a>.</li>
               
