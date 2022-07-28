@@ -26,7 +26,9 @@ export default React.memo(() => {
             <ul>
               <li>This message does not confirm approval of your telework request.</li>
 
-              <li>You will receive another email after your supervisor/delegate submits their decision. with a pdf attachment of the completed submission. The pdf can be stored on your personal file or according to your ministry's record-keeping policy.</li>
+              <li>You will receive another email after your supervisor/delegate submits their decision with a pdf attachment of the completed submission.</li>
+                
+              <li>The pdf can be stored on your personal files or according to your ministry's record-keeping policy.</li>
 
               <li>If you have not received an email confirming their decision within 15 days, please discuss the status of your telework agreement with them.</li>
 
@@ -36,7 +38,7 @@ export default React.memo(() => {
 
               <li>For questions or feedback about the Telework form or other PSA forms, please <a href="mailto:DigitalJourneys@gov.bc.ca">contact the Digital Journeys team</a>.</li>
 
-              <li>You may now close this window</li>
+              <li>You may now close this window.</li>
 
             </ul>
           </div>
@@ -56,7 +58,7 @@ export default React.memo(() => {
 
               <li>For questions or feedback about the Telework agreement or other PSA forms, please <a href="mailto:DigitalJourneys@gov.bc.ca">contact the Digital Journeys team</a>.</li>
               
-              <li>You may now close this window</li>
+              <li>You may now close this window.</li>
             </ul>
           </div>
         </>
