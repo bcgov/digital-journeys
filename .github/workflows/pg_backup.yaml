@@ -41,9 +41,9 @@ jobs:
           oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
           -p NAME=${DB_BACKUP_APP} \
           -p TAG=${BUILD_TAG} \
-          -p BASE_IMAGE_NAME="patroni-postgres" \
-          -p BASE_IMAGE_TAG="12.4-latest" \
-          -p BASE_IMAGE_REPO="image-registry.openshift-image-registry.svc:5000/bcgov/" \
+          -p BASE_IMAGE_NAME="postgres" \
+          -p BASE_IMAGE_TAG="12.4" \
+          -p BASE_IMAGE_REPO="artifacts.developer.gov.bc.ca/docker-remote" \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
           -p SOURCE_REPOSITORY_REF="master" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
