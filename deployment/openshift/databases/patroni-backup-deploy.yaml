@@ -178,9 +178,9 @@ parameters:
     description: The name or Id of the environment.  This variable is used by the webhook
       integration to identify the environment in which the backup notifications originate.
     required: false
-    value: digital_journeys
+    value: digital_journeys_patroni_backup
   - name: ENVIRONMENT_FRIENDLY_NAME
-    value: digital_journeys
+    value: digital_journeys_patroni_backup
   - name: DATA_VOLUME_SIZE
     required: true
     value: 5Gi

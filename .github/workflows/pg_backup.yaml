@@ -52,7 +52,7 @@ jobs:
 
   # deploy the backup image in Dev
   deployDev:
-    name: Deploy DB_BACKUP_APP to Dev environment
+    name: Deploy Patroni to Dev environment
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
@@ -61,8 +61,6 @@ jobs:
       BRANCH: automated-db-backups
       DB_BACKUP_APP: patroni-backup
       DB_NAME: app
-      ENVIRONMENT_NAME: patroni-backup-dev
-      ENVIRONMENT_FRIENDLY_NAME: 'Digital Journeys Postgres Dev Backup'
     needs:
       - build
     steps:
@@ -86,9 +84,7 @@ jobs:
           -p NAME=${DB_BACKUP_APP} \
           -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
-          -p DB_NAME=${DB_NAME} \
-          -p ENVIRONMENT_NAME=${ENVIRONMENT_NAME} \
-          -p ENVIRONMENT_FRIENDLY_NAME=${ENVIRONMENT_FRIENDLY_NAME}  | oc -n ${NAMESPACE} apply -f -
+          -p DB_NAME=${DB_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
           oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
