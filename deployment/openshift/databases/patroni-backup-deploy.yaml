@@ -30,7 +30,7 @@ objects:
       name: ${NAME}-config
     data:
       backup.conf: |
-        hamongo-internal/${DB_NAME}
+        patroni/${DB_NAME}
         0 9 * * * default ./backup.sh -s
   - apiVersion: apps.openshift.io/v1
     kind: DeploymentConfig
@@ -77,7 +77,7 @@ objects:
                 value: '1'
               - name: MONTHLY_BACKUPS
                 value: '1'
-              - name: MONGODB_USER
+              - name: PATRONI_USER
                 valueFrom:
                   secretKeyRef:
                     name: ${DB_SECRET_NAME}
@@ -87,7 +87,7 @@ objects:
                   secretKeyRef:
                     name: ${DB_SECRET_NAME}
                     key: ${DB_USERNAME_KEY}
-              - name: MONGODB_PASSWORD
+              - name: PATRONI_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     key: ${DB_PASSWORD_KEY}
@@ -97,7 +97,7 @@ objects:
                   secretKeyRef:
                     key: ${DB_PASSWORD_KEY}
                     name: ${DB_SECRET_NAME}
-              - name: MONGODB_DATABASE
+              - name: PATRONI_DATABASE
                 value: ${DB_NAME}
               - name: DATABASE_NAME
                 value: ${DB_NAME}
@@ -125,7 +125,7 @@ objects:
               - name: ${NAME}-data-vol
                 mountPath: "/backups/"
               - name: ${NAME}-verification-vol
-                mountPath: "/var/lib/mongodb/data"
+                mountPath: "/var/lib/pgsql/data"
               - name: ${NAME}-config-vol
                 mountPath: "/backup.conf"
                 subPath: backup.conf
@@ -147,15 +147,15 @@ parameters:
   - name: REPLICAS
     value: "1"
   - name: PORT
-    value: "27017"
+    value: "5432"
   - name: DB_SERVICE
-    value: hamongo-0.hamongo
+    value: patroni-0.patroni
   - name: DB_SECRET_NAME
-    value: mongodb-creds
+    value: patroni
   - name: DB_USERNAME_KEY
-    value: username
+    value: app-db-username
   - name: DB_PASSWORD_KEY
-    value: password
+    value: app-db-password
   # - name: DB_NAME_KEY
   #   value: database
   # - name: APP_DB

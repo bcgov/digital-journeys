@@ -1,4 +1,4 @@
-name: Deploy backup container to Openshift
+name: Deploy MongoDB backup containers
 
 on:
   push:
@@ -61,6 +61,8 @@ jobs:
       BRANCH: automated-db-backups
       DB_BACKUP_APP: mongodb-backup
       DB_NAME: formiodb
+      ENVIRONMENT_NAME: mongodb-backup-dev
+      ENVIRONMENT_FRIENDLY_NAME: 'Digital Journeys MongoDB Dev Backup'
     needs:
       - build
     steps:
@@ -84,7 +86,9 @@ jobs:
           -p NAME=${DB_BACKUP_APP} \
           -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
-          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+          -p DB_NAME=${DB_NAME} \
+          -p ENVIRONMENT_NAME=${ENVIRONMENT_NAME} \
+          -p ENVIRONMENT_FRIENDLY_NAME=${ENVIRONMENT_FRIENDLY_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
           oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
@@ -108,6 +112,8 @@ jobs:
       BRANCH: automated-db-backups
       DB_BACKUP_APP: mongodb-backup
       DB_NAME: formiodb
+      ENVIRONMENT_NAME: mongodb-backup-test
+      ENVIRONMENT_FRIENDLY_NAME: 'Digital Journeys MongoDB Test Backup'
     needs:
       - deployDev
     steps:
@@ -131,7 +137,9 @@ jobs:
           -p NAME=${DB_BACKUP_APP} \
           -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
-          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+          -p DB_NAME=${DB_NAME} \
+          -p ENVIRONMENT_NAME=${ENVIRONMENT_NAME} \
+          -p ENVIRONMENT_FRIENDLY_NAME=${ENVIRONMENT_FRIENDLY_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
           oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
@@ -155,6 +163,8 @@ jobs:
       BRANCH: automated-db-backups
       DB_BACKUP_APP: mongodb-backup
       DB_NAME: formiodb
+      ENVIRONMENT_NAME: mongodb-backup-prod
+      ENVIRONMENT_FRIENDLY_NAME: 'Digital Journeys MongoDB Prod Backup'
     needs:
       - deployTest
     steps:
@@ -178,7 +188,9 @@ jobs:
           -p NAME=${DB_BACKUP_APP} \
           -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
-          -p DB_NAME=${DB_NAME}  | oc -n ${NAMESPACE} apply -f -
+          -p DB_NAME=${DB_NAME} \
+          -p ENVIRONMENT_NAME=${ENVIRONMENT_NAME} \
+          -p ENVIRONMENT_FRIENDLY_NAME=${ENVIRONMENT_FRIENDLY_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
           oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
