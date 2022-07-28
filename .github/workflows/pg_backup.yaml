@@ -43,7 +43,7 @@ jobs:
           -p TAG=${BUILD_TAG} \
           -p BASE_IMAGE_NAME="postgres" \
           -p BASE_IMAGE_TAG="12.4" \
-          -p BASE_IMAGE_REPO="artifacts.developer.gov.bc.ca/docker-remote" \
+          -p BASE_IMAGE_REPO="artifacts.developer.gov.bc.ca/docker-remote/" \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
           -p SOURCE_REPOSITORY_REF="master" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
