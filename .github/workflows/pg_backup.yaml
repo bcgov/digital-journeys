@@ -1,9 +1,9 @@
 name: Deploy Postgres Keycloak backup containers
 
 on:
-  push:
-    branches:
-      - automated-db-backups
+  # push:
+  #   branches:
+  #     - automated-db-backups
 
   workflow_dispatch:
 
