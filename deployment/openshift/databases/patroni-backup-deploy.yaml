@@ -125,7 +125,7 @@ objects:
               - name: ${NAME}-data-vol
                 mountPath: "/backups/"
               - name: ${NAME}-verification-vol
-                mountPath: "/var/lib/pgsql/data"
+                mountPath: "/home/postgres/pgdata"
               - name: ${NAME}-config-vol
                 mountPath: "/backup.conf"
                 subPath: backup.conf

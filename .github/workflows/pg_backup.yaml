@@ -15,8 +15,8 @@ jobs:
     env:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
+      NAME: patroni-backup
       BUILD_TAG: latest
-      DB_BACKUP_APP: patroni-backup
     steps:
       # Checkout the PR branch
       - name: Print env
@@ -36,19 +36,11 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: './deployment/openshift'
+        working-directory: './deployment/openshift/databases'
         run: |
-          oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
-          -p NAME=${DB_BACKUP_APP} \
-          -p TAG=${BUILD_TAG} \
-          -p BASE_IMAGE_NAME="postgres" \
-          -p BASE_IMAGE_TAG="12.4" \
-          -p BASE_IMAGE_REPO="artifacts.developer.gov.bc.ca/docker-remote/" \
-          -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
-          -p SOURCE_REPOSITORY_REF="master" \
-          -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
-
-          oc -n ${BUILD_NAMESPACE} start-build bc/${DB_BACKUP_APP} --wait
+          oc -n ${BUILD_NAMESPACE} process -f prebuilt-db-backup-build.yaml \
+          -p NAME=${NAME} \
+          -p TAG=${BUILD_TAG} | oc -n ${BUILD_NAMESPACE} apply -f - --wait
 
   # deploy the backup image in Dev
   deployDev:
@@ -59,7 +51,7 @@ jobs:
       NAMESPACE: d89793-dev
       BUILD_NAMESPACE: d89793-tools
       BRANCH: automated-db-backups
-      DB_BACKUP_APP: patroni-backup
+      NAME: patroni-backup
       DB_NAME: app
     needs:
       - build
@@ -81,17 +73,17 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
 
           oc -n ${NAMESPACE} process -f deployment/openshift/databases/patroni-backup-deploy.yaml \
-          -p NAME=${DB_BACKUP_APP} \
-          -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
+          -p NAME=${NAME} \
+          -p IMAGE_STREAM_TAG=${NAME}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
           -p DB_NAME=${DB_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
-          oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
+          oc rollout latest dc/${NAME} -n ${NAMESPACE}
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${DB_BACKUP_APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${NAME} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
