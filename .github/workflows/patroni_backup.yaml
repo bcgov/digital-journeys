@@ -102,7 +102,7 @@ jobs:
       NAME: patroni-backup
       DB_NAME: app
     needs:
-      - build
+      - deployDev
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
@@ -149,7 +149,7 @@ jobs:
       NAME: patroni-backup
       DB_NAME: app
     needs:
-      - build
+      - deployTest
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
