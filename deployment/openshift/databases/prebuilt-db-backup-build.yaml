@@ -23,7 +23,7 @@ objects:
     metadata:
       name: ${NAME}:${TAG}
     tag:
-      annotations: null
+      name: ${TAG}
       from:
         kind: DockerImage
         name: ${DOCKER_IMAGE_REF}
