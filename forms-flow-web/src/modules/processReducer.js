@@ -38,7 +38,7 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
       return { ...state, isProcessDiagramLoading: action.payload };
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:
-      return {...state, formPreviousData:[], formPreviousData:action.payload};
+      return {...state,formPreviousData:action.payload};
     default:
       return state;
   }

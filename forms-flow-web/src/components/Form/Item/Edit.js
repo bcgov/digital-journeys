@@ -57,7 +57,6 @@ const Edit = React.memo((props) => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
-  const applicationCount = useSelector((state) =>state.process.applicationCount)
   const formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
   const saveText = "Save Form";
@@ -94,7 +93,7 @@ const Edit = React.memo((props) => {
               id: processListData.id,
               formId: submittedData._id,
             };
-            let updated = true
+            let updated = true;
             if(isTitleChanged){
               updated= false
               data.processKey = formPreviousData.processKey
@@ -167,9 +166,9 @@ const Edit = React.memo((props) => {
   // save form data to submit
   const saveFormData = () => {
     const newFormData = addHiddenApplicationComponent(form);
-    if(prviousData.formName !== newFormData.title && applicationCount >0){
-      handleShow()
-    }else{
+    if (prviousData.formName !== newFormData.title) {
+      handleShow();
+    } else{
       newFormData.submissionAccess = SUBMISSION_ACCESS;
       newFormData.access = FORM_ACCESS;
   
@@ -192,8 +191,20 @@ const Edit = React.memo((props) => {
                 formName: submittedData.title,
                 id: processListData.id,
                 formId: submittedData._id,
-                formRevisionNumber: "V1"
+                formRevisionNumber: "V1",
               };
+              
+              // keep the existing process key and name
+              if (processListData.processKey && processListData.processName) {
+                data["processKey"]= processListData.processKey;
+                data["processName"]= processListData.processName;
+              }
+              
+              // keep the existing status
+              if (processListData.status) {
+                data["status"]= processListData.status;
+              }
+
               const updated =
                 processListData && processListData.id ? true : false;
               dispatch(saveFormProcessMapper(data, updated));
@@ -237,12 +248,6 @@ const Edit = React.memo((props) => {
   return (
     <div className="container">
       <div className="main-header">
-        {/* <Link to="/form">
-              <img src="/back.svg" alt="back" />
-            </Link> */}
-      {/* <span className="ml-3">
-          <img src="/form.svg" alt="Forms" />
-        </span>*/}
         <h3 className="ml-3 task-head">
           <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
           {formData.title}
