@@ -1,10 +1,6 @@
 name: Deploy Patroni(Postgres) backup containers
 
 on:
-  push:
-    branches:
-      - automated-db-backups
-
   workflow_dispatch:
 
 jobs:
