@@ -132,10 +132,6 @@ objects:
 parameters:
   - name: NAME
     required: true
-  # - name: PROJECT 
-  #   value: digital_journeys
-  # - name: SERVICE_NAME
-  #   value: db-backup
   - name: CPU_LIMIT
     value: "125m"
   - name: MEMORY_LIMIT
@@ -156,10 +152,6 @@ parameters:
     value: app-db-username
   - name: DB_PASSWORD_KEY
     value: app-db-password
-  # - name: DB_NAME_KEY
-  #   value: database
-  # - name: APP_DB
-  #   value: forms-flow-db
   - name: IMAGE_STREAM_TAG
     required: true  
   - name: BUILD_NAMESPACE
