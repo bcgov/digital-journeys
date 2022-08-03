@@ -231,7 +231,6 @@ const Edit = React.memo((props) => {
   const handleChange = (path, event) => {
     const {target} = event;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    console.log("#edit-test handleChange", {path, value});
     dispatchFormAction({type: path, value});
   };
 
