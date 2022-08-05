@@ -58,7 +58,6 @@ jobs:
 
   # deploy the backup image
   deploy:
-    if: ${{contains(['dev', 'test', 'prod'], github.event.inputs.environment)}}
     name: Deploy App to ${{github.event.inputs.environment}} environment
     runs-on: ubuntu-latest
     env:
