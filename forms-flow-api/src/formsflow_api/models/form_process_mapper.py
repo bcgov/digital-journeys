@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from sqlalchemy import UniqueConstraint, and_, desc
+from sqlalchemy import UniqueConstraint, and_, desc, asc
 from sqlalchemy.dialects.postgresql import JSON
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -142,9 +142,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.query.filter(
                 FormProcessMapper.form_id == form_id,
             )
+            .order_by(asc(FormProcessMapper.id))
             .limit(1)
             .first()
-            # .order_by(desc(FormProcessMapper.version))
         )  # pylint: disable=no-member
 
     @classmethod

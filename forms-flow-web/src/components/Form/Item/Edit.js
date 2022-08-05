@@ -200,10 +200,6 @@ const Edit = React.memo((props) => {
                 data["processName"]= processListData.processName;
               }
               
-              // keep the existing status
-              if (processListData.status) {
-                data["status"]= processListData.status;
-              }
 
               const updated =
                 processListData && processListData.id ? true : false;
