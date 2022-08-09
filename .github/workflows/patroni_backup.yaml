@@ -1,4 +1,4 @@
-name: Deploy MongoDB backup containers
+name: Deploy Patroni(Postgres) backup containers
 
 on:
   workflow_dispatch:
@@ -14,15 +14,15 @@ on:
         - prod
 
 jobs:
-  # build the backup mongo container
+  # build the backup patroni container
   build:
-    name: 'Build Mongo Backup APP'
+    name: 'Build Patroni Backup APP'
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
+      NAME: patroni-backup
       BUILD_TAG: latest
-      DB_BACKUP_APP: mongodb-backup
     steps:
       # Checkout the PR branch
       - name: Print env
@@ -42,23 +42,15 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: './deployment/openshift'
+        working-directory: './deployment/openshift/databases'
         run: |
-          oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
-          -p NAME=${DB_BACKUP_APP} \
-          -p TAG=${BUILD_TAG} \
-          -p BASE_IMAGE_NAME="mongodb-36-rhel7" \
-          -p BASE_IMAGE_TAG="1" \
-          -p BASE_IMAGE_REPO="registry.redhat.io/rhscl/" \
-          -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
-          -p SOURCE_REPOSITORY_REF="master" \
-          -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
-
-          oc -n ${BUILD_NAMESPACE} start-build bc/${DB_BACKUP_APP} --wait
+          oc -n ${BUILD_NAMESPACE} process -f prebuilt-db-backup-build.yaml \
+          -p NAME=${NAME} \
+          -p TAG=${BUILD_TAG} | oc -n ${BUILD_NAMESPACE} apply -f - --wait
 
   # deploy the backup image
   deploy:
-    name: Deploy App to ${{github.event.inputs.environment}} environment
+    name: Deploy Patroni to ${{github.event.inputs.environment}} environment
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
@@ -66,21 +58,20 @@ jobs:
       NAMESPACE: d89793-${{ github.event.inputs.environment }}
       BUILD_NAMESPACE: d89793-tools
       BRANCH: automated-db-backups
-      DB_BACKUP_APP: mongodb-backup
-      DB_NAME: formiodb
+      NAME: patroni-backup
+      DB_NAME: app
     needs:
       - build
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
-
-
+      
       - name: Print env
         run: |
           echo Git Build ID: $BUILD_ID
           echo Build Env: $BUILD_ENV
           echo Namespace: $NAMESPACE
-      
+
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
@@ -94,18 +85,18 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
 
-          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-backup-deploy.yaml \
-          -p NAME=${DB_BACKUP_APP} \
-          -p IMAGE_STREAM_TAG=${DB_BACKUP_APP}:latest \
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/patroni-backup-deploy.yaml \
+          -p NAME=${NAME} \
+          -p IMAGE_STREAM_TAG=${NAME}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \
           -p DB_NAME=${DB_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
-          oc rollout latest dc/${DB_BACKUP_APP} -n ${NAMESPACE}
+          oc rollout latest dc/${NAME} -n ${NAMESPACE}
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${DB_BACKUP_APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${NAME} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
