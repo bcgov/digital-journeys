@@ -30,11 +30,6 @@ FROM ubuntu-jdk AS bpm
 RUN apt-get update \
     && apt-get install -y git lsyncd
 
-ARG FORMIO_SOURCE_REPO_BRANCH
-ARG FORMIO_SOURCE_REPO_URL
-
-RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /bpm/
-
 COPY ./pom-docker.xml /tmp/pom.xml
 COPY ./settings-docker.xml /usr/share/maven/ref/
 COPY . /digital-journeys
@@ -42,7 +37,6 @@ COPY . /digital-journeys
 WORKDIR /tmp/
 
 # This allows Docker to cache most of the maven dependencies
-RUN cp -rf /bpm/forms-flow-bpm/src/ /tmp/src/
 RUN cp -rf /digital-journeys/src /tmp/
 
 COPY lsyncd.conf ./

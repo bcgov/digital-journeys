@@ -16,12 +16,6 @@ COPY . /digital-journeys/
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
 
-# Clone code
-RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
-
-# Bring the combined source code directory into the current working directory
-RUN cp -rf /web/forms-flow-web/* /app/
-
 # Apply changes from digital-journeys on top of the formsflow.ai source code
 RUN cp -rf /digital-journeys/* /app/
 
