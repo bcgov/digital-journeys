@@ -6,7 +6,7 @@ FROM python:3.8-slim-bullseye
 
 RUN apt-get update \
     && apt-get install -y git && apt-get install lsyncd -y
-
+#TODO: REMOVE PULL ON BUILD
 ARG FORMIO_SOURCE_REPO_BRANCH
 ARG FORMIO_SOURCE_REPO_URL
 

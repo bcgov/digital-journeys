@@ -11,7 +11,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh lsyncd
-
+#TODO: REMOVE CLONE
 # Clone code
 RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
 

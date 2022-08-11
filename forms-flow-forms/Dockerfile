@@ -14,7 +14,7 @@ WORKDIR /forms-flow-forms/app
 # (note: using pinned versions to ensure immutable build environment)
 RUN apt-get update && \
     apt-get install -y git lsyncd
-
+#TODO: REMOVE CLONE
 ARG FORMIO_SOURCE_REPO_BRANCH
 ARG FORMIO_SOURCE_REPO_URL
 
