@@ -223,6 +223,12 @@ const Edit = React.memo((props) => {
     
   };
 
+// setting the main option details to the formdata
+  const handleChange = (path, event) => {
+    const {target} = event;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    dispatchFormAction({type: path, value});
+  
   // setting the main option details to the formdata
   const handleChange = (path, event) => {
     const {target} = event;

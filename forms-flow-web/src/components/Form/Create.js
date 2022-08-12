@@ -39,6 +39,35 @@ const reducer = (form, { type, value }) => {
   _set(formCopy, type, value);
   return formCopy;
 };
+import { saveFormProcessMapper } from "../../apiManager/services/processServices";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+// reducer from react-formio code
+const reducer = (form, { type, value }) => {
+  const formCopy = _cloneDeep(form);
+  switch (type) {
+    case "formChange":
+      for (let prop in value) {
+        if (value.hasOwnProperty(prop)) {
+          form[prop] = value[prop];
+        }
+      }
+      return form;
+    case "replaceForm":
+      return _cloneDeep(value);
+    case "title":
+      if (type === "title" && !form._id) {
+        formCopy.name = _camelCase(value);
+        formCopy.path = _camelCase(value).toLowerCase();
+      }
+      break;
+    default:
+      break;
+  }
+  _set(formCopy, type, value);
+  return formCopy;
+};
 
 const Create = React.memo((props) => {
   const dispatch = useDispatch();
@@ -116,6 +145,12 @@ const Create = React.memo((props) => {
     );
   };
 
+  // setting the main option details to the formdata
+  const handleChange = (path, event) => {
+    const { target } = event;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    dispatchFormAction({ type: path, value });
+  
   // setting the main option details to the formdata
   const handleChange = (path, event) => {
     const { target } = event;

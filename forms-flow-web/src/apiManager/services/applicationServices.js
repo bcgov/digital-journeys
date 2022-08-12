@@ -1,5 +1,5 @@
  /* istanbul ignore file */
-import {httpGETRequest, httpPOSTRequest, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest,httpPOSTRequestWithoutToken, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
@@ -11,6 +11,8 @@ import {
 } from "../../actions/applicationActions";
 import {replaceUrl} from "../../helper/helper";
 import moment from 'moment';
+import {getFormattedProcess} from "./formatterService";
+import {setPublicFormStatus} from '../../actions/formActions';
 import {setPublicFormStatus} from '../../actions/formActions';
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
@@ -75,11 +77,12 @@ export const getApplicationById = (applicationId, ...rest) => {
       .then((res) => {
         if (res.data && Object.keys(res.data).length) {
           const application = res.data;
+          const processData = getFormattedProcess(application);
           dispatch(setApplicationDetail(application));
+          dispatch(setApplicationProcess(processData));
           dispatch(setApplicationDetailStatusCode(res.status));
           done(null, application);
         } else {
-          console.log("Error", res);
           dispatch(serviceActionError(res));
           dispatch(setApplicationDetail({}));
           dispatch(setApplicationDetailStatusCode(403));
@@ -148,6 +151,8 @@ export const applicationCreate = (data, ...rest) => {
   };
 };
 
+
+
 export const publicApplicationCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = API.PUBLIC_APPLICATION_START;
@@ -192,7 +197,6 @@ export const publicApplicationStatus = (formId, ...rest) => {
 };
 
 
-
 export const updateApplicationEvent = (data,...rest) => {
   /* * Data Format
  {
@@ -231,7 +235,7 @@ export const FilterApplications = (params,...rest) => {
     if(id && id !==""){
       url+=`&Id=${id.filterVal}`
     }
-  
+
     if(applicationStatus && applicationStatus !==""){
       url+=`&applicationStatus=${applicationStatus?.filterVal}`
     }
@@ -241,9 +245,9 @@ export const FilterApplications = (params,...rest) => {
       let modifiedTo = moment.utc(modified.filterVal[1]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
       url+=`&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`
   }
- 
+
     if(params.sortField !== null){
-      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}` 
+      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`
     }
 
     httpGETRequest(url)

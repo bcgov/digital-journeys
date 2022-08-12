@@ -6,6 +6,8 @@ const initialState = {
   formSubmissionError:{modalOpen:false,message:""},
   isFormSubmissionLoading: false,
   isFormWorkflowSaved: false,
+  formSubmitted:false,
+  publicFormStatus:null //expected values sample {anonymous:false,status:'inactive'}
 }
 
 const formDelete = (state = initialState, action)=> {

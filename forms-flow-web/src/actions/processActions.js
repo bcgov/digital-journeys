@@ -86,3 +86,37 @@ export const setFormPreviosData = (data) => (dispatch) => {
   });
 };
 
+export const setApplicationCount = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_COUNT,
+    payload:data
+  });
+};
+
+export const setIsApplicationCountLoading = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_APPLICATION_COUNT_LOADING,
+    payload:data
+  });
+};
+
+export const setApplicationCountResponse = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_COUNT_RESPONSE,
+    payload:data
+  });
+};
+
+export const setUnPublishApiError = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.UNPUBLISH_API_ERROR,
+    payload:data
+  });
+};
+
+export const setResetProcess = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.RESET_PROCESS,
+    payload:data
+  });
+};
