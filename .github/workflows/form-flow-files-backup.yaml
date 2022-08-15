@@ -1,0 +1,40 @@
+name: Run file backups for forms-flow-files
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+
+jobs:
+  fileBackup:
+    name: Trigger file backups
+    strategy:
+      fail-fast: false
+      #Run file backups for multiple environments
+      matrix:
+        namespace: [d89793-dev, d89793-test, d89793-prod]
+    runs-on: ubuntu-latest
+    env:
+      APP: forms-flow-files
+      NO_OF_DAYS: +7
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Run file backups
+        run: |
+          oc project ${{ matrix.namespace }}
+          echo "Current namespace is ${{ matrix.namespace }}"
+          podNames=$(oc get pods -l deploymentconfig=${APP} --field-selector=status.phase=Running -o name)
+          echo $podNames
+          
+          #Backup ${APP} to a backup PVC pointing to /tmp/file-backups
+          #Purge backups older than NO_OF_DAYS to reclaim space
+          for name in $podNames; do
+            oc exec $name -- bash -c "
+              mkdir -p /tmp/file-backups && \
+              find /tmp/file-backups/ -maxdepth 1 -mtime ${NO_OF_DAYS} -type d -exec rm -r  {} \; && \
+              echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
+              rsync -rz /uploads/ /tmp/file-backups/filedir-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S") && \
+              "
+          done
