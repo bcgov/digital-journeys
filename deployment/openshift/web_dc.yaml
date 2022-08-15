@@ -68,6 +68,15 @@ objects:
       test: false
       triggers:
         - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}
+            from:
+              kind: ImageStreamTag
+              namespace: "${IMAGE_NAMESPACE}"
+              name: "${NAME}:${TAG_NAME}"
+          type: ImageChange
     status: {}
 
   -
