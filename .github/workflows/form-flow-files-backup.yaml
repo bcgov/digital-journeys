@@ -33,7 +33,7 @@ jobs:
           #Backup ${APP} to a backup PVC pointing to /tmp/file-backups
           #Purge backups older than NO_OF_DAYS to reclaim space
           for name in $podNames; do
-            oc exec $podNames -- bash -c "
+            oc exec $name -- sh -c "
               mkdir -p /tmp/file-backups && \
               find /tmp/file-backups/ -maxdepth 1 -mtime ${NO_OF_DAYS} -type d -exec rm -r  {} \; && \
               echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
