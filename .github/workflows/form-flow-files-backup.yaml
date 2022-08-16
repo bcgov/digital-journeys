@@ -2,7 +2,7 @@ name: Run file backups for forms-flow-files
 
 on:
   schedule:
-    - cron: '30 14 * * *'
+    - cron: '0 9 * * *'
 
   workflow_dispatch:
 
