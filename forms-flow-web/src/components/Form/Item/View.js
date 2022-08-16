@@ -17,8 +17,6 @@ import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import {
   setFormFailureErrorData,
   setFormRequestData,
-  setFormFailureErrorData,
-  setFormRequestData,
   setFormSubmissionError,
   setFormSubmissionLoading,
   setMaintainBPMFormPagination,
@@ -331,7 +329,6 @@ const doProcessActions = (submission, ownProps) => {
       
       );
       }
-  };
   };
 };
 

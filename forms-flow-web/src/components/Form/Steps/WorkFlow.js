@@ -1,5 +1,4 @@
-import React, { useState }, { useState } from "react";
-import utils from 'formiojs/utils';
+import React,{ useState } from "react";
 import utils from 'formiojs/utils';
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

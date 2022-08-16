@@ -1,5 +1,5 @@
  /* istanbul ignore file */
-import {httpGETRequest, httpPOSTRequest,httpPOSTRequestWithoutToken, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
@@ -12,7 +12,6 @@ import {
 import {replaceUrl} from "../../helper/helper";
 import moment from 'moment';
 import {getFormattedProcess} from "./formatterService";
-import {setPublicFormStatus} from '../../actions/formActions';
 import {setPublicFormStatus} from '../../actions/formActions';
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
