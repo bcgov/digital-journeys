@@ -14,7 +14,6 @@ RUN apk add --no-cache \
       ca-certificates \
       ttf-freefont \
       rsync \
-      grsync \
       tar
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
