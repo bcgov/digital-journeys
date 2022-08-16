@@ -2,7 +2,7 @@ name: Run file backups for forms-flow-files
 
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '12 14 * * *'
 
 jobs:
   fileBackup:
@@ -11,11 +11,11 @@ jobs:
       fail-fast: false
       #Run file backups for multiple environments
       matrix:
-        namespace: [d89793-dev, d89793-test, d89793-prod]
+        namespace: [d89793-dev]
     runs-on: ubuntu-latest
     env:
       APP: forms-flow-files
-      NO_OF_DAYS: +7
+      NO_OF_DAYS: +5
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
         run: |
           oc project ${{ matrix.namespace }}
           echo "Current namespace is ${{ matrix.namespace }}"
-          podNames=$(oc get pods -l deploymentconfig=${APP} --field-selector=status.phase=Running -o name)
+          podNames=$(oc get pods -l app=${APP} --field-selector=status.phase=Running -o name)
           echo $podNames
           
           #Backup ${APP} to a backup PVC pointing to /tmp/file-backups
@@ -35,6 +35,6 @@ jobs:
               mkdir -p /tmp/file-backups && \
               find /tmp/file-backups/ -maxdepth 1 -mtime ${NO_OF_DAYS} -type d -exec rm -r  {} \; && \
               echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
-              rsync -rz /uploads/ /tmp/file-backups/filedir-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S") && \
+              rsync -rz /uploads/ /tmp/file-backups/uploads-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S") && \
               "
           done
