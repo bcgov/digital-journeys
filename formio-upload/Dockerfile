@@ -14,6 +14,9 @@ RUN apk add --no-cache \
       ca-certificates \
       ttf-freefont
 
+RUN apt-get install rsync grsync && \
+	apt-get install tar
+
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
