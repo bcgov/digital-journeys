@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
 
-from flask import current_app
+from flask import current_app, g
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
@@ -46,7 +46,7 @@ class ApplicationService:
                     "variables": {
                         "applicationId": {"value": application.id},
                         "formUrl": {"value": application.form_url},
-                        "formName": {"value": application.application_name},
+                        "formName": {"value": mapper.form_name},
                         "submitterName": {"value": application.created_by},
                         "GUID": {"value": user_guid},
                         "IDIR": {"value": idir},
