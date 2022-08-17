@@ -52,5 +52,6 @@ nav:
   - index.md
   - Forms: forms.md
   - Workflows: workflows.md
+  - Upgrading: upgrading.md
   - Listeners: https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-bpm/starter-examples/listeners/listeners-readme.md
 

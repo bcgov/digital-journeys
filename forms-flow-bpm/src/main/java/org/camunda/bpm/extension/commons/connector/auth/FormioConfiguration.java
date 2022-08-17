@@ -14,13 +14,13 @@ public class FormioConfiguration {
     /**
      * Formio server userName / email
      */
-    private String userName;
+    public String userName;
     /**
      * Formio server password
      */
-    private String password;
+    public String password;
     /**
      * Formio token uri
      */
-    private String accessTokenUri;
+    public String accessTokenUri;
 }

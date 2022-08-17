@@ -1,4 +1,5 @@
 package org.camunda.bpm.extension.commons.connector.auth;
+import org.camunda.bpm.extension.commons.connector.auth.FormioConfiguration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

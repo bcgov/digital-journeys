@@ -3,6 +3,9 @@ package org.camunda.bpm.extension.hooks.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
@@ -260,9 +263,4 @@ public class FormSubmissionService {
     public String getAccessToken() {
         return formTokenAccessHandler.getAccessToken();
     }
-
-    public ObjectMapper getObjectMapper() {
-        return new ObjectMapper();
-    }
-
 }
