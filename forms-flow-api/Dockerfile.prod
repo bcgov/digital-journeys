@@ -10,6 +10,8 @@ RUN apt-get update \
 WORKDIR /forms-flow-api/app
 ENV PATH=/venv/bin:$PATH
 
+COPY ./requirements.txt requirements.txt
+
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \

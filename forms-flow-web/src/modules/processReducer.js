@@ -11,7 +11,11 @@ const initialState = {
   processActivityList: null,
   processDiagramXML: "",
   processActivityLoadError: false,
-  isProcessDiagramLoading: true
+  isProcessDiagramLoading: true,
+  applicationCount:0,
+  isApplicationCountLoading:false,
+  applicationCountResponse:false,
+  unPublishApiError:false
 };
 
 
@@ -39,6 +43,16 @@ const process = (state = initialState, action) => {
       return { ...state, isProcessDiagramLoading: action.payload };
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:
       return {...state,formPreviousData:action.payload};
+    case  ACTION_CONSTANTS.APPLICATION_COUNT:
+      return {...state, applicationCount:action.payload}  
+    case  ACTION_CONSTANTS.IS_APPLICATION_COUNT_LOADING:
+      return {...state, isApplicationCountLoading:action.payload} 
+    case  ACTION_CONSTANTS.APPLICATION_COUNT_RESPONSE:
+      return {...state, applicationCountResponse:action.payload}   
+    case  ACTION_CONSTANTS.UNPUBLISH_API_ERROR:
+        return {...state, unPublishApiError:action.payload}
+    case  ACTION_CONSTANTS.RESET_PROCESS:
+        return {...state,formPreviousData:[],formProcessList:[],processDiagramXML:"",isProcessDiagramLoading:true,applicationCount:0,applicationCountResponse:false,}    
     default:
       return state;
   }

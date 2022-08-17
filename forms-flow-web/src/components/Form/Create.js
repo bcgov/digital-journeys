@@ -121,7 +121,7 @@ const Create = React.memo((props) => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
     dispatchFormAction({ type: path, value });
-  };
+  }
 
   const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });

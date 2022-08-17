@@ -14,7 +14,8 @@ export const initialState = {
   countPerPage:5,
   applicationStatus:[],
   iserror:false,
-  error:''
+  error:'',
+  isPublicStatusLoading:false
 }
 
 
