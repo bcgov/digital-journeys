@@ -1,11 +1,12 @@
 package org.camunda.bpm.extension.hooks.services;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
@@ -35,10 +36,9 @@ public class FormSubmissionService {
     private final Logger LOGGER = Logger.getLogger(FormSubmissionService.class.getName());
 
     @Autowired
-    private HTTPServiceInvoker httpServiceInvoker;
-
-    @Autowired
     private FormTokenAccessHandler formTokenAccessHandler;
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
 
     public String readSubmission(String formUrl) {
         ResponseEntity<String> response = httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
@@ -185,21 +185,7 @@ public class FormSubmissionService {
             Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
-
-                if(!withFileInfo && entry.getValue() != null 
-                    && entry.getValue().isArray() 
-                    && entry.getValue().get(0) != null 
-                    && entry.getValue().get(0).has("originalName")) {
-                    // Replace any file array values with a comma separated list of file names
-                    ArrayNode vals = (ArrayNode) entry.getValue();
-                    String fileNames = StreamSupport.stream(vals.spliterator(), false)
-                            .map(n -> n.get("originalName").asText())
-                            .collect(Collectors.joining(", "));
-                    fieldValues.put(entry.getKey(), fileNames);
-                } else if(!withFileInfo && entry.getValue() != null && entry.getValue().asText().startsWith("data:image/png")) {
-                    // Replace any inline files with the type of image (signatures)
-                    fieldValues.put(entry.getKey(), "data:image/png");
-                } else if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
+                if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
                     List<String> fileNames = new ArrayList();
                     if (entry.getValue().isArray()) {
                         for (JsonNode fileNode : entry.getValue()) {
@@ -269,13 +255,12 @@ public class FormSubmissionService {
         return getObjectMapper().writeValueAsString(data);
     }
 
-
-    public String getAccessToken() {
-        return formTokenAccessHandler.getAccessToken();
-    }
-
-    public ObjectMapper getObjectMapper() {
+    private ObjectMapper getObjectMapper(){
         return new ObjectMapper();
     }
 
+    @Deprecated
+    public String getAccessToken() {
+        return formTokenAccessHandler.getAccessToken();
+    }
 }

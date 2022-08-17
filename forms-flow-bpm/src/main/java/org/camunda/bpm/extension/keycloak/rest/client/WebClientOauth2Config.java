@@ -102,4 +102,3 @@ public class WebClientOauth2Config {
                 .build();
     }
 }
-

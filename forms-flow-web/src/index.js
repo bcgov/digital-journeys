@@ -9,7 +9,6 @@ import StoreService from "./services/StoreService";
 import { Formio, Components, Templates } from 'react-formio';
 import DGJFileUpload from './formComponents/FileUpload';
 import {AppConfig} from './config';
-//import * as serviceWorker from './serviceWorker';
 
 import components from './customFormioComponents';
 import './styles.scss';

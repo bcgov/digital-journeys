@@ -1,28 +1,20 @@
 # base image
-FROM node:14.18.3-alpine
+FROM node:14.20.0-alpine
 
 # set working directory
 WORKDIR /app
-ARG FORMIO_SOURCE_REPO_BRANCH
-ARG FORMIO_SOURCE_REPO_URL
-
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh lsyncd
-#TODO: REMOVE CLONE
-# Clone code
-RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /web/
-
-RUN cp -rf /web/forms-flow-web/* /app/
-RUN rm /app/public/logo.svg
 COPY /public/logo.svg /app/public/
 
 ARG CUSTOM_SRC_DIR=src
-
+ARG FORMS_FLOW_WEB_UTIL_DIR=forms-flow-util
 # Override these files they have custom changes in the sbc_divapps directory
 COPY ./${CUSTOM_SRC_DIR}/  /app/${CUSTOM_SRC_DIR}/
+COPY ./${FORMS_FLOW_WEB_UTIL_DIR}/  /app/${FORMS_FLOW_WEB_UTIL_DIR}/
 
 ARG CUSTOM_SVG_DIR=public/webfonts
 COPY ./${CUSTOM_SVG_DIR}/ /app/${CUSTOM_SVG_DIR}/

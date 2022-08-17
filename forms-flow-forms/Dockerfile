@@ -14,12 +14,6 @@ WORKDIR /forms-flow-forms/app
 # (note: using pinned versions to ensure immutable build environment)
 RUN apt-get update && \
     apt-get install -y git lsyncd
-#TODO: REMOVE CLONE
-ARG FORMIO_SOURCE_REPO_BRANCH
-ARG FORMIO_SOURCE_REPO_URL
-
-# Clone code
-RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /forms/
 
 # Using an alternative package install location
 # to allow overwriting the /app folder at runtime
@@ -48,7 +42,6 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 ENV DEBUG=""
 
 COPY . /digital-journeys
-RUN cp -r /forms/forms-flow-forms/* /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/
