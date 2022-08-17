@@ -21,7 +21,11 @@ def upgrade():
     op.drop_column('application', 'process_name')
     op.drop_column('application', 'process_key')
     op.drop_column('application', 'application_name')
+
     op.add_column('form_process_mapper', sa.Column('version', sa.Integer(), nullable=False, server_default='1'))
+    op.execute('create temporary sequence version_upd;')
+    op.execute('update form_process_mapper set version=nextval(\'version_upd\')')
+
     op.create_unique_constraint('_form_version_uc', 'form_process_mapper', ['form_id', 'version'])
     op.add_column('application_audit', sa.Column('submitted_by', sa.String(length=300), nullable=True))
     op.add_column('form_process_mapper', sa.Column('task_variable', postgresql.JSON(astext_type=sa.Text()), nullable=True))
