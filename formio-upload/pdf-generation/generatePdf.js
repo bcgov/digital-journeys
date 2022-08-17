@@ -28,8 +28,8 @@ const externalStyles = [
 // Pool of puppeteer browsers to choose from
 const browserPool = new BrowserPool({
   browserPlugins: [new PuppeteerPlugin(puppeteer, {
-    maxOpenPagesPerBrowser: 10,
-    retireBrowserAfterPageCount: 75,
+    maxOpenPagesPerBrowser: 3,
+    retireBrowserAfterPageCount: 50,
     launchOptions: {
       headless: true,
       args: ['--no-sandbox']
