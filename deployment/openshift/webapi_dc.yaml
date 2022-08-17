@@ -257,5 +257,5 @@ parameters:
     required: false
   - name: WEBAPI_DB_RESOURCE_NAME
     description: Name of database resources created for webapi.
-    required: false
+    required: true
     value: webapi-postgresql

@@ -1,9 +1,11 @@
 # Set variables
+spring.config.import: "optional:file:.env[.properties]"
 
 keycloak.url: ${KEYCLOAK_URL}
 keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
+
 
 spring.datasource:
   jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}

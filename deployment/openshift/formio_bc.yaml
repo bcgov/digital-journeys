@@ -40,11 +40,6 @@ objects:
       type: Docker
       dockerStrategy:
         dockerfilePath: Dockerfile.prod
-        buildArgs:
-          - name: FORMIO_SOURCE_REPO_BRANCH
-            value: v4.0.4
-          - name: FORMIO_SOURCE_REPO_URL
-            value: 'https://github.com/AOT-Technologies/forms-flow-ai'
 
     triggers:
       - type: ImageChange

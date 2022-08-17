@@ -22,9 +22,6 @@ services:
     build:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile
-      args:
-        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     restart: always
     links:
@@ -101,9 +98,6 @@ services:
     build:
       context: ./forms-flow-forms/
       dockerfile: Dockerfile
-      args:
-        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     # The app will restart until Mongo is listening
     restart: always
@@ -150,13 +144,8 @@ services:
     build:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
-      args:
-        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     environment:
-      - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-      - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
       - NODE_ENV=${NODE_ENV:-development}
       - GENERATE_SOURCEMAP=true
       - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
@@ -237,9 +226,6 @@ services:
     build:
       context: ./forms-flow-api/
       dockerfile: Dockerfile
-      args:
-        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH}
-        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL}
 
     restart: always
     links:
