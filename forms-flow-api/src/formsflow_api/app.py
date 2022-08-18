@@ -11,7 +11,7 @@ from flask import Flask, current_app, g, request
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from formsflow_api import config, models
+from formsflow_api import config, models, cache
 from formsflow_api.models import db, ma
 from formsflow_api.resources import API
 from formsflow_api.utils import (
@@ -31,6 +31,9 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(config.CONFIGURATION[run_mode])
     app.logger.removeHandler(default_handler)
+
+    # Setting a simple (in memory) cache
+    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
 
     flask_logger = setup_logging(
         os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")

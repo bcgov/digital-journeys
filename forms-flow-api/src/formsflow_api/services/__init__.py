@@ -7,6 +7,7 @@ from formsflow_api.services.external.analytics_api import RedashAPIService
 from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.ministry_names_service import MinistryNamesService
 
 __all__ = [
     "ApplicationService",
@@ -16,4 +17,5 @@ __all__ = [
     "RedashAPIService",
     "ProcessService",
     "EmployeeDataService",
+    "MinistryNamesService",
 ]

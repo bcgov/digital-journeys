@@ -86,9 +86,10 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
-    # EmployeeData
+    # ODS
     EMPLOYEE_DATA_API_URL = os.getenv("EMPLOYEE_DATA_API_URL")
-    EMPLOYEE_DATA_AUTH_TOKEN = os.getenv("EMPLOYEE_DATA_AUTH_TOKEN")
+    MINISTRY_NAMES_API_URL = os.getenv("MINISTRY_NAMES_API_URL")
+    ODS_AUTH_TOKEN = os.getenv("ODS_AUTH_TOKEN")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
