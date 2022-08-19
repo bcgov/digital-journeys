@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       #Run file backups for multiple environments
       matrix:
-        namespace: [d89793-dev]
+        namespace: [d89793-dev, d89793-test]
     runs-on: ubuntu-latest
     env:
       APP: forms-flow-files
