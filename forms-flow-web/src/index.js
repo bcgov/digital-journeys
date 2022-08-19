@@ -9,6 +9,7 @@ import StoreService from "./services/StoreService";
 import { Formio, Components, Templates } from 'react-formio';
 import DGJFileUpload from './formComponents/FileUpload';
 import RemoteSelect from './formComponents/RemoteSelect';
+import MinistrySelect from './formComponents/MinistrySelect';
 import {AppConfig} from './config';
 
 import components from './customFormioComponents';
@@ -35,7 +36,8 @@ Components.setComponents(components);
 // Override the default file upload component with the custom one to provide
 // reasonable default values
 Components.setComponent('file', DGJFileUpload);
-// Adding a new RemoteSelect component extending original formio Select
+// Adding two remote select components extending original formio Select
 Components.addComponent('remoteSelect', RemoteSelect);
+Components.addComponent('ministrySelect', MinistrySelect);
 
 ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));

@@ -1,20 +1,19 @@
 import { Components, Formio } from 'react-formio';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { WEB_BASE_URL } from "../../apiManager/endpoints/config";
 import UserService from "../../services/UserService";
 
 const SelectComponent = Components.components.select;
 
-export default class RemoteSelect extends SelectComponent {
+export default class MinistrySelect extends SelectComponent {
   static schema(...extend) {
     return SelectComponent.schema({
-      type: 'remoteSelect',
-      label: 'Remote Select',
-      key: 'remoteSelect',
+      type: 'ministrySelect',
+      label: 'Ministry Select',
+      key: 'ministrySelect',
       idPath: 'id',
       data: {
-        url: '',
+        url: '/ministry-names',
       },
       clearOnRefresh: false,
       limit: 100,
@@ -51,12 +50,12 @@ export default class RemoteSelect extends SelectComponent {
 
   static get builderInfo() {
     return {
-      title: 'Remote Select',
+      title: 'Ministry Select',
       group: 'basic',
       icon: 'th-list',
       weight: 70,
       documentation: '/userguide/forms/form-components#select',
-      schema: RemoteSelect.schema()
+      schema: MinistrySelect.schema()
     };
   }
 
