@@ -137,6 +137,11 @@ objects:
               secretKeyRef:
                 key: EMPLOYEE_DATA_API_URL
                 name: ${FORMSFLOW_CONFIG_NAME}-config      
+          - name: MINISTRY_NAMES_API_URL
+            valueFrom:
+              secretKeyRef:
+                key: MINISTRY_NAMES_API_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: ODS_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
