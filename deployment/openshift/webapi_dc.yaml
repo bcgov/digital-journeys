@@ -137,10 +137,10 @@ objects:
               secretKeyRef:
                 key: EMPLOYEE_DATA_API_URL
                 name: ${FORMSFLOW_CONFIG_NAME}-config      
-          - name: EMPLOYEE_DATA_AUTH_TOKEN
+          - name: ODS_AUTH_TOKEN
             valueFrom:
               secretKeyRef:
-                key: EMPLOYEE_DATA_AUTH_TOKEN
+                key: ODS_AUTH_TOKEN
                 name: ${FORMSFLOW_CONFIG_NAME}-config      
           image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
