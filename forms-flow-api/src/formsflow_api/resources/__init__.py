@@ -20,6 +20,7 @@ from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
 from formsflow_api.resources.employeeData import API as EMPLOYEE_DATA_API
+from formsflow_api.resources.ministry_names import API as MINISTRY_NAMES_API
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
@@ -70,3 +71,4 @@ API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
 API.add_namespace(KEYCLOAK_USER_API, path="/user")
 API.add_namespace(EMPLOYEE_DATA_API, path="/employee-data")
+API.add_namespace(MINISTRY_NAMES_API, path="/ministry-names")

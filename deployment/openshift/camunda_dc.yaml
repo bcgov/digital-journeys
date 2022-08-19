@@ -217,7 +217,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: forms-flow-ai-config
-                      key: EMPLOYEE_DATA_AUTH_TOKEN
+                      key: ODS_AUTH_TOKEN
 
               imagePullPolicy: Always
               livenessProbe:
