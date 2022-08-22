@@ -1,0 +1,42 @@
+name: Deploy MongoDB containers
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - prod
+
+jobs:
+  deploy:
+    name: Deploy Mongo to ${{github.event.inputs.environment}} environment
+    runs-on: ubuntu-latest
+    env:
+      NAMESPACE: d89793-${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+      # Log in to OpenShift.
+      # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy container
+        run: |
+          test -n "${NAMESPACE}"
+          echo "Current namespace is ${NAMESPACE}"
+
+          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-ha.yaml \
+            -p MEMORY_REQUEST=512Mi \
+            -p MEMORY_LIMIT=2Gi \
+            -p CPU_REQUEST=125m \
+            -p CPU_LIMIT=500m | \
+          oc -n ${NAMESPACE} apply -f - --wait
