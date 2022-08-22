@@ -37,5 +37,7 @@ jobs:
             -p MEMORY_REQUEST=512Mi \
             -p MEMORY_LIMIT=2Gi \
             -p CPU_REQUEST=125m \
-            -p CPU_LIMIT=500m | \
+            -p CPU_LIMIT=500m \
+            -p VOLUME_CAPACITY=2Gi \
+            -p SC_MONGO=netapp-block-standard | \
           oc -n ${NAMESPACE} apply -f - --wait
