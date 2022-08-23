@@ -146,6 +146,11 @@ const View = React.memo((props) => {
     );
   }
 
+  const printToPDF = () => {
+    toast.success('Downloading...')
+    exportToPdf({formId: 'formview'})
+  }
+
   const getDefaultValues = (data) => {
     if (
       Object.keys(data)?.length === 0 ||
@@ -249,7 +254,7 @@ const View = React.memo((props) => {
           <div class="btn-right">
             <button type="button" 
               class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" 
-              onClick={() => exportToPdf({formId: 'formview'})}>
+              onClick={() => printToPDF()}>
                 <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
