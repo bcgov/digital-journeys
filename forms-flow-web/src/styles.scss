@@ -791,6 +791,12 @@ fieldset {
 }
 // --END--- Style to enable scrollbar on the form -----
 
+// Enable proper page scrolling on the /task/:formId (formEdit) page
+.service-task-details {
+  max-height: none !important;
+  overflow-y: hidden !important;
+}
+
 .form-group fieldset {
     width: 100%;
 }
