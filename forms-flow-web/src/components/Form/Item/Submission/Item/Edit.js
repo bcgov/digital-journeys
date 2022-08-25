@@ -52,9 +52,9 @@ const Edit = React.memo((props) => {
 
   let scrollToErrorInterval = null;
   useEffect(() => {
-      scrollToErrorInterval = setInterval(() => {
-        scrollToErrorOnValidation()
-      }, 1000);
+    scrollToErrorInterval = setInterval(() => {
+      scrollToErrorOnValidation()
+    }, 1000);
     return () => {
       clearInterval(scrollToErrorInterval);
     }
