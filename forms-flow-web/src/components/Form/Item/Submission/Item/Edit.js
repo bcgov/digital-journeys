@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
 import { push } from 'connected-react-router';
@@ -34,6 +34,7 @@ const Edit = React.memo((props) => {
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
   } = props;
+  const formRef = useRef(null);
   
   const applicationStatus = useSelector(state => state.applications.applicationDetail?.applicationStatus || '');
   const userRoles = useSelector((state) => {
@@ -49,6 +50,16 @@ const Edit = React.memo((props) => {
     }
   }, [applicationStatus, userRoles, dispatch, submissionId, formId, onFormSubmit ]);
 
+  let scrollToErrorInterval = null;
+  useEffect(() => {
+    scrollToErrorInterval = setInterval(() => {
+      scrollToErrorOnValidation()
+    }, 1000);
+    return () => {
+      clearInterval(scrollToErrorInterval);
+    }
+  });
+  
   if ((isFormActive ||  (isSubActive && !isFormSubmissionLoading))) {
       return <Loading />;
   }
@@ -64,6 +75,22 @@ const Edit = React.memo((props) => {
         }
     }, submission);
   
+  const scrollToErrorOnValidation = () => {
+    const formio = formRef.current?.formio;
+    if (formio) {
+      clearInterval(scrollToErrorInterval);
+      formio.on('checkValidity', (_) => {
+        const componentsWithErrors = [];
+        formio.everyComponent((component) => {
+          if (component.error) {
+            componentsWithErrors.push(component);
+          }
+        });
+        componentsWithErrors[0]?.scrollIntoView();
+      });
+    }
+  };
+  
   return (
       <div className="container">
         <div className="main-header">
@@ -78,6 +105,7 @@ const Edit = React.memo((props) => {
         <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
           <div className="ml-4 mr-4">
         <Form
+          ref={formRef}
           form={form}
           submission={submissionWithTask}
           url={url}
