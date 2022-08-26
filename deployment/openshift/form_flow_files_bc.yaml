@@ -5,7 +5,7 @@ metadata:
   tags: forms-flow-files
 
 parameters:
-  - name: APP_NAME
+  - name: NAME
     displayName: App Name
     description: The name of the application
     required: true
@@ -37,25 +37,25 @@ objects:
   - kind: ImageStream
     apiVersion: image.openshift.io/v1
     metadata:
-      name: ${APP_NAME}
+      name: ${NAME}
       annotations:
         description: "Keeps track of changes in the application image"
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
   
   - kind: BuildConfig
     apiVersion: build.openshift.io/v1
     metadata:
-      name: ${APP_NAME}
+      name: ${NAME}
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
       failedBuildsHistoryLimit: 5
       successfulBuildsHistoryLimit: 5
       output:
         to:
           kind: ImageStreamTag
-          name: '${APP_NAME}:${TAG}'
+          name: '${NAME}:${TAG}'
       resources:
         limits:
           cpu: '2'

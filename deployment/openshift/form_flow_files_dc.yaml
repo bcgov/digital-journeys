@@ -5,7 +5,7 @@ metadata:
   tags: forms-flow-files
 
 parameters:
-  - name: APP_NAME
+  - name: NAME
     displayName: App Name
     description: The name of the application
     required: true
@@ -17,7 +17,7 @@ parameters:
     required: true
     value: backup
 
-  - name: APP_PORT
+  - name: PORT
     displayName: App Port
     required: true
     value: 4100
@@ -37,7 +37,7 @@ parameters:
     required: true
     value: /uploads
 
-  - name: APP_HOST_URL
+  - name: HOST_URL
     displayName: App Host URL
     required: true
     value: digital-journeys-files.apps.silver.devops.gov.bc.ca
@@ -83,7 +83,7 @@ parameters:
     description: Namespace of the deployment
     required: true
 
-  - name: IMAGE_APP_TAG
+  - name: IMAGE_TAG
     displayName: Image App Tag
     description: Tag of the application environment being deployed
     required: true
@@ -92,9 +92,9 @@ objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: ${APP_NAME}-data
+      name: ${NAME}-data
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
       accessModes:
         - ReadWriteMany               # this is ReadWriteOnce currently
@@ -105,9 +105,9 @@ objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: ${APP_NAME}-${BACKUP_SUFFIX}-data
+      name: ${NAME}-${BACKUP_SUFFIX}-data
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
       accessModes:
         - ReadWriteMany
@@ -118,23 +118,22 @@ objects:
   - kind: Secret
     apiVersion: v1
     metadata:
-      name: ${APP_NAME}-secret
+      name: ${NAME}-secret
       labels:
-        app: ${APP_NAME}
-        template: ${APP_NAME}-secret
+        app: ${NAME}
+        template: ${NAME}-secret
     stringData:
       MAX_UPLOAD_SIZE: ${FILES_MAX_UPLOAD_SIZE}
-      PORT: ${APP_PORT}
+      PORT: ${PORT}
       PROVIDERS: ${FILES_PROVIDERS}
       UPLOAD_DIR: ${FILES_UPLOAD_DIR}
 
-  # - kind: ConfigMap -- TO be included in build config
   - kind: Service
     apiVersion: v1
     metadata:
-      name: ${APP_NAME}
+      name: ${NAME}
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
       ports:
         - name: file-uploads
@@ -142,19 +141,19 @@ objects:
           port: 4100
       type: ClusterIP
       selector:
-        app: ${APP_NAME}
+        app: ${NAME}
 
   - kind: Route
     apiVersion: route.openshift.io/v1
     metadata:
-      name: ${APP_NAME}
+      name: ${NAME}
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
-      host: ${APP_HOST_URL}
+      host: ${HOST_URL}
       to:
         kind: Service
-        name: ${APP_NAME}
+        name: ${NAME}
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
@@ -163,29 +162,29 @@ objects:
   - kind: StatefulSet
     apiVersion: apps/v1
     metadata:
-      name: ${APP_NAME}
+      name: ${NAME}
       labels:
-        app: ${APP_NAME}
+        app: ${NAME}
     spec:
-      serviceName: ${APP_NAME}
+      serviceName: ${NAME}
       replicas: ${REPLICAS}
       selector:
         matchLabels:
-          app: ${APP_NAME}
+          app: ${NAME}
       template:
         metadata:
           labels:
-            app: ${APP_NAME}
+            app: ${NAME}
         spec:
           volumes:
             - name: uploads
               persistentVolumeClaim:
-                claimName: ${APP_NAME}
+                claimName: ${NAME}
             - name: uploads-backup
               persistentVolumeClaim:
-                claimName: ${APP_NAME}-${BACKUP_SUFFIX}
+                claimName: ${NAME}-${BACKUP_SUFFIX}
           containers:
-            - name: ${APP_NAME}
+            - name: ${NAME}
               ports:
                 - containerPort: 4100
                   protocol: TCP
@@ -224,9 +223,9 @@ objects:
                   mountPath: /tmp/file-backups
               envFrom:
                 - secretRef:
-                    name: ${APP_NAME}-secret
+                    name: ${NAME}-secret
               image: >-
-                ${IMAGE_BASE_URL}/${NAMESPACE}/${APP_NAME}:${IMAGE_APP_TAG}
+                ${IMAGE_BASE_URL}/${NAMESPACE}/${NAME}:${IMAGE_TAG}
           terminationGracePeriodSeconds: 30
           dnsPolicy: ClusterFirst
           securityContext: {}
