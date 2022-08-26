@@ -1,0 +1,233 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: forms-flow-files
+  tags: forms-flow-files
+
+parameters:
+  - name: APP_NAME
+    displayName: App Name
+    description: The name of the application
+    required: true
+    value: forms-flow-files
+
+  - name: BACKUP_SUFFIX
+    displayName: Backup Prefix
+    description: The prefix added to the backup
+    required: true
+    value: backup
+
+  - name: APP_PORT
+    displayName: App Port
+    required: true
+    value: 4100
+  
+  - name: FILES_MAX_UPLOAD_SIZE
+    displayName: Max File Upload Size
+    required: true
+    value: 32mb
+  
+  - name: FILES_PROVIDERS
+    displayName: File Providers
+    required: true
+    value: file
+
+  - name: FILES_UPLOAD_DIR
+    displayName: Files Upload Directory
+    required: true
+    value: /uploads
+
+  - name: APP_HOST_URL
+    displayName: App Host URL
+    required: true
+    value: digital-journeys-files.apps.silver.devops.gov.bc.ca
+  
+  - name: CPU_REQUEST
+    displayName: Resources CPU Request
+    description: The resources CPU request (in cores) for this build.
+    required: true
+    value: 300m
+  
+  - name: CPU_LIMIT
+    displayName: Resources CPU Limit
+    description: The resources CPU limit (in cores) for this build.
+    required: true
+    value: 700m
+
+  - name: MEMORY_REQUEST
+    displayName: Resources Memory Request
+    description: The resources Memory request (in Mi, Gi, etc) for this build.
+    required: true
+    value: 512M
+
+  - name: MEMORY_LIMIT
+    displayName: Resources Memory Limit
+    description: The resources Memory limit (in Mi, Gi, etc) for this build.
+    required: true
+    value: 2G
+  
+  - name: REPLICAS
+    displayName: REPLICAS
+    description: The number of statefulSet replicas to use.
+    required: true
+    value: '1'
+
+  - name: IMAGE_BASE_URL
+    display: Image Base URL
+    description: Base Image URL or repository URL of the deployed image
+    required: true
+    value: image-registry.openshift-image-registry.svc:5000
+
+  - name: NAMESPACE
+    displayName: Namespace
+    description: Namespace of the deployment
+    required: true
+
+  - name: IMAGE_APP_TAG
+    displayName: Image App Tag
+    description: Tag of the application environment being deployed
+    required: true
+
+objects:
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${APP_NAME}-data
+      labels:
+        app: ${APP_NAME}
+    spec:
+      accessModes:
+        - ReadWriteMany               # this is ReadWriteOnce currently
+      resources:
+        requests:
+          storage: 10Gi
+
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${APP_NAME}-${BACKUP_SUFFIX}-data
+      labels:
+        app: ${APP_NAME}
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 10Gi
+
+  - kind: Secret
+    apiVersion: v1
+    metadata:
+      name: ${APP_NAME}-secret
+      labels:
+        app: ${APP_NAME}
+        template: ${APP_NAME}-secret
+    stringData:
+      MAX_UPLOAD_SIZE: ${FILES_MAX_UPLOAD_SIZE}
+      PORT: ${APP_PORT}
+      PROVIDERS: ${FILES_PROVIDERS}
+      UPLOAD_DIR: ${FILES_UPLOAD_DIR}
+
+  # - kind: ConfigMap -- TO be included in build config
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      ports:
+        - name: file-uploads
+          protocol: TCP
+          port: 4100
+      type: ClusterIP
+      selector:
+        app: ${APP_NAME}
+
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      host: ${APP_HOST_URL}
+      to:
+        kind: Service
+        name: ${APP_NAME}
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+      wildcardPolicy: None
+      
+  - kind: StatefulSet
+    apiVersion: apps/v1
+    metadata:
+      name: ${APP_NAME}
+      labels:
+        app: ${APP_NAME}
+    spec:
+      serviceName: ${APP_NAME}
+      replicas: ${REPLICAS}
+      selector:
+        matchLabels:
+          app: ${APP_NAME}
+      template:
+        metadata:
+          labels:
+            app: ${APP_NAME}
+        spec:
+          volumes:
+            - name: uploads
+              persistentVolumeClaim:
+                claimName: ${APP_NAME}
+            - name: uploads-backup
+              persistentVolumeClaim:
+                claimName: ${APP_NAME}-${BACKUP_SUFFIX}
+          containers:
+            - name: ${APP_NAME}
+              ports:
+                - containerPort: 4100
+                  protocol: TCP
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+              readinessProbe:
+                httpGet:
+                  path: /status
+                  port: 4100
+                  scheme: HTTP
+                initialDelaySeconds: 30
+                timeoutSeconds: 3
+                periodSeconds: 60
+                successThreshold: 1
+                failureThreshold: 3
+              livenessProbe:
+                httpGet:
+                  path: /status
+                  port: 4100
+                  scheme: HTTP
+                initialDelaySeconds: 30
+                timeoutSeconds: 3
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              imagePullPolicy: Always
+              volumeMounts:
+                - name: uploads
+                  mountPath: /uploads
+                - name: uploads-backup
+                  mountPath: /tmp/file-backups
+              envFrom:
+                - secretRef:
+                    name: ${APP_NAME}-secret
+              image: >-
+                ${IMAGE_BASE_URL}/${NAMESPACE}/${APP_NAME}:${IMAGE_APP_TAG}
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+          schedulerName: default-scheduler
