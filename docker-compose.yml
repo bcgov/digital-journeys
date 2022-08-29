@@ -31,7 +31,7 @@ services:
     environment:
       - WEB_BASE_URL=${WEB_BASE_URL}
       - ODS_URL=${ODS_URL}
-      - ODS_AUTH_TOKEN=${EMPLOYEE_DATA_AUTH_TOKEN}
+      - ODS_AUTH_TOKEN=${ODS_AUTH_TOKEN}
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
       - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}

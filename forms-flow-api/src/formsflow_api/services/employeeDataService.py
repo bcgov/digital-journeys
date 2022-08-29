@@ -11,7 +11,7 @@ class EmployeeDataService:
       
       employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
       test_auth_token = current_app.config.get(
-          "EMPLOYEE_DATA_AUTH_TOKEN")
+          "ODS_AUTH_TOKEN")
 
       try:
         response_from_BCGov = requests.get("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid),
