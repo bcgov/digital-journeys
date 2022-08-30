@@ -52,7 +52,7 @@ export default React.memo(() => {
             <ul>
               <li>The employee has been notified by email of your decision and has received a pdf copy of the completed telework agreement.</li>
 
-              <li>You will receive by email a pdf copy of the Telework Agreement, as well as an attachment with ADM approval if the request was for three or more Telework days.</li>
+              <li>You will receive by email a pdf copy of the Telework Agreement, as well as an attachment with ADM (or delegate) approval if the request was for three or more Telework days.</li>
 
               <li>The attachments can be stored in your personnel files or according to your ministry's record-keeping policy.</li>
 
