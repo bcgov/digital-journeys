@@ -719,17 +719,17 @@ task.execution.setVariable('managersSignatureTimestamp', new Date().toISOString(
         <camunda:inputOutput>
           <camunda:inputParameter name="body">&lt;p&gt;A new telework agreement request has been submitted by ${name} (${email}) requesting ${numberOfDaysTeleworkingInAWeek} weekly telework days. &lt;/p&gt;
 &lt;br&gt;
-&lt;strong&gt;This request requires ADM approval.&lt;/strong&gt;
+&lt;strong&gt;This request requires ADM (or delegate) approval.&lt;/strong&gt;
 &lt;ul&gt;
-&lt;li&gt;Please review the attached PDF and address any issues with ${name} before requesting ADM approval and use it to discuss this case with your ADM.&lt;/li&gt;
+&lt;li&gt;Please review the attached PDF and address any issues with ${name} before requesting ADM (or delegate) approval and use it to discuss this case with your ADM (or delegate).&lt;/li&gt;
 &lt;/ul&gt; 
 &lt;br&gt;
-&lt;strong&gt;After obtaining proof of ADM approval:&lt;/strong&gt;
+&lt;strong&gt;After obtaining proof of ADM (or delegate) approval:&lt;/strong&gt;
 &lt;ul&gt;
 &lt;li&gt;Open the request at this link: $BASE_URL/task/$TASK_ID &lt;/li&gt;
 &lt;li&gt;Complete the supervisor sign-off section of the agreement &lt;/li&gt;
-&lt;li&gt;Upload proof of ADM approval&lt;/li&gt; 
-&lt;li&gt;Supported file types for ADM approval are:&lt;/li&gt;
+&lt;li&gt;Upload proof of ADM (or delegate) approval&lt;/li&gt; 
+&lt;li&gt;Supported file types for ADM (or delegate) approval are:&lt;/li&gt;
 &lt;ul&gt;
 &lt;li&gt;.eml (saved email file)&lt;/li&gt;
 &lt;li&gt;.msg (saved outlook email file)&lt;/li&gt;
@@ -801,7 +801,7 @@ For questions or feedback about the Telework agreement or other PSA forms, pleas
       <bpmn:outgoing>Flow_0ptyhn1</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_1teg9e6">
-      <bpmn:text>Attached Uploaded ADM Approval Record if required</bpmn:text>
+      <bpmn:text>Attached Uploaded ADM (or delegate) Approval Record if required</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1dpmopj">
       <bpmn:text>Sends Email to Manager when task is created</bpmn:text>
@@ -815,7 +815,7 @@ For questions or feedback about the Telework agreement or other PSA forms, pleas
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1q6nu2g" sourceRef="TextAnnotation_0n8lxvh" targetRef="Gateway_1h5f4rh" />
     <bpmn:textAnnotation id="TextAnnotation_0w9ivj6">
-      <bpmn:text>Attached Uploaded ADM Approval Record if required</bpmn:text>
+      <bpmn:text>Attached Uploaded ADM (or delegate) Approval Record if required</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1rj0ujt">
       <bpmn:text>Sends Email to Manager when task is created</bpmn:text>

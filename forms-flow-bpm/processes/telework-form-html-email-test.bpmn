@@ -27,7 +27,7 @@ For your review, please find attached a new Telework Agreement submitted by ${su
 Go to the Manager/Supervisor Sign-Off Section at $BASE_URL/task/$TASK_ID to complete and submit this form.
 
 
-*If this Telework request is for 3 days or more, you must get approval from your ADM or delegate.
+*If this Telework request is for 3 days or more, you must get approval from your ADM (or delegate).
 
 
 Thank you</camunda:expression>
@@ -190,7 +190,7 @@ execution.setVariable('applicationStatus','New');</camunda:script>
     <bpmn:sequenceFlow id="Flow_07pivsl" sourceRef="Activity_0udx9dh" targetRef="Gateway_1gqg4sz" />
     <bpmn:sequenceFlow id="Flow_107tioi" sourceRef="Gateway_1gqg4sz" targetRef="send_to_ods" />
     <bpmn:textAnnotation id="TextAnnotation_1vplb42">
-      <bpmn:text>Attached Uploaded ADM Approval Record if required</bpmn:text>
+      <bpmn:text>Attached Uploaded ADM (or delegate) Approval Record if required</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1tytyjh" sourceRef="Activity_0udx9dh" targetRef="TextAnnotation_1vplb42" />
     <bpmn:textAnnotation id="TextAnnotation_10vy6xw">
