@@ -19,6 +19,11 @@ import {updateApplicationEvent} from "../../../../../apiManager/services/applica
 import LoadingOverlay from "react-loading-overlay";
 import {toast} from "react-toastify";
 import _ from 'lodash';
+import {
+  convertFormLinksToOpenInNewTabs,
+  scrollToErrorOnValidation,
+} from "../../../../../helper/formUtils";
+
 const Edit = React.memo((props) => {
   const dispatch = useDispatch();
   const {formId, submissionId} = useParams();
@@ -53,10 +58,23 @@ const Edit = React.memo((props) => {
   let scrollToErrorInterval = null;
   useEffect(() => {
     scrollToErrorInterval = setInterval(() => {
-      scrollToErrorOnValidation()
+      scrollToErrorOnValidation(formRef.current?.formio, scrollToErrorInterval);
     }, 1000);
     return () => {
       clearInterval(scrollToErrorInterval);
+    }
+  });
+  
+  let convertFormLinksInterval = null;
+  useEffect(() => {
+    convertFormLinksInterval = setInterval(() => {
+      convertFormLinksToOpenInNewTabs(
+        formRef.current?.formio,
+        convertFormLinksInterval
+      );
+    }, 1000);
+    return () => {
+      clearInterval(convertFormLinksInterval);
     }
   });
   
@@ -74,22 +92,6 @@ const Edit = React.memo((props) => {
             }
         }
     }, submission);
-  
-  const scrollToErrorOnValidation = () => {
-    const formio = formRef.current?.formio;
-    if (formio) {
-      clearInterval(scrollToErrorInterval);
-      formio.on('checkValidity', (_) => {
-        const componentsWithErrors = [];
-        formio.everyComponent((component) => {
-          if (component.error) {
-            componentsWithErrors.push(component);
-          }
-        });
-        componentsWithErrors[0]?.scrollIntoView();
-      });
-    }
-  };
   
   return (
       <div className="container">

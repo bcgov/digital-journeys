@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState, useRef} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -39,7 +39,8 @@ import {checkIsObjectId} from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 
 import {fetchEmployeeData} from "../../../apiManager/services/employeeDataService";
-import { exportToPdf } from '../../../services/PdfService'
+import { exportToPdf } from '../../../services/PdfService';
+import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
 
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
@@ -71,6 +72,7 @@ const View = React.memo((props) => {
     getEmployeeData,
     employeeData,
   } = props;
+  const formRef = useRef(null);
   const dispatch = useDispatch();
 
   const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
@@ -137,6 +139,19 @@ const View = React.memo((props) => {
     dispatch(setMaintainBPMFormPagination(true));
 
   }, [getForm, getEmployeeData, isAuthenticated, dispatch]);
+
+  let convertFormLinksInterval = null;
+  useEffect(() => {
+    convertFormLinksInterval = setInterval(() => {
+      convertFormLinksToOpenInNewTabs(
+        formRef.current?.formio,
+        convertFormLinksInterval
+      );
+    }, 1000);
+    return () => {
+      clearInterval(convertFormLinksInterval);
+    };
+  });
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -261,6 +276,7 @@ const View = React.memo((props) => {
         </div>
         <div className='ml-4 mr-4' id='formview'>
           <Form
+            ref={formRef}
             form={form}
             submission={getDefaultValues(employeeData.data)}
             url={url}
