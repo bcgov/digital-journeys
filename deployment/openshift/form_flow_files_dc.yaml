@@ -97,7 +97,7 @@ objects:
         app: ${NAME}
     spec:
       accessModes:
-        - ReadWriteMany               # this is ReadWriteOnce currently
+        - ReadWriteOnce
       resources:
         requests:
           storage: 10Gi
