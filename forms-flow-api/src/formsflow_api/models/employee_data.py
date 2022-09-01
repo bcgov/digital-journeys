@@ -25,6 +25,7 @@ class EmployeeData():
    self.officePostal = data["office_postal"]
    self.officeStateprovince = data["office_stateprovince"]
    self.organization = data["Organization"]
+   self.divisionLevel2 = data["level2_division"]
    self.supervisorName = data["supervisor_name"]
    self.managerEmail = data["supervisor_email"]
    self.supervisorPositionTitle = data["supervisor_position_title"]
