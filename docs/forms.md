@@ -65,6 +65,7 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
 | `officePostal`             | office postal code of employee|
 | `officeStateprovince`      | office state or province of employee|
 | `organization`             | organization of employee|
+| `divisionLevel2`           | level 2 branch/division of employee|
 | `supervisorName`           | name of employee's supervisor|
 | `supervisorEmail`          | email of employee's supervisor|
 | `supervisorPositionTitle`  | position title of employee's supervisor|
@@ -72,12 +73,13 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
 ![img-2.png](images/img-2.png)
 
 ## Uploading a form
-### Migrating a form to a new environement
+### Migrating a form to a new environment
   1. For this work, you need a `designer` role in the two environments.
   2. In the first environment you are migrating the form from, download the form by finding the form in the list of forms and clicking `Download Form`. The form will be saved in `JSON` format on your computer.
   3. Go to the target environment:
-   - If there is no previous version of that form in the target environment, you only need to upload the downloaded form on the `Forms` page through the `Upload Form` button.
-   - If there is a previous version of that form in the target environment, you need first delete the previous version of the form and then upload the downloaded form. Please backup the previous version of the form before deleting it by downloading and saving it to your computer.
+   - Upload the downloaded form on the `Forms` page through the `Upload Form` button.
+    - If there is no previous version of that form in the target environment, the new form will appear in the list of forms.
+    - If there is a previous version of that form in the target environment, the new form overwrites the older one. Please note that you don't see any warnings that you're overwriting.
   4. Add the necessary workflow and then publish the form if that is the desired behaviour. 
 
 ### Creating a duplicate form
