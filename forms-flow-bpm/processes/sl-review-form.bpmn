@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0lk9z5q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.1.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="sl-review-form" name="SL Review Form" isExecutable="true" camunda:versionTag="1">
+    <bpmn:startEvent id="StartEvent_1" name="Submitted form" camunda:asyncAfter="true">
+      <bpmn:outgoing>Flow_112i5g2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_112i5g2" sourceRef="StartEvent_1" targetRef="Activity_0unmtc3">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus','Resubmit');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0mogxwp">
+      <bpmn:incoming>Flow_1jupulp</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1r6yxz2" sourceRef="Activity_0unmtc3" targetRef="Activity_0qfrc2u" />
+    <bpmn:task id="Activity_0unmtc3" name="Application status set to Resubmit to enable edit form">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_112i5g2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r6yxz2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1jupulp" sourceRef="Activity_0qfrc2u" targetRef="Event_0mogxwp" />
+    <bpmn:userTask id="Activity_0qfrc2u" name="Manager Reviews Submission" camunda:assignee="${managerEmail}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="manager_task_created">
+          <camunda:field name="permissions">
+            <camunda:expression>["read", "write"]</camunda:expression>
+          </camunda:field>
+          <camunda:field name="user">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1r6yxz2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jupulp</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sl-review-form">
+      <bpmndi:BPMNEdge id="Flow_1r6yxz2_di" bpmnElement="Flow_1r6yxz2">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="420" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_112i5g2_di" bpmnElement="Flow_112i5g2">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jupulp_di" bpmnElement="Flow_1jupulp">
+        <di:waypoint x="520" y="117" />
+        <di:waypoint x="552" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="142" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12jg89k_di" bpmnElement="Activity_0unmtc3">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mogxwp_di" bpmnElement="Event_0mogxwp">
+        <dc:Bounds x="552" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x5o01j_di" bpmnElement="Activity_0qfrc2u">
+        <dc:Bounds x="420" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
