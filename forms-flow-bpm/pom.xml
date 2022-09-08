@@ -302,7 +302,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
-			<version>5.3.4</version>
+			<version>5.3.22</version>
 		</dependency>
 
 				<!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
