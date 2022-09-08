@@ -14,6 +14,7 @@ const util = require('../util/util');
 const _ = require('lodash');
 const debug = {
   authenticate: require('debug')('formio:authentication:authenticate'),
+  tok: require('debug')('formio:tmptoken'),
 };
 
 module.exports = (router) => {
@@ -136,6 +137,11 @@ module.exports = (router) => {
     expire = parseInt(expire || 3600, 10);
     const timeLeft = (parseInt(tempToken.exp, 10) - now);
 
+    debug.tok('Now: ' + now);
+    debug.tok('Expire: ' + expire);
+    debug.tok('TimeLeft: ' + timeLeft);
+
+
     // Ensure they are not trying to create an extended expiration.
     if ((expire > 3600) && (timeLeft < expire)) {
       return cb('Cannot generate extended expiring temp token.');
@@ -156,6 +162,9 @@ module.exports = (router) => {
     jwt.sign(tempToken,process.env.FORMIO_JWT_SECRET||jwtConfig.secret, {
       expiresIn: expire,
     }, (err, token) => {
+      debug.tok('Err: ' + err);
+      debug.tok('Token: ' + token);
+
       if (err) {
         return cb(err);
       }
