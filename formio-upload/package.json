@@ -25,7 +25,7 @@
     "formiojs": "^4.9.26",
     "fs-extra": "^9.0.1",
     "handlebars": "^4.7.7",
-    "helmet": "^5.0.2",
+    "helmet": "^5.1.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.15",
     "method-override": "^3.0.0",
