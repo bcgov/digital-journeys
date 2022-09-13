@@ -1,46 +1,29 @@
-# Used as a reference for any custom logic to be done.
-# if the application is built from a source repo other than aot , use the custom copying.
-# steps : checkout the aot source code and use the copy logic.
-# -----------------------------------------------------------
+# Modified by Yichun Zhao and Walter Moar
 
 # Maven build
-
-FROM mcr.microsoft.com/openjdk/jdk:11-ubuntu AS ubuntu-jdk
-
-RUN apt-get update \
-  && apt-get install -y curl git \
-  && rm -rf /var/lib/apt/lists/*
-
-ARG MAVEN_VERSION=3.8.6
-ARG USER_HOME_DIR="/root"
-ARG SHA=f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26
-ARG BASE_URL=https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries
-RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
-  && curl -fsSL -o /tmp/apache-maven.tar.gz ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
-  && echo "${SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - \
-  && tar -xzf /tmp/apache-maven.tar.gz -C /usr/share/maven --strip-components=1 \
-  && rm -f /tmp/apache-maven.tar.gz \
-  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
-
-ENV MAVEN_HOME /usr/share/maven
-ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
-
-FROM ubuntu-jdk AS bpm
-
-RUN apt-get update \
-    && apt-get install -y git lsyncd
-
-COPY ./pom-docker.xml /tmp/pom.xml
-COPY ./settings-docker.xml /usr/share/maven/ref/
-COPY . /digital-journeys
-
+FROM maven:3.8.1-openjdk-17-slim AS MAVEN_TOOL_CHAIN
+COPY pom*.xml /tmp/
+COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
-
 # This allows Docker to cache most of the maven dependencies
-RUN cp -rf /digital-journeys/src /tmp/
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B
+COPY src /tmp/src/
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -P default
 
-COPY lsyncd.conf ./
+# Final custom slim java image (for apk command see 17-jdk-alpine-slim)
+FROM openjdk:17-jdk-alpine
+
+ENV JAVA_VERSION=17-ea+14
+ENV JAVA_HOME=/opt/java/openjdk-17\
+    PATH="/opt/java/openjdk-17/bin:$PATH"
 
 EXPOSE 8080
-
-ENTRYPOINT ["/bin/bash", "-c", "lsyncd lsyncd.conf; mvn -s /usr/share/maven/ref/settings-docker.xml -Dmaven.test.skip=true package; java -Djava.security.egd=file:/dev/./urandom -jar /tmp/target/forms-flow-bpm.jar"]
+# OpenShift has /app in the image, but it's missing when doing local development - Create it when missing
+RUN test ! -d /app && mkdir /app || :
+# Add spring boot application
+RUN mkdir -p /app
+COPY --from=MAVEN_TOOL_CHAIN /tmp/target/forms-flow-bpm.jar ./app
+RUN chmod a+rwx -R /app
+WORKDIR /app
+VOLUME /tmp
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-Dpolyglot.js.nashorn-compat=true", "-Dpolyglot.engine.WarnInterpreterOnly=false", "-jar","/app/forms-flow-bpm.jar"]

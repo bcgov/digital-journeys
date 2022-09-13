@@ -36,9 +36,7 @@ const BCGovFooter = React.memo(() => {
       <ul>
         {footerItems.map((item) => (
           <li>
-            <a href={item.href}>
-              {item.label}
-            </a>
+            <a href={item.href}>{item.label}</a>
           </li>
         ))}
       </ul>

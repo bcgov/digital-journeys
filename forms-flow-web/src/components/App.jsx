@@ -5,25 +5,25 @@ import { ConnectedRouter } from "connected-react-router";
 import "../assets/styles/layouts.scss";
 import "../assets/styles/user-styles.css";
 import BaseRouting from "./BaseRouting";
-import {Helmet} from "react-helmet";
-import {KEYCLOAK_URL} from "../constants/constants";
+import { Helmet } from "react-helmet";
+import { KEYCLOAK_URL } from "../constants/constants";
 import Typography from "./Typography/Typography";
 
 const App = React.memo((props) => {
-    const { store, history } = props;
-    return (
-      <div>
-        <Typography />
-        <Helmet>
-          {KEYCLOAK_URL?<link rel="preconnect" href={KEYCLOAK_URL} />:null}
-        </Helmet>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <BaseRouting store={store}/>
-          </ConnectedRouter>
-        </Provider>
-      </div>
-    );
+  const { store, history } = props;
+  return (
+    <div>
+      <Typography />
+      <Helmet>
+        {KEYCLOAK_URL ? <link rel="preconnect" href={KEYCLOAK_URL} /> : null}
+      </Helmet>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <BaseRouting store={store} />
+        </ConnectedRouter>
+      </Provider>
+    </div>
+  );
 });
 
 App.propTypes = {

@@ -9,20 +9,26 @@ from http import HTTPStatus
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
-from werkzeug.middleware.proxy_fix import ProxyFix
-
-from formsflow_api import config, models, cache
-from formsflow_api.models import db, ma
-from formsflow_api.resources import API
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
     CustomFormatter,
+    cache,
     jwt,
     setup_logging,
     translate,
 )
+from formsflow_api_utils.utils.startup import (
+    collect_role_ids,
+    collect_user_resource_ids,
+    setup_jwt_manager,
+)
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+from formsflow_api import config, models
+from formsflow_api.models import db, ma
+from formsflow_api.resources import API
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -31,9 +37,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(config.CONFIGURATION[run_mode])
     app.logger.removeHandler(default_handler)
-
-    # Setting a simple (in memory) cache
-    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
 
     flask_logger = setup_logging(
         os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")
@@ -55,6 +58,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
     ma.init_app(app)
+    cache.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)
@@ -105,18 +109,11 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             return response
 
     register_shellcontext(app)
-
+    if not app.config["MULTI_TENANCY_ENABLED"]:
+        with app.app_context():
+            collect_role_ids(app)
+            collect_user_resource_ids(app)
     return app
-
-
-def setup_jwt_manager(app, jwt_manager):
-    """Use flask app to configure the JWTManager to work for a particular Realm."""
-
-    def get_roles(a_dict):
-        return a_dict["resource_access"][app.config["JWT_OIDC_AUDIENCE"]]["roles"]
-
-    app.config["JWT_ROLE_CALLBACK"] = get_roles
-    jwt_manager.init_app(app)
 
 
 def register_shellcontext(app):

@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState, useRef} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -8,41 +10,65 @@ import {
   selectError,
   Errors,
   getForm,
-  Formio
+  Formio,
 } from "react-formio";
-import { push } from "connected-react-router";
-import { Link, useParams } from "react-router-dom";
+import { useTranslation, Translation } from "react-i18next";
+import isEqual from "lodash/isEqual";
+
 import Loading from "../../../containers/Loading";
-import { getProcessReq } from "../../../apiManager/services/bpmServices";
+import {
+  getProcessReq,
+  getDraftReqFormat,
+} from "../../../apiManager/services/bpmServices";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
   setFormFailureErrorData,
   setFormRequestData,
   setFormSubmissionError,
   setFormSubmissionLoading,
-  setMaintainBPMFormPagination,
   setFormSuccessData,
+  setMaintainBPMFormPagination,
 } from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
-import { 
-  applicationCreate,
-  publicApplicationCreate,
-  publicApplicationStatus,
-} from "../../../apiManager/services/applicationServices";
+import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
-import {
-  setFormSubmitted
-} from "../../../actions/formActions";
+import { setFormSubmitted } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
-import {checkIsObjectId} from "../../../apiManager/services/formatterService";
+import { checkIsObjectId } from "../../../apiManager/services/formatterService";
+import {
+  draftCreate,
+  draftUpdate,
+  publicDraftCreate,
+  publicDraftUpdate,
+} from "../../../apiManager/services/draftService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
+import { postCustomSubmission } from "../../../apiManager/services/FormServices";
+import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
+  MULTITENANCY_ENABLED,
+  DRAFT_ENABLED,
+  DRAFT_POLLING_RATE,
+} from "../../../constants/constants";
+import useInterval from "../../../customHooks/useInterval";
+import selectApplicationCreateAPI from "./apiSelectHelper";
+import { getFormProcesses } from "../../../apiManager/services/processServices";
+import { setFormStatusLoading } from "../../../actions/processActions";
+import SavingLoading from "../../Loading/SavingLoading";
 
-import {fetchEmployeeData} from "../../../apiManager/services/employeeDataService";
-import { exportToPdf } from '../../../services/PdfService';
+import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
+import { exportToPdf } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
 
 const View = React.memo((props) => {
+  const [formStatus, setFormStatus] = React.useState("");
+  const { t } = useTranslation();
+  const lang = useSelector((state) => state.user.lang);
+  const formStatusLoading = useSelector(
+    (state) => state.process?.formStatusLoading
+  );
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -56,80 +82,208 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-  const isPublic = window.location.href.includes("public"); //need to remove
-  const { formId } = useParams();
-  const [showPublicForm, setShowPublicForm] = useState('checking');
+  const draftSubmissionId = useSelector(
+    (state) => state.draft.draftSubmission?.id
+  );
+  // Holds the latest data saved by the server
+  const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
+  const isPublic = !props.isAuthenticated;
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  /**
+   * `draftData` is used for keeping the uptodate form entry,
+   * this will get updated on every change the form is having.
+   */
+  const [draftData, setDraftData] = useState({});
+  const draftRef = useRef();
+  const [isDraftCreated, setIsDraftCreated] = useState(false);
 
+  const { formId } = useParams();
+  const [validFormId, setValidFormId] = useState(undefined);
+
+  const [showPublicForm, setShowPublicForm] = useState("checking");
+  const [poll, setPoll] = useState(DRAFT_ENABLED);
+  const exitType = useRef("UNMOUNT");
+  const [draftSaved, setDraftSaved] = useState(false);
+  const [notified, setNotified] = useState(false);
   const {
     isAuthenticated,
+    submission,
     hideComponents,
     onSubmit,
     onCustomEvent,
     errors,
     options,
     form: { form, isActive, url },
-    // getForm,
     getEmployeeData,
     employeeData,
   } = props;
   const formRef = useRef(null);
   const dispatch = useDispatch();
+  /*
+  Selecting which endpoint to use based on authentication status,
+  public endpoint or authenticated endpoint.
+  */
+  const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
+  const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
 
-  const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
-    dispatch(setPublicStatusLoading(true));
-    dispatch(
-      publicApplicationStatus(form_id, (err, res) => {
-        dispatch(setPublicStatusLoading(false));
-        if (!err) {
-          if (isPublic) {
-            if (isObjectId) {
-              dispatch(getForm("form", form_id));
-            }
-            else {
-              dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
-              dispatch(setFormSuccessData('form',formObj));
+  const getPublicForm = useCallback(
+    (form_id, isObjectId, formObj) => {
+      dispatch(setPublicStatusLoading(true));
+      dispatch(
+        publicApplicationStatus(form_id, (err) => {
+          dispatch(setPublicStatusLoading(false));
+          if (!err) {
+            if (isPublic) {
+              if (isObjectId) {
+                dispatch(getForm("form", form_id));
+                dispatch(setFormStatusLoading(false));
+              } else {
+                dispatch(
+                  setFormRequestData(
+                    "form",
+                    form_id,
+                    `${Formio.getProjectUrl()}/form/${form_id}`
+                  )
+                );
+                dispatch(setFormSuccessData("form", formObj));
+                dispatch(setFormStatusLoading(false));
+              }
             }
           }
-        }
-      })
-    );
-  },[dispatch,isPublic]);
-
-  const getFormData = useCallback( () => {
+        })
+      );
+    },
+    [dispatch, isPublic]
+  );
+  const getFormData = useCallback(() => {
     const isObjectId = checkIsObjectId(formId);
     if (isObjectId) {
-      getPublicForm(formId,isObjectId);
+      getPublicForm(formId, isObjectId);
+      setValidFormId(formId);
     } else {
       dispatch(
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
             const form_id = formObj._id;
-            getPublicForm(form_id,isObjectId,formObj);
-          }else{
-            dispatch(setFormFailureErrorData('form',err));
+            getPublicForm(form_id, isObjectId, formObj);
+            setValidFormId(form_id);
+          } else {
+            dispatch(setFormFailureErrorData("form", err));
           }
         })
       );
     }
-  },[formId,dispatch,getPublicForm])
+  }, [formId, dispatch, getPublicForm]);
+  /**
+   * Compares the current form data and last saved data
+   * Draft is updated only if the form is updated from the last saved form data.
+   */
+  const saveDraft = (payload, exitType = exitType) => {
+    let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
+    if (draftSubmissionId && isDraftCreated) {
+      if (dataChanged) {
+        setDraftSaved(false);
+        dispatch(
+          draftUpdateMethod(payload, draftSubmissionId, (err) => {
+            if (exitType === "UNMOUNT" && !err) {
+              toast.success(t("Submission saved to draft."));
+            }
+            if (!err) {
+              setDraftSaved(true);
+            } else {
+              setDraftSaved(false);
+            }
+          })
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setNotified(true);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    if (isDraftCreated) {
+      setDraftSaved(true);
+    }
+  }, [isDraftCreated]);
+
+  /**
+   * Will create a draft application when the form is selected for entry.
+   */
+  useEffect(() => {
+    if (
+      validFormId &&
+      DRAFT_ENABLED &&
+      ((isAuthenticated && formStatus === "active") ||
+        (!isAuthenticated && publicFormStatus?.status == "active"))
+    ) {
+      let payload = getDraftReqFormat(validFormId, draftData?.data);
+      dispatch(draftCreateMethod(payload, setIsDraftCreated));
+    }
+  }, [validFormId, formStatus, publicFormStatus]);
+
+  /**
+   * We will repeatedly update the current state to draft table
+   * on purticular interval
+   */
+  useInterval(
+    () => {
+      let payload = getDraftReqFormat(validFormId, { ...draftData?.data });
+      saveDraft(payload);
+    },
+    poll ? DRAFT_POLLING_RATE : null
+  );
+
+  /**
+   * Save the current state when the component unmounts.
+   * Save the data before submission to handle submission failure.
+   */
+  useEffect(() => {
+    return () => {
+      let payload = getDraftReqFormat(validFormId, draftRef.current?.data);
+      if (poll) saveDraft(payload, exitType.current);
+    };
+  }, [validFormId, draftSubmissionId, isDraftCreated, poll, exitType.current]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(setFormStatusLoading(true));
+      dispatch(
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            setFormStatus(data.status);
+            dispatch(setFormStatusLoading(false));
+          }
+        })
+      );
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (isPublic) {
       getFormData();
     } else {
-      dispatch(setMaintainBPMFormPagination(true));
+      setValidFormId(formId);
     }
-  }, [isPublic, dispatch,getFormData]);
+  }, [isPublic, dispatch, getFormData]);
 
-  useEffect(()=>{
-    if(publicFormStatus){
-      if(publicFormStatus.anonymous===true && publicFormStatus.status==="active" ){
+  useEffect(() => {
+    if (publicFormStatus) {
+      if (
+        publicFormStatus.anonymous === true &&
+        publicFormStatus.status === "active"
+      ) {
         setShowPublicForm(true);
-      }else{
+      } else {
         setShowPublicForm(false);
       }
     }
-  },[publicFormStatus])
+  }, [publicFormStatus]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -153,23 +307,38 @@ const View = React.memo((props) => {
     };
   });
 
-  if (isActive || isPublicStatusLoading) {
+  if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
-      <div data-testid='loading-view-component'>
+      <div data-testid="loading-view-component">
         <Loading />
       </div>
     );
   }
 
-  const printToPDF = () => {
-    toast.success('Downloading...')
-    exportToPdf({formId: 'formview'})
+  if (isFormSubmitted && !isAuthenticated) {
+    return (
+      <div className="text-center pt-5">
+        <h1>{t("Thank you for your response.")}</h1>
+        <p>{t("saved successfully")}</p>
+      </div>
+    );
   }
 
+  if (isPublic && !showPublicForm) {
+    return (
+      <div className="alert alert-danger mt-4" role="alert">
+        {t("Form not available")}
+      </div>
+    );
+  }
+
+  const printToPDF = () => {
+    toast.success("Downloading...");
+    exportToPdf({ formId: "formview" });
+  };
+
   const getDefaultValues = (data) => {
-    if (
-      Object.keys(data)?.length === 0 ||
-      form.components?.length === 0) {
+    if (Object.keys(data)?.length === 0 || form.components?.length === 0) {
       return;
     }
 
@@ -193,8 +362,8 @@ const View = React.memo((props) => {
       return keys;
     }
     const keys = findAllKeys(form.components, "key");
-    const uniqueKeys = [... new Set(keys)];
-    
+    const uniqueKeys = [...new Set(keys)];
+
     const filteredComponents = uniqueKeys?.filter((comp) => {
       const dataArray = Object.keys(data);
       if (comp.includes("_")) {
@@ -203,7 +372,7 @@ const View = React.memo((props) => {
       return dataArray.some((el2) => comp === el2);
     });
 
-    const defaultValuesArray = filteredComponents?.map(filteredComp => {
+    const defaultValuesArray = filteredComponents?.map((filteredComp) => {
       if (filteredComp.includes("_")) {
         return {
           [filteredComp]: data[filteredComp.split("_")[0]],
@@ -212,50 +381,76 @@ const View = React.memo((props) => {
       return { [filteredComp]: data[filteredComp] };
     });
 
-    const defaultValuesObject = defaultValuesArray?.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const defaultValuesObject = defaultValuesArray?.reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {}
+    );
 
     return { data: defaultValuesObject };
   };
 
-  if (isFormSubmitted) {
-    return (
-      <div className="text-center pt-5">
-        <h1>Thank you for your response.</h1>
-        <p>saved successfully</p>
-      </div>
-    );
-  }
-
-  if (isPublic && !showPublicForm) {
-    return (
-      <div className="alert alert-danger mt-4" role="alert">
-        Form not available
-      </div>
-    );
-  }
-
   return (
-    <div className='container'>
-      <div className='main-header'>
-        <SubmissionError
-          modalOpen={props.submissionError.modalOpen}
-          message={props.submissionError.message}
-          onConfirm={props.onConfirm}
-        ></SubmissionError>
-        {/*          <span className="ml-3">
-            <img src="/form.svg" width="30" height="30" alt="form" />
-          </span>*/}
-        <h3 className='ml-3'>
-          <span className='task-head-details'>
-            <i className='fa fa-wpforms' aria-hidden='true' /> &nbsp; Forms /
-          </span>{" "}
-          {form.title}
-        </h3>
+    <div className="container overflow-y-auto">
+      {DRAFT_ENABLED &&
+        isAuthenticated &&
+        (formStatus === "active" ||
+          (publicFormStatus?.anonymous === true &&
+            publicFormStatus?.status === "active")) && (
+          <>
+            <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
+              {!notified && (
+                <span className="text-primary">
+                  <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
+                  {t("Unfinished applications will be saved to drafts.")}
+                </span>
+              )}
+
+              {notified && poll && (
+                <SavingLoading
+                  text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                  saved={draftSaved}
+                />
+              )}
+            </span>
+          </>
+        )}
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="main-header">
+          <SubmissionError
+            modalOpen={props.submissionError.modalOpen}
+            message={props.submissionError.message}
+            onConfirm={props.onConfirm}
+          ></SubmissionError>
+          {/* {isAuthenticated ? (
+            <Link title="go back" to={`${redirectUrl}form`}>
+              <i className="fa fa-chevron-left fa-lg" />
+            </Link>
+          ) : null}
+
+          {form.title ? (
+            <h3 className="ml-3">
+              <span className="task-head-details">
+                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
+                {t("Forms")}/
+              </span>{" "}
+              {form.title}
+            </h3>
+          ) : (
+            ""
+          )} */}
+          <h3 className="ml-3">
+            <span className="task-head-details">
+              <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms /
+            </span>{" "}
+            {form.title}
+          </h3>
+        </div>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
         active={isFormSubmissionLoading || employeeData.loading}
         spinner
+        // text={<Translation>{(t) => t("Loading...")}</Translation>}
         text={
           employeeData.loading
             ? "Loading user data..."
@@ -263,99 +458,115 @@ const View = React.memo((props) => {
             ? "Submitting..."
             : "Loading..."
         }
-        className='col-12'
+        className="col-12"
       >
         <div class="row">
           <div class="btn-right">
-            <button type="button" 
-              class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary" 
-              onClick={() => printToPDF()}>
-                <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
+            <button
+              type="button"
+              class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary"
+              onClick={() => printToPDF()}
+            >
+              <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
         </div>
-        <div className='ml-4 mr-4' id='formview'>
-          <Form
-            ref={formRef}
-            form={form}
-            submission={getDefaultValues(employeeData.data)}
-            url={url}
-            options={{ ...options }}
-            hideComponents={hideComponents}
-            onSubmit={(data) => {
-              onSubmit(data, form._id);
-            }}
-            onCustomEvent={onCustomEvent}
-          />
+        <div className="ml-4 mr-4" id="formview">
+          {isPublic || formStatus === "active" ? (
+            <Form
+              form={form}
+              submission={getDefaultValues(employeeData.data)}
+              url={url}
+              options={{
+                ...options,
+                language: lang,
+                i18n: formio_resourceBundles,
+              }}
+              hideComponents={hideComponents}
+              onChange={(data) => {
+                setDraftData(data);
+                draftRef.current = data;
+              }}
+              onSubmit={(data) => {
+                setPoll(false);
+                exitType.current = "SUBMIT";
+                onSubmit(data, form._id, isPublic);
+              }}
+              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              ref={formRef}
+            />
+          ) : formStatus === "inactive" || !formStatus ? (
+            <span>
+              <div
+                className="container"
+                style={{
+                  maxWidth: "900px",
+                  margin: "auto",
+                  height: "50vh",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <h3>{t("Form not published")}</h3>
+                <p>{t("You can't submit this form until it is published")}</p>
+              </div>
+            </span>
+          ) : null}
         </div>
       </LoadingOverlay>
     </div>
   );
 });
 
+// eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
-    let user = getState().user.userDetail;
-    let form = getState().form.form;
-    let IsAuth = getState().user.isAuthenticated;
+    const state = getState();
+    let form = state.form.form;
+    let isAuth = state.user.isAuthenticated;
+    const tenantKey = state.tenants?.tenantId;
+    const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    const origin = `${window.location.origin}${redirectUrl}`;
     dispatch(resetSubmissions("submission"));
-    const data = getProcessReq(form, submission._id, "new", user);
+    const data = getProcessReq(form, submission._id, origin);
+    let draft_id = state.draft.draftSubmission?.id;
+    let isDraftCreated = draft_id ? true : false;
+    const applicationCreateAPI = selectApplicationCreateAPI(
+      isAuth,
+      isDraftCreated,
+      DRAFT_ENABLED
+    );
 
-    const isPublic = window.location.href.includes("public");
-
-    if (isPublic) {
-      // this is for anonymous
-      dispatch(
-        publicApplicationCreate(data, (err, res) => {
-          if (!err) {
-            dispatch(setFormSubmissionLoading(false));
-            toast.success("Submission Saved.");
-            dispatch(setFormSubmitted(true));
-          } else {
-            //TO DO Update to show error message
-            dispatch(setFormSubmissionLoading(false));
-            toast.error("Submission failed");
-            // dispatch(setFormSubmitted())
-            // dispatch(push(`/public/submitted`));
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      applicationCreateAPI(data, draft_id ? draft_id : null, (err, res) => {
+        dispatch(setFormSubmissionLoading(false));
+        if (!err) {
+          // toast.success(
+          //   <Translation>{(t) => t("Submission Saved")}</Translation>
+          // );
+          dispatch(setFormSubmitted(true));
+          if (isAuth) {
+            dispatch(setMaintainBPMFormPagination(true));
+            // dispatch(push(`${redirectUrl}form`));
+            dispatch(push(`/success?type=submission`));
           }
-        })
-      );
-    } else {
-      dispatch(
-        applicationCreate(data, (err, res) => {
-          if (!err) {
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              // toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
-              dispatch(push(`/success?type=submission`));
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          } else {
-           
-            //TO DO Update to show error message
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
-              dispatch(push(`/form`));
-            }  else  {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-            })
-      
-      );
-      }
+        } else {
+          toast.error(
+            <Translation>{(t) => t("Submission Failed.")}</Translation>
+          );
+        }
+      })
+    );
   };
 };
 
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
+    tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [selectError("form", state), selectError("submission", state)],
@@ -363,7 +574,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: "Please fix the errors before submitting again.",
+          error: <Translation>{(t) => t("Message")}</Translation>,
         },
       },
     },
@@ -374,34 +585,42 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId) => {
+    onSubmit: (submission, formId, isPublic) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission(
-          "submission", submission, formId, (err, submission) => {
-            if (!err) {
-              dispatch(doProcessActions(submission, ownProps));
-            } else {
-              const ErrorDetails = {
-                modalOpen: true,
-                message: "Submission cannot be done",
-              };
-              toast.error("Error while Submission.");
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setFormSubmissionError(ErrorDetails));
-            }
-          }
-        )
-      );
+      // this is callback function for submission
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(doProcessActions(submission, ownProps));
+        } else {
+          const ErrorDetails = {
+            modalOpen: true,
+            message: (
+              <Translation>
+                {(t) => t("Submission cannot be done.")}
+              </Translation>
+            ),
+          };
+          toast.error(
+            <Translation>{(t) => t("Error while Submission.")}</Translation>
+          );
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(setFormSubmissionError(ErrorDetails));
+        }
+      };
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        postCustomSubmission(submission, formId, isPublic, callBack);
+      } else {
+        dispatch(saveSubmission("submission", submission, formId, callBack));
+      }
     },
-    onCustomEvent: (customEvent) => {
+    onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
           toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
-          dispatch(push(`/form`));
+          dispatch(push(`${redirectUrl}form`));
           break;
         // case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
-        //   dispatch(push(`/form`));
+        //   dispatch(push(`${redirectUrl}form`));
         //   break;
         default:
           return;
@@ -411,7 +630,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const ErrorDetails = { modalOpen: false, message: "" };
       dispatch(setFormSubmissionError(ErrorDetails));
     },
-    getEmployeeData: () => dispatch(fetchEmployeeData()),
   };
 };
 
