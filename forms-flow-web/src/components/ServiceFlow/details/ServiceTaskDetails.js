@@ -43,15 +43,10 @@ import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 
 import {
-  getUserRoleName,
   getUserRolePermission,
-  getUserInsightsPermission,
 } from "../../../helper/user";
 import {
-  CLIENT,
   STAFF_REVIEWER,
-  APPLICATION_NAME,
-  STAFF_DESIGNER,
 } from "../../../constants/constants";
 
 const ServiceFlowTaskDetails = React.memo(() => {

@@ -16,7 +16,7 @@ const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
 const scrollToErrorOnValidation = (formio, scrollToErrorInterval) => {
   if (formio) {
     clearInterval(scrollToErrorInterval);
-    formio.on("checkValidity", (_) => {
+    formio.on("checkValidity", () => {
       const componentsWithErrors = [];
       formio.everyComponent((component) => {
         if (component.error) {

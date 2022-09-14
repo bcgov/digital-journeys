@@ -15,7 +15,7 @@ import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
 
 const Form = lazy(() => import("./Form"));
-const Success = lazy(() => import('./Form/Item/Submission/Success/SuccessPage'))
+const Success = lazy(() => import('./Form/Item/Submission/Success/SuccessPage'));
 const ServiceFlow = lazy(() => import("./ServiceFlow"));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));

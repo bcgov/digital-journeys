@@ -1,6 +1,5 @@
 import { Components, Formio } from 'react-formio';
 import _ from 'lodash';
-import NativePromise from 'native-promise-only';
 import { WEB_BASE_URL } from "../../apiManager/endpoints/config";
 import UserService from "../../services/UserService";
 
@@ -206,6 +205,6 @@ export default class RemoteSelect extends SelectComponent {
 
 const setFormFlowApiHeaders = (headers) => {
   const clonedHeaders = _.cloneDeep(headers);
-  clonedHeaders.map = {authorization: `Bearer ${UserService.getToken()}`}
+  clonedHeaders.map = {authorization: `Bearer ${UserService.getToken()}`};
   return clonedHeaders;
-}
+};

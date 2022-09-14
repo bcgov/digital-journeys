@@ -48,8 +48,8 @@ export default class DGJFileUpload extends FileComponent{
       fileStatusRemove: 'multiple',
     });
 
-    this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
-      this.addEventListener(fileStatusRemove, 'click', (event) => {
+    this.refs.fileStatusRemove.forEach((fileStatusRemove) => {
+      this.addEventListener(fileStatusRemove, 'click', () => {
         // Force the file selector component to show once the errored file has been removed
         this.fileDropHidden = false;
       });

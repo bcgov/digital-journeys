@@ -16,7 +16,7 @@ import formCheckList from "./formCheckListReducer";
 import dashboardReducer from "./dashboardReducer";
 import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
-import employeeData from './employeeDataReducer'
+import employeeData from "./employeeDataReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
