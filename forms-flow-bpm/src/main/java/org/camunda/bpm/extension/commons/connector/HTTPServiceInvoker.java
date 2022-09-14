@@ -9,6 +9,8 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
@@ -41,8 +43,15 @@ public class HTTPServiceInvoker {
     private AccessHandlerFactory accessHandlerFactory;
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
+
     @Autowired
     private Properties integrationCredentialProperties;
+
+    @Value("${formsflow.ai.ods.url}")
+    private String odsUrl;
+    @Value("${formsflow.ai.fileService.url}")
+    private String fileServiceUrl;
+
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;

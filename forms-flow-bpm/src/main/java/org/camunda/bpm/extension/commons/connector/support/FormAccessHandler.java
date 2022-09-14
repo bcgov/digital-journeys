@@ -38,7 +38,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
     private FormioTokenServiceProvider formioTokenServiceProvider;
 
     public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
-        String accessToken = getAccessToken();
+        String accessToken = formioTokenServiceProvider.getAccessToken();
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
 

@@ -3,6 +3,9 @@ package org.camunda.bpm.extension.hooks.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.json.JSONObject;
 
 
 import javax.annotation.Resource;
@@ -101,14 +105,13 @@ public class FormSubmissionService {
             return null;
         }
 
-        ObjectMapper mapper = getObjectMapper();
 
         JsonNode accessNode = null;
 
         if (StringUtils.isNotEmpty(submission)) {
 
             try {
-                JsonNode dataNode = mapper.readTree(submission);
+                JsonNode dataNode = bpmObjectMapper.readTree(submission);
                 accessNode = dataNode.get("access");
 
                 if (accessNode == null || !accessNode.isArray()) {
@@ -116,9 +119,9 @@ public class FormSubmissionService {
                 } else {
                     JsonNode finalAccessNode = accessNode;
                     permissions.forEach(permission -> {
-                        ObjectNode newPermission = mapper.createObjectNode();
+                        ObjectNode newPermission = bpmObjectMapper.createObjectNode();
                         newPermission.put("type", permission);
-                        newPermission.set("resources", mapper.createArrayNode().add(user));
+                        newPermission.set("resources", bpmObjectMapper.createArrayNode().add(user));
                         ((ArrayNode) finalAccessNode).add(newPermission);
                     });
                 }
@@ -130,13 +133,13 @@ public class FormSubmissionService {
         }
 
 
-        JsonNode toUpdate = mapper.createObjectNode().set("access", accessNode);
+        JsonNode toUpdate = bpmObjectMapper.createObjectNode().set("access", accessNode);
 
         ResponseEntity<String> response = httpServiceInvoker.execute(formUrl, HttpMethod.PUT, toUpdate);
 
         if (response.getStatusCode().value() == HttpStatus.OK.value()) {
             try {
-                JsonNode jsonNode = mapper.readTree(response.getBody());
+                JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
                 String submissionId = jsonNode.get("_id").asText();
                 return submissionId;
             } catch (JsonProcessingException e) {
