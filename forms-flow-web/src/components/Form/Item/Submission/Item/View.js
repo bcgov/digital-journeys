@@ -19,9 +19,11 @@ import {
   CUSTOM_SUBMISSION_ENABLE,
 } from "../../../../../constants/constants";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
-import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
+// import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 
 import { exportToPdf } from "../../../../../services/PdfService";
+import { Button } from "react-bootstrap";
+
 
 const View = React.memo((props) => {
   const { t } = useTranslation();

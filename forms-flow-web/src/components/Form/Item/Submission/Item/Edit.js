@@ -139,7 +139,7 @@ const Edit = React.memo((props) => {
         },
       },
     },
-    submission
+    updatedSubmission
   );
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
