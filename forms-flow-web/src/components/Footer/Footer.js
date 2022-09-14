@@ -1,6 +1,5 @@
 import React from "react";
 import "./footer.scss";
-import { version } from "../../../package.json";
 import Footer from "@button-inc/bcgov-theme/Footer";
 
 const BCGovFooter = React.memo(() => {
@@ -35,7 +34,7 @@ const BCGovFooter = React.memo(() => {
     <Footer>
       <ul>
         {footerItems.map((item) => (
-          <li>
+          <li key={item.label}>
             <a href={item.href}>{item.label}</a>
           </li>
         ))}

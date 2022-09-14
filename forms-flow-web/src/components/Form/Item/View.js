@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { /* Link ,*/ useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -108,7 +108,6 @@ const View = React.memo((props) => {
   const [notified, setNotified] = useState(false);
   const {
     isAuthenticated,
-    submission,
     hideComponents,
     onSubmit,
     onCustomEvent,
@@ -460,14 +459,14 @@ const View = React.memo((props) => {
         }
         className="col-12"
       >
-        <div class="row">
-          <div class="btn-right">
+        <div className="row">
+          <div className="btn-right">
             <button
               type="button"
-              class="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary"
+              className="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary"
               onClick={() => printToPDF()}
             >
-              <i class="fa fa-print" aria-hidden="true"></i> Print As PDF
+              <i className="fa fa-print" aria-hidden="true"></i> Print As PDF
             </button>
           </div>
         </div>
@@ -616,7 +615,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          toast.success("Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard.");
+          toast.success(
+            "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
+          );
           dispatch(push(`${redirectUrl}form`));
           break;
         // case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
@@ -630,6 +631,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const ErrorDetails = { modalOpen: false, message: "" };
       dispatch(setFormSubmissionError(ErrorDetails));
     },
+    getEmployeeData: () => dispatch(fetchEmployeeData()),
   };
 };
 
