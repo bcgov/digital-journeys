@@ -311,7 +311,6 @@
 			<version>5.3.4</version>
 		</dependency>
 
-<<<<<<<< HEAD:forms-flow-bpm/pom.xml
 		<dependency>
 			<groupId>org.graalvm.js</groupId>
 			<artifactId>js-scriptengine</artifactId>
@@ -328,15 +327,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jersey</artifactId>
 		</dependency>
-========
+				
 				<!-- https://mvnrepository.com/artifact/org.keycloak/keycloak-admin-client -->
 		<dependency>
 				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-admin-client</artifactId>
 				<version>18.0.1</version>
 		</dependency>
-
->>>>>>>> v5.0.0:forms-flow-bpm/pom-docker.xml
 
 	</dependencies>
 
@@ -369,16 +366,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-<<<<<<<< HEAD:forms-flow-bpm/pom.xml
 				<version>3.0.0-M7</version>
-========
-				<version>3.0.0-M5</version>
-				<configuration>
-					<additionalClasspathElements>
-						<additionalClasspathElement>target/templates</additionalClasspathElement>
-					</additionalClasspathElements>
-				</configuration>
->>>>>>>> v5.0.0:forms-flow-bpm/pom-docker.xml
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
