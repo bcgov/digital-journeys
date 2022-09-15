@@ -1,7 +1,3 @@
-# Used as a reference for any custom logic to be done.
-# if the application is built from a source repo other than aot , use the custom copying.
-# steps : checkout the aot source code and use the copy logic.
-# -----------------------------------------------------------
 FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app
@@ -13,15 +9,12 @@ RUN  apt-get update \
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
 
-
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \
     && pip install -r requirements.txt 
 
-COPY . /digital-journeys
-RUN cp -r /digital-journeys/* /forms-flow-api/app
-
+ADD . /forms-flow-api/app
 RUN pip install -e .
 
 COPY ./lsyncd.conf lsyncd.conf
