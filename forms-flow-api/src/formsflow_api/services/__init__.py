@@ -8,6 +8,7 @@ from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
 from formsflow_api.services.ministry_names_service import MinistryNamesService
+from formsflow_api.services.employee_names_service import EmployeeNamesService
 
 __all__ = [
     "ApplicationService",
@@ -18,4 +19,5 @@ __all__ = [
     "ProcessService",
     "EmployeeDataService",
     "MinistryNamesService",
+    "EmployeeNamesService"
 ]
