@@ -6,11 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
 import org.camunda.bpm.extension.commons.ro.res.IResponse;
 
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +15,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import reactor.core.publisher.Mono;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *  Http Service Invoker.
@@ -43,7 +42,6 @@ public class HTTPServiceInvoker {
     private AccessHandlerFactory accessHandlerFactory;
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
-
     @Autowired
     private Properties integrationCredentialProperties;
 
@@ -52,14 +50,13 @@ public class HTTPServiceInvoker {
     @Value("${formsflow.ai.fileService.url}")
     private String fileServiceUrl;
 
-
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
-            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
+        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
     public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
@@ -79,11 +76,7 @@ public class HTTPServiceInvoker {
         Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
  		if (isUrlValid(url, fetchUrlFromProperty(API_URL))) {
 			return APPLICATION_ACCESS_HANDLER;
-		} else if (StringUtils.contains(url, odsUrl)) {
-            return "ODSAccessHandler";
-        } else if (StringUtils.contains(url, fileServiceUrl)) {
-            return "fileAccessHandler";
-        } else if (isUrlValid(url, fetchUrlFromProperty(BPM_URL))) {
+		} else if (isUrlValid(url, fetchUrlFromProperty(BPM_URL))) {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
@@ -94,6 +87,10 @@ public class HTTPServiceInvoker {
             else {
 			    return FORM_ACCESS_HANDLER;
             }
+        } else if (StringUtils.contains(url, odsUrl)) {
+            return "ODSAccessHandler";
+        } else if (StringUtils.contains(url, fileServiceUrl)) {
+            return "fileAccessHandler";
         }
  		return "";
     }
