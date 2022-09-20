@@ -36,7 +36,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         mapper: FormProcessMapper,
         form_url: str,
         web_form_url: str,
-        token: str
+        token: str = None
     ) -> Dict:
         """Returns the payload for initiating the task."""
         # Add the users bcgov guid to the camunda execution variables (for IDIR users)
