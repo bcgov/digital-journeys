@@ -41,6 +41,8 @@ objects:
             "REACT_APP_FORMIO_JWT_SECRET": "${REACT_APP_FORMIO_JWT_SECRET}",
             "REACT_APP_USER_ACCESS_PERMISSIONS": '${REACT_APP_USER_ACCESS_PERMISSIONS}',
             "REACT_APP_FORMIO_FILE_URL": "${REACT_APP_FORMIO_FILE_URL}"
+            "REACT_APP_DRAFT_POLLING_RATE": "${REACT_APP_DRAFT_POLLING_RATE}"
+            "REACT_APP_DRAFT_ENABLED": "${REACT_APP_DRAFT_ENABLED}"
           }
   -
     apiVersion: v1
@@ -151,3 +153,11 @@ parameters:
     displayName: REALM
     description: oidc REALM
     required: true
+  - name: REACT_APP_DRAFT_POLLING_RATE
+    displayName: REACT_APP_DRAFT_POLLING_RATE
+    description: draft polling rate
+    value: 30000
+  - name: REACT_APP_DRAFT_ENABLED
+    displayName: REACT_APP_DRAFT_ENABLED
+    description: Draft enable flag
+    value: true
