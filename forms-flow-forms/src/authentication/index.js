@@ -151,6 +151,10 @@ module.exports = (router) => {
 
     // Delete the previous expiration so we can generate a new one.
     delete tempToken.exp;
+
+    // Delete the previous iat so we can generate a new one. This to prevent generating tokens
+    // that has already expired.
+    delete tempToken.iat;
      
     // Sign the token.
     jwt.sign(tempToken,process.env.FORMIO_JWT_SECRET||jwtConfig.secret, {
