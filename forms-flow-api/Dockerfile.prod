@@ -1,25 +1,22 @@
-# Used as a reference for any custom logic to be done.
-# if the application is built from a source repo other than aot , use the custom copying.
-# steps : checkout the aot source code and use the copy logic.
-# -----------------------------------------------------------
-FROM python:3.8
-
-RUN apt-get update \
-    && apt-get install -y git
+FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app
-ENV PATH=/venv/bin:$PATH
 
-COPY ./requirements.txt requirements.txt
+# install curl, gnupg2 and unzip
+RUN  apt-get update \
+  && apt-get install -y git
+
+COPY requirements.txt .
+ENV PATH=/venv/bin:$PATH
 
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \
     && pip install -r requirements.txt 
 
-COPY . /forms-flow-api/app
+ADD . /forms-flow-api/app
 RUN pip install -e .
 
 EXPOSE 5000
-RUN chmod u+x ./entrypoint
-ENTRYPOINT ["/bin/sh", "entrypoint"]
+RUN chmod u+x ./entrypoint.sh
+ENTRYPOINT ["/bin/sh", "entrypoint.sh"]

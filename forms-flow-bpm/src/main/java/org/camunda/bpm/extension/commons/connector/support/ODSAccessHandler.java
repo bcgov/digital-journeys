@@ -21,7 +21,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
  * @author simen@freshworks.io
  */
 @Service("ODSAccessHandler")
-public class ODSAccessHandler implements IAccessHandler {
+public class ODSAccessHandler extends AbstractAccessHandler {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ODSAccessHandler.class);
 

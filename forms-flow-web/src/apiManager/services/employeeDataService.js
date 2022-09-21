@@ -19,5 +19,5 @@ export const fetchEmployeeData = () => {
           dispatch(employeeDataErrorHandler("Failed to fetch employee data!"));
         }
       });
-  }
-}
+  };
+};

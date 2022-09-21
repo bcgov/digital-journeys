@@ -1,9 +1,10 @@
 """API endpoints for managing user API resource."""
 
 from http import HTTPStatus
+from flask import current_app
 from flask_restx import Namespace, Resource
-from formsflow_api.utils import cors_preflight, profiletime
-from formsflow_api.utils import auth
+from formsflow_api_utils.utils import cors_preflight, profiletime, auth
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.services import MinistryNamesService
 
 
@@ -21,5 +22,9 @@ class MinistryNames(Resource):
     @auth.require
     def get():
         """Get ministry names from ODS."""
-        ministry_names = MinistryNamesService.get_ministry_names()
+        try:
+            ministry_names = MinistryNamesService.get_ministry_names()
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
         return ministry_names, HTTPStatus.OK

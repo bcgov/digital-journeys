@@ -14,7 +14,6 @@ class FormProcessMapperSchema(Schema):
     id = fields.Str(data_key="id")
     form_id = fields.Str(data_key="formId", required=True)
     form_name = fields.Str(data_key="formName", required=True)
-    form_revision_number = fields.Str(data_key="formRevisionNumber", required=True)
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
     comments = fields.Str(data_key="comments")
@@ -26,6 +25,7 @@ class FormProcessMapperSchema(Schema):
     modified = fields.Str(data_key="modified")
     task_variable = fields.Str(data_key="taskVariable")
     version = fields.Str(data_key="version")
+    process_tenant = fields.Str(data_key="processTenant")
 
 
 class FormProcessMapperListReqSchema(Schema):

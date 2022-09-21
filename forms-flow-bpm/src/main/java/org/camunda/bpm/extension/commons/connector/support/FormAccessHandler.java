@@ -2,6 +2,7 @@ package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.extension.commons.connector.FormioTokenServiceProvider;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,31 +13,32 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Properties;
+
 
 /**
+ * Form Access Handler.
  * This class serves as gateway for all formio interactions.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("formAccessHandler")
-public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
+public class FormAccessHandler extends AbstractAccessHandler implements IAccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(FormAccessHandler.class.getName());
 
     static final int TOKEN_EXPIRY_CODE = 404;
 
     @Autowired
-    private NamedParameterJdbcTemplate bpmJdbcTemplate;
-
+    private Properties integrationCredentialProperties;
     @Autowired
     private WebClient unauthenticatedWebClient;
+    @Autowired
+    private FormioTokenServiceProvider formioTokenServiceProvider;
 
     public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
-        String accessToken = getAccessToken();
+        String accessToken = formioTokenServiceProvider.getAccessToken();
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
@@ -52,14 +54,14 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
-        String accessToken = super.getAccessToken();
+        String accessToken = formioTokenServiceProvider.getAccessToken();
         if(StringUtils.isBlank(accessToken)) {
             logger.info("Access token is blank. Cannot invoke service:{}", url);
             return null;
         }
         ResponseEntity<String> response = exchange(url,method,payload,accessToken);
         if(response.getStatusCodeValue() == TOKEN_EXPIRY_CODE) {
-            exchange(url,method,payload,getAccessToken());
+            exchange(url,method,payload, formioTokenServiceProvider.getAccessToken());
         }
         logger.info("Response code for service invocation: {}" , response.getStatusCode());
         return response;
@@ -72,7 +74,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         if(HttpMethod.PATCH.name().equals(method.name())) {
             logger.info("payload="+payload);
             Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.patch()
-                    .uri(getDecoratedServerUrl(url))
+                    .uri(url)
                     .bodyValue(payload)
                     .header("x-jwt-token", accessToken)
                     .accept(MediaType.APPLICATION_JSON)
@@ -89,7 +91,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
             return response;
         } else {
             return unauthenticatedWebClient.method(method)
-                    .uri(getDecoratedServerUrl(url))
+                    .uri(url)
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header("x-jwt-token", accessToken)
@@ -100,13 +102,6 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
                     .toEntity(String.class)
                     .block();
         }
-    }
-
-    private String getDecoratedServerUrl(String url) {
-        if(StringUtils.contains(url,"/form/")) {
-            return getIntegrationCredentialProperties().getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
-        }
-        return getIntegrationCredentialProperties().getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
     }
 
     // private String getToken() {

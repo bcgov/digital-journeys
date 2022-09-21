@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.commons.connector.support;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
+import org.camunda.bpm.extension.commons.connector.FormioTokenServiceProvider;
 import org.camunda.bpm.extension.commons.connector.support.FormAccessHandler;
 
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ import java.net.URLEncoder;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("fileAccessHandler")
-public class FileAccessHandler extends FormAccessHandler implements IAccessHandler {
+public class FileAccessHandler extends FormAccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(FileAccessHandler.class.getName());
     static final int TOKEN_EXPIRY_CODE = 401;
@@ -41,9 +42,12 @@ public class FileAccessHandler extends FormAccessHandler implements IAccessHandl
     @Autowired
     private WebClient unauthenticatedWebClient;
 
+    @Autowired
+    private FormioTokenServiceProvider formioTokenServiceProvider;
+
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
-        return exchange(url, method, payload, getAccessToken());
+        return exchange(url, method, payload, formioTokenServiceProvider.getAccessToken());
     }
 
     @Override

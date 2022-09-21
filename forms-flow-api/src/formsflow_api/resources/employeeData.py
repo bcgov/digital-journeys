@@ -1,10 +1,10 @@
 """API endpoints for managing user API resource."""
 
 from http import HTTPStatus
-from flask import g
+from flask import g, current_app
 from flask_restx import Namespace, Resource
-from formsflow_api.utils import cors_preflight, profiletime
-from formsflow_api.utils import auth
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.services import EmployeeDataService
 
 
@@ -30,6 +30,10 @@ class EmployeeDataResource(Resource):
         if not GUID:
             return {"message": "user had no guid!"}, HTTPStatus.NOT_FOUND
 
-        userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
+        try:
+            userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
         
         return userData, HTTPStatus.OK

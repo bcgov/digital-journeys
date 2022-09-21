@@ -40,11 +40,6 @@ $whileBackgroundColor: #f2f2f2;
 $blueBackgroundColor: #38598a;
 $componentColor: #606060;
 
-@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap");
-@import url(https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css);
-@import url(https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css);
-@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
-
 $bcgov-font-path: "/";
 @import "~@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
 
@@ -56,12 +51,39 @@ $bcgov-font-path: "/";
   max-width: 100vw;
 }
 .container {
+  margin-top: 3px;
   padding-left: 0;
   padding-right: 0;
   //height: 100vh;
   height: 100%;
 }
-.task-container {
+.overflow-x-auto{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.overflow-y-auto{
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.text-primary{
+  color: $primary;
+}
+.footer-text{
+  font-size: 18px;
+}
+// .btn-primary{
+//   background-color: $primary;
+//   }
+.btn-outline-primary:not(:disabled){
+  border-color: #0071EB;
+  color: #0071EB;
+  &:hover{
+    color: #ffffff;
+    background-color: $primary;
+  }
+}
+.task-container{
   height: 100% !important;
 }
 .logo {
@@ -79,10 +101,10 @@ h4 {
   overflow-x: hidden;
 }
 body {
-  font-size: 18px;
+  font-size: 16px;
   font-family: Nunito Sans, SemiBold;
 }
-.loader-container {
+.loader-container{
   display: flex;
   height: 80vh;
   justify-content: center;
@@ -116,7 +138,7 @@ body {
   background-color: #f8f8f8bf;
 }
 .formio-component-panel {
-  border: 1px solid#eeeeee;
+  border: 1px solid #eeeeee;
 
   .panel-heading {
     background-color: #eeeeee;
@@ -156,8 +178,8 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 }
 
 .panel-heading {
-  background-color: $blueBackgroundColor;
-  border: $blueBackgroundColor;
+  background-color: #38598a;
+  border: #38598a;
   color: white !important;
   padding: 0.75rem 1.25rem;
   margin-bottom: 8px;
@@ -356,7 +378,7 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
     margin-bottom: 1px;
     color: white;
   }
-  .applications-icon-header {
+  .applications-icon-header{
     width: 23px;
     height: 23px;
     margin-bottom: 5px;
@@ -438,7 +460,14 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   height: 30px;
   width: 100%;
 }
-.back-icon {
+@media (max-width: 768px) {
+  .main-header{
+    height: 70px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+.back-icon{
   display: flex;
 }
 .sub-container {
@@ -450,15 +479,15 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   margin-left: 10px !important;
   //display: flex;
 }
-.icon-wp-forms {
+.icon-wp-forms{
   height: 30px;
 }
-.forms-text {
+.forms-text{
   vertical-align: bottom;
   margin-left: 10px;
   margin-bottom: 0px;
 }
-.task-head-icons {
+.task-head-icons{
   height: 30px;
   width: 30px;
 }
@@ -467,10 +496,10 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   font-size: 30px;
   margin-left: 10px !important;
 }
-.icon-wp-forms {
+.icon-wp-forms{
   height: 30px;
 }
-.forms-text {
+.forms-text{
   vertical-align: middle;
   margin-left: 10px;
 }
@@ -478,6 +507,11 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   float: right;
   margin-left: auto;
 }
+.btn-center {
+  float: right;
+  margin-left: auto;
+}
+
 .btn.btn-link:focus,
 .btn.btn-link.focus {
   box-shadow: none;
@@ -548,6 +582,26 @@ header nav {
   width: 40px;
 }
 
+.sort-span {
+  cursor: pointer;
+  border: 1px solid #0071EB;
+  border-radius: 0.25rem;
+  padding: 4px;
+  padding-left: 6px;
+  padding-top: 0px;
+  border-radius: 6px;
+  width: 35px;
+}
+
+.sort-span:hover {
+
+  background-color: #0071EB;
+
+  .fa-lg-hover {
+    color: white;
+  }
+}
+
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;
@@ -568,9 +622,8 @@ div[disabled] {
     display: none;
   }
 }
-
 .css-79elbk {
-  // position: none;
+ // position: none;
 }
 
 p {
@@ -805,6 +858,66 @@ fieldset {
     width: 100%;
 }
 
+.form_select{
+  width: 15%;
+}
+.form_operation{
+  width: 30%;
+}
+
+.form_title{
+  width: 40%;
+}
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,.9);
+}
+
+// overwriting default styles
+.MuiTab-wrapper{
+  font-size: 16px;
+}
+.formcomponents .formcomponent{
+  font-size: 1em;
+}
+.button_font{
+  font-size: 14px;
+  font-weight: bold;
+}
+.delete_button{
+  font-size: 25px;
+  color:red;
+  cursor: pointer;
+}
+
+.custom_primary_color{
+  color: #0000FF;
+}
+
+.tooltiptext{
+  color: #757575;
+}
+
+.select_download{
+  display: flex;
+  flex-direction: row;
+}
+.select_text{
+  font-weight: bold;
+}
+.select_input{
+  width: 15px;
+  height: 15px;
+}
+.form_check{
+  margin-bottom: 20px;
+}
+a{
+  color: #0000FF;
+}
+.info-background {
+  background-color: #FFDBDB;
+}
+
 @media print {
 
   .main-header {
@@ -840,5 +953,4 @@ fieldset {
   button:not([type="submit"]) {
     display: none;
   }
-
 }
