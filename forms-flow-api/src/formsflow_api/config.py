@@ -89,7 +89,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     # ODS
     EMPLOYEE_DATA_API_URL = os.getenv("EMPLOYEE_DATA_API_URL")
     MINISTRY_NAMES_API_URL = os.getenv("MINISTRY_NAMES_API_URL")
-    EMPLOYEE_NAMES_API_URL = os.getenv("EMPLOYEE_NAMES_API_URL")
     ODS_AUTH_TOKEN = os.getenv("ODS_AUTH_TOKEN")
 
 

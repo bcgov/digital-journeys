@@ -6,7 +6,6 @@ from flask_restx import Namespace, Resource
 from formsflow_api.utils import cors_preflight, profiletime
 from formsflow_api.utils import auth
 from formsflow_api.services import EmployeeDataService
-from formsflow_api.services import EmployeeNamesService
 
 
 
@@ -47,5 +46,5 @@ class EmployeeNames(Resource):
     def get():
         """Get employee names from ODS."""
         args = request.args
-        employee_names = EmployeeNamesService.get_employee_names(args)
+        employee_names = EmployeeDataService.get_employee_names(args)
         return employee_names, HTTPStatus.OK
