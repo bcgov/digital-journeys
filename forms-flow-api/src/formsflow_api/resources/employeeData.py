@@ -1,7 +1,7 @@
 """API endpoints for managing user API resource."""
 
 from http import HTTPStatus
-from flask import g, current_app
+from flask import g, current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 from formsflow_api_utils.exceptions import BusinessException
@@ -37,3 +37,24 @@ class EmployeeDataResource(Resource):
             return err.error, err.status_code
         
         return userData, HTTPStatus.OK
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/names", methods=["GET", "OPTIONS"])
+class EmployeeNames(Resource):
+    """Resource for managing employee names"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """Get employee names from ODS."""
+        args = request.args
+        print(args)
+        try:
+            employee_names = EmployeeDataService.get_employee_names(args)
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+        return employee_names, HTTPStatus.OK
