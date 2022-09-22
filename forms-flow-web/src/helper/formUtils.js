@@ -7,7 +7,6 @@ const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
           /<a\s+href=/gi,
           '<a target="_blank" href='
         );
-        formio.redraw();
       }
     });
   }
