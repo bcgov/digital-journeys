@@ -46,7 +46,6 @@ class EmployeeDataService:
         select_fields = "name,first_name,last_name,EMPLID,position_title,office_city,level2_division,level3_branch"
 
         url="{}?$select={}&$orderby=name{}{}{}".format(employee_data_api_url, select_fields, query, top, skip)
-        print(url)
         response_from_ods = requests.get(url,
                        headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
 

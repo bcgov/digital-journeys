@@ -50,7 +50,6 @@ class EmployeeNames(Resource):
     def get():
         """Get employee names from ODS."""
         args = request.args
-        print(args)
         try:
             employee_names = EmployeeDataService.get_employee_names(args)
         except BusinessException as err:
