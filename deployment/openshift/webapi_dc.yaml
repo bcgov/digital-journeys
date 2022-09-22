@@ -289,19 +289,3 @@ parameters:
     description: Name of database resources created for webapi.
     required: true
     value: webapi-postgresql
-  - name: FORMIO_URL
-    description: The URL used to connect to formio.
-    required: true
-  - name: FORMIO_ROOT_EMAIL
-    description: The email (username) to authenticate to formio.
-    required: true
-  - name: FORMIO_ROOT_PASSWORD
-    description: The password to authenticate to formio.
-    required: true
-  - name: FORMIO_JWT_SECRET
-    description: The JWT secret to authenticate to formio.
-    required: true
-  - name: KEYCLOAK_ENABLE_CLIENT_AUTH
-    description: Keycloak client authorization enabled flag.
-    required: false
-    value: false
