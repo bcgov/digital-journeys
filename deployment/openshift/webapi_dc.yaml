@@ -146,7 +146,32 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: ODS_AUTH_TOKEN
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMIO_URL
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_URL
                 name: ${FORMSFLOW_CONFIG_NAME}-config      
+          - name: FORMIO_ROOT_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_ROOT_EMAIL
+                name: ${FORMSFLOW_CONFIG_NAME}-config      
+          - name: FORMIO_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_ROOT_PASSWORD
+                name: ${FORMSFLOW_CONFIG_NAME}-config      
+          - name: FORMIO_JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_JWT_SECRET
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+            valueFrom:
+              secretKeyRef:
+                key: KEYCLOAK_ENABLE_CLIENT_AUTH
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
         ports:
@@ -264,3 +289,19 @@ parameters:
     description: Name of database resources created for webapi.
     required: true
     value: webapi-postgresql
+  - name: FORMIO_URL
+    description: The URL used to connect to formio.
+    required: true
+  - name: FORMIO_ROOT_EMAIL
+    description: The email (username) to authenticate to formio.
+    required: true
+  - name: FORMIO_ROOT_PASSWORD
+    description: The password to authenticate to formio.
+    required: true
+  - name: FORMIO_JWT_SECRET
+    description: The JWT secret to authenticate to formio.
+    required: true
+  - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+    description: Keycloak client authorization enabled flag.
+    required: false
+    value: false
