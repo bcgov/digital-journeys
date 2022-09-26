@@ -126,9 +126,7 @@ const NavBar = React.memo(() => {
         Admin
       </Link>
     ) : null,
-    showApplications &&
-    !getUserRolePermission(userRoles, CLIENT) &&
-    !getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+    showApplications ? (
       <Link
         className={pathname.match(/^\/application/) ? "active" : null}
         to="/application"
