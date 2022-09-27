@@ -36,7 +36,7 @@ class EmployeeDataService:
     @staticmethod
     def get_employee_names(args):
       try:
-        employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+        employee_data_api_url = current_app.config.get("EMPLOYEE_SEARCH_API_URL")
         search = args.get("search", None)
         query = f"&$search='{search}'" if search else ""
         limit = args.get("limit", 10)
