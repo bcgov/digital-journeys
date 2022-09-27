@@ -1,3 +1,4 @@
+# Based on https://github.com/BCDevOps/platform-services/blob/master/apps/pgsql/patroni/openshift/deployment-prereq.yaml
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
@@ -13,6 +14,12 @@ labels:
   app.kubernetes.io/component: database
   app.kubernetes.io/name: patroni
   app.kubernetes.io/managed-by: template
+  app.kubernetes.io/part-of: digital-journey
+  template: digital-journey-ha-db-prereq-deploy
+  # Need prefix for suffix in case it starts with a dash or is empty. Label values aren't allowed to start with a dash.
+  suffix: digital-journey${SUFFIX}
+  app-component: ${NAME}
+
 objects:
 - apiVersion: v1
   kind: Secret
@@ -21,7 +28,8 @@ objects:
       app: ${NAME}${SUFFIX}
       cluster-name: ${NAME}${SUFFIX}
     annotations:
-      as-copy-of: "template.${NAME}-patroni"
+      as-copy-of: "${NAME}-template"
+      create-template: 'true'
     name: ${NAME}${SUFFIX}
   stringData:
     replication-username: ${PATRONI_REPLICATION_USERNAME}

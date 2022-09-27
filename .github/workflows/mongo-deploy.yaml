@@ -33,7 +33,7 @@ jobs:
           test -n "${NAMESPACE}"
           echo "Current namespace is ${NAMESPACE}"
 
-          oc -n ${NAMESPACE} process -f deployment/openshift/databases/mongo-ha.yaml \
+          oc -n ${NAMESPACE} process -f deployment/openshift/Databases/mongo-ha.yaml \
             -p MEMORY_REQUEST=512Mi \
             -p MEMORY_LIMIT=2Gi \
             -p CPU_REQUEST=125m \

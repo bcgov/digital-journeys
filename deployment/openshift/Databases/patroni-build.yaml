@@ -1,10 +1,24 @@
+# Copyright 2021 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
 apiVersion: v1
 kind: Template
 metadata:
-  creationTimestamp: null
   name: patroni
 labels:
-  app: ${NAME}${SUFFIX}
+  app: ${NAME}
   phase: build
   app.kubernetes.io/component: database
   app.kubernetes.io/name: patroni
@@ -12,80 +26,72 @@ labels:
   app.kubernetes.io/version: "${PG_VERSION}"
 parameters:
   - name: NAME
-    value: patroni
-  - name: SUFFIX
+    value: "patroni"
   - name: OUT_VERSION
     description: Ouput version
-    value: "v10-latest"
+    value: "12.4-latest"
   - name: GIT_URI
-    value: https://github.com/BCDevOps/platform-services.git
+    value: "https://github.com/bcgov/patroni-postgres-container.git"
   - name: GIT_REF
-    value: master
+    value: "master"
   - name: PG_VERSION
-    value: "10"
+    value: "12.4"
 objects:
-#Postgres ImageStream is created if it doesn't already exist
-- apiVersion: image.openshift.io/v1
-  kind: ImageStream
-  metadata:
-    name: postgres
-  spec:
+  # Postgres ImageStream is created if it doesn't already exist
+  - apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: postgres
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: v1
+    kind: ImageStreamTag
     lookupPolicy:
       local: false
-- apiVersion: v1
-  kind: ImageStreamTag
-  lookupPolicy:
-    local: false
-  metadata:
-    name: postgres:${PG_VERSION}
-  tag:
-    annotations: null
-    from:
-      kind: DockerImage
-      name: registry.hub.docker.com/library/postgres:${PG_VERSION}
-    importPolicy:
-      scheduled: true
-    name: "${PG_VERSION}"
-    referencePolicy:
-      type: Source
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    creationTimestamp: null
-    name: ${NAME}
-  spec:
-    lookupPolicy:
-      local: false
-  status:
-    dockerImageRepository: ""
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    creationTimestamp: null
-    name: ${NAME}${SUFFIX}
-  spec:
-    nodeSelector: null
-    output:
-      to:
-        kind: ImageStreamTag
-        name: "${NAME}:${OUT_VERSION}"
-    postCommit: {}
-    resources: {}
-    source:
-      contextDir: apps/pgsql/patroni/docker
-      git:
-        ref: ${GIT_REF}
-        uri: ${GIT_URI}
-      type: Git
-    strategy:
-      dockerStrategy:
-        from:
+    metadata:
+      name: postgres:${PG_VERSION}
+    tag:
+      from:
+        kind: DockerImage
+        name: artifacts.developer.gov.bc.ca/docker-remote/postgres:${PG_VERSION}
+      importPolicy:
+        scheduled: true
+      name: "${PG_VERSION}"
+      referencePolicy:
+        type: Source
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: ${NAME}
+    spec:
+      lookupPolicy:
+        local: false
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: ${NAME}
+    spec:
+      output:
+        to:
           kind: ImageStreamTag
-          name: postgres:${PG_VERSION}
-      type: Docker
-    triggers:
-    - type: ConfigChange
-    - imageChange: {}
-      type: ImageChange
-  status:
-    lastVersion: 0
+          name: "${NAME}:${OUT_VERSION}"
+      source:
+        contextDir: /
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_URI}
+        type: Git
+      strategy:
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: postgres:${PG_VERSION}
+          buildArgs:
+              - name: "patroniv"
+                value: "2.0.1"
+        type: Docker
+      triggers:
+        - type: ConfigChange
+        - imageChange: {}
+          type: ImageChange
