@@ -31,3 +31,33 @@ class EmployeeDataService:
       raise BusinessException(
           {"message": "No user data found"}, HTTPStatus.NOT_FOUND
         )
+
+
+    @staticmethod
+    def get_employee_names(args):
+      try:
+        employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+        search = args.get("search", None)
+        query = f"&$search='{search}'" if search else ""
+        limit = args.get("limit", 10)
+        top = f"&$top={limit}"
+        offset = args.get("skip", 0)
+        skip = f"&$skip={offset}"
+        select_fields = "name,first_name,last_name,EMPLID,position_title,office_city,level2_division,level3_branch"
+
+        url="{}?$select={}&$orderby=name{}{}{}".format(employee_data_api_url, select_fields, query, top, skip)
+        response_from_ods = requests.get(url,
+                       headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
+
+      except Exception as e:
+        raise BusinessException(
+          {"message": "Failed to get employee names from ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+      
+      employee_names_res = response_from_ods.json()
+      if employee_names_res and employee_names_res["value"] and len(employee_names_res["value"]) > 0:
+        return employee_names_res["value"]
+      
+      raise BusinessException(
+        {"message": "No employee data found"}, HTTPStatus.NOT_FOUND
+      )
