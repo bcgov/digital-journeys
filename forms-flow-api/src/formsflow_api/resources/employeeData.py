@@ -51,11 +51,6 @@ class EmployeeNames(Resource):
     def get():
         """Get employee names from ODS. Users must have employee-search role to be able to access this endpoint."""
 
-        # if not auth.has_role([EMPLOYEE_SEARCH_ROLE]):
-        #     raise PermissionError(
-        #         f"Access to ministry name search is denied"
-        #     )
-
         args = request.args
         try:
             employee_names = EmployeeDataService.get_employee_names(args)
