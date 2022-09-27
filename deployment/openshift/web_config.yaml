@@ -40,9 +40,10 @@ objects:
             "REACT_APP_WEB_BASE_CUSTOM_URL": "${REACT_APP_WEB_BASE_CUSTOM_URL}",
             "REACT_APP_FORMIO_JWT_SECRET": "${REACT_APP_FORMIO_JWT_SECRET}",
             "REACT_APP_USER_ACCESS_PERMISSIONS": '${REACT_APP_USER_ACCESS_PERMISSIONS}',
-            "REACT_APP_FORMIO_FILE_URL": "${REACT_APP_FORMIO_FILE_URL}"
-            "REACT_APP_DRAFT_POLLING_RATE": "${REACT_APP_DRAFT_POLLING_RATE}"
-            "REACT_APP_DRAFT_ENABLED": "${REACT_APP_DRAFT_ENABLED}"
+            "REACT_APP_FORMIO_FILE_URL": "${REACT_APP_FORMIO_FILE_URL}",
+            "REACT_APP_DRAFT_POLLING_RATE": "${REACT_APP_DRAFT_POLLING_RATE}",
+            "REACT_APP_DRAFT_ENABLED": "${REACT_APP_DRAFT_ENABLED}",
+            "REACT_APP_BPM_URL": "${REACT_APP_BPM_URL}"
           }
   -
     apiVersion: v1
@@ -161,3 +162,7 @@ parameters:
     displayName: REACT_APP_DRAFT_ENABLED
     description: Draft enable flag
     value: true
+  - name: REACT_APP_BPM_API_URL
+    displayName: REACT_APP_BPM_API_URL
+    description: BPM URL
+    required: true
