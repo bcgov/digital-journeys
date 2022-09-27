@@ -42,7 +42,7 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: './deployment/openshift/databases'
+        working-directory: './deployment/openshift/Databases'
         run: |
           oc -n ${BUILD_NAMESPACE} process -f prebuilt-db-backup-build.yaml \
           -p NAME=${NAME} \
@@ -85,7 +85,7 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
 
-          oc -n ${NAMESPACE} process -f deployment/openshift/databases/patroni-backup-deploy.yaml \
+          oc -n ${NAMESPACE} process -f deployment/openshift/Databases/patroni-backup-deploy.yaml \
           -p NAME=${NAME} \
           -p IMAGE_STREAM_TAG=${NAME}:latest \
           -p BUILD_NAMESPACE=${BUILD_NAMESPACE} \

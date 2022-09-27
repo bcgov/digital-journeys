@@ -1,3 +1,4 @@
+# Based on https://github.com/BCDevOps/platform-services/blob/master/apps/pgsql/patroni/openshift/deployment.yaml
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
@@ -17,36 +18,43 @@ labels:
   app.kubernetes.io/component: database
   app.kubernetes.io/name: patroni  
   app.kubernetes.io/managed-by: template
+  app.kubernetes.io/part-of: digital-journey
+  template: digital-journey-ha-db-deploy
+
 objects:
-# It doesn't seem to be used/needed - remote it?
-#- apiVersion: v1
-#  kind: Service
-#  metadata:
-#    creationTimestamp: null
-#    labels:
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}${SUFFIX}
-#  spec:
-#    ports:
-#    - name: 'postgresql'
-#      port: 5432
-#      protocol: TCP
-#      targetPort: 5432
-#    sessionAffinity: None
-#    type: ClusterIP
-#  status:
-#    loadBalancer: {}
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      # Set to true to allow local image name resolution, without having to specify the internal OpenShift image registry and port.
+      local: true
+
+  # Persistent Storage - Backup Volume
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: ${BACKUP_VOLUME_NAME}
+  spec:
+    storageClassName: ${BACKUP_STORAGE_CLASS}
+    accessModes:
+      # Accessed by both backup and db.
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: ${BACKUP_VOLUME_SIZE}
+
 - apiVersion: v1
   kind: Service
   metadata:
     creationTimestamp: null
     labels:
       cluster-name: ${NAME}${SUFFIX}
-    name: ${NAME}-master${SUFFIX}
+    name: ${DATABASE_SERVICE_NAME}
   spec:
     ports:
     - port: 5432
-#      name: 'postgresql'
       protocol: TCP
       targetPort: 5432
     selector:
@@ -57,35 +65,7 @@ objects:
     type: ClusterIP
   status:
     loadBalancer: {}
-#- apiVersion: v1
-#  kind: Service
-#  metadata:
-#    creationTimestamp: null
-#    labels:
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}-replica${SUFFIX}
-#  spec:
-#    ports:
-#    - port: 5432
-##      name: 'postgresql'
-#      protocol: TCP
-#      targetPort: 5432
-#    selector:
-#      cluster-name: ${NAME}${SUFFIX}
-#      app.kubernetes.io/name: patroni
-#      role: replica
-#    sessionAffinity: None
-#    type: ClusterIP
-#  status:
-#    loadBalancer: {}
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: ${NAME}${SUFFIX}-config
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: ${NAME}${SUFFIX}-leader
+
 - apiVersion: apps/v1
   kind: StatefulSet
   metadata:
@@ -104,6 +84,9 @@ objects:
     serviceName: ${NAME}${SUFFIX}
     template:
       metadata:
+        annotations:
+          # StatefulSet does not support ImageChangeTrigger for auto-deploying image changes. Instead, manually edit this annotation (might not always work).
+          trigger-deploy: "Modify this in StatefulSet container template to trigger redeploy to pick up image changes. 2021-10-12T15:11"
         creationTimestamp: null
         labels:
           statefulset: ${NAME}${SUFFIX}
@@ -121,22 +104,18 @@ objects:
                   - ${NAME}${SUFFIX}
               topologyKey: "kubernetes.io/hostname"
         containers:
-        - env:
-          #TODO: Remove POD_IP in favor of PATRONI_KUBERNETES_POD_IP
+        - name: postgresql
+          # Need to use image-registry.../${NAMESPACE}/ prefix due to OpenShift defect https://bugzilla.redhat.com/show_bug.cgi?id=2000216
+          image: "image-registry.openshift-image-registry.svc:5000/bcgov/patroni-postgres:12.4-latest"
+          # Because we are using image reference to a tag, we need to always pull the image otherwise
+          # we end up with outdated/out-of-sync image depending on the node where it is running
+          imagePullPolicy: Always
+          env:
           - name: POD_IP
             valueFrom:
               fieldRef:
                 apiVersion: v1
                 fieldPath: status.podIP
-#          - name: PATRONI_KUBERNETES_USE_ENDPOINTS
-#            value: 'true'
-#          - name: PATRONI_KUBERNETES_POD_IP
-#            valueFrom:
-#              fieldRef:
-#                apiVersion: v1
-#                fieldPath: status.podIP
-#          - name: PATRONI_KUBERNETES_PORTS
-#            value: '{[{"name": "postgresql", "port": 5432}]}'
           - name: PATRONI_KUBERNETES_NAMESPACE
             valueFrom:
               fieldRef:
@@ -196,11 +175,6 @@ objects:
             value: 0.0.0.0:5432
           - name: PATRONI_RESTAPI_LISTEN
             value: 0.0.0.0:8008
-          image: ${IMAGE_REGISTRY}/${IMAGE_STREAM_NAMESPACE}/${IMAGE_STREAM_TAG}
-          # Because we are using image reference to a tag, we need to always pull the image otherwise
-          #   we end up with outdated/out-of-sync image depending on the node where it is running
-          imagePullPolicy: Always
-          name: postgresql
           ports:
           - containerPort: 8008
             protocol: TCP
@@ -215,22 +189,50 @@ objects:
               memory: ${MEMORY_LIMIT}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          readinessProbe:
-            initialDelaySeconds: 5
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /usr/bin/env
+                  - bash
+                  - -c
+                  - |
+                    # switch leader pod if the current pod is the leader
+                    if curl --fail http://localhost:8008/read-write; then
+                      patronictl switchover --force
+                    fi
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/env
+                - bash
+                - -c
+                - |
+                  set -Eeuo pipefail && curl -s localhost:8008/liveness | jq -e ". | select(.state == \"running\")"
+            initialDelaySeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 4
+            failureThreshold: 3            
+          readinessProbe:
             exec:
               command:
                 - /usr/share/scripts/patroni/health_check.sh
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
           volumeMounts:
           - mountPath: /home/postgres/pgdata
             name: postgresql
+          - mountPath: /var/backups/
+            name: backups
+        volumes:
+          - name: backups
+            persistentVolumeClaim:
+              claimName: ${BACKUP_VOLUME_NAME}
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
         securityContext: {}
         serviceAccountName: ${NAME}${SUFFIX}
-        terminationGracePeriodSeconds: 0
     updateStrategy:
       type: RollingUpdate
     volumeClaimTemplates:
@@ -247,22 +249,41 @@ objects:
         resources:
           requests:
             storage: ${PVC_SIZE}
-# It doesn't seem to be used/needed - remote it?
-#- apiVersion: v1
-#  kind: Endpoints
-#  metadata:
-#    labels:
-#      app: ${NAME}${SUFFIX}
-#      cluster-name: ${NAME}${SUFFIX}
-#    name: ${NAME}${SUFFIX}
-#  subsets: []
+### Network Policy - DB to DB Traffic
+- kind: NetworkPolicy
+  apiVersion: networking.k8s.io/v1
+  metadata:
+    name: db-to-db-allow-${NAME}${SUFFIX}
+  spec:
+    podSelector:
+      matchLabels:
+        statefulset: ${NAME}${SUFFIX}
+    ingress:
+      - from:
+          - podSelector:
+              matchLabels:
+                statefulset: ${NAME}${SUFFIX}
+        ports:
+          - protocol: TCP
+            port: 5432
+          - protocol: TCP
+            port: 8008
+
 parameters:
+- description: OpenShift namespace
+  displayName: OpenShift namespace
+  name: NAMESPACE
+  required: true
 - description: The name of the application for labelling all artifacts.
   displayName: Application Name
   name: NAME
   value: patroni
 - name: SUFFIX
   description: A suffix appended to all artifact's name (NAME)
+- name: DATABASE_SERVICE_NAME
+  displayName: Database Service Name
+  description: The name of the database service.
+  required: true
 - name: REPLICAS
   displayName: REPLICAS
   description: The number of statefulSet replicas to use.
@@ -283,20 +304,27 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   value: 512Mi
-- description: The OpenShift Namespace where the patroni and postgresql ImageStream
-    resides.
-  displayName: ImageStream Namespace
-  name: IMAGE_STREAM_NAMESPACE
-  value: "bcgov"
 - name: IMAGE_STREAM_TAG
   description: Patroni ImageTag
   value: patroni:v11-stable
 - description: The size of the persistent volume to create.
   displayName: Persistent Volume Size
   name: PVC_SIZE
+  # 3+ years production-like volume of projects (without comments, interactions) in test environment is ~170 MiB so default 1 Gi should be sufficient for at least 1+ years.
   value: 1Gi
 - name: STORAGE_CLASS
   value: netapp-block-standard
-- name: IMAGE_REGISTRY
-  #ocp3#docker-registry.default.svc:5000
-  value: image-registry.openshift-image-registry.svc:5000
+- name: BACKUP_VOLUME_NAME
+  displayName: Backup Volume Name
+  description: The name of the persistent volume used to store the backups.
+  required: true
+  # Backups in each environment - 14 daily, 4 weekly, 1 monthly with each around 1-2M based on production-like test data , so likely don't need more than 50M. 1Gi allocated as default sizing
+- name: BACKUP_VOLUME_SIZE
+  displayName: Backup Volume Size
+  description: The size of the persistent volume used to store the backups, e.g. 512Mi, 1Gi, 2Gi.  Ensure this is sized correctly.  Refer to the container documentation for details.
+  required: true
+  value: 1Gi
+- name: BACKUP_STORAGE_CLASS
+  displayName: Backup Storage Class
+  description: The storage class of the persistent volume claim used to store the backups.
+  value: netapp-file-backup
