@@ -41,6 +41,7 @@ const NavBar = React.memo(() => {
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications = useSelector((state) => state.user.showApplications);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const showForms = true;
   // const applicationTitle = useSelector(
   //   (state) => state.tenants?.tenantData?.details?.applicationTitle
   // );
@@ -112,8 +113,7 @@ const NavBar = React.memo(() => {
   );
 
   const navItems = () => [
-    !getUserRolePermission(userRoles, STAFF_REVIEWER) &&
-    !getUserRolePermission(userRoles, CLIENT) ? (
+    showForms ? (
       <Link className={pathname.match(/^\/form/) ? "active" : null} to="/form">
         Forms
       </Link>
@@ -126,9 +126,7 @@ const NavBar = React.memo(() => {
         Admin
       </Link>
     ) : null,
-    showApplications &&
-    !getUserRolePermission(userRoles, CLIENT) &&
-    !getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+    showApplications ? (
       <Link
         className={pathname.match(/^\/application/) ? "active" : null}
         to="/application"
