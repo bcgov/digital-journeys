@@ -1,0 +1,188 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: ${NAME}
+objects:
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: ${DATA_VOLUME_SIZE}
+      storageClassName: netapp-file-backup
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-verification
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: "${VERIFICATION_VOLUME_SIZE}"
+  - kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: ${NAME}-config
+    data:
+      backup.conf: |
+        hamongo-internal/${DB_NAME}
+        0 9 * * * default ./backup.sh -s
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: ${NAME}
+    spec:
+      replicas: "${{REPLICAS}}"
+      revisionHistoryLimit: 10
+      selector:
+        deploymentconfig: ${NAME}
+      strategy:
+        type: Recreate
+      triggers:
+        - type: ConfigChange
+      template:
+        metadata:
+          labels:
+            deploymentconfig: ${NAME}
+        spec:
+          volumes:
+          - name: ${NAME}-data-vol
+            persistentVolumeClaim:
+              claimName: "${NAME}-data"
+          - name: ${NAME}-verification-vol
+            persistentVolumeClaim:
+              claimName: ${NAME}-verification
+          - name: ${NAME}-config-vol
+            configMap:
+              name: ${NAME}-config
+              items:
+              - key: backup.conf
+                path: backup.conf
+          containers:
+            - env:
+              - name: BUILD_ID
+                value: ${BUILD_ID}
+              - name: BACKUP_STRATEGY
+                value: rolling
+              - name: BACKUP_DIR
+                value: "/backups/"
+              - name: DAILY_BACKUPS
+                value: '5'
+              - name: WEEKLY_BACKUPS
+                value: '1'
+              - name: MONTHLY_BACKUPS
+                value: '1'
+              - name: MONGODB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: ${DB_SECRET_NAME}
+                    key: ${DB_USERNAME_KEY}
+              - name: DATABASE_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: ${DB_SECRET_NAME}
+                    key: ${DB_USERNAME_KEY}
+              - name: MONGODB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: ${DB_PASSWORD_KEY}
+                    name: ${DB_SECRET_NAME}
+              - name: DATABASE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: ${DB_PASSWORD_KEY}
+                    name: ${DB_SECRET_NAME}
+              - name: MONGODB_DATABASE
+                value: ${DB_NAME}
+              - name: DATABASE_NAME
+                value: ${DB_NAME}
+              - name: DATABASE_SERVER_TIMEOUT
+                value: '600'
+              - name: ENVIRONMENT_NAME
+                value: "${ENVIRONMENT_NAME}"
+              - name: ENVIRONMENT_FRIENDLY_NAME
+                value: "${ENVIRONMENT_FRIENDLY_NAME}"
+              - name: DATABASE_SERVICE_NAME
+                value: ${DB_SERVICE}
+              image: ${IMAGE_REGISTRY}/${BUILD_NAMESPACE}/${IMAGE_STREAM_TAG}
+              imagePullPolicy: Always
+              name: ${NAME}
+              ports:
+                - containerPort: "${{PORT}}"
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+              volumeMounts:
+              - name: ${NAME}-data-vol
+                mountPath: "/backups/"
+              - name: ${NAME}-verification-vol
+                mountPath: "/var/lib/mongodb/data"
+              - name: ${NAME}-config-vol
+                mountPath: "/backup.conf"
+                subPath: backup.conf
+parameters:
+  - name: NAME
+    required: true
+  # - name: PROJECT 
+  #   value: digital_journeys
+  # - name: SERVICE_NAME
+  #   value: db-backup
+  - name: CPU_LIMIT
+    value: "125m"
+  - name: MEMORY_LIMIT
+    value: "256Mi"
+  - name: CPU_REQUEST
+    value: "50m"
+  - name: MEMORY_REQUEST
+    value: "128Mi"
+  - name: REPLICAS
+    value: "1"
+  - name: PORT
+    value: "27017"
+  - name: DB_SERVICE
+    value: hamongo-0.hamongo
+  - name: DB_SECRET_NAME
+    value: mongodb-creds
+  - name: DB_USERNAME_KEY
+    value: username
+  - name: DB_PASSWORD_KEY
+    value: password
+  # - name: DB_NAME_KEY
+  #   value: database
+  # - name: APP_DB
+  #   value: forms-flow-db
+  - name: IMAGE_STREAM_TAG
+    required: true  
+  - name: BUILD_NAMESPACE
+    required: true
+  - name: IMAGE_REGISTRY
+    value: image-registry.openshift-image-registry.svc:5000
+  - name: DB_NAME
+    required: true
+  - name: VERIFICATION_VOLUME_SIZE
+    displayName: Persistent Volume Size
+    description: The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.
+    required: true
+    value: 1Gi
+  - name: ENVIRONMENT_NAME
+    displayName: Environment Name (Environment Id)
+    description: The name or Id of the environment.  This variable is used by the webhook
+      integration to identify the environment in which the backup notifications originate.
+    required: false
+    value: digital_journeys
+  - name: ENVIRONMENT_FRIENDLY_NAME
+    value: digital_journeys
+  - name: DATA_VOLUME_SIZE
+    required: true
+    value: 5Gi
+  - name: BUILD_ID
+    required: false
