@@ -43,7 +43,11 @@ class EmployeeDataService:
         top = f"&$top={limit}"
         offset = args.get("skip", 0)
         skip = f"&$skip={offset}"
-        select_fields = "name,first_name,last_name,EMPLID,position_title,office_city,level2_division,level3_branch"
+
+        fields = ["name","first_name","last_name","middle_name",
+        "EMPLID","position_title","office_city","city","level2_division","level3_branch",
+        "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name"]
+        select_fields = ",".join(fields)
 
         url="{}?$select={}&$orderby=name{}{}{}".format(employee_data_api_url, select_fields, query, top, skip)
         response_from_ods = requests.get(url,
