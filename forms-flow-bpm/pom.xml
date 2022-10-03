@@ -30,7 +30,7 @@
 		<version.springBoot>2.6.8</version.springBoot><!-- 2.4.8 - 2.6.4 -->
 		<version.springSecurityOauth2>2.6.8</version.springSecurityOauth2><!-- 
 			2.4.8 - 2.6.4 -->
-		<version.jackson>2.13.3</version.jackson>
+		<version.jackson>2.13.4</version.jackson>
 	</properties>
 
 	<dependencyManagement>
