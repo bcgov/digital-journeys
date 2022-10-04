@@ -380,16 +380,14 @@ const List = React.memo((props) => {
           <div className="flex-container">
             {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
             <div className="flex-item-left">
-              <div style={{ display: "flex" }}>
-                <h3 className="task-head" style={{ marginTop: "3px" }}>
-                  <i className="fa fa-wpforms" aria-hidden="true" />
-                </h3>
-                <h3 className="task-head">
-                  {" "}
-                  <span className="forms-text" style={{ marginLeft: "1px" }}>
+              <div style={{ fontSize: "18px" }}>
+                <h3 className="task-head" style={{ marginBlockEnd: "auto" }}>
+                  <i className="fa fa-wpforms" aria-hidden="true" style={{ verticalAlign: "middle" }}/>
+                  <span className="forms-text" style={{ marginLeft: "5px" }}>
                     {t("Forms")}
                   </span>
                 </h3>
+                {t("This is where you can complete and submit new forms")}
               </div>
             </div>
             <div className="flex-item-right">
