@@ -119,6 +119,14 @@ const NavBar = React.memo(() => {
         Forms
       </Link>
     ) : null,
+    DRAFT_ENABLED ? (
+      <Link
+        className={pathname.match(/^\/draft/) ? "active" : null}
+        to="/draft"
+      >
+        Draft Forms
+      </Link>
+    ) : null,
     getUserRolePermission(userRoles, STAFF_DESIGNER) ? (
       <Link
         className={pathname.match(/^\/admin/) ? "active" : null}
@@ -133,14 +141,6 @@ const NavBar = React.memo(() => {
         to="/application"
       >
         Submitted Forms
-      </Link>
-    ) : null,
-    DRAFT_ENABLED ? (
-      <Link
-        className={pathname.match(/^\/draft/) ? "active" : null}
-        to="/draft"
-      >
-        Draft Forms
       </Link>
     ) : null,
     (getUserRolePermission(userRoles, MANAGER_GROUP) ||
