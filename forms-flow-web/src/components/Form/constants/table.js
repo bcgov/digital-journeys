@@ -15,7 +15,7 @@ export const designerColums = () => [
   },
   {
     dataField: "operations",
-    text: <Translation>{(t) => t("Operations")}</Translation>,
+    text: <Translation>{(t) => t("Actions")}</Translation>,
     headerClasses: "form_operation",
     formatter: (cell, row) => {
       return <FormOperations formData={row} />;
@@ -37,7 +37,7 @@ export const userColumns = () => [
   },
   {
     dataField: "operations",
-    text: "Operations",
+    text: "Actions",
     formatter: (cell, row) => {
       return <FormOperations formData={row} />;
     },
