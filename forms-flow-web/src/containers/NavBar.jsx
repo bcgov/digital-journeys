@@ -17,6 +17,7 @@ import "./styles.scss";
 import {
   CLIENT,
   STAFF_REVIEWER,
+  DRAFT_ENABLED,
   /* APPLICATION_NAME, */
   STAFF_DESIGNER,
   MULTITENANCY_ENABLED,
@@ -118,6 +119,14 @@ const NavBar = React.memo(() => {
         Forms
       </Link>
     ) : null,
+    DRAFT_ENABLED ? (
+      <Link
+        className={pathname.match(/^\/draft/) ? "active" : null}
+        to="/draft"
+      >
+        Draft Forms
+      </Link>
+    ) : null,
     getUserRolePermission(userRoles, STAFF_DESIGNER) ? (
       <Link
         className={pathname.match(/^\/admin/) ? "active" : null}
@@ -131,7 +140,7 @@ const NavBar = React.memo(() => {
         className={pathname.match(/^\/application/) ? "active" : null}
         to="/application"
       >
-        Applications
+        Submitted Forms
       </Link>
     ) : null,
     (getUserRolePermission(userRoles, MANAGER_GROUP) ||

@@ -22,7 +22,6 @@ import { columns, getoptions, defaultSortedBy } from "./table";
 import { getUserRolePermission } from "../../helper/user";
 import {
   CLIENT,
-  DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
 } from "../../constants/constants";
@@ -50,7 +49,7 @@ export const ApplicationList = React.memo(() => {
   const applicationCount = useSelector(
     (state) => state.applications.applicationCount
   );
-  const draftCount = useSelector((state) => state.draft.draftCount);
+  // const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
   const page = useSelector((state) => state.applications.activePage);
@@ -141,27 +140,17 @@ export const ApplicationList = React.memo(() => {
   };
 
   const headerList = () => {
-    return [
-      {
+    return [{
         name: "Applications",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
-      },
-      {
-        name: "Drafts",
-        count: draftCount,
-        onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit",
-      },
-    ];
+        title: "Submitted Forms",
+        description: "All applications that have been submitted. Includes pending for review, approved/denied, resubmit, etc.",
+      }];
   };
 
   let headOptions = headerList();
-
-  if (!DRAFT_ENABLED) {
-    headOptions.pop();
-  }
 
   return (
     <ToolkitProvider

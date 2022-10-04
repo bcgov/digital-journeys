@@ -35,9 +35,9 @@ export const DraftList = React.memo(() => {
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
   );
-  const applicationCount = useSelector(
-    (state) => state.applications.applicationCount
-  );
+  // const applicationCount = useSelector(
+  //   (state) => state.applications.applicationCount
+  // );
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
@@ -111,20 +111,14 @@ export const DraftList = React.memo(() => {
     dispatch(setDraftListActivePage(newState.page));
   };
   const headerList = () => {
-    return [
-      {
-        name: "Applications",
-        count: applicationCount,
-        onClick: () => dispatch(push(`${redirectUrl}application`)),
-        icon: "list",
-      },
-      {
-        name: "Drafts",
-        count: draftCount,
-        onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit",
-      },
-    ];
+    return [{
+      name: "Drafts",
+      count: draftCount,
+      onClick: () => dispatch(push(`${redirectUrl}draft`)),
+      icon: "edit",
+      title: "Draft Forms",
+      description: "All applications/submissions that have been started by the user but not yet submitted",
+    }];
   };
 
   const getNoData = () => {
