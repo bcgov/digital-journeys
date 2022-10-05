@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import {
   textFilter,
-  selectFilter,
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
@@ -23,12 +22,14 @@ export const defaultSortedBy = [
   },
 ];
 
-const getApplicationStatusOptions = (rows) => {
-  const selectOptions = rows.map((option) => {
-    return { value: option, label: option };
-  });
-  return selectOptions;
-};
+/*commented below code, for more detail visit below link
+   https://github.com/bcgov/digital-journeys/issues/607 */
+// const getApplicationStatusOptions = (rows) => {
+//   const selectOptions = rows.map((option) => {
+//     return { value: option, label: option };
+//   });
+//   return selectOptions;
+// };
 
 const linkApplication = (cell, row, redirectUrl) => {
   return (
@@ -138,18 +139,6 @@ export const columns = (
       dataField: "applicationStatus",
       text: <Translation>{(t) => t("Application Status")}</Translation>,
       sort: true,
-      filter:
-        applicationStatus?.length > 0 &&
-        selectFilter({
-          options: getApplicationStatusOptions(applicationStatus),
-          style: customStyle,
-          placeholder: `${t("All")}`,
-          defaultValue: `${t("All")}`,
-          caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-          getFilter: (filter) => {
-            statusFilter = filter;
-          },
-        }),
     },
     {
       dataField: "formUrl",
