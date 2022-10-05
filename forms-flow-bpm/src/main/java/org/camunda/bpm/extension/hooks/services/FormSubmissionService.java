@@ -176,10 +176,10 @@ public class FormSubmissionService {
     }
 
     public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
-        return this.retrieveFormValues(formUrl, true);
+        return this.retrieveFormValues(formUrl, true, false);
     }
 
-    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo) throws IOException {
+    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo, boolean hasNestedObjects) throws IOException {
         Map<String,Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
         if(StringUtils.isNotEmpty(submission)) {
@@ -203,8 +203,25 @@ public class FormSubmissionService {
                             }
                         }
                     }
-                } else{
-                    fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
+                } else {
+                    if (hasNestedObjects && entry.getValue().isObject()) {
+                        ObjectNode objectNode = (ObjectNode) entry.getValue();
+                        Iterator<Map.Entry<String, JsonNode>> objectElements = objectNode.fields();
+
+                        // Stores the object if is empty
+                        if (!objectElements.hasNext()) {
+                            fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
+                        }
+
+                        // Stores the nested objects
+                        while (objectElements.hasNext()) {
+                            Map.Entry<String, JsonNode> objEntry = objectElements.next();
+                            fieldValues.put(objEntry.getKey(), convertToOriginType(objEntry.getValue()));
+                        }
+
+                    } else {
+                        fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
+                    }
                 }
             }
         }

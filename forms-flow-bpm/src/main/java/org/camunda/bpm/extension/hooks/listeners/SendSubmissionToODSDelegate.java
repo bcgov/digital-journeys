@@ -55,8 +55,9 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         Object managerIdir = execution.getVariable("manager_idir");
         Object managerGuid = execution.getVariable("manager_guid");
 
-
-        Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false);
+        // Todo: Replace the form name with an env
+        boolean hasNestedObjects = formName.equals("SLReview");
+        Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false, hasNestedObjects);
 
         if (idir != null) {
             values.put("idir", String.valueOf(idir));
