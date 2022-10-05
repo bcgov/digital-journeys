@@ -139,6 +139,20 @@ export const columns = (
       dataField: "applicationStatus",
       text: <Translation>{(t) => t("Application Status")}</Translation>,
       sort: true,
+      /*commented below code, for more detail visit below link
+      https://github.com/bcgov/digital-journeys/issues/607 */
+      // filter:
+      //   applicationStatus?.length > 0 &&
+      //   selectFilter({
+      //     options: getApplicationStatusOptions(applicationStatus),
+      //     style: customStyle,
+      //     placeholder: `${t("All")}`,
+      //     defaultValue: `${t("All")}`,
+      //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      //     getFilter: (filter) => {
+      //       statusFilter = filter;
+      //     },
+      //   }),
     },
     {
       dataField: "formUrl",
