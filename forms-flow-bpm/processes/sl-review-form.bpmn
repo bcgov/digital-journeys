@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0lk9z5q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.1.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
-  <bpmn:process id="sl-review-form" name="SL Review Form" isExecutable="true" camunda:versionTag="1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0lk9z5q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="sl-review-form-2" name="SL Review Form 2.0" isExecutable="true" camunda:versionTag="1">
     <bpmn:startEvent id="StartEvent_1" name="Submitted form" camunda:asyncAfter="true">
       <bpmn:outgoing>Flow_112i5g2</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_112i5g2" sourceRef="StartEvent_1" targetRef="Activity_0unmtc3">
+    <bpmn:sequenceFlow id="Flow_112i5g2" sourceRef="StartEvent_1" targetRef="send_to_ods">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus','Resubmit');</camunda:script>
@@ -18,63 +18,116 @@
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
-    <bpmn:endEvent id="Event_0mogxwp">
-      <bpmn:incoming>Flow_1jupulp</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1r6yxz2" sourceRef="Activity_0unmtc3" targetRef="Activity_0qfrc2u" />
-    <bpmn:task id="Activity_0unmtc3" name="Application status set to Resubmit to enable edit form">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start" />
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_112i5g2</bpmn:incoming>
-      <bpmn:outgoing>Flow_1r6yxz2</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_1jupulp" sourceRef="Activity_0qfrc2u" targetRef="Event_0mogxwp" />
-    <bpmn:userTask id="Activity_0qfrc2u" name="Manager Reviews Submission" camunda:assignee="${managerEmail}">
+    <bpmn:userTask id="Activity_0qfrc2u" name="Update Application" camunda:assignee="${admSupervisorEmail}">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="manager_task_created">
           <camunda:field name="permissions">
             <camunda:expression>["read", "write"]</camunda:expression>
           </camunda:field>
           <camunda:field name="user">
-            <camunda:expression>${managerEmail}</camunda:expression>
+            <camunda:expression>${admSupervisorEmail}</camunda:expression>
           </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1r6yxz2</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jupulp</bpmn:outgoing>
+      <bpmn:incoming>Flow_1eefdkr</bpmn:incoming>
+      <bpmn:incoming>Flow_1cefbzt</bpmn:incoming>
+      <bpmn:outgoing>Flow_08x5h59</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:endEvent id="Event_0mogxwp">
+      <bpmn:incoming>Flow_0lmv6hd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="send_to_ods" name="Create Submission in ODS" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.SendSubmissionToODSDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endpoint">Datamart_Telework_app_telework_info</camunda:inputParameter>
+          <camunda:inputParameter name="debug">true</camunda:inputParameter>
+          <camunda:inputParameter name="httpMethod">post</camunda:inputParameter>
+          <camunda:inputParameter name="formName">SLReview</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_112i5g2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1eefdkr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1eefdkr" sourceRef="send_to_ods" targetRef="Activity_0qfrc2u" />
+    <bpmn:sequenceFlow id="Flow_08x5h59" sourceRef="Activity_0qfrc2u" targetRef="Gateway_09ic8nm" />
+    <bpmn:exclusiveGateway id="Gateway_09ic8nm" name="Should end?">
+      <bpmn:incoming>Flow_08x5h59</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gtynuh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lmv6hd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1gtynuh" sourceRef="Gateway_09ic8nm" targetRef="Activity_1qspuvs">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1qspuvs" name="Update Submission in ODS" camunda:asyncBefore="true" camunda:class="org.camunda.bpm.extension.hooks.listeners.SendSubmissionToODSDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="endpoint">Datamart_Telework_app_telework_info</camunda:inputParameter>
+          <camunda:inputParameter name="debug">true</camunda:inputParameter>
+          <camunda:inputParameter name="httpMethod">put</camunda:inputParameter>
+          <camunda:inputParameter name="formName">SLReview</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1gtynuh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cefbzt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1cefbzt" sourceRef="Activity_1qspuvs" targetRef="Activity_0qfrc2u" />
+    <bpmn:sequenceFlow id="Flow_0lmv6hd" sourceRef="Gateway_09ic8nm" targetRef="Event_0mogxwp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sl-review-form">
-      <bpmndi:BPMNEdge id="Flow_1r6yxz2_di" bpmnElement="Flow_1r6yxz2">
-        <di:waypoint x="370" y="117" />
-        <di:waypoint x="420" y="117" />
-      </bpmndi:BPMNEdge>
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sl-review-form-2">
       <bpmndi:BPMNEdge id="Flow_112i5g2_di" bpmnElement="Flow_112i5g2">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="270" y="117" />
+        <di:waypoint x="208" y="120" />
+        <di:waypoint x="410" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jupulp_di" bpmnElement="Flow_1jupulp">
-        <di:waypoint x="520" y="117" />
-        <di:waypoint x="552" y="117" />
+      <bpmndi:BPMNEdge id="Flow_1eefdkr_di" bpmnElement="Flow_1eefdkr">
+        <di:waypoint x="510" y="120" />
+        <di:waypoint x="630" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="160" y="142" width="75" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_12jg89k_di" bpmnElement="Activity_0unmtc3">
-        <dc:Bounds x="270" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0mogxwp_di" bpmnElement="Event_0mogxwp">
-        <dc:Bounds x="552" y="99" width="36" height="36" />
+      <bpmndi:BPMNEdge id="Flow_08x5h59_di" bpmnElement="Flow_08x5h59">
+        <di:waypoint x="730" y="120" />
+        <di:waypoint x="835" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gtynuh_di" bpmnElement="Flow_1gtynuh">
+        <di:waypoint x="860" y="145" />
+        <di:waypoint x="860" y="310" />
+        <di:waypoint x="730" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cefbzt_di" bpmnElement="Flow_1cefbzt">
+        <di:waypoint x="680" y="270" />
+        <di:waypoint x="680" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lmv6hd_di" bpmnElement="Flow_0lmv6hd">
+        <di:waypoint x="885" y="120" />
+        <di:waypoint x="982" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0qjfbs1_di" bpmnElement="send_to_ods">
+        <dc:Bounds x="410" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0x5o01j_di" bpmnElement="Activity_0qfrc2u">
-        <dc:Bounds x="420" y="77" width="100" height="80" />
+        <dc:Bounds x="630" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="153" y="145" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mogxwp_di" bpmnElement="Event_0mogxwp">
+        <dc:Bounds x="982" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09ic8nm_di" bpmnElement="Gateway_09ic8nm" isMarkerVisible="true">
+        <dc:Bounds x="835" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="829" y="73" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_04xjky0" bpmnElement="Activity_1qspuvs">
+        <dc:Bounds x="630" y="270" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

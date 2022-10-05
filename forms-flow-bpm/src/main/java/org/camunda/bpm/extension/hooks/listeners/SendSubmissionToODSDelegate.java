@@ -40,6 +40,8 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
     private void sendSubmissionToODS(DelegateExecution execution) throws IOException {
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
+        String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
+        String formName = String.valueOf(execution.getVariableLocal("formName"));
 
         LOGGER.warn(String.format("Sending values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
 
@@ -56,19 +58,19 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
 
         Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false);
 
-        if(idir != null) {
+        if (idir != null) {
             values.put("idir", String.valueOf(idir));
         }
 
-        if(guid != null) {
+        if (guid != null) {
             values.put("guid", String.valueOf(guid));
         }
 
-        if(managerIdir != null) {
+        if (managerIdir != null) {
             values.put("manager_idir", String.valueOf(managerIdir));
         }
 
-        if(managerGuid != null) {
+        if (managerGuid != null) {
             values.put("manager_guid", String.valueOf(managerGuid));
         }
 
@@ -81,7 +83,11 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
             System.out.println("Sending valuse to ODS: " + json);
         }
 
-        this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
+        if (httpMethod.equals("put")) {
+            this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.PUT, json);
+        } else {
+            this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
+        }
         LOGGER.warn(String.format("Sent values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
     }
 

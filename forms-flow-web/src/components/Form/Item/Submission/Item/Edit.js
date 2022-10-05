@@ -42,6 +42,18 @@ import {
   scrollToErrorOnValidation,
 } from "../../../../../helper/formUtils";
 
+import { setBPMTaskDetailLoader } from "../../../../../actions/bpmTaskActions";
+import {
+  getFormIdSubmissionIdFromURL,
+  getFormUrlWithFormIdSubmissionId,
+} from "../../../../../apiManager/services/formatterService";
+import {
+  onBPMTaskFormSubmit,
+  fetchBPMTasks,
+} from "../../../../../apiManager/services/bpmTaskServices";
+import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
+import { SL_REVIEW_RESUBMISSION } from "../../../../../constants/successTypes";
+
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -126,6 +138,25 @@ const Edit = React.memo((props) => {
     };
   });
 
+  // If this is an application edit, get the application's task
+  useEffect(() => {
+    if (
+      applicationStatus &&
+      !onFormSubmit &&
+      applicationDetail?.processInstanceId
+    ) {
+      dispatch(
+        fetchBPMTasks({
+          processInstanceId: applicationDetail.processInstanceId,
+        })
+      );
+    }
+  }, [dispatch, applicationDetail, onFormSubmit]);
+
+  const applicationTask =
+    useSelector((state) => state?.bpmTasks?.bpmTasks) &&
+    useSelector((state) => state.bpmTasks.bpmTasks)[0];
+
   // Pass along the current task with the given submission
   // so it can be used for validation purposes.
   const submissionWithTask = _.merge(
@@ -145,6 +176,34 @@ const Edit = React.memo((props) => {
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
+
+  const onApplicationFormSubmit = (actionType = "") => {
+    if (applicationTask) {
+      dispatch(setBPMTaskDetailLoader(true));
+      const { formId, submissionId } = getFormIdSubmissionIdFromURL(url);
+      const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
+      const origin = `${window.location.origin}${redirectUrl}`;
+      const webFormUrl = `${origin}form/${formId}/submission/${submissionId}`;
+      dispatch(
+        onBPMTaskFormSubmit(
+          applicationTask.id,
+          getTaskSubmitFormReq(
+            formUrl,
+            applicationDetail.id,
+            actionType,
+            webFormUrl
+          ),
+          (err) => {
+            if (!err) {
+              dispatch(push(`/success?type=${SL_REVIEW_RESUBMISSION}`));
+            } else {
+              dispatch(setBPMTaskDetailLoader(false));
+            }
+          }
+        )
+      );
+    }
+  };
 
   return (
     <div className="container">
@@ -176,7 +235,8 @@ const Edit = React.memo((props) => {
                 applicationDetail,
                 onFormSubmit,
                 form._id,
-                redirectUrl
+                redirectUrl,
+                onApplicationFormSubmit
               )
             }
             options={{
@@ -228,7 +288,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       applicationDetail,
       onFormSubmit,
       formId,
-      redirectUrl
+      redirectUrl,
+      onApplicationFormSubmit
     ) => {
       dispatch(setFormSubmissionLoading(true));
       const callBack = (err, submission) => {
@@ -241,8 +302,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               updateApplicationEvent(data, () => {
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
-                if (onFormSubmit) {
-                  onFormSubmit();
+                // if (onFormSubmit) {
+                if (onApplicationFormSubmit) {
+                  // onFormSubmit();
+                  onApplicationFormSubmit();
                 } else {
                   // toast.success(
                   //   <Translation>{(t) => t("Submission Saved")}</Translation>

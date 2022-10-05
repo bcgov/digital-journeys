@@ -21,6 +21,8 @@ import {
   updateBPMTaskGroups,
   setBPMTaskGroupsLoading,
   setBPMTaskCount,
+  setBPMTasks,
+  setBPMTasksError,
 } from "../../actions/bpmTaskActions";
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
@@ -443,6 +445,29 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
         done(error);
+      });
+  };
+};
+
+// Fetch BPM tasks by query params
+export const fetchBPMTasks = (params) => {
+  return (dispatch) => {
+    httpGETRequest(
+      API.GET_BPM_TASKS,
+      params,
+      UserService.getToken()
+    )
+      .then((res) => {
+        if (res.data) {
+          dispatch(setBPMTasks(res.data));
+        } else {
+          console.log("Error", res);
+          dispatch(setBPMTasksError(res));
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(setBPMTasksError(error));
       });
   };
 };
