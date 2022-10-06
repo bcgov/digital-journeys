@@ -36,11 +36,24 @@ import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 
-import _ from 'lodash';
+import _ from "lodash";
 import {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
 } from "../../../../../helper/formUtils";
+
+import { setBPMTaskDetailLoader } from "../../../../../actions/bpmTaskActions";
+import {
+  getFormIdSubmissionIdFromURL,
+  getFormUrlWithFormIdSubmissionId,
+} from "../../../../../apiManager/services/formatterService";
+import {
+  onBPMTaskFormSubmit,
+  fetchBPMTasks,
+} from "../../../../../apiManager/services/bpmTaskServices";
+import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
+import { SL_REVIEW_RESUBMISSION } from "../../../../../constants/successTypes";
+import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -126,6 +139,25 @@ const Edit = React.memo((props) => {
     };
   });
 
+  // If this is an application edit, get the application's task
+  useEffect(() => {
+    if (
+      applicationStatus &&
+      !onFormSubmit &&
+      applicationDetail?.processInstanceId
+    ) {
+      dispatch(
+        fetchBPMTasks({
+          processInstanceId: applicationDetail.processInstanceId,
+        })
+      );
+    }
+  }, [dispatch, applicationDetail, onFormSubmit]);
+
+  const applicationTask =
+    useSelector((state) => state?.bpmTasks?.bpmTasks) &&
+    useSelector((state) => state.bpmTasks.bpmTasks)[0];
+
   // Pass along the current task with the given submission
   // so it can be used for validation purposes.
   const submissionWithTask = _.merge(
@@ -145,6 +177,42 @@ const Edit = React.memo((props) => {
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
+
+  const onApplicationFormSubmit = (actionType = "") => {
+    dispatch(setBPMTaskDetailLoader(true));
+    const { formId, submissionId } = getFormIdSubmissionIdFromURL(url);
+    const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
+    const origin = `${window.location.origin}${redirectUrl}`;
+    const webFormUrl = `${origin}form/${formId}/submission/${submissionId}`;
+    dispatch(
+      onBPMTaskFormSubmit(
+        applicationTask.id,
+        getTaskSubmitFormReq(
+          formUrl,
+          applicationDetail.id,
+          actionType,
+          webFormUrl
+        ),
+        (err) => {
+          if (!err) {
+            dispatch(push(`/success?type=${SL_REVIEW_RESUBMISSION}`));
+          } else {
+            dispatch(setBPMTaskDetailLoader(false));
+          }
+        }
+      )
+    );
+  };
+
+  const onApplicationFormSubmitCustomEvent = (customEvent) => {
+    switch (customEvent.type) {
+      case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
+        onApplicationFormSubmit(customEvent.actionType);
+        break;
+      default:
+        return;
+    }
+  };
 
   return (
     <div className="container">
@@ -184,7 +252,7 @@ const Edit = React.memo((props) => {
               i18n: formio_resourceBundles,
               language: lang,
             }}
-            onCustomEvent={onCustomEvent}
+            onCustomEvent={applicationTask ? onApplicationFormSubmitCustomEvent : onCustomEvent}
             ref={formRef}
           />
         </div>
@@ -238,7 +306,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           ) {
             const data = getProcessDataReq(applicationDetail);
             dispatch(
-              updateApplicationEvent(data, () => {
+              updateApplicationEvent(data, () => { 
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
                 if (onFormSubmit) {

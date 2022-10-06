@@ -6,6 +6,8 @@ import Logo from "../../../../../assets/DJLogo.png";
 import Loading from "../../../../../containers/Loading";
 import { useLocation } from "react-router-dom";
 
+import * as successTypes from "../../../../../constants/successTypes";
+
 export default React.memo(() => {
   const { search } = useLocation();
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -102,6 +104,52 @@ export default React.memo(() => {
                   contact the Digital Journeys team
                 </a>
                 .
+              </li>
+
+              <li>You may now close this window.</li>
+            </ul>
+          </div>
+        </>
+      );
+    } else if (
+      search.includes(successTypes.SL_REVIEW_SUBMISSION) ||
+      search.includes(successTypes.SL_REVIEW_RESUBMISSION)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for your commitment to supporting career development of
+            your Senior Leadership team and for your contribution to executive
+            succession.
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                The information you’ve provided will be shared with Executive
+                Talent Management, Corporate Workforce Strategies in the Public
+                Service Agency, as well as ministry Strategic Human Resources
+                (ministry-specific data). Broad themes will be presented to
+                DMCPSR to further the conversation on executive talent and
+                utilized for executive succession and development strategies,
+                programs and activities.
+              </li>
+
+              <li>
+                Please download a PDF copy for your files and share with the
+                senior leader. Continue conversations with the identified senior
+                leader to refine their learning and development plan, goals, and
+                actions in support of their aspirations. Your Ministry Human
+                Resources representative can connect the senior leader with
+                targeted ministry and corporate learning opportunities to ensure
+                they have access to the essential learning and experiences that
+                will set them up for success. Coaching services are also
+                available to senior leaders.
+              </li>
+
+              <li>
+                If you have any questions, please&nbsp;
+                <a href="mailto:jodi.little@gov.bc.ca">contact Jodi Little</a>
+                &nbsp;Leadership Development and Succession Lead.
               </li>
 
               <li>You may now close this window.</li>
