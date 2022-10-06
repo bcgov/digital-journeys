@@ -9,9 +9,7 @@ const Head = React.memo((props) => {
     return (
       <div className="header-container">
         <div className="main-header">
-          <div
-            className={`head-item`}
-          >
+          <div className="head-item" style={{ color: "black" }}>
             <h3 className="application-head application-head-active" style={{marginBlockEnd: "5px"}}>
               <i
                 className={`fa fa-${item?.icon}`}

@@ -21,17 +21,19 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkDraftDetail = (cell, row, redirectUrl) => {
-  return (
-    <Link
-      className="custom_primary_color"
-      to={`${redirectUrl}draft/${row.id}`}
-      title={cell}
-    >
-      {cell}
-    </Link>
-  );
-};
+/* commented below code, for more detail visit below link
+https://github.com/bcgov/digital-journeys/issues/598 */
+// const linkDraftDetail = (cell, row, redirectUrl) => {
+//   return (
+//     <Link
+//       className="custom_primary_color"
+//       to={`${redirectUrl}draft/${row.id}`}
+//       title={cell}
+//     >
+//       {cell}
+//     </Link>
+//   );
+// };
 
 const linkDraft = (cell, row, redirectUrl) => {
   const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
@@ -57,8 +59,14 @@ function timeFormatter(cell) {
   return <label title={cell}>{localdate}</label>;
 }
 
-const nameFormatter = (cell) => {
-  const name = startCase(cell);
+const nameFormatter = (cell, row) => {
+  let employee = '';
+  if (cell.toLowerCase().includes('sl review')) {
+    employee = row?.data?.employeeName?.name;
+  } else if (cell.toLowerCase().includes('telework agreement')) {
+    employee = row?.data?.name;
+  }
+  const name = employee !== '' ? `${cell} for ${employee}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>
       {startCase(name)}
@@ -69,29 +77,31 @@ const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
 
 export const columns = (lastModified, callback, t, redirectUrl) => {
   return [
-    {
-      dataField: "id",
-      text: <Translation>{(t) => t("Draft Id")}</Translation>,
-      formatter: (cell, row) => linkDraftDetail(cell, row, redirectUrl),
-      headerClasses: "classApplicationId",
-      sort: true,
-      filter: textFilter({
-        delay: 800,
-        placeholder: `\uf002 ${t("Draft Id")}`, // custom the input placeholder
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search",
-        style: customStyle,
-        getFilter: (filter) => {
-          idFilter = filter;
-        },
-      }),
-    },
+    /* commented below code, for more detail visit below link
+    https://github.com/bcgov/digital-journeys/issues/598 */
+    // {
+    //   dataField: "id",
+    //   text: <Translation>{(t) => t("Draft Id")}</Translation>,
+    //   formatter: (cell, row) => linkDraftDetail(cell, row, redirectUrl),
+    //   headerClasses: "classApplicationId",
+    //   sort: true,
+    //   filter: textFilter({
+    //     delay: 800,
+    //     placeholder: `\uf002 ${t("Draft Id")}`, // custom the input placeholder
+    //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    //     className: "icon-search",
+    //     style: customStyle,
+    //     getFilter: (filter) => {
+    //       idFilter = filter;
+    //     },
+    //   }),
+    // },
     {
       dataField: "DraftName",
       text: <Translation>{(t) => t("Draft Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
-      formatter: nameFormatter,
+      formatter: (cell, row) => nameFormatter(cell, row),
       filter: textFilter({
         delay: 800,
         placeholder: `\uf002 ${t("Draft Name")}`, // custom the input placeholder
