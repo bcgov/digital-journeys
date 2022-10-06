@@ -36,7 +36,7 @@ import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 
-import _ from 'lodash';
+import _ from "lodash";
 import {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
@@ -53,6 +53,7 @@ import {
 } from "../../../../../apiManager/services/bpmTaskServices";
 import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
 import { SL_REVIEW_RESUBMISSION } from "../../../../../constants/successTypes";
+import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -178,30 +179,38 @@ const Edit = React.memo((props) => {
   }
 
   const onApplicationFormSubmit = (actionType = "") => {
-    if (applicationTask) {
-      dispatch(setBPMTaskDetailLoader(true));
-      const { formId, submissionId } = getFormIdSubmissionIdFromURL(url);
-      const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
-      const origin = `${window.location.origin}${redirectUrl}`;
-      const webFormUrl = `${origin}form/${formId}/submission/${submissionId}`;
-      dispatch(
-        onBPMTaskFormSubmit(
-          applicationTask.id,
-          getTaskSubmitFormReq(
-            formUrl,
-            applicationDetail.id,
-            actionType,
-            webFormUrl
-          ),
-          (err) => {
-            if (!err) {
-              dispatch(push(`/success?type=${SL_REVIEW_RESUBMISSION}`));
-            } else {
-              dispatch(setBPMTaskDetailLoader(false));
-            }
+    dispatch(setBPMTaskDetailLoader(true));
+    const { formId, submissionId } = getFormIdSubmissionIdFromURL(url);
+    const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
+    const origin = `${window.location.origin}${redirectUrl}`;
+    const webFormUrl = `${origin}form/${formId}/submission/${submissionId}`;
+    dispatch(
+      onBPMTaskFormSubmit(
+        applicationTask.id,
+        getTaskSubmitFormReq(
+          formUrl,
+          applicationDetail.id,
+          actionType,
+          webFormUrl
+        ),
+        (err) => {
+          if (!err) {
+            dispatch(push(`/success?type=${SL_REVIEW_RESUBMISSION}`));
+          } else {
+            dispatch(setBPMTaskDetailLoader(false));
           }
-        )
-      );
+        }
+      )
+    );
+  };
+
+  const onApplicationFormSubmitCustomEvent = (customEvent) => {
+    switch (customEvent.type) {
+      case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
+        onApplicationFormSubmit(customEvent.actionType);
+        break;
+      default:
+        return;
     }
   };
 
@@ -235,8 +244,7 @@ const Edit = React.memo((props) => {
                 applicationDetail,
                 onFormSubmit,
                 form._id,
-                redirectUrl,
-                onApplicationFormSubmit
+                redirectUrl
               )
             }
             options={{
@@ -244,7 +252,7 @@ const Edit = React.memo((props) => {
               i18n: formio_resourceBundles,
               language: lang,
             }}
-            onCustomEvent={onCustomEvent}
+            onCustomEvent={applicationTask ? onApplicationFormSubmitCustomEvent : onCustomEvent}
             ref={formRef}
           />
         </div>
@@ -288,8 +296,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       applicationDetail,
       onFormSubmit,
       formId,
-      redirectUrl,
-      onApplicationFormSubmit
+      redirectUrl
     ) => {
       dispatch(setFormSubmissionLoading(true));
       const callBack = (err, submission) => {
@@ -299,13 +306,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           ) {
             const data = getProcessDataReq(applicationDetail);
             dispatch(
-              updateApplicationEvent(data, () => {
+              updateApplicationEvent(data, () => { 
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
-                // if (onFormSubmit) {
-                if (onApplicationFormSubmit) {
-                  // onFormSubmit();
-                  onApplicationFormSubmit();
+                if (onFormSubmit) {
+                  onFormSubmit();
                 } else {
                   // toast.success(
                   //   <Translation>{(t) => t("Submission Saved")}</Translation>
