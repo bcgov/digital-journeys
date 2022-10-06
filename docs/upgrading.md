@@ -12,9 +12,18 @@ From there, the usual fetch commands can be used to get new branches: `git fetch
 
 ## Creating a merge branch 
 
-from a new branch of the Digital-Journeys repository, you can issue the command `git merge {forms_flow_ai_target_branch} -s -recursive --allow-unrelated-histories`
+Create a new branch off the main (with all the latest changes) in your local DGJ repo and from there, you can issue the `merge` command by `git merge {forms_flow_ai_target_branch/tag} -s -recursive --allow-unrelated-histories`
 
-This will begin a merge operation bringing in changes from the forms-flow-ai target branch into the current branch. 
+Please note that new versions of form-flow-ai can usually be found under `Tags`. For example to merge the `v5` of form-flow-ai with a new local branch while on the main branch with latest changes, run:
+```bash
+  # This will create a new branch off main
+  $ git checkout -b update-to-v5-branch
+  # This will merge v5 (tag) with the newly created update-to-v5-branch
+  $ git merge v5.0.0  -s recursive --allow-unrelated-histories
+```
+
+This will begin a merge operation bringing in changes from the forms-flow-ai target branch/tag into the current branch.
+
 Git may prompt you that certain files or folders are preventing the merge from occuring. Two culprits previously were:
 `forms-flow-bpm/src/main/resources/mail-config.properties`
 and
@@ -27,7 +36,13 @@ There will be numerous conflicts that need to be reconciled during the merge. Th
 
 For more complex files with less obvious differences between what was forms-flow-ai changes, and what was DGJ custom code, a manual inspection of both files can be done. for each of the highlighted blocks in both windows, you can view the file on the specific branch or tag in both the forms-flow-ai and DGJ repositories. By using the history functionality in the file source viewer, you can inspect each of the pieces of code and walk back through individual changes or additions and ensure you are only accepting the new updates and the DGJ implementation. This most commonly occurs when code has been removed from the forms-flow-ai repo since the last update due to deprecation or functionality change, or alternatively if a section of code has undergone simultaneous changes from both a forms-flow update and a DGJ change.
 
+Once the conflict was resolved in a file, click `+` on that file in the source control menu in VS Code. This will move that file to `Staged Changes`.
+
 Once all conflicting files have been addressed this way, save all open files, stage the changes, and issue the command `git merge --continue`. The merge should finalize at this point and leave you with an unconflicted repository.
+
+If while you're working on update branch, new commits were added to the main branch, you you need to: 
+1. Go to main branch and pull the latest changes
+2. Checkout the update branch and run merge command `git merge main`
 
 ## Steps to validate the changes to the local build
 
