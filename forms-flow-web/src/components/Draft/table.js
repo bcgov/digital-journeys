@@ -7,6 +7,7 @@ import {
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
 import { getLocalDateTime } from "../../apiManager/services/formatterService";
+import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
@@ -60,12 +61,7 @@ function timeFormatter(cell) {
 }
 
 const nameFormatter = (cell, row) => {
-  let employee = '';
-  if (cell.toLowerCase().includes('sl review')) {
-    employee = row?.data?.employeeName?.name;
-  } else if (cell.toLowerCase().includes('telework agreement')) {
-    employee = row?.data?.name;
-  }
+  const employee = getEmployeeNameFromSubmission(cell, row);
   const name = employee !== '' ? `${cell} for ${employee}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>

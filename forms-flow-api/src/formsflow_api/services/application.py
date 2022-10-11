@@ -21,6 +21,7 @@ from formsflow_api.schemas import (
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
+from formsflow_api_utils.services.external import FormioService
 
 from .form_process_mapper import FormProcessMapperService
 
@@ -506,3 +507,21 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             )
         assert application_count is not None
         return application_count
+    
+    @staticmethod
+    def get_submission_for_application(application_list):
+    # fetch submission data for each application, https://github.com/bcgov/digital-journeys/issues/604
+        applications = []
+        try:
+            formio_service = FormioService()
+            form_io_token = formio_service.get_formio_access_token()
+            for a in application_list:
+                submission = formio_service.get_submission( {"form_id": a["formId"], "sub_id": a["submissionId"]}, form_io_token)
+                if submission:
+                    a["submission"] = submission
+                    applications.append(a)
+        except BusinessException as err:
+            current_app.logger.warning(err)
+        if len(applications) != len(application_list):
+            applications = application_list
+        return applications

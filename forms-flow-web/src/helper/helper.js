@@ -32,4 +32,26 @@ const checkAndAddTenantKey = (value, tenankey) => {
   }
 };
 
-export { replaceUrl, addTenankey, removeTenantKey, checkAndAddTenantKey };
+const getEmployeeNameFromSubmission = (form, submission) => {
+  if (submission === undefined) {
+    return '';
+  }
+  let employee = '';
+  if (form.toLowerCase().includes('sl review')) {
+    employee = submission?.data?.employeeName?.name;
+  } else if (form.toLowerCase().includes('telework agreement')) {
+    employee = submission?.data?.name;
+  }
+  if (employee === undefined) {
+    return '';
+  }
+  return employee;
+};
+
+export { 
+  replaceUrl,
+  addTenankey,
+  removeTenantKey,
+  checkAndAddTenantKey, 
+  getEmployeeNameFromSubmission
+};

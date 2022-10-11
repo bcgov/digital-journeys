@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import {
   textFilter,
@@ -9,6 +9,7 @@ import {
 import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { AWAITING_ACKNOWLEDGEMENT } from "../../constants/applicationConstants";
 import { Translation } from "react-i18next";
+import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -31,13 +32,15 @@ export const defaultSortedBy = [
 //   return selectOptions;
 // };
 
-const linkApplication = (cell, row, redirectUrl) => {
-  return (
-    <Link className="custom_primary_color" to={`${redirectUrl}application/${row.id}`} title={cell}>
-      {cell}
-    </Link>
-  );
-};
+/*commented below code, for more detail visit below link
+    https://github.com/bcgov/digital-journeys/issues/604 */
+// const linkApplication = (cell, row, redirectUrl) => {
+//   return (
+//     <Link className="custom_primary_color" to={`${redirectUrl}application/${row.id}`} title={cell}>
+//       {cell}
+//     </Link>
+//   );
+// };
 
 const linkSubmission = (cell, row, redirectUrl) => {
   const url = row.isClientEdit
@@ -71,8 +74,9 @@ function timeFormatter(cell) {
   return <label title={cell}>{localdate}</label>;
 }
 
-const nameFormatter = (cell) => {
-  const name = startCase(cell);
+const nameFormatter = (cell, row) => {
+  const employee = getEmployeeNameFromSubmission(cell, row?.submission);
+  const name = employee !== '' ? `${cell} for ${employee}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>
       {startCase(name)}
@@ -101,29 +105,31 @@ export const columns = (
   redirectUrl
 ) => {
   return [
-    {
-      dataField: "id",
-      text: <Translation>{(t) => t("Application Id")}</Translation>,
-      formatter: (cell, row) => linkApplication(cell, row, redirectUrl),
-      headerClasses: "classApplicationId",
-      sort: true,
-      filter: textFilter({
-        delay: 800,
-        placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search",
-        style: customStyle,
-        getFilter: (filter) => {
-          idFilter = filter;
-        },
-      }),
-    },
+    /*commented below code, for more detail visit below link
+      https://github.com/bcgov/digital-journeys/issues/604 */
+    // {
+    //   dataField: "id",
+    //   text: <Translation>{(t) => t("Application Id")}</Translation>,
+    //   formatter: (cell, row) => linkApplication(cell, row, redirectUrl),
+    //   headerClasses: "classApplicationId",
+    //   sort: true,
+    //   filter: textFilter({
+    //     delay: 800,
+    //     placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
+    //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    //     className: "icon-search",
+    //     style: customStyle,
+    //     getFilter: (filter) => {
+    //       idFilter = filter;
+    //     },
+    //   }),
+    // },
     {
       dataField: "applicationName",
-      text: <Translation>{(t) => t("Application Name")}</Translation>,
+      text: <Translation>{(t) => t("Form Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
-      formatter: nameFormatter,
+      formatter: (cell, row) => nameFormatter(cell, row),
       filter: textFilter({
         delay: 800,
         placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
@@ -137,7 +143,7 @@ export const columns = (
     },
     {
       dataField: "applicationStatus",
-      text: <Translation>{(t) => t("Application Status")}</Translation>,
+      text: <Translation>{(t) => t("Form Status")}</Translation>,
       sort: true,
       /*commented below code, for more detail visit below link
       https://github.com/bcgov/digital-journeys/issues/607 */
