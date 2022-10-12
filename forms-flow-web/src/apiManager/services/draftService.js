@@ -4,6 +4,7 @@ import {
   httpPOSTRequestWithoutToken,
   httpPUTRequest,
   httpPUTRequestWithoutToken,
+  httpDELETERequest,
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
@@ -240,6 +241,24 @@ export const FilterDrafts = (params, ...rest) => {
       })
       .catch((error) => {
         // dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
+export const deleteDraftById = (draftId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlDeleteDraft = `${API.DRAFT_BASE}/${draftId}`;
+  return () => {
+    httpDELETERequest(apiUrlDeleteDraft)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          done(null);
+        }
+      })
+      .catch((error) => {
         done(error);
       });
   };
