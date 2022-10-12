@@ -146,7 +146,7 @@ export const ApplicationList = React.memo(() => {
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
         title: "Submitted Forms",
-        description: "All applications that have been submitted. Includes pending for review, approved/denied, resubmit, etc.",
+        description: "All forms that have been submitted",
       }];
   };
 

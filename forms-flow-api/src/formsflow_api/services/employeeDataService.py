@@ -61,7 +61,4 @@ class EmployeeDataService:
       employee_names_res = response_from_ods.json()
       if employee_names_res and employee_names_res["value"] and len(employee_names_res["value"]) > 0:
         return employee_names_res["value"]
-      
-      raise BusinessException(
-        {"message": "No employee data found"}, HTTPStatus.NOT_FOUND
-      )
+      return []

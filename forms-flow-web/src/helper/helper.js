@@ -38,7 +38,8 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   }
   let employee = '';
   if (form.toLowerCase().includes('sl review')) {
-    employee = submission?.data?.employeeName?.name;
+    employee = submission?.data?.employeeName?.name === undefined ?
+    submission?.data?.employeeName : submission?.data?.employeeName?.name;
   } else if (form.toLowerCase().includes('telework agreement')) {
     employee = submission?.data?.name;
   }
