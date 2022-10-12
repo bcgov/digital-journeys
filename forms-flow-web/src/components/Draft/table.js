@@ -12,6 +12,9 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 
+import { setSelectedDraftForDelete } from "../../actions/draftActions";
+import { useDispatch } from "react-redux";
+
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
 export const defaultSortedBy = [
@@ -35,24 +38,55 @@ https://github.com/bcgov/digital-journeys/issues/598 */
 //   );
 // };
 
-const linkDraft = (cell, row, redirectUrl) => {
+
+// const linkDraft = (cell, row, redirectUrl) => {
+// eslint-disable-next-line
+const LinkDraft = React.memo(({cell, row, redirectUrl}) => {
+  const dispatch = useDispatch();
   const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
   const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
+  const deleteButtonText = <Translation>{(t) => t("Delete")}</Translation>;
   const icon = "fa fa-edit";
+  const deleteIcon = "fa fa-trash";
+
+  const handleDeleteDraft = (draft) => {
+    dispatch(
+      setSelectedDraftForDelete({
+        modalOpen: true,
+        draftId: draft.id,
+        draftName: draft.DraftName,
+      })
+    );
+  };
+
   return (
-    <Link to={url} style={{ textDecoration: "none" }}>
-      <div>
-        <span style={{ color: "blue", cursor: "pointer" }}>
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      <Link to={url} style={{ textDecoration: "none" }}>
+        <div>
+          <span style={{ color: "blue", cursor: "pointer" }}>
+            <span>
+              <i className={icon} />
+              &nbsp;
+            </span>
+            {buttonText}
+          </span>
+        </div>
+      </Link>
+      <div
+        style={{ textDecoration: "none", marginLeft: "16px" }}
+        onClick={() => handleDeleteDraft(row)}
+      >
+        <span style={{ color: "red", cursor: "pointer" }}>
           <span>
-            <i className={icon} />
+            <i className={deleteIcon} />
             &nbsp;
           </span>
-          {buttonText}
+          {deleteButtonText}
         </span>
       </div>
-    </Link>
+    </div>
   );
-};
+});
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);
@@ -119,7 +153,10 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Action")}</Translation>,
-      formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
+      // formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
+      formatter: (cell, row) => {
+      return <LinkDraft cell={cell} row={row} redirectUrl={redirectUrl} />;
+    },
       headerStyle: () => {
         return { width: "20%" };
       },
