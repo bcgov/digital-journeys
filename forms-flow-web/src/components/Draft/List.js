@@ -168,8 +168,7 @@ export const DraftList = React.memo(() => {
               dispatch(
                 deleteDraftById(
                   selectedDraftForDelete.draftId,
-                  (error, data) => {
-                    console.log("#draft", { error, data });
+                  (error) => {
                     if (error) {
                       toast.error("There was an error deleting the draft!");
                     } else {
