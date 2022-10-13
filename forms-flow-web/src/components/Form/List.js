@@ -387,7 +387,7 @@ const List = React.memo((props) => {
                     {t("Forms")}
                   </span>
                 </h3>
-                {t("This is where you can complete and submit new forms")}
+                {t("Start a new form")}
               </div>
             </div>
             <div className="flex-item-right">

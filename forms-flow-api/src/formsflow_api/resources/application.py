@@ -99,10 +99,11 @@ class ApplicationsResource(Resource):
                     application_name=application_name,
                     application_status=application_status,
                 )
+            applications = ApplicationService.get_submission_for_application(application_schema_dump)
             return (
                 (
                     {
-                        "applications": application_schema_dump,
+                        "applications": applications,
                         "totalCount": application_count,
                         "draftCount": draft_count,
                         "limit": limit,

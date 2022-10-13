@@ -126,9 +126,8 @@ export const DraftList = React.memo(() => {
         onClick: () => dispatch(push(`${redirectUrl}draft`)),
         icon: "edit",
         title: "Draft Forms",
-        description:
-          "All applications/submissions that have been started by the user but not yet submitted",
-      },
+        description: "All forms that have been started but not yet submitted",
+      }
     ];
   };
 
