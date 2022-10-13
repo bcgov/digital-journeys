@@ -36,15 +36,15 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   if (submission === undefined) {
     return '';
   }
-  let employee = '';
-  if (form.toLowerCase().includes('sl review')) {
+  let employee = "";
+  if (form.toLowerCase().includes('sl review') ||
+      form.toLowerCase().includes('senior leadership review')) {
     employee = submission?.data?.employeeName?.name === undefined ?
     submission?.data?.employeeName : submission?.data?.employeeName?.name;
+    employee = employee === "" ? undefined : employee;
   } else if (form.toLowerCase().includes('telework agreement')) {
     employee = submission?.data?.name;
-  }
-  if (employee === undefined) {
-    return '';
+    employee = employee === "" ? undefined : employee;
   }
   return employee;
 };
