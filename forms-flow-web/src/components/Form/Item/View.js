@@ -106,6 +106,8 @@ const View = React.memo((props) => {
   const exitType = useRef("UNMOUNT");
   const [draftSaved, setDraftSaved] = useState(false);
   const [notified, setNotified] = useState(false);
+  const [defaultVals, setDefaultVals] = useState({});
+
   const {
     isAuthenticated,
     hideComponents,
@@ -293,6 +295,62 @@ const View = React.memo((props) => {
 
   }, [getForm, getEmployeeData, isAuthenticated, dispatch]);
 
+  const getDefaultValues = (data) => {
+    if (Object.keys(data)?.length === 0 || form.components?.length === 0) {
+      return;
+    }
+
+    // A recursive function to get all the key properties of the form
+    function findAllKeys(obj, target) {
+      const keys = [];
+      const fnd = (obj) => {
+        if (!obj || Object.entries(obj).length === 0) {
+          return;
+        }
+        for (const [k, v] of Object.entries(obj)) {
+          if (k === target) {
+            keys.push(v);
+          }
+          if (typeof v === "object") {
+            fnd(v);
+          }
+        }
+      };
+      fnd(obj);
+      return keys;
+    }
+    const keys = findAllKeys(form.components, "key");
+    const uniqueKeys = [...new Set(keys)];
+
+    const filteredComponents = uniqueKeys?.filter((comp) => {
+      const dataArray = Object.keys(data);
+      if (comp.includes("_")) {
+        return dataArray.some((dataItem) => comp.split("_")[0] === dataItem);
+      }
+      return dataArray.some((el2) => comp === el2);
+    });
+
+    const defaultValuesArray = filteredComponents?.map((filteredComp) => {
+      if (filteredComp.includes("_")) {
+        return {
+          [filteredComp]: data[filteredComp.split("_")[0]],
+        };
+      }
+      return { [filteredComp]: data[filteredComp] };
+    });
+
+    const defaultValuesObject = defaultValuesArray?.reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {}
+    );
+
+    return { data: defaultValuesObject };
+  };
+
+  useEffect(() => {
+    setDefaultVals(getDefaultValues(employeeData.data));
+  }, [employeeData.data, form]);
+
   let convertFormLinksInterval = null;
   useEffect(() => {
     convertFormLinksInterval = setInterval(() => {
@@ -336,57 +394,7 @@ const View = React.memo((props) => {
     exportToPdf({ formId: "formview" });
   };
 
-  // const getDefaultValues = (data) => {
-  //   if (Object.keys(data)?.length === 0 || form.components?.length === 0) {
-  //     return;
-  //   }
 
-  //   // A recursive function to get all the key properties of the form
-  //   function findAllKeys(obj, target) {
-  //     const keys = [];
-  //     const fnd = (obj) => {
-  //       if (!obj || Object.entries(obj).length === 0) {
-  //         return;
-  //       }
-  //       for (const [k, v] of Object.entries(obj)) {
-  //         if (k === target) {
-  //           keys.push(v);
-  //         }
-  //         if (typeof v === "object") {
-  //           fnd(v);
-  //         }
-  //       }
-  //     };
-  //     fnd(obj);
-  //     return keys;
-  //   }
-  //   const keys = findAllKeys(form.components, "key");
-  //   const uniqueKeys = [...new Set(keys)];
-
-  //   const filteredComponents = uniqueKeys?.filter((comp) => {
-  //     const dataArray = Object.keys(data);
-  //     if (comp.includes("_")) {
-  //       return dataArray.some((dataItem) => comp.split("_")[0] === dataItem);
-  //     }
-  //     return dataArray.some((el2) => comp === el2);
-  //   });
-
-  //   const defaultValuesArray = filteredComponents?.map((filteredComp) => {
-  //     if (filteredComp.includes("_")) {
-  //       return {
-  //         [filteredComp]: data[filteredComp.split("_")[0]],
-  //       };
-  //     }
-  //     return { [filteredComp]: data[filteredComp] };
-  //   });
-
-  //   const defaultValuesObject = defaultValuesArray?.reduce(
-  //     (acc, curr) => ({ ...acc, ...curr }),
-  //     {}
-  //   );
-
-  //   return { data: defaultValuesObject };
-  // };
 
   return (
     <div className="container overflow-y-auto">
@@ -474,7 +482,7 @@ const View = React.memo((props) => {
           {isPublic || formStatus === "active" ? (
             <Form
               form={form}
-              // submission={getDefaultValues(employeeData.data)}
+              submission={defaultVals}
               url={url}
               options={{
                 ...options,
