@@ -18,6 +18,7 @@ import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import {
   fetchDrafts,
   FilterDrafts,
+  deleteDraftById
 } from "../../apiManager/services/draftService";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
@@ -25,7 +26,11 @@ import {
   setDraftListLoader,
   setDraftListActivePage,
   setCountPerpage,
+  setSelectedDraftForDelete,
 } from "../../actions/draftActions";
+
+import Confirm from "../../containers/Confirm";
+import { toast } from "react-toastify";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -46,6 +51,9 @@ export const DraftList = React.memo(() => {
   );
   const error = useSelector(
     (state) => state.draft.draftSubmissionError.message
+  );
+  const selectedDraftForDelete = useSelector(
+    (state) => state.draft.selectedDraftForDelete
   );
   const [filtermode, setfiltermode] = React.useState(false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -69,7 +77,7 @@ export const DraftList = React.memo(() => {
 
   useEffect(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef]);
+  }, [dispatch, currentPage, countPerPageRef, selectedDraftForDelete]);
 
   if (isDraftListLoading) {
     return <Loading />;
@@ -111,14 +119,16 @@ export const DraftList = React.memo(() => {
     dispatch(setDraftListActivePage(newState.page));
   };
   const headerList = () => {
-    return [{
-      name: "Drafts",
-      count: draftCount,
-      onClick: () => dispatch(push(`${redirectUrl}draft`)),
-      icon: "edit",
-      title: "Draft Forms",
-      description: "All forms that have been started but not yet submitted",
-    }];
+    return [
+      {
+        name: "Drafts",
+        count: draftCount,
+        onClick: () => dispatch(push(`${redirectUrl}draft`)),
+        icon: "edit",
+        title: "Draft Forms",
+        description: "All forms that have been started but not yet submitted",
+      }
+    ];
   };
 
   const getNoData = () => {
@@ -139,6 +149,42 @@ export const DraftList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
+          <Confirm
+            modalOpen={selectedDraftForDelete.modalOpen}
+            message={
+              "Are you sure you want to delete this draft? Deleting this draft will eliminate the form and all existing information on it from the database."
+            }
+            onNo={() => {
+              dispatch(
+                setSelectedDraftForDelete({
+                  modalOpen: false,
+                  draftId: "",
+                  draftName: "",
+                })
+              );
+            }}
+            onYes={() => {
+              dispatch(
+                deleteDraftById(
+                  selectedDraftForDelete.draftId,
+                  (error) => {
+                    if (error) {
+                      toast.error("There was an error deleting the draft!");
+                    } else {
+                      toast.success("Draft deleted successfully");
+                    }
+                    dispatch(
+                      setSelectedDraftForDelete({
+                        modalOpen: false,
+                        draftId: "",
+                        draftName: "",
+                      })
+                    );
+                  }
+                )
+              );
+            }}
+          />
           <Head items={headerList()} page="Drafts" />
           <br />
           <div>

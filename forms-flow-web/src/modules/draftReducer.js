@@ -15,6 +15,8 @@ const initialState = {
   submission: {},
   draftDetailStatusCode: "",
   lastUpdated: {},
+  selectedDraftForDelete: { modalOpen: false, draftId: "", draftName: "" },
+  draftDeleteError: null
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -46,6 +48,14 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, draftDetailStatusCode: action.payload };
     case ACTION_CONSTANTS.DRAFT_LAST_UPDATED:
       return { ...state, lastUpdated: action.payload };
+    case ACTION_CONSTANTS.SET_SELECTED_DRAFT_FOR_DELETE:
+      return { ...state, selectedDraftForDelete: action.payload };
+    case ACTION_CONSTANTS.DELETE_DRAFT:
+      return {
+        ...state,
+        draftSubmission: action.payload,
+        draftDeleteError: null,
+      };
     default:
       return state;
   }
