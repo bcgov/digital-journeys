@@ -516,11 +516,14 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
             for a in application_list:
-                submission = formio_service.get_submission( {"form_id": a["formId"], "sub_id": a["submissionId"]}, form_io_token)
-                if submission:
-                    a["submission"] = submission
-                    applications.append(a)
-        except Exception as err:
+                try:
+                    submission = formio_service.get_submission( {"form_id": a["formId"], "sub_id": a["submissionId"]}, form_io_token)
+                    if submission:
+                        a["submission"] = submission
+                        applications.append(a)
+                except Exception as err:
+                    current_app.logger.error(err)
+        except BusinessException as err:
             current_app.logger.error(err)
         if len(applications) != len(application_list):
             applications = application_list
