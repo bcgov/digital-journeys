@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
+import { Translation } from "react-i18next";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import { Col, Container, Row } from "react-bootstrap";
@@ -185,6 +186,26 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
+      <div className="header-container" 
+          style={{marginTop: "20px", marginBottom: "40px"}}>
+        <div className="main-header">
+          <div className="head-item" style={{ color: "black" }}>
+            <h3 className="application-head application-head-active" style={{marginBlockEnd: "5px"}}>
+              <i
+                className={`fa fa-list`}
+                style={{ marginTop: "5px" }}
+                aria-hidden="true"
+              />
+              <span className="application-text">
+                <Translation>{(t) => t(`Review and Process Forms`)}</Translation>
+              </span>
+            </h3>
+            <span>
+              <Translation>{(t) => t(`All forms that need to be reviewed`)}</Translation>
+            </span>
+          </div>
+        </div>
+      </div>
       <Row className="p-2">
         <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>

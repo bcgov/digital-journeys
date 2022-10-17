@@ -5,9 +5,10 @@ export const ACKNOWLEDGED_EVENT = "application_acknowledged";
 //export const RETURNED_STATUS = "Returned";
 export const RESUBMIT_STATUS = "Resubmit";
 export const AWAITING_ACKNOWLEDGEMENT = "Awaiting Acknowledgement";
+export const SUBMITTED_STATUS = "Submitted";
 //export const NEW_STATUS = "New";
 
-export const CLIENT_EDIT_STATUS = [AWAITING_ACKNOWLEDGEMENT, RESUBMIT_STATUS];
+export const CLIENT_EDIT_STATUS = [AWAITING_ACKNOWLEDGEMENT, RESUBMIT_STATUS, SUBMITTED_STATUS];
 
 export const UPDATE_EVENT_STATUS = [RESUBMIT_STATUS, AWAITING_ACKNOWLEDGEMENT];
 
