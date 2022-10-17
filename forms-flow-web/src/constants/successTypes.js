@@ -3,3 +3,17 @@ export const TELEWORK_APPROVAL = "TELEWORK_APPROVAL";
 
 export const SL_REVIEW_SUBMISSION = "SL_REVIEW_SUBMISSION";
 export const SL_REVIEW_RESUBMISSION = "SL_REVIEW_RESUBMISSION";
+export const SL_REVIEW_FINAL_SUBMIT = "SL_REVIEW_FINAL_SUBMIT";
+
+let submitSuccessPage = {
+    seniorleadershipreview: 'SL_REVIEW_SUBMISSION',
+    teleworkagreement: 'submission'
+};
+
+export const redirectToFormSuccessPage = (dispatch, push, formKey) => {
+    return redirectToSuccessPage(dispatch, push, submitSuccessPage[formKey]);
+};
+
+export const redirectToSuccessPage = (dispatch, push, pageKey) => {
+    return dispatch(push(`/success?type=${pageKey}`));
+};

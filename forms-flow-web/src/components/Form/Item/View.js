@@ -61,6 +61,7 @@ import SavingLoading from "../../Loading/SavingLoading";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { exportToPdf } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
+import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -557,8 +558,8 @@ const doProcessActions = (submission, ownProps) => {
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            // dispatch(push(`${redirectUrl}form`));
-            dispatch(push(`/success?type=submission`));
+
+            redirectToFormSuccessPage(dispatch, push, form?.path);
           }
         } else {
           toast.error(

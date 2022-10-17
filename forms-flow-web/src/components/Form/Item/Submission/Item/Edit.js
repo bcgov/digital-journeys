@@ -52,7 +52,7 @@ import {
   fetchBPMTasks,
 } from "../../../../../apiManager/services/bpmTaskServices";
 import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
-import { SL_REVIEW_RESUBMISSION } from "../../../../../constants/successTypes";
+import { redirectToSuccessPage } from "../../../../../constants/successTypes";
 import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
 
 const Edit = React.memo((props) => {
@@ -178,7 +178,7 @@ const Edit = React.memo((props) => {
     return <Loading />;
   }
 
-  const onApplicationFormSubmit = (actionType = "") => {
+  const onApplicationFormSubmit = (actionType = "", successPage) => {
     dispatch(setBPMTaskDetailLoader(true));
     const { formId, submissionId } = getFormIdSubmissionIdFromURL(url);
     const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
@@ -195,7 +195,7 @@ const Edit = React.memo((props) => {
         ),
         (err) => {
           if (!err) {
-            dispatch(push(`/success?type=${SL_REVIEW_RESUBMISSION}`));
+            redirectToSuccessPage(dispatch, push, successPage);
           } else {
             dispatch(setBPMTaskDetailLoader(false));
           }
@@ -207,7 +207,7 @@ const Edit = React.memo((props) => {
   const onApplicationFormSubmitCustomEvent = (customEvent) => {
     switch (customEvent.type) {
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onApplicationFormSubmit(customEvent.actionType);
+        onApplicationFormSubmit(customEvent.actionType, customEvent.successPage);
         break;
       default:
         return;

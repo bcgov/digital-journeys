@@ -40,6 +40,7 @@ import {
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
+import { redirectToFormSuccessPage } from "../../constants/successTypes";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -222,9 +223,6 @@ const View = React.memo((props) => {
   );
 });
 
-const executeAuthSideEffects = (dispatch, redirectUrl) => {
-  dispatch(push(`${redirectUrl}draft`));
-};
 
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
@@ -248,16 +246,16 @@ const doProcessActions = (submission, ownProps) => {
       applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
-          toast.success(
-            <Translation>{(t) => t("Submission Saved")}</Translation>
-          );
+          redirectToFormSuccessPage(dispatch, push, form?.path);
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
-        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
-        else dispatch(setFormSubmitted(true));
+        if (!isAuth) {
+          dispatch(setFormSubmitted(true));
+        }
+        
       })
     );
   };
