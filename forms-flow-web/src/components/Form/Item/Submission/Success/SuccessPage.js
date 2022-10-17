@@ -118,47 +118,91 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for your commitment to supporting career development of
-            your Senior Leadership team and for your contribution to executive
-            succession.
+            Thank you for your commitment to supporting career development of your Senior
+             Leadership team and for your contribution to executive succession.
           </span>
           <div className="success-content-body">
             <ul>
               <li>
-                The information you’ve provided will be shared with Executive
-                Talent Management, Corporate Workforce Strategies in the Public
-                Service Agency, as well as ministry Strategic Human Resources
-                (ministry-specific data). Broad themes will be presented to
-                DMCPSR to further the conversation on executive talent and
-                utilized for executive succession and development strategies,
-                programs and activities.
+                The information you’ve provided will be shared with Executive Talent 
+                Management, Corporate Workforce Strategies in the Public Service Agency, 
+                as well as ministry Strategic Human Resources (ministry-specific data). 
+                Broad themes will be presented to DMCPSR to further the conversation on 
+                executive talent and utilized for executive succession and development 
+                strategies, programs and activities.
               </li>
 
               <li>
-                Please download a PDF copy for your files and share with the
-                senior leader. Continue conversations with the identified senior
-                leader to refine their learning and development plan, goals, and
-                actions in support of their aspirations. Your Ministry Human
-                Resources representative can connect the senior leader with
-                targeted ministry and corporate learning opportunities to ensure
-                they have access to the essential learning and experiences that
-                will set them up for success. Coaching services are also
-                available to senior leaders.
+                Please download a PDF copy for your files and share with the senior 
+                leader. Continue conversations with the identified senior leader to 
+                refine their learning and development plan, goals, and actions in support 
+                of their aspirations. Your Ministry Human Resources representative can 
+                connect the senior leader with targeted ministry and corporate learning 
+                opportunities to ensure they have access to the essential learning and 
+                experiences that will set them up for success. 
+                Coaching services are also available to senior leaders.
               </li>
 
               <li>
-                If you have any questions, please&nbsp;
-                <a href="mailto:jodi.little@gov.bc.ca">contact Jodi Little</a>
-                &nbsp;Leadership Development and Succession Lead.
+                The information has now been submitted to the database for validation.
+                You can come back and edit the information and resubmit at any point up
+                until 11:59 PM on January 27, 2023.
               </li>
 
-              <li>You may now close this window.</li>
+              <li>
+                If you have any questions, please contact Jodi Little, Leadership Development and Succession Lead at <a href="mailto:jodi.little@gov.bc.ca">jodi.little@gov.bc.ca</a>
+              </li>
             </ul>
           </div>
         </>
       );
-    }
-  };
+    } else if (
+    search.includes(successTypes.SL_REVIEW_FINAL_SUBMIT)
+  ) {
+    return (
+      <>
+        <span className="success-content-intro">
+          Thank you for your commitment to supporting career development of your
+          Senior Leadership team and for your contribution to executive succession.
+
+
+        </span>
+        <div className="success-content-body">
+          <ul>
+            <li>
+            The information you’ve provided will be shared with Executive Talent Management,
+            Corporate Workforce Strategies in the Public Service Agency, as well as ministry
+            Strategic Human Resources (ministry-specific data). Broad themes will be presented
+            to DMCPSR to further the conversation on executive talent and utilized for executive
+            succession and development strategies, programs and activities.
+            </li>
+
+            <li>
+              Please download a PDF copy for your files and share with the senior leader. Continue 
+              conversations with the identified senior leader to refine their learning and 
+              development plan, goals, and actions in support of their aspirations. Your Ministry 
+              Human Resources representative can connect the senior leader with targeted ministry 
+              and corporate learning opportunities to ensure they have access to the essential 
+              learning and experiences that will set them up for success. Coaching services are 
+              also available to senior leaders.
+
+            </li>
+
+            <li>
+              Thank you for completing the senior leadership review process. You have made your 
+              final submission for the senior leader.
+            </li>
+
+            <li>
+              You can come back and edit the information and resubmit at any point up until 11:59 
+              PM on January 27, 2023.
+            </li>
+          </ul>
+        </div>
+      </>
+    );
+  }
+};
 
   return (
     <div className="container" id="main">

@@ -61,6 +61,7 @@ import SavingLoading from "../../Loading/SavingLoading";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { exportToPdf } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
+import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -557,8 +558,8 @@ const doProcessActions = (submission, ownProps) => {
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-            // dispatch(push(`${redirectUrl}form`));
-            dispatch(push(`/success?type=submission`));
+
+            redirectToFormSuccessPage(dispatch, push, form?.path);
           }
         } else {
           toast.error(
@@ -621,8 +622,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
     onCustomEvent: (customEvent, redirectUrl) => {
+      console.log("Custom evt", customEvent);
+
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
+          console.log(customEvent);
           toast.success(
             "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
           );

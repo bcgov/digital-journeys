@@ -48,6 +48,7 @@ import {
 import {
   STAFF_REVIEWER,
 } from "../../../constants/constants";
+import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -203,14 +204,14 @@ const ServiceFlowTaskDetails = React.memo(() => {
         reloadCurrentTask();
         break;
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onFormSubmitCallback(customEvent.actionType);
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
         break;
       default:
         return;
     }
   };
 
-  const onFormSubmitCallback = (actionType = "") => {
+  const onFormSubmitCallback = (actionType = "", successPage) => {
     if (bpmTaskId) {
       dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
@@ -231,7 +232,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
           (err) => {
             if (!err) {
               // reloadTasks();
-              dispatch(push("/success?type=approval"));
+              redirectToFormSuccessPage(successPage || 'approval');
             } else {
               dispatch(setBPMTaskDetailLoader(false));
             }
