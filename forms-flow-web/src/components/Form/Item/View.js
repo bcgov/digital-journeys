@@ -622,11 +622,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
     onCustomEvent: (customEvent, redirectUrl) => {
-      console.log("Custom evt", customEvent);
-
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          console.log(customEvent);
           toast.success(
             "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
           );

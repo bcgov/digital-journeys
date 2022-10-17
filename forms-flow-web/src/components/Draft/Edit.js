@@ -314,7 +314,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-          console.log('SSSABVED', customEvent);
           toast.success("Submission Saved.");
           dispatch(push(`${redirectUrl}draft`));
           break;
