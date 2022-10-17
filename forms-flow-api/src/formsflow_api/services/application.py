@@ -520,8 +520,8 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 if submission:
                     a["submission"] = submission
                     applications.append(a)
-        except BusinessException as err:
-            current_app.logger.warning(err)
+        except Exception as err:
+            current_app.logger.error(err)
         if len(applications) != len(application_list):
             applications = application_list
         return applications
