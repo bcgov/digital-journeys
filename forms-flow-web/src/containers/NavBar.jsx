@@ -146,7 +146,7 @@ const NavBar = React.memo(() => {
     (getUserRolePermission(userRoles, MANAGER_GROUP) ||
       getUserRolePermission(userRoles, STAFF_REVIEWER)) && (
       <Link className={pathname.match(/^\/task/) ? "active" : null} to="/task">
-        Review and Process Applications
+        Review and Process Forms
       </Link>
     ),
     !getUserRolePermission(userRoles, STAFF_REVIEWER) &&
