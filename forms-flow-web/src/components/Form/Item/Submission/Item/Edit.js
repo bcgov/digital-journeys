@@ -54,6 +54,7 @@ import {
 import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
 import { redirectToSuccessPage } from "../../../../../constants/successTypes";
 import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
+import PrintPDF from "../../../../../helper/PrintPDF";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -231,7 +232,8 @@ const Edit = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        <div className="ml-4 mr-4">
+        <PrintPDF />
+        <div className="ml-4 mr-4" id="formview">
           <Form
             form={form}
             // submission={updatedSubmission}

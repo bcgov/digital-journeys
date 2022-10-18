@@ -45,6 +45,7 @@ import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 import {
   getUserRolePermission,
 } from "../../../helper/user";
+import PrintPDF from "../../../helper/PrintPDF";
 import {
   STAFF_REVIEWER,
 } from "../../../constants/constants";
@@ -262,6 +263,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     return (
       <div className="service-task-details">
         <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
+          <PrintPDF />
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>

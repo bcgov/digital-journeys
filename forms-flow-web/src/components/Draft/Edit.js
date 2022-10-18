@@ -41,6 +41,7 @@ import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
+import PrintPDF from "../../helper/PrintPDF";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -193,7 +194,8 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <div className="ml-4 mr-4">
+        <PrintPDF />
+        <div className="ml-4 mr-4" id="formview">
           {
             <Form
               form={form}
