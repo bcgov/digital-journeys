@@ -1,4 +1,6 @@
 import requests
+import re
+from urllib.parse import unquote
 from http import HTTPStatus
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
@@ -38,6 +40,8 @@ class EmployeeDataService:
       try:
         employee_data_api_url = current_app.config.get("EMPLOYEE_SEARCH_API_URL")
         search = args.get("search", None)
+        if search and not search.isalpha():
+          search = re.sub(r'[^A-Za-z]+', '_', unquote(search))
         query = f"&$search='{search}'" if search else ""
         limit = args.get("limit", 10)
         top = f"&$top={limit}"
@@ -54,9 +58,8 @@ class EmployeeDataService:
                        headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
 
       except Exception as e:
-        raise BusinessException(
-          {"message": "Failed to get employee names from ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
-        )
+        current_app.logger.error(e)
+        return []
       
       employee_names_res = response_from_ods.json()
       if employee_names_res and employee_names_res["value"] and len(employee_names_res["value"]) > 0:
