@@ -53,6 +53,8 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
     
         Object managerIdir = execution.getVariable("manager_idir");
         Object managerGuid = execution.getVariable("manager_guid");
+        
+        String applicationId = String.valueOf(execution.getVariable("applicationId"));
 
         Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false, true);
 
@@ -82,7 +84,9 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         }
 
         if (httpMethod.equals("put")) {
-            this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.PUT, json);
+            this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.PUT, json);
+        } if (httpMethod.equals("delete")) {
+            this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.DELETE, json);
         } else {
             this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
         }
@@ -91,5 +95,9 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
 
     public String getEndpointUrl(String endpoint) {
         return odsUrl + "/" + endpoint;
+    }
+    
+    public String getEndpointUrl(String endpoint, String applicationId) {
+        return odsUrl + "/" + endpoint + "/" + applicationId;
     }
 }

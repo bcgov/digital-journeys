@@ -163,7 +163,10 @@ class DraftService:
                 "message": f"Invalid request data - draft id {draft_id} does not exist",
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status)
-
+        
+        # Todo: handle error 
+        draft.delete()
+        
         application = Application.find_by_id(draft.application_id)
         mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
         if application.form_process_mapper_id != mapper.id:
