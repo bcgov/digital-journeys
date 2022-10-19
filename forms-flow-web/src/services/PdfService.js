@@ -1,4 +1,5 @@
 import html2pdf from 'html2pdf.js';
+import { toast } from "react-toastify";
 
 export const exportToPdf = (options) => {
   const pdfPageHeight = 1500;
@@ -12,4 +13,9 @@ export const exportToPdf = (options) => {
     jsPDF: { unit: 'px', format: [mainPrintableContainer.offsetWidth, pdfPageHeight], orientation: 'portrait' }
   };
   html2pdf().set(opt).from(mainPrintableContainer).save();
+};
+
+export const printToPDF = () => {
+  toast.success("Downloading...");
+  exportToPdf({ formId: "formview" });
 };
