@@ -111,17 +111,14 @@ class FormioService:
     
     def delete_submission(self, formio_token, formId, submissionId):
         """Delete request to formio API to delete a submission """
-        print("** delete_submission **")
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = (
             f"{self.base_url}/form/" + formId + "/submission/" + submissionId
         )
-        print(url)
         response = requests.delete(url, headers=headers)
         print(response)
         if response.ok:
-            print(response.json())
-            # return response.json()
-        print("** there was an error in deleting submission")
-        print(response.json())
+            current_app.logger.log("submission was delete successfully: " + url)
+            return
+        current_app.logger.error("Failed to delete submission at: " + url)
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
