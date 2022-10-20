@@ -117,7 +117,11 @@ class FormioService:
             f"{self.base_url}/form/" + formId + "/submission/" + submissionId
         )
         print(url)
-        # response = requests.get(url, headers=headers, data=json.dumps(data))
-        # if response.ok:
-        #     return response.json()
-        # raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+        response = requests.delete(url, headers=headers)
+        print(response)
+        if response.ok:
+            print(response.json())
+            # return response.json()
+        print("** there was an error in deleting submission")
+        print(response.json())
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
