@@ -115,6 +115,6 @@ class FormioService:
         url = f"{self.base_url}/form/" + formId + "/submission/" + submissionId
         try:
             response = requests.delete(url, headers=headers)
-            print(dir(response))
+            response.raise_for_status()
         except:
             raise BusinessException(f"Failed to delete submission at {url}", HTTPStatus.BAD_REQUEST)
