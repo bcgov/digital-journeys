@@ -507,15 +507,13 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         application = Application.find_by_id(application_id=application_id)
         if application:
             application.delete()
+            current_app.logger.info(f"application was deleted by id {application_id}")
         else:
             raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
     
     @staticmethod
-    def delete_submission_by_application_id(application_id: int):
-        """Delete Formio submission by application id."""
-        application = Application.find_by_id(application_id=application_id)
-        if not application:
-            raise BusinessException(f"Invalid application by id {application_id}", HTTPStatus.BAD_REQUEST)
+    def delete_submission_by_application(application):
+        """Delete Formio submission by application."""
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
         formio_service.delete_submission(form_io_token, application.latest_form_id, application.submission_id)
@@ -530,6 +528,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         headers = {"Authorization": test_auth_token}
         try:
             requests.delete(delete_application_in_ODS_url, headers=headers)
+            current_app.logger.info(f"application was deleted in ODS by id {application_id}")
         except:
             raise BusinessException(
                 f"Failed to delete the application in ODS at {delete_application_in_ODS_url}", 
