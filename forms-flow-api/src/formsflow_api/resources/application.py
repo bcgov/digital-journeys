@@ -386,3 +386,30 @@ class ApplicationResourceByApplicationStatus(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
+@cors_preflight("DELETE, OPTIONS")
+@API.route("/<int:application_id>/delete", methods=["DELETE", "OPTIONS"])
+class ApplicationResourceByIdDelete(Resource):
+    """Delete application by id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def delete(application_id):
+        """Delete application by id."""
+        try:
+            # ApplicationService.delete_application(application_id)
+            ApplicationService.delete_submission_by_application_id(application_id)
+            return "Deleted", HTTPStatus.OK
+        except BusinessException as err:
+            response, status = (
+                {
+                    "type": "Invalid response data",
+                    "message": f"Invalid application id - {application_id}",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status

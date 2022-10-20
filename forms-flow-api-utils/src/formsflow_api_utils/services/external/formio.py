@@ -108,3 +108,16 @@ class FormioService:
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+    
+    def delete_submission(self, formio_token, formId, submissionId):
+        """Delete request to formio API to delete a submission """
+        print("** delete_submission **")
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = (
+            f"{self.base_url}/form/" + formId + "/submission/" + submissionId
+        )
+        print(url)
+        # response = requests.get(url, headers=headers, data=json.dumps(data))
+        # if response.ok:
+        #     return response.json()
+        # raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
