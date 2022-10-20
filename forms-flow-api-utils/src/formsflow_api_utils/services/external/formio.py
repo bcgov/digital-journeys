@@ -114,6 +114,7 @@ class FormioService:
         headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
         url = f"{self.base_url}/form/" + formId + "/submission/" + submissionId
         try:
-            requests.delete(url, headers=headers)
+            response = requests.delete(url, headers=headers)
+            print(dir(response))
         except:
             raise BusinessException(f"Failed to delete submission at {url}", HTTPStatus.BAD_REQUEST)
