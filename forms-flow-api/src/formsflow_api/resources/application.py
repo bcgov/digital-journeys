@@ -398,18 +398,9 @@ class ApplicationResourceByIdDelete(Resource):
     def delete(application_id):
         """Delete application by id."""
         try:
-            # ApplicationService.delete_application(application_id)
             ApplicationService.delete_submission_by_application_id(application_id)
+            ApplicationService.delete_application(application_id)
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
-            response, status = (
-                {
-                    "type": "Invalid response data",
-                    "message": f"Invalid application id - {application_id}",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(err)
-            return response, status
+            current_app.logger.error(err.error)
+            return err.error, err.status_code
