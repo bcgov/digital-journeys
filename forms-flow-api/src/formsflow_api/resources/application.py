@@ -400,7 +400,8 @@ class ApplicationResourceByIdDelete(Resource):
         try:
             ApplicationService.delete_submission_by_application_id(application_id)
             ApplicationService.delete_application(application_id)
-            return "Deleted", HTTPStatus.OK
+            ApplicationService.delete_application_from_ODS(application_id)
+            return f"Application was successfully deleted with id: {application_id}", HTTPStatus.OK
         except BusinessException as err:
             current_app.logger.error(err.error)
             return err.error, err.status_code

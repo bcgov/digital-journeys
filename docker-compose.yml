@@ -283,6 +283,8 @@ services:
       EMPLOYEE_SEARCH_API_URL: ${EMPLOYEE_SEARCH_API_URL}
       ODS_AUTH_TOKEN: ${ODS_AUTH_TOKEN}
       MINISTRY_NAMES_API_URL: ${MINISTRY_NAMES_API_URL}
+      SL_REVIEW_ENDPOINT: ${SL_REVIEW_ENDPOINT}
+      ODS_URL: ${ODS_URL}
     stdin_open: true # -i
     tty: true # -t
     networks:
