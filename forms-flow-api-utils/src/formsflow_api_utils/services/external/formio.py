@@ -117,5 +117,7 @@ class FormioService:
             response = requests.delete(url, headers=headers)
             if response.ok:
                 current_app.logger.info(f"submission was deleted by id {submissionId}")
+            else:
+                current_app.logger.warning(f"Something went wrong deleting submission by id {submissionId}")
         except:
             raise BusinessException(f"Failed to delete submission at {url}", HTTPStatus.BAD_REQUEST)
