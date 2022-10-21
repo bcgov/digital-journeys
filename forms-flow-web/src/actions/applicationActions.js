@@ -107,3 +107,17 @@ export const setPublicStatusLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setSelectedApplicationForDelete = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SELECTED_APPLICATION_FOR_DELETE,
+    payload: data,
+  });
+};
+
+export const setDeleteApplication = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DELETE_APPLICATION,
+    payload: data,
+  });
+};

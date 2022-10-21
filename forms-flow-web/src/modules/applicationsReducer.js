@@ -16,6 +16,12 @@ export const initialState = {
   iserror: false,
   error: "",
   isPublicStatusLoading: false,
+  selectedApplicationForDelete: {
+    modalOpen: false,
+    applicationId: "",
+    applicationName: "",
+  },
+  applicationDeleteError: null,
 };
 
 const applications = (state = initialState, action) => {
@@ -65,6 +71,14 @@ const applications = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.IS_PUBLIC_STATUS_LOADING:
       return { ...state, isPublicStatusLoading: action.payload };
+    case ACTION_CONSTANTS.SET_SELECTED_APPLICATION_FOR_DELETE:
+      return { ...state, selectedApplicationForDelete: action.payload };
+    case ACTION_CONSTANTS.DELETE_APPLICATION:
+      return {
+        ...state,
+        applicationSubmission: action.payload,
+        applicationDeleteError: null,
+      };
     default:
       return state;
   }

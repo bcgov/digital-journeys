@@ -9,11 +9,13 @@ import {
   setApplicationListActivePage,
   setCountPerpage,
   setApplicationListLoader,
+  setSelectedApplicationForDelete
 } from "../../actions/applicationActions";
 import {
   getAllApplications,
   FilterApplications,
   getAllApplicationStatus,
+  deleteApplicationById
 } from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
@@ -33,6 +35,9 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
+
+import Confirm from "../../containers/Confirm";
+import { toast } from "react-toastify";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -60,6 +65,11 @@ export const ApplicationList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  
+  const selectedApplicationForDelete = useSelector(
+    (state) => state.applications.selectedApplicationForDelete
+  );
+
   useEffect(() => {
     setIsLoading(false);
   }, [applications]);
@@ -79,7 +89,7 @@ export const ApplicationList = React.memo(() => {
 
   useEffect(() => {
     dispatch(getAllApplications(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef]);
+  }, [dispatch, currentPage, countPerPageRef, selectedApplicationForDelete]);
 
   const isClientEdit = (applicationStatus) => {
     if (
@@ -168,6 +178,39 @@ export const ApplicationList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
+          <Confirm
+            modalOpen={selectedApplicationForDelete.modalOpen}
+            message={
+              "Are you sure you want to delete this application? Deleting this application will eliminate the submitted form and all existing information on it from the database."
+            }
+            onNo={() => {
+              dispatch(
+                setSelectedApplicationForDelete({
+                  modalOpen: false,
+                  applicationId: "",
+                  applicationName: "",
+                })
+              );
+            }}
+            onYes={() => {
+              dispatch(
+                deleteApplicationById(selectedApplicationForDelete.applicationId, (error) => {
+                  if (error) {
+                    toast.error("There was an error deleting the application!");
+                  } else {
+                    toast.success("Application deleted successfully");
+                  }
+                  dispatch(
+                    setSelectedApplicationForDelete({
+                      modalOpen: false,
+                      applicationId: "",
+                      applicationName: "",
+                    })
+                  );
+                })
+              );
+            }}
+          />
           <Head items={headOptions} page="Applications" />
           <br />
           <div>
