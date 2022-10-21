@@ -16,6 +16,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 import { setSelectedApplicationForDelete } from "../../actions/applicationActions";
 import { useDispatch } from "react-redux";
+import { SL_REVIEW_PROCESS_NAME } from "../../constants/constants";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -93,18 +94,20 @@ const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
           </span>
         </div>
       </div>
-      <div
-        style={{ textDecoration: "none", marginLeft: "16px" }}
-        onClick={() => handleDeleteApplication(row)}
-      >
-        <span style={{ color: "red", cursor: "pointer" }}>
-          <span>
-            <i className={deleteIcon} />
-            &nbsp;
+      {row.processName === SL_REVIEW_PROCESS_NAME && (
+        <div
+          style={{ textDecoration: "none", marginLeft: "16px" }}
+          onClick={() => handleDeleteApplication(row)}
+        >
+          <span style={{ color: "red", cursor: "pointer" }}>
+            <span>
+              <i className={deleteIcon} />
+              &nbsp;
+            </span>
+            {deleteButtonText}
           </span>
-          {deleteButtonText}
-        </span>
-      </div>
+        </div>
+      )}
     </div>
   );
 });

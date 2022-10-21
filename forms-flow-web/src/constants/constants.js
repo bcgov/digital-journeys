@@ -208,3 +208,7 @@ export const DRAFT_ENABLED =
   DRAFT_ENABLED_VARIABLE === "true" || DRAFT_ENABLED_VARIABLE === true
     ? true
     : false;
+
+export const SL_REVIEW_PROCESS_NAME =
+  (window._env_ && window._env_.REACT_APP_SL_REVIEW_PROCESS_NAME) ||
+  process.env.REACT_APP_SL_REVIEW_PROCESS_NAME;
