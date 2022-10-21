@@ -148,7 +148,6 @@ class DraftService:
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status)
         
-        # Todo: handle error 
         draft.delete()
         
         application = Application.find_by_id(draft.application_id)
