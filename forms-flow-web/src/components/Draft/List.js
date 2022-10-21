@@ -31,6 +31,7 @@ import {
 
 import Confirm from "../../containers/Confirm";
 import { toast } from "react-toastify";
+import LoadingOverlay from "react-loading-overlay";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -60,6 +61,8 @@ export const DraftList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const [isDeletingDraft, setIsDeletingDraft] = React.useState(false);
 
   useEffect(() => {
     setIsLoading(false);
@@ -149,79 +152,85 @@ export const DraftList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <Confirm
-            modalOpen={selectedDraftForDelete.modalOpen}
-            message={
-              "Are you sure you want to delete this draft? Deleting this draft will eliminate the form and all existing information on it from the database."
-            }
-            onNo={() => {
-              dispatch(
-                setSelectedDraftForDelete({
-                  modalOpen: false,
-                  draftId: "",
-                  draftName: "",
-                })
-              );
-            }}
-            onYes={() => {
-              dispatch(
-                deleteDraftById(
-                  selectedDraftForDelete.draftId,
-                  (error) => {
+          <LoadingOverlay
+            active={isDeletingDraft}
+            spinner
+            text="Deleting..."
+            className="col-12"
+          >
+            <Confirm
+              modalOpen={selectedDraftForDelete.modalOpen}
+              message={
+                "Are you sure you want to delete this draft? Deleting this draft will eliminate the form and all existing information on it from the database."
+              }
+              onNo={() => {
+                dispatch(
+                  setSelectedDraftForDelete({
+                    modalOpen: false,
+                    draftId: "",
+                    draftName: "",
+                  })
+                );
+              }}
+              onYes={() => {
+                setIsDeletingDraft(true);
+                dispatch(
+                  setSelectedDraftForDelete({
+                    modalOpen: false,
+                    draftId: "",
+                    draftName: "",
+                  })
+                );
+                dispatch(
+                  deleteDraftById(selectedDraftForDelete.draftId, (error) => {
                     if (error) {
                       toast.error("There was an error deleting the draft!");
                     } else {
                       toast.success("Draft deleted successfully");
                     }
-                    dispatch(
-                      setSelectedDraftForDelete({
-                        modalOpen: false,
-                        draftId: "",
-                        draftName: "",
-                      })
-                    );
+                    setIsDeletingDraft(false);
+                  })
+                );
+              }}
+            />
+            <Head items={headerList()} page="Drafts" />
+            <br />
+            <div>
+              {drafts?.length > 0 || filtermode ? (
+                <BootstrapTable
+                  remote={{ pagination: true, filter: true, sort: true }}
+                  loading={isLoading}
+                  filter={filterFactory()}
+                  pagination={paginationFactory(
+                    getoptions(draftCount, page, countPerPage)
+                  )}
+                  onTableChange={handlePageChange}
+                  filterPosition={"top"}
+                  {...props.baseProps}
+                  noDataIndication={() =>
+                    !isLoading && getNoDataIndicationContent()
                   }
-                )
-              );
-            }}
-          />
-          <Head items={headerList()} page="Drafts" />
-          <br />
-          <div>
-            {drafts?.length > 0 || filtermode ? (
-              <BootstrapTable
-                remote={{ pagination: true, filter: true, sort: true }}
-                loading={isLoading}
-                filter={filterFactory()}
-                pagination={paginationFactory(
-                  getoptions(draftCount, page, countPerPage)
-                )}
-                onTableChange={handlePageChange}
-                filterPosition={"top"}
-                {...props.baseProps}
-                noDataIndication={() =>
-                  !isLoading && getNoDataIndicationContent()
-                }
-                overlay={overlayFactory({
-                  spinner: <SpinnerSVG />,
-                  styles: {
-                    overlay: (base) => ({
-                      ...base,
-                      background: "rgba(255, 255, 255)",
-                      height: `${
-                        countPerPage > 5
-                          ? "100% !important"
-                          : "350px !important"
-                      }`,
-                      top: "65px",
-                    }),
-                  },
-                })}
-              />
-            ) : (
-              getNoData()
-            )}
-          </div>
+                  overlay={overlayFactory({
+                    spinner: <SpinnerSVG />,
+                    styles: {
+                      overlay: (base) => ({
+                        ...base,
+                        background: "rgba(255, 255, 255)",
+                        height: `${
+                          countPerPage > 5
+                            ? "100% !important"
+                            : "350px !important"
+                        }`,
+                        top: "65px",
+                      }),
+                    },
+                  })}
+                />
+              ) : (
+                getNoData()
+              )}
+            </div>
+          </LoadingOverlay>
         </div>
       )}
     </ToolkitProvider>

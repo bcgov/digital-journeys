@@ -38,6 +38,7 @@ import { push } from "connected-react-router";
 
 import Confirm from "../../containers/Confirm";
 import { toast } from "react-toastify";
+import LoadingOverlay from "react-loading-overlay";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -69,6 +70,8 @@ export const ApplicationList = React.memo(() => {
   const selectedApplicationForDelete = useSelector(
     (state) => state.applications.selectedApplicationForDelete
   );
+
+  const [isDeletingApplication, setIsDeletingApplication] = React.useState(false);
 
   useEffect(() => {
     setIsLoading(false);
@@ -178,75 +181,93 @@ export const ApplicationList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <Confirm
-            modalOpen={selectedApplicationForDelete.modalOpen}
-            message={
-              "Are you sure you want to delete this application? Deleting this application will eliminate the submitted form and all existing information on it from the database."
-            }
-            onNo={() => {
-              dispatch(
-                setSelectedApplicationForDelete({
-                  modalOpen: false,
-                  applicationId: "",
-                  applicationName: "",
-                })
-              );
-            }}
-            onYes={() => {
-              dispatch(
-                deleteApplicationById(selectedApplicationForDelete.applicationId, (error) => {
-                  if (error) {
-                    toast.error("There was an error deleting the application!");
-                  } else {
-                    toast.success("Application deleted successfully");
-                  }
-                  dispatch(
-                    setSelectedApplicationForDelete({
-                      modalOpen: false,
-                      applicationId: "",
-                      applicationName: "",
-                    })
-                  );
-                })
-              );
-            }}
-          />
-          <Head items={headOptions} page="Applications" />
-          <br />
-          <div>
-          {applicationCount > 0 || filtermode ? <BootstrapTable
-              remote={{ pagination: true, filter: true, sort: true }}
-              loading={isLoading}
-              filter={filterFactory()}
-              pagination={paginationFactory(
-                getoptions(applicationCount, page, countPerPage)
-              )}
-              onTableChange={handlePageChange}
-              filterPosition={"top"}
-              {...props.baseProps}
-              noDataIndication={() =>
-                !isLoading && getNoDataIndicationContent()
+          <LoadingOverlay
+            active={isDeletingApplication}
+            spinner
+            text="Deleting..."
+            className="col-12"
+          >
+            <Confirm
+              modalOpen={selectedApplicationForDelete.modalOpen}
+              message={
+                "Are you sure you want to delete this application? Deleting this application will eliminate the submitted form and all existing information on it from the database."
               }
-              defaultSorted={defaultSortedBy}
-              overlay={overlayFactory({
-                spinner: <SpinnerSVG />,
-                styles: {
-                  overlay: (base) => ({
-                    ...base,
-                    background: "rgba(255, 255, 255)",
-                    height: `${
-                      countPerPage > 5 ? "100% !important" : "350px !important"
-                    }`,
-                    top: "65px",
-                  }),
-                },
-              })}
-            /> : iserror ? (
-              <Alert variant={"danger"}>{error}</Alert>
-            ) : (
-              <Nodata text={t("No Applications Found")} />
-            )}
-          </div>
+              onNo={() => {
+                dispatch(
+                  setSelectedApplicationForDelete({
+                    modalOpen: false,
+                    applicationId: "",
+                    applicationName: "",
+                  })
+                );
+              }}
+              onYes={() => {
+                setIsDeletingApplication(true);
+                dispatch(
+                  setSelectedApplicationForDelete({
+                    modalOpen: false,
+                    applicationId: "",
+                    applicationName: "",
+                  })
+                );
+                dispatch(
+                  deleteApplicationById(
+                    selectedApplicationForDelete.applicationId,
+                    (error) => {
+                      if (error) {
+                        toast.error(
+                          "There was an error deleting the application!"
+                        );
+                      } else {
+                        toast.success("Application deleted successfully");
+                      }
+                      setIsDeletingApplication(false);
+                    }
+                  )
+                );
+              }}
+            />
+            <Head items={headOptions} page="Applications" />
+            <br />
+            <div>
+              {applicationCount > 0 || filtermode ? (
+                <BootstrapTable
+                  remote={{ pagination: true, filter: true, sort: true }}
+                  loading={isLoading}
+                  filter={filterFactory()}
+                  pagination={paginationFactory(
+                    getoptions(applicationCount, page, countPerPage)
+                  )}
+                  onTableChange={handlePageChange}
+                  filterPosition={"top"}
+                  {...props.baseProps}
+                  noDataIndication={() =>
+                    !isLoading && getNoDataIndicationContent()
+                  }
+                  defaultSorted={defaultSortedBy}
+                  overlay={overlayFactory({
+                    spinner: <SpinnerSVG />,
+                    styles: {
+                      overlay: (base) => ({
+                        ...base,
+                        background: "rgba(255, 255, 255)",
+                        height: `${
+                          countPerPage > 5
+                            ? "100% !important"
+                            : "350px !important"
+                        }`,
+                        top: "65px",
+                      }),
+                    },
+                  })}
+                />
+              ) : iserror ? (
+                <Alert variant={"danger"}>{error}</Alert>
+              ) : (
+                <Nodata text={t("No Applications Found")} />
+              )}
+            </div>
+          </LoadingOverlay>
         </div>
       )}
     </ToolkitProvider>
