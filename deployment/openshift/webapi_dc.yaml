@@ -177,6 +177,16 @@ objects:
               secretKeyRef:
                 key: KEYCLOAK_ENABLE_CLIENT_AUTH
                 name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: SL_REVIEW_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                key: SL_REVIEW_ENDPOINT
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: ODS_URL
+            valueFrom:
+              secretKeyRef:
+                key: ODS_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
         ports:

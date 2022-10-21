@@ -36,6 +36,7 @@ objects:
             "REACT_APP_DRAFT_POLLING_RATE":"${REACT_APP_DRAFT_POLLING_RATE}",
             "REACT_APP_EXPORT_PDF_ENABLED":"${REACT_APP_EXPORT_PDF_ENABLED}",
             "REACT_APP_DOCUMENT_SERVICE_URL":"${REACT_APP_DOCUMENT_SERVICE_URL}"
+            "REACT_APP_SL_REVIEW_PROCESS_NAME":"${REACT_APP_SL_REVIEW_PROCESS_NAME}"
           }
   -
     apiVersion: v1
@@ -157,4 +158,8 @@ parameters:
   - name: REACT_APP_BPM_API_URL
     displayName: REACT_APP_BPM_API_URL
     description: BPM URL
+    required: true
+  - name: REACT_APP_SL_REVIEW_PROCESS_NAME
+    displayName: REACT_APP_SL_REVIEW_PROCESS_NAME
+    description: SL Review process name
     required: true
