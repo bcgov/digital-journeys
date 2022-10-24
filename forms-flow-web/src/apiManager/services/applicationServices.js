@@ -3,6 +3,7 @@ import {
   httpGETRequest,
   httpPOSTRequest,
   httpPOSTRequestWithoutToken,
+  httpDELETERequest
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
@@ -277,6 +278,25 @@ export const getAllApplicationStatus = (params, ...rest) => {
       })
       .catch((error) => {
         dispatch(setApplicationError("Failed to fetch application status"));
+        done(error);
+      });
+  };
+};
+
+export const deleteApplicationById = (applicationId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlDeleteApplication = replaceUrl(API.DELETE_APPLICATION, 
+    "<application_id>", applicationId);
+  return () => {
+    httpDELETERequest(apiUrlDeleteApplication)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          done(null);
+        }
+      })
+      .catch((error) => {
         done(error);
       });
   };

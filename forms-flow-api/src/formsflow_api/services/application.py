@@ -25,6 +25,8 @@ from formsflow_api_utils.services.external import FormioService
 
 from .form_process_mapper import FormProcessMapperService
 
+import requests
+
 application_schema = ApplicationSchema()
 
 
@@ -360,15 +362,6 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             application.update(data)
         else:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
-    
-    @staticmethod
-    def delete_application(application_id: int):
-        """Delete application."""
-        application = Application.find_by_id(application_id=application_id)
-        if application:
-            application.delete()
-        else:
-            raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_aggregated_applications(  # pylint: disable=too-many-arguments
@@ -507,6 +500,42 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             )
         assert application_count is not None
         return application_count
+
+    @staticmethod
+    def delete_application(application_id: int):
+        """Delete application."""
+        application = Application.find_by_id(application_id=application_id)
+        if application:
+            application.delete()
+            current_app.logger.info(f"application was deleted by id {application_id}")
+        else:
+            raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
+    
+    @staticmethod
+    def delete_submission_by_application(application):
+        """Delete Formio submission by application."""
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        formio_service.delete_submission(form_io_token, application.latest_form_id, application.submission_id)
+
+    @staticmethod
+    def delete_application_from_ODS(application_id: int):
+        """Delete application in ODS by application id."""        
+        slreview_endpoint = current_app.config.get("SL_REVIEW_ENDPOINT")
+        ODS_base_url = current_app.config.get("ODS_URL")
+        test_auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+        delete_application_in_ODS_url = f"{ODS_base_url}/{slreview_endpoint}/{application_id}"
+        headers = {"Authorization": test_auth_token}
+        try:
+            requests.delete(delete_application_in_ODS_url, headers=headers)
+            current_app.logger.info(f"application was deleted in ODS by id {application_id}")
+        except:
+            raise BusinessException(
+                f"Failed to delete the application in ODS at {delete_application_in_ODS_url}", 
+                HTTPStatus.BAD_REQUEST)
+
+        
+        
     
     @staticmethod
     def get_submission_for_application(application_list):

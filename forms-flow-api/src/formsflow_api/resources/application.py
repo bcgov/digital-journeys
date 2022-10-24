@@ -22,6 +22,8 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService
 
+from formsflow_api.models import Application
+
 API = Namespace("Application", description="Application")
 
 
@@ -385,4 +387,26 @@ class ApplicationResourceByApplicationStatus(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
+            return err.error, err.status_code
+
+@cors_preflight("DELETE, OPTIONS")
+@API.route("/<int:application_id>/delete", methods=["DELETE", "OPTIONS"])
+class ApplicationResourceByIdDelete(Resource):
+    """Delete application by id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def delete(application_id):
+        """Delete application by id."""
+        try:
+            application = Application.find_by_id(application_id=application_id)
+            if not application:
+                raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
+            ApplicationService.delete_application(application_id)
+            ApplicationService.delete_submission_by_application(application)
+            ApplicationService.delete_application_from_ODS(application_id)
+            return f"Application was successfully deleted with id: {application_id}", HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.error(err.error)
             return err.error, err.status_code

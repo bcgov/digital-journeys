@@ -108,22 +108,6 @@ class DraftService:
 
     @staticmethod
     @user_context
-    def delete_draft(draft_id: int, **kwargs):
-        """Delete draft."""
-        user: UserContext = kwargs["user"]
-        user_id: str = user.user_name or ANONYMOUS_USER
-        draft = Draft.get_by_id(draft_id, user_id)
-        if draft:
-            draft.delete()
-        else:
-            response, status = {
-                "type": "Bad request error",
-                "message": f"Invalid request data - draft id {draft_id} does not exist",
-            }, HTTPStatus.BAD_REQUEST
-            raise BusinessException(response, status)
-
-    @staticmethod
-    @user_context
     def get_all_drafts(query_params, **kwargs):
         """Get all drafts."""
         user: UserContext = kwargs["user"]
@@ -163,7 +147,9 @@ class DraftService:
                 "message": f"Invalid request data - draft id {draft_id} does not exist",
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status)
-
+        
+        draft.delete()
+        
         application = Application.find_by_id(draft.application_id)
         mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
         if application.form_process_mapper_id != mapper.id:
@@ -175,3 +161,19 @@ class DraftService:
         )
         ApplicationService.start_task(mapper, payload, token, application)
         return application
+
+    @staticmethod
+    @user_context
+    def delete_draft(draft_id: int, **kwargs):
+        """Delete draft."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name or ANONYMOUS_USER
+        draft = Draft.get_by_id(draft_id, user_id)
+        if draft:
+            draft.delete()
+        else:
+            response, status = {
+                "type": "Bad request error",
+                "message": f"Invalid request data - draft id {draft_id} does not exist",
+            }, HTTPStatus.BAD_REQUEST
+            raise BusinessException(response, status)

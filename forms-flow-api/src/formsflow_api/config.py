@@ -108,6 +108,8 @@ class _Config:  # pylint: disable=too-few-public-methods
     EMPLOYEE_SEARCH_API_URL = os.getenv("EMPLOYEE_SEARCH_API_URL")
     MINISTRY_NAMES_API_URL = os.getenv("MINISTRY_NAMES_API_URL")
     ODS_AUTH_TOKEN = os.getenv("ODS_AUTH_TOKEN")
+    SL_REVIEW_ENDPOINT = os.getenv("SL_REVIEW_ENDPOINT")
+    ODS_URL = os.getenv("ODS_URL")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

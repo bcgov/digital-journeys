@@ -67,6 +67,8 @@ const API = {
   DASHBOARD_AUTHORIZATION: `${WEB_BASE_URL}/authorizations/dashboard`,
   USER_DASHBOARDS: `${WEB_BASE_URL}/authorizations/users/dashboard`,
   GET_EMPLOYEE_DATA: `${WEB_BASE_URL}/employee-data/me`,
+
+  DELETE_APPLICATION: `${WEB_BASE_URL}/application/<application_id>/delete`,
 };
 
 export default API;
