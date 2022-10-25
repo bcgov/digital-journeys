@@ -348,7 +348,12 @@
               ${queryType} UPPER(RES.NAME_) not like UPPER(#{query.nameNotLike}) ESCAPE ${escapeChar}
             </if>
             <if test="query.description != null">
-              ${queryType} RES.DESCRIPTION_ = #{query.description}
+              <if test="query.description == 'hidefromtasklist'">
+                ${queryType} (RES.DESCRIPTION_ != #{query.description} OR RES.DESCRIPTION_ = '' OR RES.DESCRIPTION_ IS NULL)
+              </if>
+              <if test="query.description != 'hidefromtasklist'">
+                ${queryType} RES.DESCRIPTION_ = #{query.description}
+              </if>
             </if>
             <if test="query.descriptionLike != null">
               ${queryType} RES.DESCRIPTION_ like #{query.descriptionLike} ESCAPE ${escapeChar}

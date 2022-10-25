@@ -28,7 +28,7 @@ import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
 import { REVIEWER_GROUP } from "../../constants/userContants";
-import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
+import { MAX_RESULTS, HIDEFROMTASKLIST } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (
   filterId,
@@ -38,6 +38,11 @@ export const fetchServiceTaskList = (
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
+  // Default filter to hide tasks from the task list
+  // issue: https://github.com/bcgov/digital-journeys/issues/636
+  if (reqData.descriptionLike === undefined && reqData.description === undefined) {
+    reqData = {...reqData, description: HIDEFROMTASKLIST};
+  }
   let apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
     "<filter_id>",

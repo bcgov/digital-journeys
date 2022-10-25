@@ -183,7 +183,7 @@ export const taskFilters = [
   },
   {
     label: <Translation>{(t) => t("Description")}</Translation>,
-    key: "Description",
+    key: "description",
     operator: FILTER_OPERATOR_TYPES.LIKE,
     type: Filter_Search_Types.STRING,
     value: "",
@@ -224,3 +224,4 @@ export const QUERY_TYPES = {
   ALL: <Translation>{(t) => t("All")}</Translation>,
 };
 export const MAX_RESULTS = 15; //maxResults
+export const HIDEFROMTASKLIST = "hidefromtasklist";
