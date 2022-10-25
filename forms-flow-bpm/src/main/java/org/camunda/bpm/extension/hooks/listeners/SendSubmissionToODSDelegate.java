@@ -80,12 +80,12 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
 
         if(debug) {
-            System.out.println("Sending valuse to ODS: " + json);
+            System.out.println("Sending values to ODS: " + json);
         }
 
         if (httpMethod.equals("put")) {
             this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.PUT, json);
-        } if (httpMethod.equals("delete")) {
+        } else if (httpMethod.equals("delete")) {
             this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.DELETE, json);
         } else {
             this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
