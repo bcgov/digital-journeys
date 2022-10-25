@@ -527,8 +527,11 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         delete_application_in_ODS_url = f"{ODS_base_url}/{slreview_endpoint}({application_id})"
         headers = {"Authorization": test_auth_token}
         try:
-            requests.delete(delete_application_in_ODS_url, headers=headers)
-            current_app.logger.info(f"application was deleted in ODS by id {application_id}")
+            response = requests.delete(delete_application_in_ODS_url, headers=headers)
+            if response.ok:
+                current_app.logger.info(f"application was deleted in ODS by id {application_id}")
+            else:
+                current_app.logger.warning(f"Something went wrong deleting application in ODS by id {application_id}")
         except:
             raise BusinessException(
                 f"Failed to delete the application in ODS at {delete_application_in_ODS_url}", 
