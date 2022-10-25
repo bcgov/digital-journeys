@@ -524,7 +524,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         slreview_endpoint = current_app.config.get("SL_REVIEW_ENDPOINT")
         ODS_base_url = current_app.config.get("ODS_URL")
         test_auth_token = current_app.config.get("ODS_AUTH_TOKEN")
-        delete_application_in_ODS_url = f"{ODS_base_url}/{slreview_endpoint}/{application_id}"
+        delete_application_in_ODS_url = f"{ODS_base_url}/{slreview_endpoint}({application_id})"
         headers = {"Authorization": test_auth_token}
         try:
             requests.delete(delete_application_in_ODS_url, headers=headers)

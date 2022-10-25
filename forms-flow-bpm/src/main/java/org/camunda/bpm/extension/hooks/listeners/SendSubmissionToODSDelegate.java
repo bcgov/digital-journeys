@@ -98,6 +98,6 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
     }
     
     public String getEndpointUrl(String endpoint, String applicationId) {
-        return odsUrl + "/" + endpoint + "/" + applicationId;
+        return odsUrl + "/" + endpoint + "(" + applicationId + ")";
     }
 }
