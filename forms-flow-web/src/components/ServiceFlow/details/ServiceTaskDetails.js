@@ -49,7 +49,7 @@ import PrintPDF from "../../../helper/PrintPDF";
 import {
   STAFF_REVIEWER,
 } from "../../../constants/constants";
-import { redirectToFormSuccessPage } from "../../../constants/successTypes";
+import { redirectToSuccessPage } from "../../../constants/successTypes";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -233,7 +233,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
           (err) => {
             if (!err) {
               // reloadTasks();
-              redirectToFormSuccessPage(successPage || 'approval');
+              redirectToSuccessPage(dispatch, push, successPage);
             } else {
               dispatch(setBPMTaskDetailLoader(false));
             }
