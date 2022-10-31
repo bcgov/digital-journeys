@@ -7,9 +7,9 @@ export const exportToPdf = (options) => {
   var opt = {
     margin: [64, 0, 64, 0],
     filename: `form-exported-${new Date().getTime()}.pdf`,
-    pagebreak: {mode: ['avoid-all']},
-    image: { type: 'jpeg', quality: 0.50 },
-    html2canvas: { scale: 2 },
+    pagebreak: {mode: ['avoid-all', 'css']},
+    image: { type: 'jpeg', quality: 1.0 },
+    html2canvas: { scale: 1 },
     jsPDF: { unit: 'px', format: [mainPrintableContainer.offsetWidth, pdfPageHeight], orientation: 'portrait' }
   };
   html2pdf().set(opt).from(mainPrintableContainer).save();
