@@ -4,4 +4,5 @@ export const CUSTOM_EVENT_TYPE = {
   CUSTOM_SUBMIT_DONE: "customSubmitDone",
   ACTION_COMPLETE: "actionComplete",
   CANCEL_SUBMISSION: "cancelSubmission",
+  SAVE_DRAFT: "saveDraft",
 };

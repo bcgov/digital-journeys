@@ -210,6 +210,9 @@ const Edit = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
         onApplicationFormSubmit(customEvent.actionType, customEvent.successPage);
         break;
+      case CUSTOM_EVENT_TYPE.SAVE_DRAFT:
+        toast.success(<Translation>{(t) => t("Saved as draft")}</Translation>);
+        break;
       default:
         return;
     }
