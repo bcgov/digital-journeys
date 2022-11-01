@@ -39,6 +39,7 @@ import {
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
+// eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
 import PrintPDF from "../../helper/PrintPDF";
@@ -61,6 +62,7 @@ const View = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
+  // eslint-disable-next-line no-unused-vars
   const [draftSaved, setDraftSaved] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   /**
@@ -149,7 +151,7 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
-      {
+      {/* {
         <>
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
@@ -160,7 +162,7 @@ const View = React.memo((props) => {
             )}
           </span>
         </>
-      }
+      } */}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -216,7 +218,16 @@ const View = React.memo((props) => {
                 exitType.current = "SUBMIT";
                 onSubmit(data, form._id, isPublic);
               }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              onCustomEvent={(evt) => {
+                onCustomEvent(evt, redirectUrl);
+                if (evt.type === "saveDraft") {
+                  let payload = getDraftReqFormat(formId, { ...draftData });
+                  saveDraft(payload);
+                  toast.success(
+                    <Translation>{(t) => t("Saved as draft")}</Translation>
+                  );
+                }
+              }}
             />
           }
         </div>

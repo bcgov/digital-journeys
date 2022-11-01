@@ -56,6 +56,7 @@ import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
 import { getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
+// eslint-disable-next-line no-unused-vars
 import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
@@ -105,7 +106,9 @@ const View = React.memo((props) => {
   const [showPublicForm, setShowPublicForm] = useState("checking");
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
+  // eslint-disable-next-line no-unused-vars
   const [draftSaved, setDraftSaved] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [notified, setNotified] = useState(false);
   const [defaultVals, setDefaultVals] = useState({});
 
@@ -399,7 +402,7 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
-      {DRAFT_ENABLED &&
+      {/* {DRAFT_ENABLED &&
         isAuthenticated &&
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
@@ -421,7 +424,7 @@ const View = React.memo((props) => {
               )}
             </span>
           </>
-        )}
+        )} */}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
           <SubmissionError
@@ -500,7 +503,18 @@ const View = React.memo((props) => {
                 exitType.current = "SUBMIT";
                 onSubmit(data, form._id, isPublic);
               }}
-              onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
+              onCustomEvent={(evt) => {
+                onCustomEvent(evt, redirectUrl);
+                if (evt.type === "saveDraft") {
+                  let payload = getDraftReqFormat(validFormId, {
+                    ...draftData?.data,
+                  });
+                  saveDraft(payload);
+                  toast.success(
+                    <Translation>{(t) => t("Saved as draft")}</Translation>
+                  );
+                }
+              }}
               ref={formRef}
             />
           ) : formStatus === "inactive" || !formStatus ? (
