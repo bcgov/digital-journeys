@@ -6,7 +6,6 @@ export const fetchUnreadReleaseNote = () => {
   return (dispatch) => {
     httpGETRequest(API.RELEASE_NOTE_UNREAD)
       .then((res) => {
-        console.log({res});
         if (res.data) {
           dispatch(setReleaseNoteData(res.data));
         } else {
