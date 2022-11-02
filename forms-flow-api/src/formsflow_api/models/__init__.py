@@ -7,6 +7,8 @@ from .base_model import BaseModel
 from .db import db, ma
 from .draft import Draft
 from .form_process_mapper import FormProcessMapper
+from .release_note import ReleaseNote
+from .release_note_map_user import ReleaseNoteMapUser
 
 __all__ = [
     "db",
@@ -18,4 +20,6 @@ __all__ = [
     "Draft",
     "AuthType",
     "Authorization",
+    "ReleaseNote",
+    "ReleaseNoteMapUser",
 ]

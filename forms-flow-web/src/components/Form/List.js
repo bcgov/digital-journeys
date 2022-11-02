@@ -3,7 +3,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
   indexForms,
@@ -46,6 +46,7 @@ import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
 import { unPublishForm } from "../../apiManager/services/processServices";
+import { fetchUnreadReleaseNote, readReleaseNote } from "../../apiManager/services/releaseNoteService";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
@@ -59,6 +60,7 @@ import { getFormioRoleIds } from "../../apiManager/services/userservices";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
+  const [showReleaseNoteModal, setShowReleaseNoteModal] = useState(false);
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
   const {
@@ -115,12 +117,20 @@ const List = React.memo((props) => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
+  const releaseNoteData = useSelector((state) => state.releaseNote);
+  useEffect(() => {
+    if (releaseNoteData.data?.id) {
+      setShowReleaseNoteModal(true);
+    }
+  }, [releaseNoteData, dispatch, readReleaseNote]);
+
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     dispatch(setFormCheckList([]));
-  }, [dispatch]);
+    dispatch(fetchUnreadReleaseNote());
+  }, [dispatch, fetchUnreadReleaseNote]);
 
   useEffect(() => {
     if (forms.forms.length > 0) {
@@ -345,6 +355,15 @@ const List = React.memo((props) => {
 
   return (
     <>
+      <ReleaseNoteModal 
+        showModal={showReleaseNoteModal} 
+        onClose={() => {
+          setShowReleaseNoteModal(false);
+          dispatch(readReleaseNote({release_note_id: releaseNoteData.data?.id}));
+          }} 
+        title={releaseNoteData.data?.title} 
+        content={releaseNoteData.data?.content} 
+      />
       <FileModal
         modalOpen={showFormUploadModal}
         onClose={() => setShowFormUploadModal(false)}
@@ -560,6 +579,30 @@ const List = React.memo((props) => {
     </>
   );
 });
+
+const ReleaseNoteModal = ({ showModal, onClose, title, content }) => {
+  return (
+      <Modal 
+        show={showModal}
+        onHide={onClose}
+        size="lg"
+        >
+        <Modal.Header style={{color: "#fff", backgroundColor: "#036"}}>
+          <Modal.Title>
+            <h3>{title}</h3>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button type="button" className="btn btn-default" onClick={onClose}>
+            <Translation>{(t) => t("Close")}</Translation>
+          </Button>
+        </Modal.Footer>
+      </Modal>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

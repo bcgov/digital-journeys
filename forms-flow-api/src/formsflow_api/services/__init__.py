@@ -12,6 +12,7 @@ from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
 from formsflow_api.services.ministry_names_service import MinistryNamesService
 from formsflow_api.services.employeeDataService import EmployeeDataService
+from formsflow_api.services.release_note import ReleaseNoteService
 
 __all__ = [
     "ApplicationService",
@@ -25,4 +26,5 @@ __all__ = [
     "AuthorizationService",
     "EmployeeDataService",
     "MinistryNamesService",
+    "ReleaseNoteService",
 ]

@@ -173,6 +173,9 @@ const ACTION_CONSTANTS = {
   // Employee Data
   EMPLOYEE_DATA: "EMPLOYEE_DATA",
   EMPLOYEE_DATA_ERROR: "EMPLOYEE_DATA_ERROR",
+
+  // Release note data
+  RELEASE_NOTE_DATA: "RELEASE_NOTE_DATA",
 };
 
 export default ACTION_CONSTANTS;
