@@ -14,5 +14,5 @@ class ReleaseNoteSchema(Schema):
     created = fields.Str()
     modified = fields.Str()
     title = fields.Str()
-    content = fields.Str()
+    content = fields.Dict()
     is_active = fields.Bool()

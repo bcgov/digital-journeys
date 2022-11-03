@@ -1,8 +1,9 @@
 """This manages Release Note Database Models."""
 
 from __future__ import annotations
-
+import datetime
 from sqlalchemy import and_
+from sqlalchemy.dialects.postgresql import JSON
 
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
@@ -16,8 +17,9 @@ class ReleaseNote(AuditDateTimeMixin, BaseModel, db.Model):
     __tablename__ = "release_note"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256), nullable=True)
-    content = db.Column(db.Text, nullable=True)
+    content = db.Column(JSON, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
+    start_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     @classmethod
     def create_release_note_from_dict(cls, release_note_info: dict) -> ReleaseNote:
@@ -26,6 +28,8 @@ class ReleaseNote(AuditDateTimeMixin, BaseModel, db.Model):
             release_note = ReleaseNote()
             release_note.title = release_note_info["title"]
             release_note.content = release_note_info["content"]
+            if "start_date" in release_note_info:
+                release_note.start_date = release_note_info["start_date"]
             release_note.save()
             return release_note
         return None
@@ -51,7 +55,8 @@ class ReleaseNote(AuditDateTimeMixin, BaseModel, db.Model):
                     .with_entities(ReleaseNoteMapUser.release_note_id)
                     .filter(ReleaseNoteMapUser.read_by == user_id)
                     ),
-                    ReleaseNote.is_active == True
+                    ReleaseNote.is_active == True,
+                    ReleaseNote.start_date <= datetime.datetime.utcnow()
                 )
             )
             .order_by((ReleaseNote.created))

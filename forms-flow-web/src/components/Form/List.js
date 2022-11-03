@@ -3,7 +3,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
   indexForms,
@@ -42,6 +42,7 @@ import {
   updateFormUploadCounter,
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
+import ReleaseNoteModal from "./ReleaseNote/releaseNoteModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
@@ -579,30 +580,6 @@ const List = React.memo((props) => {
     </>
   );
 });
-
-const ReleaseNoteModal = ({ showModal, onClose, title, content }) => {
-  return (
-      <Modal 
-        show={showModal}
-        onHide={onClose}
-        size="lg"
-        >
-        <Modal.Header style={{color: "#fff", backgroundColor: "#036"}}>
-          <Modal.Title>
-            <h3>{title}</h3>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <div dangerouslySetInnerHTML={{ __html: content }} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button type="button" className="btn btn-default" onClick={onClose}>
-            <Translation>{(t) => t("Close")}</Translation>
-          </Button>
-        </Modal.Footer>
-      </Modal>
-  );
-};
 
 const mapStateToProps = (state) => {
   return {

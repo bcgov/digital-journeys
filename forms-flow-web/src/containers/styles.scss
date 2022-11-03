@@ -413,3 +413,16 @@
 .menu-padded {
   padding: 5px 0 5px 0;
 }
+
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
+
+.release-note-modal p {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.release-note-modal p:last-child {
+  margin-bottom: 10px;
+}
