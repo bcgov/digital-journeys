@@ -505,13 +505,15 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => {
                 onCustomEvent(evt, redirectUrl);
-                if (evt.type === "saveDraft") {
+                if (evt.type === CUSTOM_EVENT_TYPE.SAVE_DRAFT) {
                   let payload = getDraftReqFormat(validFormId, {
                     ...draftData?.data,
                   });
                   saveDraft(payload);
                   toast.success(
-                    <Translation>{(t) => t("Saved as draft")}</Translation>
+                    <Translation>
+                      {(t) => t("Submission saved to Draft Forms")}
+                    </Translation>
                   );
                 }
               }}
