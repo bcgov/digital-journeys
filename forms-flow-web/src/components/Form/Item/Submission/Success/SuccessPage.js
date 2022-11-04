@@ -47,8 +47,8 @@ export default React.memo(() => {
               </li>
 
               <li>
-                Your request expires in 30 calendar days. If your request has
-                not been processed within 30 calendar days you will need to
+                Your request expires in 60 calendar days. If your request has
+                not been processed within 60 calendar days you will need to
                 submit a new request.
               </li>
 

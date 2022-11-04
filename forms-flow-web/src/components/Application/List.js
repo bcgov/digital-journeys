@@ -92,7 +92,7 @@ export const ApplicationList = React.memo(() => {
 
   useEffect(() => {
     dispatch(getAllApplications(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef, selectedApplicationForDelete]);
+  }, [dispatch, currentPage, countPerPageRef, isDeletingApplication]);
 
   const isClientEdit = (applicationStatus) => {
     if (
