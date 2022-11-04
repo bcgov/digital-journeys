@@ -653,7 +653,9 @@ h4 {
   font-weight: 700;
 }
 
-.form-control {
+.form-control,
+.ui.selection.dropdown,
+.ui.selection.dropdown:hover {
   border: 2px solid $componentColor;
 }
 
