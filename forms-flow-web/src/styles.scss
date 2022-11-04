@@ -653,13 +653,23 @@ h4 {
   font-weight: 700;
 }
 
-.form-control {
+.form-control,
+.ui.selection.dropdown,
+.ui.selection.dropdown:hover {
   border: 2px solid $componentColor;
 }
 
 .form-control:focus {
   outline: 4px solid #3b99fc;
   outline-offset: 1px;
+}
+
+.ui.selection.dropdown {
+  // Bring sizing of dropdown in line with textboxes
+  padding: 0.375rem 0.75rem;
+  height: calc(1.6em + 0.75rem + 2px);
+  line-height: 1.6;
+  min-height: auto;
 }
 
 .field-required::after {
