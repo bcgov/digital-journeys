@@ -17,6 +17,7 @@ import DGJFileUpload from "./formComponents/FileUpload";
 import RemoteSelect from "./formComponents/RemoteSelect";
 import MinistrySelect from "./formComponents/MinistrySelect";
 import UploadProvider from "./formComponents/UploadProvider";
+import PanelComponent from "./formComponents/Panel";
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -48,6 +49,8 @@ Formio.Providers.addProvider('storage', 'digital-journeys', UploadProvider);
 // Override the default file upload component with the custom one to provide
 // reasonable default values
 Components.setComponent('file', DGJFileUpload);
+Components.setComponent('panel', PanelComponent);
+
 // Adding two remote select components extending original formio Select
 Components.addComponent('remoteSelect', RemoteSelect);
 Components.addComponent('ministrySelect', MinistrySelect);

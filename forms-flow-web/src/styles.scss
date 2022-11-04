@@ -954,3 +954,25 @@ a{
     display: none;
   }
 }
+
+//// Panel Callout
+
+// Render Panel component as a bcgov design system styled callout when "Info" is selected as the theme
+.formio-component.formio-component-panel .dgj-panel-info {
+  border: none !important;
+  margin-bottom: 0 !important;
+
+  .card-header {
+    display: none;  
+  }
+  .card-body {
+    padding: 25px;
+    border-left: 10px solid #38598a;
+    margin: 0;
+    background-color: #f2f2f2;
+
+    h1,h2,h3,h4 {
+      margin: 0;
+    }
+  }
+}
