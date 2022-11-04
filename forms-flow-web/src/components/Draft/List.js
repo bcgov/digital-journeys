@@ -80,7 +80,7 @@ export const DraftList = React.memo(() => {
 
   useEffect(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef, selectedDraftForDelete]);
+  }, [dispatch, currentPage, countPerPageRef, isDeletingDraft]);
 
   if (isDraftListLoading) {
     return <Loading />;
