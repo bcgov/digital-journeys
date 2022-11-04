@@ -69,6 +69,10 @@ const API = {
   GET_EMPLOYEE_DATA: `${WEB_BASE_URL}/employee-data/me`,
 
   DELETE_APPLICATION: `${WEB_BASE_URL}/application/<application_id>/delete`,
+
+  RELEASE_NOTE_BASE: `${WEB_BASE_URL}/release-note`,
+  RELEASE_NOTE_UNREAD: `${WEB_BASE_URL}/release-note/unread`,
+  RELEASE_NOTE_READ: `${WEB_BASE_URL}/release-note/read`,
 };
 
 export default API;

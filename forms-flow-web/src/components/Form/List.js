@@ -42,10 +42,12 @@ import {
   updateFormUploadCounter,
 } from "../../actions/checkListActions";
 import FileModal from "./FileUpload/fileUploadModal";
+import ReleaseNoteModal from "./ReleaseNote/releaseNoteModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
 import { unPublishForm } from "../../apiManager/services/processServices";
+import { fetchUnreadReleaseNote, readReleaseNote } from "../../apiManager/services/releaseNoteService";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
@@ -59,6 +61,7 @@ import { getFormioRoleIds } from "../../apiManager/services/userservices";
 const List = React.memo((props) => {
   const { t } = useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
+  const [showReleaseNoteModal, setShowReleaseNoteModal] = useState(false);
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
   const {
@@ -115,12 +118,20 @@ const List = React.memo((props) => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
+  const releaseNoteData = useSelector((state) => state.releaseNote);
+  useEffect(() => {
+    if (releaseNoteData.data?.id) {
+      setShowReleaseNoteModal(true);
+    }
+  }, [releaseNoteData, dispatch, readReleaseNote]);
+
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
     dispatch(setFormCheckList([]));
-  }, [dispatch]);
+    dispatch(fetchUnreadReleaseNote());
+  }, [dispatch, fetchUnreadReleaseNote]);
 
   useEffect(() => {
     if (forms.forms.length > 0) {
@@ -345,6 +356,15 @@ const List = React.memo((props) => {
 
   return (
     <>
+      <ReleaseNoteModal 
+        showModal={showReleaseNoteModal} 
+        onClose={() => {
+          setShowReleaseNoteModal(false);
+          dispatch(readReleaseNote({release_note_id: releaseNoteData.data?.id}));
+          }} 
+        title={releaseNoteData.data?.title} 
+        content={releaseNoteData.data?.content} 
+      />
       <FileModal
         modalOpen={showFormUploadModal}
         onClose={() => setShowFormUploadModal(false)}

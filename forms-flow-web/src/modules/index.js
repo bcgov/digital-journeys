@@ -17,6 +17,7 @@ import dashboardReducer from "./dashboardReducer";
 import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
 import employeeData from "./employeeDataReducer";
+import releaseNote from "./releaseNoteReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -44,7 +45,8 @@ const createRootReducer = (history) =>
     dashboardReducer,
     tenants: tenantReducer,
     draft: draftSubmission,
-    employeeData
+    employeeData,
+    releaseNote
   });
 
 export default createRootReducer;

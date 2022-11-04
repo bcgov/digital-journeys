@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { /* Link ,*/ useParams } from "react-router-dom";
+import { Link , useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -432,13 +432,13 @@ const View = React.memo((props) => {
             message={props.submissionError.message}
             onConfirm={props.onConfirm}
           ></SubmissionError>
-          {/* {isAuthenticated ? (
+          {isAuthenticated ? (
             <Link title="go back" to={`${redirectUrl}form`}>
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
 
-          {form.title ? (
+          {/* {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
                 <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp;{" "}
