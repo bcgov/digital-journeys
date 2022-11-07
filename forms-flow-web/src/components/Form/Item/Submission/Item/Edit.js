@@ -230,7 +230,7 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <Link title={t("go back")} to={`${redirectUrl}draft`} className="back-link">
+        <Link title={t("go back")} to={`${redirectUrl}application`} className="back-link">
           <i className="fa fa-chevron-left fa-lg" />
         </Link>&nbsp;
         <i className="fa fa-edit" 
