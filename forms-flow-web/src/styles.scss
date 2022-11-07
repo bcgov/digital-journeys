@@ -460,6 +460,11 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   height: 30px;
   width: 100%;
 }
+a.back-link {
+  color: $linkColor;
+  padding-left:1.5rem;
+  margin-top: 5px;
+}
 @media (max-width: 768px) {
   .main-header{
     height: 70px;

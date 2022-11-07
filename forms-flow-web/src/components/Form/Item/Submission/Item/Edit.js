@@ -29,7 +29,7 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../../constants/applicationConstants";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { updateApplicationEvent } from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
@@ -230,6 +230,13 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
+        <Link title={t("go back")} to={`${redirectUrl}draft`} className="back-link">
+          <i className="fa fa-chevron-left fa-lg" />
+        </Link>&nbsp;
+        <i className="fa fa-edit" 
+        aria-hidden="true"
+        style={{fontSize: "30px", margin: "5px 5px 5px 18px"}}
+        ></i>&nbsp;
         <h3 className="task-head">{form.title}</h3>
       </div>
       <Errors errors={errors} />
