@@ -115,15 +115,18 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for submitting this form for the ministry to validate.
+            Almost done! Your Nomination has been submitted for your ministry to
+            validate. Please make sure to come back and complete the final
+            sign-off after discussions with your Deputy Minister (DM). Next
+            Steps:
           </span>
           <div className="success-content-body">
-            <ul>
+            <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Contact the ED of your
-                ministry human resources department or the DMO for further
-                instruction.
+                validate senior leader readiness. Contact the Executive Director
+                of your ministry human resources department or the DMO for
+                further instruction.
               </li>
 
               <li>
@@ -141,18 +144,19 @@ export default React.memo(() => {
               </li>
 
               <li>
-                After January 27, 2023, unsigned forms will be considered
-                incomplete and will not be included in the data captured for
-                corporate reporting. These files will be deleted from the
-                system.
+                After January 27, 2023, unsigned forms that have not been
+                submitted as final will be considered incomplete and will not be
+                included in the data captured for corporate reporting. These
+                files will be deleted from the system.
               </li>
 
               <li>
-                If you have any questions, please contact Jodi Little,
-                Leadership Development and Succession Lead at{" "}
-                <a href="mailto:jodi.little@gov.bc.ca">jodi.little@gov.bc.ca</a>
+                If you have any questions, please contact{" "}
+                <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
+                  PSA.SeniorLeadershipReview@gov.bc.ca
+                </a>
               </li>
-            </ul>
+            </ol>
           </div>
         </>
       );
@@ -160,22 +164,25 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for submitting this form for the ministry to validate.
+            Almost done! Your Nomination has been submitted for your ministry to
+            validate. Please make sure to come back and complete the final
+            sign-off after discussions with your Deputy Minister (DM). Next
+            Steps:
           </span>
           <div className="success-content-body">
-            <ul>
+            <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Contact the ED of your
-                ministry human resources department or the DMO for further
-                instruction.
+                validate senior leader readiness. Contact the Executive Director
+                of your ministry human resources department or the DMO for
+                further instruction.
               </li>
 
               <li>
                 Once the DM/executive team has validated the senior leaders’
                 readiness, please remember to go back into the system and
-                re-open the draft form to document any additional feedback and
-                adjust the readiness rating as needed.
+                re-open the form in the "Submitted Forms" tab to document any
+                additional feedback and adjust the readiness rating as needed.
               </li>
 
               <li>
@@ -185,17 +192,19 @@ export default React.memo(() => {
               </li>
 
               <li>
-                After January 27, 2023, unsigned forms will be considered
-                incomplete and will not be included in the data captured for
-                corporate reporting. These files will be deleted from the system.
+                After January 27, 2023, unsigned forms that have not been
+                submitted as final will be considered incomplete and will not be
+                included in the data captured for corporate reporting. These
+                files will be deleted from the system.
               </li>
 
               <li>
-                If you have any questions, please contact Jodi Little,
-                Leadership Development and Succession Lead at{" "}
-                <a href="mailto:jodi.little@gov.bc.ca">jodi.little@gov.bc.ca</a>
+                If you have any questions, please contact{" "}
+                <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
+                  PSA.SeniorLeadershipReview@gov.bc.ca
+                </a>
               </li>
-            </ul>
+            </ol>
           </div>
         </>
       );
@@ -229,16 +238,17 @@ export default React.memo(() => {
               </li>
 
               <li>
-                You will receive a PDF copy of this form on February 13, 2023.
-                If you prefer a copy beforehand, you can download a PDF for your
-                files using the “Print as PDF” button on the top right of the
-                form. We encourage you to share it with the senior leader.
+                You will receive a PDF copy of this form via email. A PDF copy
+                can also be downloaded using the “Print as PDF” button on the
+                top right of the form. We encourage you to share the completed
+                PDF form with the senior leader.
               </li>
 
               <li>
-                If you have any questions, please contact Jodi Little,
-                Leadership Development and Succession Lead at{" "}
-                <a href="mailto:jodi.little@gov.bc.ca">jodi.little@gov.bc.ca</a>
+                If you have any questions, please contact{" "}
+                <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
+                  PSA.SeniorLeadershipReview@gov.bc.ca
+                </a>
               </li>
             </ul>
           </div>
