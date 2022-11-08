@@ -181,8 +181,9 @@ export default React.memo(() => {
               <li>
                 Once the DM/executive team has validated the senior leaders’
                 readiness, please remember to go back into the system and
-                re-open the form in the "Submitted Forms" tab to document any
-                additional feedback and adjust the readiness rating as needed.
+                re-open the form in the &quot;Submitted Forms&quot; tab to
+                document any additional feedback and adjust the readiness rating
+                as needed.
               </li>
 
               <li>
