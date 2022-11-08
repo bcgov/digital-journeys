@@ -398,6 +398,29 @@ const View = React.memo((props) => {
     exportToPdf({ formId: "formview" });
   };
 
+  const handleCustomEvent = (evt) => {
+    switch (evt.type) {
+      case CUSTOM_EVENT_TYPE.SAVE_DRAFT: {
+        let payload = getDraftReqFormat(validFormId, {
+          ...draftData?.data,
+        });
+        saveDraft(payload);
+        toast.success(
+          <Translation>
+            {(t) => t("Submission saved to Draft Forms")}
+          </Translation>
+        );
+        break;
+      }
+      case CUSTOM_EVENT_TYPE.PRINT_PDF: 
+        printToPDF();
+        break;
+      
+      default:
+        return;
+    }
+  };
+
 
 
   return (
@@ -471,17 +494,6 @@ const View = React.memo((props) => {
         }
         className="col-12"
       >
-        <div className="row">
-          <div className="btn-right">
-            <button
-              type="button"
-              className="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary"
-              onClick={() => printToPDF()}
-            >
-              <i className="fa fa-print" aria-hidden="true"></i> Print As PDF
-            </button>
-          </div>
-        </div>
         <div className="ml-4 mr-4" id="formview">
           {isPublic || formStatus === "active" ? (
             <Form
@@ -505,17 +517,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => {
                 onCustomEvent(evt, redirectUrl);
-                if (evt.type === CUSTOM_EVENT_TYPE.SAVE_DRAFT) {
-                  let payload = getDraftReqFormat(validFormId, {
-                    ...draftData?.data,
-                  });
-                  saveDraft(payload);
-                  toast.success(
-                    <Translation>
-                      {(t) => t("Submission saved to Draft Forms")}
-                    </Translation>
-                  );
-                }
+                handleCustomEvent(evt);
               }}
               ref={formRef}
             />
