@@ -232,6 +232,11 @@ export default React.memo(() => {
               </li>
 
               <li>
+                The file will remain available in the system until the end of
+                the day on March 17th, 2023.
+              </li>
+
+              <li>
                 Now that the SLR process is complete, please encourage the
                 senior leader to target their learning and development plan,
                 goals, and actions to support their career aspirations and
