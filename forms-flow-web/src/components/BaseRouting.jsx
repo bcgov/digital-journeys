@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { Container } from "react-bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./NotFound";
+import ReleaseNoteModalPopup from "../helper/ReleaseNoteModalPopup";
 
 const BaseRouting = React.memo(({ store }) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
@@ -20,6 +21,7 @@ const BaseRouting = React.memo(({ store }) => {
   return (
     <>
       {isAuth ? <NavBar /> : null}
+      {isAuth ? <ReleaseNoteModalPopup /> : null}
       <div className="wrapper">
         {/*{isAuth?<SideBar store={store} />:null}*/}
         <div className="content">
