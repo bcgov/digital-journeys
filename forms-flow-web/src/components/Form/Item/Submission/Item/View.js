@@ -21,9 +21,8 @@ import {
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 // import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 
-import { exportToPdf } from "../../../../../services/PdfService";
+import { printToPDF } from "../../../../../services/PdfService";
 import { enableFormButton } from "../../../../../helper/formUtils";
-import { toast } from "react-toastify";
 
 
 const View = React.memo((props) => {
@@ -60,11 +59,6 @@ const View = React.memo((props) => {
       clearInterval(enableFormButtonInterval);
     };
   });
-
-  const printToPDF = () => {
-    toast.success("Downloading...");
-    exportToPdf({ formId: "formview" });
-  };
 
   let updatedSubmission;
   if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {

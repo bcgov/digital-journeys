@@ -49,8 +49,7 @@ import {
   STAFF_REVIEWER,
 } from "../../../constants/constants";
 import { redirectToSuccessPage } from "../../../constants/successTypes";
-import { toast } from "react-toastify";
-import { exportToPdf } from "../../../services/PdfService";
+import { printToPDF } from "../../../services/PdfService";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -248,11 +247,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
     } else {
       reloadCurrentTask();
     }
-  };
-
-  const printToPDF = () => {
-    toast.success("Downloading...");
-    exportToPdf({ formId: "formview" });
   };
 
   if (!bpmTaskId) {

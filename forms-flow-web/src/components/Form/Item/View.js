@@ -60,7 +60,7 @@ import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
-import { exportToPdf } from "../../../services/PdfService";
+import { printToPDF } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
@@ -392,11 +392,6 @@ const View = React.memo((props) => {
       </div>
     );
   }
-
-  const printToPDF = () => {
-    toast.success("Downloading...");
-    exportToPdf({ formId: "formview" });
-  };
 
   const handleCustomEvent = (evt) => {
     switch (evt.type) {
