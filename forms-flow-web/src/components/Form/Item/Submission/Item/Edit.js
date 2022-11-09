@@ -72,6 +72,7 @@ const Edit = React.memo((props) => {
     submission: { submission, isActive: isSubActive, url },
     task,
     user,
+    showPrintButton,
   } = props;
 
   const formRef = useRef(null);
@@ -230,13 +231,17 @@ const Edit = React.memo((props) => {
           message={props.submissionError.message}
           onConfirm={props.onConfirm}
         ></SubmissionError>
-        <Link title={t("go back")} to={`${redirectUrl}application`} className="back-link">
-          <i className="fa fa-chevron-left fa-lg" />
-        </Link>&nbsp;
-        <i className="fa fa-edit" 
-        aria-hidden="true"
-        style={{fontSize: "30px", margin: "5px 5px 5px 18px"}}
-        ></i>&nbsp;
+        {showPrintButton ? (
+          <>
+            <Link title={t("go back")} to={`${redirectUrl}application`} className="back-link">
+              <i className="fa fa-chevron-left fa-lg" />
+            </Link>&nbsp;
+            <i className="fa fa-edit" 
+            aria-hidden="true"
+            style={{fontSize: "30px", margin: "5px 5px 5px 18px"}}
+            ></i>&nbsp;
+          </>
+        ) : null }
         <h3 className="task-head">{form.title}</h3>
       </div>
       <Errors errors={errors} />
@@ -246,7 +251,9 @@ const Edit = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
+        {showPrintButton ? (
         <PrintPDF />
+        ) : null }
         <div className="ml-4 mr-4" id="formview">
           <Form
             form={form}
@@ -279,6 +286,7 @@ const Edit = React.memo((props) => {
 
 Edit.defaultProps = {
   onCustomEvent: () => {},
+  showPrintButton: true,
 };
 
 const mapStateToProps = (state) => {
