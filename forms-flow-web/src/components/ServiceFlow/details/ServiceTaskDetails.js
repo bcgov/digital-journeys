@@ -45,11 +45,12 @@ import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 import {
   getUserRolePermission,
 } from "../../../helper/user";
-import PrintPDF from "../../../helper/PrintPDF";
 import {
   STAFF_REVIEWER,
 } from "../../../constants/constants";
 import { redirectToSuccessPage } from "../../../constants/successTypes";
+import { toast } from "react-toastify";
+import { exportToPdf } from "../../../services/PdfService";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -208,6 +209,9 @@ const ServiceFlowTaskDetails = React.memo(() => {
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
         onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
         break;
+      case CUSTOM_EVENT_TYPE.PRINT_PDF:
+        printToPDF();
+        break;
       default:
         return;
     }
@@ -246,6 +250,11 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
+  const printToPDF = () => {
+    toast.success("Downloading...");
+    exportToPdf({ formId: "formview" });
+  };
+
   if (!bpmTaskId) {
     return (
       <Row className="not-selected mt-2 ml-1 " style={{ color: "#757575" }}>
@@ -264,7 +273,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
     return (
       <div className="service-task-details">
         <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
-          <PrintPDF />
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>
