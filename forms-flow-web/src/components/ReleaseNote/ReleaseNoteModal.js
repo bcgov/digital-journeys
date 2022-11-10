@@ -5,9 +5,9 @@ import { Translation } from "react-i18next";
 import {
     Form,
 } from "react-formio";
-import { fetchUnreadReleaseNote, readReleaseNote } from "../apiManager/services/releaseNoteService";
+import { fetchUnreadReleaseNote, readReleaseNote } from "../../apiManager/services/releaseNoteService";
 
-const ReleaseNoteModalPopup = React.memo(() => {
+const ReleaseNoteModal = React.memo(() => {
     const [showReleaseNoteModal, setShowReleaseNoteModal] = useState(false);
     const dispatch = useDispatch();
     const releaseNoteData = useSelector((state) => state.releaseNote);
@@ -58,4 +58,4 @@ const ReleaseNoteModalPopup = React.memo(() => {
     );
 });
 
-export default ReleaseNoteModalPopup;
+export default ReleaseNoteModal;
