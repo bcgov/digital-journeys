@@ -16,6 +16,12 @@ export const exportToPdf = (options) => {
 };
 
 export const printToPDF = () => {
+  // Hiding the floating buttons during the PDF generation
+  const floatingButtons = document.querySelectorAll("button.floatingButton");
+  floatingButtons.forEach((btmElm) => btmElm.style.visibility = "hidden");
   toast.success("Downloading...");
   exportToPdf({ formId: "formview" });
+  setTimeout(() => {
+      floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
+    }, 2000);
 };

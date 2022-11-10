@@ -992,18 +992,18 @@ a{
   }
 }
 
-button.floatingButton1 {
+button.floatingButton {
   position:fixed;
-	bottom: 40px;
-	right: 40px;
   z-index: 1;
   box-shadow: 0px 3px 6px #666;
 }
 
-button.floatingButton2 {
-  position:fixed;
+button.floatingButton.floating-right-bottom-1 {
+	bottom: 40px;
+	right: 40px;
+}
+
+button.floatingButton.floating-right-bottom-2 {
 	bottom: 110px;
 	right: 40px;
-  z-index: 1;
-  box-shadow: 0px 3px 6px #666;
 }
