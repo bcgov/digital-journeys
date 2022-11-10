@@ -27,6 +27,9 @@ const FormOperations = React.memo(({ formData }) => {
   const submitNewForm = (formId) => {
     dispatch(push(`${redirectUrl}form/${formId}`));
   };
+  const draftForms = () => {
+    dispatch(push(`${redirectUrl}draft`));
+  };
   const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());
     dispatch(setResetProcess());
@@ -76,6 +79,15 @@ const FormOperations = React.memo(({ formData }) => {
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );
+  const draftFormsTab = (
+    <button
+      className="btn btn-outline-primary"
+      onClick={() => draftForms()}
+    >
+      <i className="fa fa-pencil-square-o mr-1"  />
+      <Translation>{(t) => t("Draft Forms")}</Translation>{" "}
+    </button>
+  );
   const deleteForm = (
     <i
       className="fa fa-trash fa-lg delete_button"
@@ -84,7 +96,7 @@ const FormOperations = React.memo(({ formData }) => {
   );
 
   let buttons = {
-    CLIENT_OR_REVIEWER: [submitNew],
+    CLIENT_OR_REVIEWER: [submitNew, draftFormsTab],
     STAFF_DESIGNER: [viewOrEdit, deleteForm],
   };
   const formButtonOperations = () => {
