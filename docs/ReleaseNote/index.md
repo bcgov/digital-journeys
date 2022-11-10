@@ -2,11 +2,11 @@
 It will give a context to how a `developer` and a `form designer` can manage release notes on the system. It will not limit only to the release note. *If management wants to display some important message in the popup, we can use the same feature.*
 
 >**How it will work?**
-1. A `form designer` needs to create a release note using a `form builder` and provide that form file to the `developer`.
-2. A `developer` needs to use the JSON file provided by the `form designer` and add a new release note in the system using available APIs.
+>1. A `form designer` needs to create a release note using a `form builder` and provide that form file to the `developer`.
+>2. A `developer` needs to use the JSON file provided by the `form designer` and add a new release note in the system using available APIs.
 
 
-##Available API endpoints
+## Available API endpoints
 Release note endpoints are available under the web-API URL.
 - `/release-note`
 	- It will use to create/update/list release notes in the system.
