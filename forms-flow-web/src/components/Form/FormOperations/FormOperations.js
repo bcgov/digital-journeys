@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
+import { Link } from "react-router-dom";
 import {
   CLIENT,
   MULTITENANCY_ENABLED,
@@ -76,6 +77,14 @@ const FormOperations = React.memo(({ formData }) => {
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );
+  const draftFormsTab = (
+    <Link to={`${redirectUrl}draft`} style={{ textDecoration: "none" }}>
+        <span style={{ color: "#0071EB", cursor: "pointer", fontSize: "20px" }}>
+          <i className="fa fa-pencil-square-o" aria-hidden="true" />{" "}
+          <Translation>{(t) => t("Draft Forms")}</Translation>{" "}
+        </span>
+    </Link>
+  );
   const deleteForm = (
     <i
       className="fa fa-trash fa-lg delete_button"
@@ -84,7 +93,7 @@ const FormOperations = React.memo(({ formData }) => {
   );
 
   let buttons = {
-    CLIENT_OR_REVIEWER: [submitNew],
+    CLIENT_OR_REVIEWER: [submitNew, draftFormsTab],
     STAFF_DESIGNER: [viewOrEdit, deleteForm],
   };
   const formButtonOperations = () => {
