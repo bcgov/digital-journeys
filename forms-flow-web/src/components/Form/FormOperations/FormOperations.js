@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
+import { Link } from "react-router-dom";
 import {
   CLIENT,
   MULTITENANCY_ENABLED,
@@ -26,9 +27,6 @@ const FormOperations = React.memo(({ formData }) => {
   const userRoles = useSelector((state) => state.user.roles);
   const submitNewForm = (formId) => {
     dispatch(push(`${redirectUrl}form/${formId}`));
-  };
-  const draftForms = () => {
-    dispatch(push(`${redirectUrl}draft`));
   };
   const viewOrEditForm = (formId) => {
     dispatch(resetFormProcessData());
@@ -80,13 +78,12 @@ const FormOperations = React.memo(({ formData }) => {
     </button>
   );
   const draftFormsTab = (
-    <button
-      className="btn btn-outline-primary"
-      onClick={() => draftForms()}
-    >
-      <i className="fa fa-pencil-square-o mr-1"  />
-      <Translation>{(t) => t("Draft Forms")}</Translation>{" "}
-    </button>
+    <Link to={`${redirectUrl}draft`} style={{ textDecoration: "none" }}>
+        <span style={{ color: "#0071EB", cursor: "pointer", fontSize: "20px" }}>
+          <i className="fa fa-pencil-square-o" aria-hidden="true" />{" "}
+          <Translation>{(t) => t("Draft Forms")}</Translation>{" "}
+        </span>
+    </Link>
   );
   const deleteForm = (
     <i
