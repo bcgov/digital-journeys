@@ -19,18 +19,18 @@ Release note endpoints are available under the web-API URL.
 
 ## Operations
 ### Add release note
-Add a new release note.
-**Endpoint** : POST /release-note
-**Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }
+Add a new release note.  
+**Endpoint** : POST /release-note  
+**Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }  
 **Body**: A json object.
 - title: Release note title / Message title.
 - content: < formio `form object` >
 	- When we export form, it will export in json format and it contains one key **forms**. It is an array and the first object of this array is a `form object` that we have to pass here. The form .json file will look like this . `{ "forms": [ {<form details>} ] }`.
 
 ### Modify release note
-No separate API was built to update details in the release note. Because new changes must be visible to all the users again. We will add a new release note with the updated content and mark the old release note as inactive.
-**Endpoint** : POST /release-note
-**Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }
+No separate API was built to update details in the release note. Because new changes must be visible to all the users again. We will add a new release note with the updated content and mark the old release note as inactive.  
+**Endpoint** : POST /release-note  
+**Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }  
 **Body**: A json object.
 - *title: Release note title / Message title*.
 - *content: < formio `orm object` >*
@@ -38,19 +38,19 @@ No separate API was built to update details in the release note. Because new cha
 	- Old *release note id* can be fould using **list release note**.
 
 ### List release notes
-It will list all the active release notes.
-**Endpoint** : GET /release-note
+It will list all the active release notes.  
+**Endpoint** : GET /release-note  
 **Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }
 
 ### Fetch unread release note
-One unread and active release note can be retrieved based on the user token. It will return 404 (not found) if no unread release note is found for the logged-in user.
-**Endpoint** : GET /release-note/unread
-**Header** : { "Authorization": "Bearer < *USER TOKEN* >" }
+One unread and active release note can be retrieved based on the user token. It will return 404 (not found) if no unread release note is found for the logged-in user.  
+**Endpoint** : GET /release-note/unread  
+**Header** : { "Authorization": "Bearer < *USER TOKEN* >" }  
 
 ### Mark read release note for user
-It will mark release note read for the logged-in user.
-**Endpoint** : POST /release-note/read
-**Header** : { "Authorization": "Bearer < *USER TOKEN* >" }
+It will mark release note read for the logged-in user.  
+**Endpoint** : POST /release-note/read  
+**Header** : { "Authorization": "Bearer < *USER TOKEN* >" }  
 **Body**: A json object.
 - release_note_id: Release note id that will mark read for the logged-in user.
 
