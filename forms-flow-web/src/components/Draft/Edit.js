@@ -42,7 +42,7 @@ import SubmissionError from "../../containers/SubmissionError";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
-import PrintPDF from "../../helper/PrintPDF";
+import { printToPDF } from "../../services/PdfService";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -149,6 +149,25 @@ const View = React.memo((props) => {
     );
   }
 
+  const handleCustomEvent = (evt) => {
+    switch (evt.type) {
+      case CUSTOM_EVENT_TYPE.SAVE_DRAFT: {
+        let payload = getDraftReqFormat(formId, { ...draftData });
+        saveDraft(payload);
+        toast.success(
+          <Translation>{(t) => t("Submission saved to Draft Forms")}</Translation>
+        );
+        break;
+      }
+      case CUSTOM_EVENT_TYPE.PRINT_PDF: {
+        printToPDF();
+        break;
+      }
+      default:
+        return;
+    }
+  };
+
   return (
     <div className="container overflow-y-auto">
       {/* {
@@ -196,7 +215,6 @@ const View = React.memo((props) => {
         text={<Translation>{(t) => t("Loading...")}</Translation>}
         className="col-12"
       >
-        <PrintPDF />
         <div className="ml-4 mr-4" id="formview">
           {
             <Form
@@ -220,15 +238,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => {
                 onCustomEvent(evt, redirectUrl);
-                if (evt.type === CUSTOM_EVENT_TYPE.SAVE_DRAFT) {
-                  let payload = getDraftReqFormat(formId, { ...draftData });
-                  saveDraft(payload);
-                  toast.success(
-                    <Translation>
-                      {(t) => t("Submission saved to Draft Forms")}
-                    </Translation>
-                  );
-                }
+                handleCustomEvent(evt);
               }}
             />
           }

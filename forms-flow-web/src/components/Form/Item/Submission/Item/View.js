@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { connect, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -21,8 +21,8 @@ import {
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 // import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 
-import { exportToPdf } from "../../../../../services/PdfService";
-import { Button } from "react-bootstrap";
+import { printToPDF } from "../../../../../services/PdfService";
+import { enableFormButton } from "../../../../../helper/formUtils";
 
 
 const View = React.memo((props) => {
@@ -34,7 +34,7 @@ const View = React.memo((props) => {
     errors,
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url },
-    showPrintButton,
+    // showPrintButton,
   } = props;
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
@@ -43,6 +43,22 @@ const View = React.memo((props) => {
   const customSubmission = useSelector(
     (state) => state.formDelete.customSubmission
   );
+
+  const formRef = useRef(null);
+  let enableFormButtonInterval = null;
+  useEffect(() => {
+    enableFormButtonInterval = setInterval(() => {
+      enableFormButton(
+        formRef.current?.formio,
+        enableFormButtonInterval,
+        "printPdf",
+        printToPDF
+      );
+    }, 1000);
+    return () => {
+      clearInterval(enableFormButtonInterval);
+    };
+  });
 
   let updatedSubmission;
   if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -59,21 +75,15 @@ const View = React.memo((props) => {
     <div className="container row task-container">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
-        {showPrintButton && form?._id ? (
+        {/* {showPrintButton && form?._id ? (
           <div className="btn-right d-flex flex-row">
-            {/* <DownloadPDFButton
+            <DownloadPDFButton
               form_id={form._id}
               submission_id={updatedSubmission._id}
               title={form.title}
-            /> */}
-            <Button
-              className="btn btn-primary btn-sm form-btn pull-right btn-right"
-              onClick={() => exportToPdf({ formId: "formview" })}
-            >
-              <i className="fa fa-print" aria-hidden="true" /> Print As PDF
-            </Button>
+            />
           </div>
-        ) : null}
+        ) : null} */}
       </div>
 
       <Errors errors={errors} />
@@ -91,6 +101,7 @@ const View = React.memo((props) => {
             hideComponents={hideComponents}
             onSubmit={onSubmit}
             options={{ ...options, i18n: formio_resourceBundles }}
+            ref={formRef}
           />
         </div>
       </LoadingOverlay>
@@ -98,10 +109,9 @@ const View = React.memo((props) => {
   );
 });
 
-View.defaultProps = {
-  showPrintButton: true,
-};
-
+// View.defaultProps = {
+//   showPrintButton: true,
+// };
 const mapStateToProps = (state, props) => {
   const isDraftView = props.page === "draft-detail" ? true : false;
   return {
@@ -112,6 +122,9 @@ const mapStateToProps = (state, props) => {
     options: {
       readOnly: true,
       language: state.user.lang,
+      hide: {
+        saveAsDraft: true,
+      },
     },
     errors: [selectError("submission", state), selectError("form", state)],
   };

@@ -54,7 +54,7 @@ import {
 import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServices";
 import { redirectToSuccessPage } from "../../../../../constants/successTypes";
 import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
-import PrintPDF from "../../../../../helper/PrintPDF";
+import { printToPDF } from "../../../../../services/PdfService";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -209,7 +209,10 @@ const Edit = React.memo((props) => {
   const onApplicationFormSubmitCustomEvent = (customEvent) => {
     switch (customEvent.type) {
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onApplicationFormSubmit(customEvent.actionType, customEvent.successPage);
+        onApplicationFormSubmit(
+          customEvent.actionType,
+          customEvent.successPage
+        );
         break;
       case CUSTOM_EVENT_TYPE.SAVE_DRAFT:
         toast.success(
@@ -218,6 +221,10 @@ const Edit = React.memo((props) => {
           </Translation>
         );
         break;
+      case CUSTOM_EVENT_TYPE.PRINT_PDF:
+        printToPDF();
+        break;
+      
       default:
         return;
     }
@@ -251,9 +258,6 @@ const Edit = React.memo((props) => {
         text={t("Loading...")}
         className="col-12"
       >
-        {showPrintButton ? (
-        <PrintPDF />
-        ) : null }
         <div className="ml-4 mr-4" id="formview">
           <Form
             form={form}

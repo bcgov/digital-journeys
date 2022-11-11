@@ -60,7 +60,7 @@ import { setFormStatusLoading } from "../../../actions/processActions";
 import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
-import { exportToPdf } from "../../../services/PdfService";
+import { printToPDF } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
@@ -393,9 +393,27 @@ const View = React.memo((props) => {
     );
   }
 
-  const printToPDF = () => {
-    toast.success("Downloading...");
-    exportToPdf({ formId: "formview" });
+  const handleCustomEvent = (evt) => {
+    switch (evt.type) {
+      case CUSTOM_EVENT_TYPE.SAVE_DRAFT: {
+        let payload = getDraftReqFormat(validFormId, {
+          ...draftData?.data,
+        });
+        saveDraft(payload);
+        toast.success(
+          <Translation>
+            {(t) => t("Submission saved to Draft Forms")}
+          </Translation>
+        );
+        break;
+      }
+      case CUSTOM_EVENT_TYPE.PRINT_PDF:
+        printToPDF();
+        break;
+      
+      default:
+        return;
+    }
   };
 
 
@@ -471,17 +489,6 @@ const View = React.memo((props) => {
         }
         className="col-12"
       >
-        <div className="row">
-          <div className="btn-right">
-            <button
-              type="button"
-              className="btn btn-primary btn-sm form-btn pull-right btn-right btn btn-primary"
-              onClick={() => printToPDF()}
-            >
-              <i className="fa fa-print" aria-hidden="true"></i> Print As PDF
-            </button>
-          </div>
-        </div>
         <div className="ml-4 mr-4" id="formview">
           {isPublic || formStatus === "active" ? (
             <Form
@@ -505,17 +512,7 @@ const View = React.memo((props) => {
               }}
               onCustomEvent={(evt) => {
                 onCustomEvent(evt, redirectUrl);
-                if (evt.type === CUSTOM_EVENT_TYPE.SAVE_DRAFT) {
-                  let payload = getDraftReqFormat(validFormId, {
-                    ...draftData?.data,
-                  });
-                  saveDraft(payload);
-                  toast.success(
-                    <Translation>
-                      {(t) => t("Submission saved to Draft Forms")}
-                    </Translation>
-                  );
-                }
+                handleCustomEvent(evt);
               }}
               ref={formRef}
             />
