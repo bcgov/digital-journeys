@@ -77,14 +77,16 @@ const FormOperations = React.memo(({ formData }) => {
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );
-  const draftFormsTab = (
-    <Link to={`${redirectUrl}draft`} style={{ textDecoration: "none" }}>
-        <span style={{ color: "#0071EB", cursor: "pointer", fontSize: "20px" }}>
-          <i className="fa fa-pencil-square-o" aria-hidden="true" />{" "}
-          <Translation>{(t) => t("Draft Forms")}</Translation>{" "}
-        </span>
-    </Link>
-  );
+  const formsTab = (name, link) => {
+    return (
+      <Link to={`${redirectUrl}${link}`} style={{ textDecoration: "none", margin: "auto 5px" }}>
+          <span style={{ color: "#0071EB", fontSize: "20px" }}>
+            <i className="fa fa-pencil-square-o" aria-hidden="true" style={{marginRight: "3px"}}/>
+            <Translation>{(t) => t(name)}</Translation>
+          </span>
+      </Link>
+    );
+  };
   const deleteForm = (
     <i
       className="fa fa-trash fa-lg delete_button"
@@ -93,7 +95,10 @@ const FormOperations = React.memo(({ formData }) => {
   );
 
   let buttons = {
-    CLIENT_OR_REVIEWER: [submitNew, draftFormsTab],
+    CLIENT_OR_REVIEWER: [
+      submitNew,
+      formsTab("Draft Forms", "draft"),
+      formsTab("Submitted Forms", "application")],
     STAFF_DESIGNER: [viewOrEdit, deleteForm],
   };
   const formButtonOperations = () => {
