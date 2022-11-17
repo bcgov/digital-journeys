@@ -45,6 +45,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Save": "保存  ",
   "Back to Form List": "返回表格列表  ",
   "Submit New": "提交新的  ",
+  "Start New": "开始新的  ",
   "View Submissions": "查看提交  ",
   "View/Edit Form": "查看/编辑表单  ",
   "Delete Form": "删除表格  ",

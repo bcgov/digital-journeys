@@ -49,6 +49,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Save": "Speichern",
   "Back to Form List": "Zurück zur Formularliste",
   "Submit New": "Neu einreichen",
+  "Start New": "Neu anfangen",
   "View Submissions": "Einsendungen anzeigen",
   "View/Edit Form": "Formular anzeigen/bearbeiten",
   "Delete Form": "Formular löschen",

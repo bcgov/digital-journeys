@@ -45,6 +45,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Save": "Запазете",
     "Back to Form List": "Назад към списъка с формуляри",
     "Submit New": "Изпратете ново",
+    "Start New": "Започнете ново",
     "View Submissions": "Преглед на подадените материали",
     "View/Edit Form": "Преглед/Редактиране на формуляр",
     "Delete Form": "Изтриване на формуляр",
