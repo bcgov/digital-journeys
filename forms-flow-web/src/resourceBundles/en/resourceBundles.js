@@ -52,6 +52,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Save": "Save",
   "Back to Form List": "Back to Form List",
   "Submit New": "Submit New",
+  "Start New": "Start New",
   "View Submissions": "View Submissions",
   "View/Edit Form": "View/Edit Form",
   "Delete Form": "Delete Form",

@@ -50,6 +50,7 @@ export const RESOURCE_BUNDLES_FR = {
   "Save":"sauvegarder",
   "Back to Form List":"Retour à la liste des formulaires",
   "Submit New":"Soumettre Nouveau",
+  "Start New":"Commencer Nouveau",
   "View Submissions":"Voir les soumissions",
   "View/Edit Form":"Afficher/Modifier le formulaire",
   "Delete Form":"Supprimer le formulaire",

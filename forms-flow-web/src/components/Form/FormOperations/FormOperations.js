@@ -65,7 +65,7 @@ const FormOperations = React.memo(({ formData }) => {
       onClick={() => submitNewForm(formData._id)}
     >
       <i className="fa fa-pencil mr-1" />
-      <Translation>{(t) => t("Submit New")}</Translation>
+      <Translation>{(t) => t("Start New")}</Translation>
     </button>
   );
   const viewOrEdit = (
