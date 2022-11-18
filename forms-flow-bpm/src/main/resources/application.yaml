@@ -44,6 +44,8 @@ formsflow.ai:
     url: ${FORMIO_FILE_URL}
   app:
     url: ${WEB_BASE_URL}
+  documentApi:
+    url: ${FORMSFLOW_DOC_API_URL}
 
 
 camunda.bpm:
