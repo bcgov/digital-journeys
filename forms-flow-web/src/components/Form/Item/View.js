@@ -186,6 +186,11 @@ const View = React.memo((props) => {
    */
   const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
+    // check if draftsave is disebled in form or not
+    if (payload.data?.isSaveDraftEnabled !== undefined &&
+        payload.data?.isSaveDraftEnabled === false) {
+      return;
+    }
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         setDraftSaved(false);
@@ -410,7 +415,9 @@ const View = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF();
         break;
-      
+      case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
+        toast.error(evt.error);
+        break;
       default:
         return;
     }
