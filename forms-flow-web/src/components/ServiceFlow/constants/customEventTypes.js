@@ -6,4 +6,5 @@ export const CUSTOM_EVENT_TYPE = {
   CANCEL_SUBMISSION: "cancelSubmission",
   SAVE_DRAFT: "saveDraft",
   PRINT_PDF: "printPDF",
+  ERROR_CUSTOM_VALIDATION: "errorCustomValidation",
 };
