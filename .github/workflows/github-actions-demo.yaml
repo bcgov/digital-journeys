@@ -45,6 +45,9 @@ jobs:
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
       - name: apply-openshift-buildConfigs
         run: |
           pwd
