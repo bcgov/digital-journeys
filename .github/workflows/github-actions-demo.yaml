@@ -50,10 +50,12 @@ jobs:
         run: |
           oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
+  building the image and pushing to registry
+
   # Apply deployConfigs on Openshift in Dev
   apply-deploymentConfigsDev:
     # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
-    name: Deploy APP to Dev environment
+    name: Apply deploymentConfigs in Dev environment
     environment: dev
     runs-on: ubuntu-latest
     env:
