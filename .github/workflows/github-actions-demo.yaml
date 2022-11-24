@@ -47,8 +47,9 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: apply-openshift-buildConfigs
+        working-directory: ./deployment/openshift
         run: |
           pwd
-          oc -n ${BUILD_NAMESPACE} process -f /deployment/openshift/forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+          oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
