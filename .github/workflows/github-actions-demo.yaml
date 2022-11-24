@@ -46,6 +46,7 @@ jobs:
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
       - name: apply-openshift-buildConfigs
-        working-directory: ./deployment/openshift
+        # working-directory: /deployment/openshift
         run: |
-          oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+          echo ($pwd)
+          # oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
