@@ -308,7 +308,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
-			<version>5.3.4</version>
+			<version>5.3.23</version>
 		</dependency>
 
 		<dependency>
