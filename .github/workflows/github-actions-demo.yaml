@@ -2,9 +2,9 @@ name: GitHub openshift deployment demo
 run-name: Apply forms-flow-documents deploymentConfigs on Openshift
 on: 
   push:
-    paths:
-      - "deployment/openshift/documents_api_dc.yaml"
-      - "deployment/openshift/documents_api_bc.yaml"
+    # paths:
+    #   - "deployment/openshift/documents_api_dc.yaml"
+    #   - "deployment/openshift/documents_api_bc.yaml"
   workflow_dispatch:
     inputs:
       environment:
