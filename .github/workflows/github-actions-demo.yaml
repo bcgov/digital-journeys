@@ -48,5 +48,5 @@ jobs:
       - name: apply-openshift-buildConfigs
         # working-directory: /deployment/openshift
         run: |
-          echo ($pwd)
+          echo "$pwd"
           # oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
