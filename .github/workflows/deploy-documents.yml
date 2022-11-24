@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: formsflow/forms-flow-documents-api
+          - image: formsflow/forms-flow-documents
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
             name: forms-flow-documents
@@ -94,7 +94,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
       
-      - name: Build and push Docker image
+      - name: Build and push Docker image dev
         if: ${{github.event.inputs.environment == 'dev' || github.ref == 'refs/heads/dev'}}
         uses: docker/build-push-action@v2
         with:
@@ -112,12 +112,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
-      
       - name: Build and push Docker image production
         if: ${{github.event.inputs.environment == 'production' || github.ref == 'refs/heads/master'}}
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-documents
           push: true
-          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-documents-api:latest
+          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-documents:latest
           labels: ${{ steps.meta.outputs.labels }}
