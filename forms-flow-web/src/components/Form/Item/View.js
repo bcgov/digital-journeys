@@ -66,6 +66,7 @@ import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
+  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -362,11 +363,15 @@ const View = React.memo((props) => {
 
   let convertFormLinksInterval = null;
   useEffect(() => {
+    if (areFormLinksWereConverted) {
+      return; 
+    }
     convertFormLinksInterval = setInterval(() => {
-      convertFormLinksToOpenInNewTabs(
+      const done = convertFormLinksToOpenInNewTabs(
         formRef.current?.formio,
         convertFormLinksInterval
       );
+      setAreFormLinksWereConverted(done);
     }, 1000);
     return () => {
       clearInterval(convertFormLinksInterval);
