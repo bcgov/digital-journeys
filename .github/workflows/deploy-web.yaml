@@ -93,12 +93,180 @@ jobs:
           push: true
           tags: ${{ github.event.inputs.environment }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Check app deployment status
-        env:
-          APP: 'forms-flow-web'
-          NAMESPACE: ${{ secrets.NAMESPACE }}
+  
+  # Deploy App images in Dev
+  deployDev:
+    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+    name: Deploy APP to Dev environment
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      FFAWEB_URL: ${{ secrets.FFAWEB_URL }}
+      BRANCH: main
+      APP: forms-flow-web
+    needs:
+      - build
+    steps:
+      - name: Print env
         run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo FFAWEB_URL: $FFAWEB_URL
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=dev \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
+
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}"
+
+   # Deploy App and Api images in Test
+  deployTest:
+    name: Deploy APP to Test environment
+    if: ${{ github.event.inputs.environment == 'test' }}
+    environment: test
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      FFAWEB_URL: ${{ secrets.FFAWEB_URL }}
+      BRANCH: main
+      APP: forms-flow-web
+      API: forms-flow-webapi
+    needs:
+      - build
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo FFAWEB_URL: $FFAWEB_URL
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=test \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
+
+  # Deploy App and Api images in Production
+  deployProd:
+    name: Deploy APP to Production environment
+    if: ${{ github.event.inputs.environment == 'production' }}
+    environment: production
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      FFAWEB_URL: ${{ secrets.FFAWEB_URL }}
+      BRANCH: main
+      APP: forms-flow-web
+      API: forms-flow-webapi
+    needs:
+      - build
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo FFAWEB_URL: $FFAWEB_URL
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
+
+       # Log in to OpenShift.
+       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=production \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
           ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
