@@ -49,7 +49,7 @@
     "memory-cache": "^0.2.0",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.33",
-    "mongodb": "^4.4.1",
+    "mongodb": "^4.11.0",
     "mongoose": "^6.2.8",
     "mssql": "^7.3.1",
     "mysql": "^2.18.1",
