@@ -224,7 +224,9 @@ const Edit = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF();
         break;
-      
+      case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
+        toast.error(customEvent.error);
+        break;  
       default:
         return;
     }

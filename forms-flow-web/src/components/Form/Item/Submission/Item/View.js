@@ -22,7 +22,7 @@ import { updateCustomSubmission } from "../../../../../apiManager/services/FormS
 // import DownloadPDFButton from "../../../ExportAsPdf/downloadPdfButton";
 
 import { printToPDF } from "../../../../../services/PdfService";
-import { enableFormButton } from "../../../../../helper/formUtils";
+import { convertFormLinksToOpenInNewTabs, enableFormButton } from "../../../../../helper/formUtils";
 
 
 const View = React.memo((props) => {
@@ -57,6 +57,19 @@ const View = React.memo((props) => {
     }, 1000);
     return () => {
       clearInterval(enableFormButtonInterval);
+    };
+  });
+
+  let convertFormLinksInterval = null;
+  useEffect(() => {
+    convertFormLinksInterval = setInterval(() => {
+      convertFormLinksToOpenInNewTabs(
+        formRef.current?.formio,
+        convertFormLinksInterval
+      );
+    }, 1000);
+    return () => {
+      clearInterval(convertFormLinksInterval);
     };
   });
 
