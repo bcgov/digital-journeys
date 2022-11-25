@@ -42,6 +42,7 @@ import SubmissionError from "../../containers/SubmissionError";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
+import { convertFormLinksToOpenInNewTabs } from "../../helper/formUtils";
 import { printToPDF } from "../../services/PdfService";
 
 const View = React.memo((props) => {
@@ -58,6 +59,8 @@ const View = React.memo((props) => {
     (state) => state.formDelete.formSubmitted
   );
 
+  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
+  const formRef = useRef(null);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
@@ -131,6 +134,23 @@ const View = React.memo((props) => {
     };
   }, [poll, exitType.current]);
 
+  let convertFormLinksInterval = null;
+  useEffect(() => {
+    if (areFormLinksWereConverted) {
+      return; 
+    }
+    convertFormLinksInterval = setInterval(() => {
+      const done = convertFormLinksToOpenInNewTabs(
+        formRef.current?.formio,
+        convertFormLinksInterval
+      );
+      setAreFormLinksWereConverted(done);
+    }, 1000);
+    return () => {
+      clearInterval(convertFormLinksInterval);
+    };
+  });
+
   if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -163,6 +183,9 @@ const View = React.memo((props) => {
         printToPDF();
         break;
       }
+      case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
+        toast.error(evt.error);
+        break;
       default:
         return;
     }
@@ -240,6 +263,7 @@ const View = React.memo((props) => {
                 onCustomEvent(evt, redirectUrl);
                 handleCustomEvent(evt);
               }}
+              ref={formRef}
             />
           }
         </div>

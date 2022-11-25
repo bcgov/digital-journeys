@@ -10,6 +10,8 @@ const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
       }
     });
   }
+  formio.redraw();
+  return true;
 };
 
 const scrollToErrorOnValidation = (formio, scrollToErrorInterval) => {
