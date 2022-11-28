@@ -35,6 +35,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import { setFormSubmitted } from "../../../actions/formActions";
+import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
@@ -199,6 +200,14 @@ const View = React.memo((props) => {
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
               toast.success(t("Submission saved to draft."));
+              /* issue/722
+              before this requirement, it creates new draft on form load.
+              Now is is not saving it as draft "if few fields in form" are
+              blank.
+              In this change, it keeps state.draft with previous form data.
+              hence it required to clear on the form close. 
+              */
+              dispatch(setDraftSubmission({}));
             }
             if (!err) {
               setDraftSaved(true);
@@ -207,6 +216,16 @@ const View = React.memo((props) => {
             }
           })
         );
+      }
+    } else if (draftSubmissionId === undefined && !isDraftCreated) {
+      if (
+        validFormId &&
+        DRAFT_ENABLED &&
+        ((isAuthenticated && formStatus === "active") ||
+          (!isAuthenticated && publicFormStatus?.status == "active"))
+      ) {
+        // let payload = getDraftReqFormat(validFormId, draftData?.data);
+        dispatch(draftCreateMethod(payload, setIsDraftCreated));
       }
     }
   };
@@ -223,20 +242,22 @@ const View = React.memo((props) => {
     }
   }, [isDraftCreated]);
 
+  /*  commented below code, for more detail please visit below link
+      https://github.com/bcgov/digital-journeys/issues/722  */
   /**
    * Will create a draft application when the form is selected for entry.
    */
-  useEffect(() => {
-    if (
-      validFormId &&
-      DRAFT_ENABLED &&
-      ((isAuthenticated && formStatus === "active") ||
-        (!isAuthenticated && publicFormStatus?.status == "active"))
-    ) {
-      let payload = getDraftReqFormat(validFormId, draftData?.data);
-      dispatch(draftCreateMethod(payload, setIsDraftCreated));
-    }
-  }, [validFormId, formStatus, publicFormStatus]);
+  // useEffect(() => {
+  //   if (
+  //     validFormId &&
+  //     DRAFT_ENABLED &&
+  //     ((isAuthenticated && formStatus === "active") ||
+  //       (!isAuthenticated && publicFormStatus?.status == "active"))
+  //   ) {
+  //     let payload = getDraftReqFormat(validFormId, draftData?.data);
+  //     dispatch(draftCreateMethod(payload, setIsDraftCreated));
+  //   }
+  // }, [validFormId, formStatus, publicFormStatus]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -367,11 +388,14 @@ const View = React.memo((props) => {
       return; 
     }
     convertFormLinksInterval = setInterval(() => {
-      const done = convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
-      setAreFormLinksWereConverted(done);
+      /* check formRef before calling function of formio */
+      if (formRef.current !== null) {
+        const done = convertFormLinksToOpenInNewTabs(
+          formRef.current?.formio,
+          convertFormLinksInterval
+        );
+        setAreFormLinksWereConverted(done);
+      }
     }, 1000);
     return () => {
       clearInterval(convertFormLinksInterval);
@@ -584,6 +608,7 @@ const doProcessActions = (submission, ownProps) => {
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
 
+            dispatch(setDraftSubmission({})); // check "saveDraft" for more detail
             redirectToFormSuccessPage(dispatch, push, form?.path);
           }
         } else {
