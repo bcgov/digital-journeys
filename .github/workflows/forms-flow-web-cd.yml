@@ -67,7 +67,7 @@ jobs:
         with:
           registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
           username: ${{ secrets.SA_USERNAME }}
-          password: ${{ secrets.SA_TOKEN }}
+          password: ${{ secrets.SA_USERNAME_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
