@@ -25,7 +25,8 @@ defaults:
 
 jobs:
   build-and-push-image:
-    if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
+    #if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
+    name: Build Image
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -67,7 +68,7 @@ jobs:
         with:
           registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
           username: ${{ secrets.SA_USERNAME }}
-          password: ${{ secrets.SA_USERNAME_TOKEN }}
+          password: ${{ secrets.SA_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
