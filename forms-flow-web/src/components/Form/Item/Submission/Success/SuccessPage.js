@@ -264,18 +264,19 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for submitting the <u>1.10 Complaint Intake Form</u>
+            Thank you for submitting your bullying and harassment 
+            complaint form (Article 1.10).
           </span>
           <div className="success-content-body">
             <ul>
               <li>
-                After submitting the complaint, PSA or LDB will notify your 
-                union within 10 days of your complaint. You may ask for 
-                assistance from your union representative either before or 
-                after submitting your formal complaint under article 1.10 of 
-                the collective agreement and may ask your union representative 
-                at any time for an update on the status of a review or 
-                investigation arising from your complaint. 
+                The employer will notify your union within 10 days 
+                of your complaint. You may ask for assistance from 
+                your union representative either before or after 
+                submitting your complaint and may ask your union 
+                representative at any time for an update on the 
+                status of a review or investigation arising from 
+                your complaint.
               </li>
             </ul>
           </div>
