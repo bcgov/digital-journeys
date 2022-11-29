@@ -260,6 +260,27 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.COMPLAINT_INTAKE_FORM_1_10)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for submitting the <u>1.10 Complaint Intake Form</u>
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                After submitting the complaint, PSA or LDB will notify your 
+                union within 10 days of your complaint. You may ask for 
+                assistance from your union representative either before or 
+                after submitting your formal complaint under article 1.10 of 
+                the collective agreement and may ask your union representative 
+                at any time for an update on the status of a review or 
+                investigation arising from your complaint. 
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     }
 };
 
