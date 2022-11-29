@@ -2,22 +2,22 @@
 # Builds and Deploys merged PR's to persistent pods/services/routes/etc in the OpenShift Dev environment.
 name: Deploy web app/api to Openshift
   
-on:
-  # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
-  push:
-    # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - test
-        - production
+# on:
+#   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
+#   push:
+#     # Edit to the branch(es) you want to build and deploy on each push.
+#     branches: [ main ]
+#   workflow_dispatch:
+#     inputs:
+#       environment:
+#         description: 'Environment'
+#         required: true
+#         default: 'dev'
+#         type: choice
+#         options:
+#         - dev
+#         - test
+#         - production
 
 jobs:
   #Print variables for logging and debugging purposes
