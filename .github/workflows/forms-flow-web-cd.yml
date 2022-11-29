@@ -24,7 +24,8 @@ defaults:
 
 jobs:
   build-and-push-image:
-    if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
+    #if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
+    name: Build Image
     runs-on: ubuntu-latest
     strategy:
       matrix:
