@@ -45,6 +45,9 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   } else if (form.toLowerCase().includes('telework agreement')) {
     employee = submission?.data?.name;
     employee = employee === "" ? undefined : employee;
+  } else if (form.toLowerCase().includes('1.10 complaint intake form')) {
+    employee = `${submission?.data?.legalNameFirstName} ${submission?.data?.legalNameLastName}`;
+    employee = employee.trim() === "" ? undefined : employee;
   }
   return employee;
 };
