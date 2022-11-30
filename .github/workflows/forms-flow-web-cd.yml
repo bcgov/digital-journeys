@@ -48,12 +48,13 @@ jobs:
           install: true
       - name: Set Build TAG for dev
         if: ${{!github.event.inputs.environment}}
-        run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+        run: echo "BUILD_TAG=d89793-tools/forms-flow-web:dev" >> $GITHUB_ENV
       - name: Set BUILD TAG for test and prod
         if: ${{github.event.inputs.environment}}
         run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       
-      - run: echo ${{ env.BUILD_TAG }}
+      - run: echo ${{ env.
+      }}
 
       - name: Docker meta
         id: meta
