@@ -13,7 +13,7 @@ on:
         - test
         - production
   push:
-    branches: [ main ]
+    branches: [ main, simensma-fresh-patch-1 ]
     paths:
       - "forms-flow-web/**"
 
