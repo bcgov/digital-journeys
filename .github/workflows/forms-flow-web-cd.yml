@@ -53,8 +53,7 @@ jobs:
         if: ${{github.event.inputs.environment}}
         run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       
-      - run: echo ${{ env.
-      }}
+      - run: echo ${{ env.BUILD_TAG }}
 
       - name: Docker meta
         id: meta
