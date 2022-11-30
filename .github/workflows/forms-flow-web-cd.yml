@@ -47,7 +47,7 @@ jobs:
         with:
           install: true
       - name: Set Build TAG for dev
-        if: ${{!github.event.inputs.environment}}
+        if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
         run: echo "BUILD_TAG=d89793-tools/forms-flow-web:dev" >> $GITHUB_ENV
       - name: Set BUILD TAG for test and prod
         if: ${{github.event.inputs.environment}}
