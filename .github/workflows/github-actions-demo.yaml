@@ -118,7 +118,8 @@ jobs:
         with:
           context: forms-flow-documents
           push: true
-          tags: dev
+          tags: ${{ steps.meta.outputs.tags }}
+          # tags: dev
           # tags: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents:${{ env.BUILD_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
