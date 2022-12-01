@@ -83,8 +83,7 @@ jobs:
         with:
           context: forms-flow-web
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-web:dev
 
       - name: Build and push Docker image test/production
         if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
