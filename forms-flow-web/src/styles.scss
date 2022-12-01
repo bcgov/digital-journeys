@@ -465,6 +465,10 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 .formio-component-datagrid .datagrid-table>thead {
   display: none;
 }
+/*.formio-component-datagrid .datagrid-table>tfoot>tr>td>button.formio-button-add-row {
+  background: white;
+  color: $linkColor;
+}*/
 .formio-component-datagrid .datagrid-table>tbody>tr>td>button.formio-button-remove-row {
   position: absolute;
   top: 0px;
@@ -472,12 +476,12 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   border: none;
   padding: 0 5px;
 }
-.datagrid-table .fieldset-body {
+/*.datagrid-table .fieldset-body {
   display: flex;
   flex-wrap: wrap;
-}
-.datagrid-table .fieldset-body .formio-component{
-  flex: 0 0 100%;
+}*/
+.formio-component-datagrid .datagrid-table fieldset {
+  /*flex: 0 0 100%;*/
   padding-left: 1.25rem;
   padding-right: 0.25rem;
 }
