@@ -133,19 +133,20 @@ jobs:
     name: Apply deploymentConfigs in Dev environment
     environment: dev
     runs-on: ubuntu-latest
-    # env:
-      # BUILD_ID: ${{ github.event.number }}
-      # NAMESPACE: ${{ secrets.NAMESPACE }}
-      # BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      BRANCH: feature/DGJ_666-add-aot-pdf-generator
       # BRANCH: main
-      # DOCUMENTS_NAME: forms-flow-documents
-    # needs:
-      # - apply-openshift-buildConfigs
-      # - build-and-push-image
+      DOCUMENTS_NAME: forms-flow-documents
+    needs:
+      - apply-openshift-buildConfigs
+      - build-and-push-image
     steps:
       - name: Print env
         run: |
-          echo happiness :)
+          echo BUILD ID: $BUILD_ID
           
       # - name: Checkout Target Branch
       #   uses: actions/checkout@v2
