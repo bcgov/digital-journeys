@@ -128,12 +128,13 @@ jobs:
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
       - name: Deploy APP
+        working-directory: ./deployment/openshift
         run: |
           test -n "${NAMESPACE}"
           test -n "${BUILD_NAMESPACE}"
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
-          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+          oc -n ${NAMESPACE} process -f web_dc.yaml \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                 -p TAG_NAME=dev \
                 -p CPU_REQUEST=100m \

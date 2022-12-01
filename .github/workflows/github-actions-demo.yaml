@@ -152,15 +152,15 @@ jobs:
           echo BRANCH: $BRANCH
           echo DOCUMENTS_NAME: $DOCUMENTS_NAME
           
-      # - name: Checkout Target Branch
-      #   uses: actions/checkout@v2
+      - name: Checkout Target Branch
+        uses: actions/checkout@v2
 
-  #     #  # Log in to OpenShift.
-  #     #  # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-  #     #  # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
-  #     # - name: Log in to OpenShift
-  #     #   run: |
-  #     #     oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+      #  # Log in to OpenShift.
+      #  # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+      #  # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+      # - name: Log in to OpenShift
+      #   run: |
+      #     oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
   
   #     - name: apply deploymentConfig
   #       working-directory: ./deployment/openshift
