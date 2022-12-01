@@ -84,9 +84,7 @@ jobs:
         run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       
       - run: echo ${{ env.BUILD_TAG }}
-      - run: echo ${{ matrix.image }}
       
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
@@ -95,7 +93,6 @@ jobs:
           tags: ${{ env.BUILD_TAG }}
       
       - run: echo ${{ steps.meta.outputs.tags }}
-      - run: echo ${{ steps.meta.outputs.images }}
       
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -119,44 +116,42 @@ jobs:
           context: forms-flow-documents
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          # tags: dev
-          # tags: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents:${{ env.BUILD_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # - name: Build and push Docker image test/production
-      #   if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: forms-flow-documents
-      #     push: true
-      #     tags: ${{ github.event.inputs.environment }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image test/production
+        if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
+        uses: docker/build-push-action@v2
+        with:
+          context: forms-flow-documents
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   
-  #building the image and pushing to registry
-  
-  # # Apply deployConfigs on Openshift in Dev
-  # apply-deploymentConfigsDev:
-  #   if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
-  #   name: Apply deploymentConfigs in Dev environment
-  #   environment: dev
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     BUILD_ID: ${{ github.event.number }}
-  #     NAMESPACE: ${{ secrets.NAMESPACE }}
-  #     BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
-  #     BRANCH: main
-  #     DOCUMENTS_NAME: forms-flow-documents
-  #   needs:
-  #     - apply-openshift-buildConfigs
-  #   steps:
-  #     - name: Print env
-  #       run: |
-  #         echo BUILD ID: $BUILD_ID
-  #         echo BUILD NAMESPACE: $BUILD_NAMESPACE
-  #         echo BRANCH: $BRANCH
-  #         echo DOCUMENTS_NAME: $DOCUMENTS_NAME
-  #     # - name: Checkout Target Branch
-  #     #   uses: actions/checkout@v2
+  # Apply deployConfigs on Openshift in Dev
+  apply-deploymentConfigsDev:
+    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+    name: Apply deploymentConfigs in Dev environment
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      BUILD_ID: ${{ github.event.number }}
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      BRANCH: main
+      DOCUMENTS_NAME: forms-flow-documents
+    needs:
+      - apply-openshift-buildConfigs
+      - build-and-push-image
+    steps:
+      - name: Print env
+        run: |
+          echo BUILD ID: $BUILD_ID
+          echo BUILD NAMESPACE: $NAMESPACE
+          echo BUILD BUILD_NAMESPACE: $BUILD_NAMESPACE
+          echo BRANCH: $BRANCH
+          echo DOCUMENTS_NAME: $DOCUMENTS_NAME
+      # - name: Checkout Target Branch
+      #   uses: actions/checkout@v2
 
   #     #  # Log in to OpenShift.
   #     #  # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
