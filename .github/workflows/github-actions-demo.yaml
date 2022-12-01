@@ -133,12 +133,12 @@ jobs:
     name: Apply deploymentConfigs in Dev environment
     environment: dev
     runs-on: ubuntu-latest
-    env:
-      BUILD_ID: ${{ github.event.number }}
-      NAMESPACE: ${{ secrets.NAMESPACE }}
-      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
-      BRANCH: main
-      DOCUMENTS_NAME: forms-flow-documents
+    # env:
+      # BUILD_ID: ${{ github.event.number }}
+      # NAMESPACE: ${{ secrets.NAMESPACE }}
+      # BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+      # BRANCH: main
+      # DOCUMENTS_NAME: forms-flow-documents
     # needs:
       # - apply-openshift-buildConfigs
       # - build-and-push-image
