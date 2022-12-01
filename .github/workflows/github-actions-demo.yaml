@@ -48,7 +48,7 @@ jobs:
       - name: apply openshift buildConfigs
         working-directory: ./deployment/openshift
         run: |
-          echo ${{ BUILD_NAMESPACE }}
+          echo BUILD NAMESPACE: $BUILD_NAMESPACE
           oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
   #building the image and pushing to registry
