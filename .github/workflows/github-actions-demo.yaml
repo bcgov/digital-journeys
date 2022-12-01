@@ -83,8 +83,6 @@ jobs:
         run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
       
       - run: echo ${{ env.BUILD_TAG }}
-      - run: echo ${{ secrets.SA_USERNAME }}
-      - run: echo ${{ secrets.SA_USERNAME_TOKEN }}
 
       - name: Docker meta
         id: meta
@@ -100,28 +98,28 @@ jobs:
           username: ${{ secrets.SA_USERNAME }}
           password: ${{ secrets.SA_USERNAME_TOKEN }}
 
-      # - name: Cache Docker layers
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: /tmp/.buildx-cache
-      #     key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-buildx-${{ matrix.name }}
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.name }}
 
-      # - name: Build and push Docker image dev
-      #   if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: forms-flow-api
-      #     push: true
-      #     tags: dev
-      #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image dev
+        if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+        uses: docker/build-push-action@v2
+        with:
+          context: forms-flow-documents
+          push: true
+          tags: dev
+          labels: ${{ steps.meta.outputs.labels }}
 
       # - name: Build and push Docker image test/production
       #   if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
       #   uses: docker/build-push-action@v2
       #   with:
-      #     context: forms-flow-api
+      #     context: forms-flow-documents
       #     push: true
       #     tags: ${{ github.event.inputs.environment }}
       #     labels: ${{ steps.meta.outputs.labels }}
