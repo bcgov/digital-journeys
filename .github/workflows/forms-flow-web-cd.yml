@@ -20,7 +20,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./forms-flow-web
+
 
 jobs:
   build-and-push-image:
