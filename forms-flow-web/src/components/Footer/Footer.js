@@ -25,7 +25,7 @@ const BCGovFooter = React.memo(() => {
       label: "Copyright",
     },
     {
-      href: "https://www2.gov.bc.ca/gov/content?id=6A77C17D0CCB48F897F8598CCC019111",
+      href: "mailto:digitaljourneys@gov.bc.ca",
       label: "Contact Us",
     },
   ];
