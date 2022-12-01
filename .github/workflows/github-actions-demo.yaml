@@ -145,11 +145,7 @@ jobs:
     steps:
       - name: Print env
         run: |
-          echo BUILD ID: $BUILD_ID
-          echo BUILD NAMESPACE: $NAMESPACE
-          echo BUILD BUILD_NAMESPACE: $BUILD_NAMESPACE
-          echo BRANCH: $BRANCH
-          echo DOCUMENTS_NAME: $DOCUMENTS_NAME
+          echo happiness :)
           
       # - name: Checkout Target Branch
       #   uses: actions/checkout@v2
