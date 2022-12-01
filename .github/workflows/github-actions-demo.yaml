@@ -94,6 +94,9 @@ jobs:
           images: ${{ matrix.image }}
           tags: ${{ env.BUILD_TAG }}
       
+      - run: echo ${{ steps.meta.outputs.tags }}
+      - run: echo ${{ steps.meta.outputs.images }}
+      
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
