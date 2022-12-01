@@ -95,8 +95,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
-          username: ${{ secrets.SA_USERNAME }}
-          password: ${{ secrets.SA_USERNAME_TOKEN }}
+          username: ${{ secrets.SA_USERNAME_IMAN }}
+          password: ${{ secrets.SA_USERNAME_TOKEN_IMAN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
