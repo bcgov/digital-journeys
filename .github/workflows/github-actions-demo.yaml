@@ -50,69 +50,68 @@ jobs:
         run: |
           oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
-  building the image and pushing to registry
-
+  #building the image and pushing to registry
   # Apply deployConfigs on Openshift in Dev
-  apply-deploymentConfigsDev:
-    # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
-    name: Apply deploymentConfigs in Dev environment
-    environment: dev
-    runs-on: ubuntu-latest
-    env:
-      BUILD_ID: ${{ github.event.number }}
-      NAMESPACE: ${{ secrets.NAMESPACE }}
-      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
-      BRANCH: main
-      DOCUMENTS_NAME: forms-flow-documents
-    needs:
-      - apply-openshift-buildConfigs
-    steps:
-      - name: Print env
-        run: |
-          echo BUILD ID: $BUILD_ID
-          echo BUILD NAMESPACE: $BUILD_NAMESPACE
-          echo BRANCH: $BRANCH
-          echo DOCUMENTS_NAME: $DOCUMENTS_NAME
-      # - name: Checkout Target Branch
-      #   uses: actions/checkout@v2
+  # apply-deploymentConfigsDev:
+  #   # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+  #   name: Apply deploymentConfigs in Dev environment
+  #   environment: dev
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     BUILD_ID: ${{ github.event.number }}
+  #     NAMESPACE: ${{ secrets.NAMESPACE }}
+  #     BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+  #     BRANCH: main
+  #     DOCUMENTS_NAME: forms-flow-documents
+  #   needs:
+  #     - apply-openshift-buildConfigs
+  #   steps:
+  #     - name: Print env
+  #       run: |
+  #         echo BUILD ID: $BUILD_ID
+  #         echo BUILD NAMESPACE: $BUILD_NAMESPACE
+  #         echo BRANCH: $BRANCH
+  #         echo DOCUMENTS_NAME: $DOCUMENTS_NAME
+  #     # - name: Checkout Target Branch
+  #     #   uses: actions/checkout@v2
 
-      #  # Log in to OpenShift.
-      #  # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-      #  # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
-      # - name: Log in to OpenShift
-      #   run: |
-      #     oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+  #     #  # Log in to OpenShift.
+  #     #  # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+  #     #  # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+  #     # - name: Log in to OpenShift
+  #     #   run: |
+  #     #     oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
   
-      - name: apply deploymentConfig
-        working-directory: ./deployment/openshift
-        run: |
-          # test -n "${NAMESPACE}"
-          # test -n "${BUILD_NAMESPACE}"
-          # test -n "${BRANCH}"
-          echo "Current namespace is ${NAMESPACE}"
-          #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
-          echo "Passed"
-          oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f forms-flow-documents_bc.yaml \
-                -p NAME=${DOCUMENTS_NAME} \
-                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=dev \
-                -p CPU_REQUEST=100m \
-                -p CPU_LIMIT=200m \
-                -p MEMORY_REQUEST=100Mi \
-                -p MEMORY_LIMIT=2Gi | \
-          oc -n ${NAMESPACE} apply -f -
-          # #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
-          # # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-          # ATTEMPTS=0
-          # ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
-          # until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-          #   $ROLLOUT_STATUS_CMD
-          #   ATTEMPTS=$((attempts + 1))
-          #   sleep 10
-          # done
-          # oc project ${NAMESPACE}     
-          # echo "Listing pods.."
-          # oc get pods|grep "${API}"
-          # export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
-          # echo "${API} is exposed at 'https://'${ROUTE}" 
+  #     - name: apply deploymentConfig
+  #       working-directory: ./deployment/openshift
+  #       run: |
+  #         # test -n "${NAMESPACE}"
+  #         # test -n "${BUILD_NAMESPACE}"
+  #         # test -n "${BRANCH}"
+  #         echo "Current namespace is ${NAMESPACE}"
+  #         #oc -n ${BUILD_NAMESPACE} policy add-role-to-group system:image-puller system:serviceaccounts:${NAMESPACE}
+  #         echo "Passed"
+  #         oc -n ${NAMESPACE} project
+  #         oc -n ${NAMESPACE} process -f forms-flow-documents_bc.yaml \
+  #               -p NAME=${DOCUMENTS_NAME} \
+  #               -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+  #               -p TAG_NAME=dev \
+  #               -p CPU_REQUEST=100m \
+  #               -p CPU_LIMIT=200m \
+  #               -p MEMORY_REQUEST=100Mi \
+  #               -p MEMORY_LIMIT=2Gi | \
+  #         oc -n ${NAMESPACE} apply -f -
+  #         # #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
+  #         # # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+  #         # ATTEMPTS=0
+  #         # ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
+  #         # until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+  #         #   $ROLLOUT_STATUS_CMD
+  #         #   ATTEMPTS=$((attempts + 1))
+  #         #   sleep 10
+  #         # done
+  #         # oc project ${NAMESPACE}     
+  #         # echo "Listing pods.."
+  #         # oc get pods|grep "${API}"
+  #         # export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
+  #         # echo "${API} is exposed at 'https://'${ROUTE}" 
