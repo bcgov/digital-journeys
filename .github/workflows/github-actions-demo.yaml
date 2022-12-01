@@ -141,7 +141,7 @@ jobs:
       DOCUMENTS_NAME: forms-flow-documents
     needs:
       - apply-openshift-buildConfigs
-      - build-and-push-image
+      # - build-and-push-image
     steps:
       - name: Print env
         run: |
