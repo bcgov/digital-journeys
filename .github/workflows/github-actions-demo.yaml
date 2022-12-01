@@ -114,6 +114,8 @@ jobs:
           push: true
           tags: dev
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - run: docker image ls
 
       # - name: Build and push Docker image test/production
       #   if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
