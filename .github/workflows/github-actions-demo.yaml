@@ -60,7 +60,7 @@ jobs:
           - image: forms-flow-documents
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
-            name: forms-flow-webapi
+            name:  forms-flow-documents
     permissions:
       contents: read
       packages: write
