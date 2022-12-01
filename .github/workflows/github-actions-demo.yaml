@@ -48,13 +48,89 @@ jobs:
       - name: apply openshift buildConfigs
         working-directory: ./deployment/openshift
         run: |
-          echo BUILD NAMESPACE: $BUILD_NAMESPACE
           oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
+  build-and-push-image:
+    #if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
+    name: Build Image
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: forms-flow-documents
+            context: forms-flow-documents
+            dockerfile: Dockerfile.prod
+            name: forms-flow-webapi
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+      
+      - name: Set Build TAG for dev
+        if: ${{!github.event.inputs.environment}}
+        run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+      
+      - name: Set BUILD TAG for test and prod
+        if: ${{github.event.inputs.environment}}
+        run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+      
+      - run: echo ${{ env.BUILD_TAG }}
+      - run: echo ${{ secrets.SA_USERNAME }}
+      - run: echo ${{ secrets.SA_USERNAME_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ matrix.image }}
+          tags: ${{ env.BUILD_TAG }}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
+          username: ${{ secrets.SA_USERNAME }}
+          password: ${{ secrets.SA_USERNAME_TOKEN }}
+
+      # - name: Cache Docker layers
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: /tmp/.buildx-cache
+      #     key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-buildx-${{ matrix.name }}
+
+      # - name: Build and push Docker image dev
+      #   if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: forms-flow-api
+      #     push: true
+      #     tags: dev
+      #     labels: ${{ steps.meta.outputs.labels }}
+
+      # - name: Build and push Docker image test/production
+      #   if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: forms-flow-api
+      #     push: true
+      #     tags: ${{ github.event.inputs.environment }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+  
   #building the image and pushing to registry
-  # Apply deployConfigs on Openshift in Dev
+  
+  # # Apply deployConfigs on Openshift in Dev
   # apply-deploymentConfigsDev:
-  #   # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+  #   if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
   #   name: Apply deploymentConfigs in Dev environment
   #   environment: dev
   #   runs-on: ubuntu-latest
