@@ -117,7 +117,7 @@ jobs:
           push: true
           tags: dev
           # tags: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents:${{ env.BUILD_TAG }}
-          # labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       # - name: Build and push Docker image test/production
       #   if: ${{github.event.inputs.environment == 'production' || github.event.inputs.environment == 'test'}}
