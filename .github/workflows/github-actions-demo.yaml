@@ -36,8 +36,7 @@ jobs:
   apply-openshift-buildConfigs:
     runs-on: ubuntu-latest
     env:
-      # NAMESPACE: d89793-tools
-      NAMESPACE: ${{ secrets.NAMESPACE }}
+      NAMESPACE: d89793-tools
 
     steps:
       - name: Log in to OpenShift
@@ -137,7 +136,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
-      NAMESPACE: ${{ secrets.NAMESPACE }}
+      # NAMESPACE: ${{ secrets.NAMESPACE }}
+      NAMESPACE: d89793-tools
       BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
       BRANCH: feature/DGJ_666-add-aot-pdf-generator
       # BRANCH: main
