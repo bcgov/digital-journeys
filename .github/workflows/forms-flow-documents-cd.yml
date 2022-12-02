@@ -24,18 +24,23 @@ defaults:
   run:
     shell: bash
 
+env:
+  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
+  OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
+  OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
+
 jobs:
   ##################################### Build and push Image #####################################
   
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
     runs-on: ubuntu-latest
-    env:
-      BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
+    # env:
+    #   BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
     steps:
       - name: Log in to OpenShift
         run: |
-          oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
+          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -54,7 +59,6 @@ jobs:
   #   strategy:
   #     matrix:
   #       include:
-  #         # - image: ${{ OPENSHIFT_REGISTRY_URL }}/forms-flow-documents
   #         - image: ${OPENSHIFT_REGISTRY_URL}/forms-flow-documents
   #           context: forms-flow-documents
   #           dockerfile: Dockerfile.prod
