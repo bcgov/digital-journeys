@@ -33,6 +33,7 @@ env:
   tt: ${{ secrets.TEST_VALUE }}
   ENVIRONMENT: ${{ !secrets.TEST_VALUE && 'dev' ||  secrets.TEST_VALUE  }}
   # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+  # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
 
 jobs:
   ##################################### Build and push Image #####################################
