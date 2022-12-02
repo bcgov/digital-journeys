@@ -67,7 +67,8 @@ jobs:
         include:
           # - image: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
           # - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
-          - image: ${{ env.imageURL }}
+          # - image: ${{ env.imageURL }}
+          - image: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents
             # context: ${{ env.APP_NAME }}
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
