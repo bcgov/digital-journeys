@@ -73,7 +73,7 @@ jobs:
             # context: ${{ env.APP_NAME }}
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
-            name: ${{ env.APP_NAME }}
+            # name: ${{ env.APP_NAME }}
             # name: forms-flow-documents
     permissions:
       contents: read
@@ -104,20 +104,17 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
-          # registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
           registry: ${{ env.OPENSHIFT_REGISTRY_URL }}
-          # username: ${{ secrets.SA_USERNAME }}
           username: ${{ env.OPENSHIFT_USERNAME }}
-          # password: ${{ secrets.SA_USERNAME_TOKEN }}
           password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-${{ matrix.name }}
+            ${{ runner.os }}-buildx-${{ env.APP_NAME }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
