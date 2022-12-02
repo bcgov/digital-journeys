@@ -59,7 +59,7 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     env:
-      imageURL: '${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}'
+      imageURL: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
     strategy:
       matrix:
         include:
