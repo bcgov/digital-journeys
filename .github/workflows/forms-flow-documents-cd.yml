@@ -31,7 +31,7 @@ env:
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
-  APP_NAME: forms-flow-documents
+  APP_NAME: 'forms-flow-documents'
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
   # imageURL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}/forms-flow-documents
   imageURL: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents
@@ -66,8 +66,8 @@ jobs:
       matrix:
         include:
           # - image: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
-          - image: ${{ env.imageURL }}
           # - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
+          - image: ${{ env.imageURL }}
             context: ${{ env.APP_NAME }}
             dockerfile: Dockerfile.prod
             name: ${{ env.APP_NAME }}
