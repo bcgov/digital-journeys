@@ -93,7 +93,7 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
-          registry: ${OPENSHIFT_REGISTRY_URL}
+          registry: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
           username: ${OPENSHIFT_USERNAME}
           password: ${OPENSHIFT_TOKEN}
 
