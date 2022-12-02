@@ -58,10 +58,13 @@ jobs:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
+    env:
+      imageURL: '${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}'
     strategy:
       matrix:
         include:
-          - image: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
+          # - image: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
+          - image: ${{ env.imageURL }}
           # - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
             context: ${{ env.APP_NAME }}
             dockerfile: Dockerfile.prod
