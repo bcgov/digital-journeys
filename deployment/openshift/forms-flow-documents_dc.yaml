@@ -85,22 +85,22 @@ objects:
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: JWT_OIDC_CACHING_ENABLED
                 valueFrom:
-                  configMapKeyRef:
+                  secretKeyRef:
                     key: JWT_OIDC_CACHING_ENABLED
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: JWT_OIDC_ISSUER
                 valueFrom:
-                  configMapKeyRef:
+                  secretKeyRef:
                     key: JWT_OIDC_ISSUER
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: JWT_OIDC_JWKS_URI
                 valueFrom:
-                  configMapKeyRef:
+                  secretKeyRef:
                     key: JWT_OIDC_JWKS_URI
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: JWT_OIDC_WELL_KNOWN_CONFIG
                 valueFrom:
-                  configMapKeyRef:
+                  secretKeyRef:
                     key: JWT_OIDC_WELL_KNOWN_CONFIG
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: FORMSFLOW_API_CORS_ORIGINS
@@ -122,7 +122,7 @@ objects:
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: KEYCLOAK_ENABLE_CLIENT_AUTH
                 valueFrom:
-                  secretKeyRef:
+                  configMapKeyRef:
                     key: KEYCLOAK_ENABLE_CLIENT_AUTH
                     name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: FORMSFLOW_API_URL
@@ -130,11 +130,11 @@ objects:
                   configMapKeyRef:
                     key: WEB_API_BASE_URL
                     name: ${FORMSFLOW_CONFIG_NAME}-config
-              - name: FORMSFLOW_DOC_API_URL
-                valueFrom:
-                  configMapKeyRef:
-                    key: FORMSFLOW_DOC_API_URL
-                    name: ${FORMSFLOW_CONFIG_NAME}-config
+              # - name: FORMSFLOW_DOC_API_URL
+              #   valueFrom:
+              #     configMapKeyRef:
+              #       key: FORMSFLOW_DOC_API_URL
+              #       name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: CHROME_DRIVER_PATH
                 valueFrom:
                   configMapKeyRef:
@@ -145,13 +145,13 @@ objects:
                   secretKeyRef:
                     key: FORMIO_JWT_SECRET
                     name: ${FORMSFLOW_CONFIG_NAME}-config
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}
-          ports:
-            - containerPort: 5006
-          resources: {}
-          stdin: true
-          tty: true
+              image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+              name: ${NAME}
+              ports:
+                - containerPort: 5006
+              resources: {}
+              stdin: true
+              tty: true
           restartPolicy: Always
       test: false
       triggers:
@@ -181,7 +181,7 @@ parameters:
     description:
       The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: ""
+    value: "d89793-tools"
   - name: INSTANCE
     description: The name of this instance of the application
     displayName: Application Instance Name
@@ -218,10 +218,15 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
-  - name: KEYCLOAK_REALM
-    displayName: KEYCLOAK_REALM
-    description: KEYCLOAK_REALM
-    required: false
-  - name: KEYCLOAK_URL
-    description: The URL used to connect to the OIDC provider.
+  # - name: KEYCLOAK_REALM
+  #   displayName: KEYCLOAK_REALM
+  #   description: KEYCLOAK_REALM
+  #   required: false
+  # - name: KEYCLOAK_URL
+  #   description: The URL used to connect to the OIDC provider.
+  #   required: false
+  - name: FORMSFLOW_DOC_API_URL
+    displayName: FORMSFLOW_DOC_API_URL
+    description:
+      forms-flow-documents API URL without https prefix.
     required: false
