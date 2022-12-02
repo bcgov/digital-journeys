@@ -30,6 +30,7 @@ env:
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
+  tt: ${{ secrets.TEST_VALUE }}
   ENVIRONMENT: ${{ !secrets.TEST_VALUE && 'dev' ||  secrets.TEST_VALUE  }}
   # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
 
@@ -42,6 +43,7 @@ jobs:
       - name: echo environment
         run: |
           echo ${{ github.event.inputs.environment }}
+          echo ${tt}
           echo ENVIRONMENT: ${ENVIRONMENT}
   
   # # Apply buildConfigs on Openshift
