@@ -1,4 +1,4 @@
-name: Build, Push and deploy forms-flow-documents
+name: forms-flow-documents-build-push-deploy
 
 on:
   workflow_dispatch:
@@ -14,11 +14,11 @@ on:
         - production
   push:
     branches: [main, feature/DGJ_666-add-aot-pdf-generator]
-    paths:
-      - "forms-flow-documents/**"
-      - "forms-flow-api-utils/**"
-      - "deployment/openshift/forms-flow-documents_bc.yaml"
-      - "deployment/openshift/forms-flow-documents_dc.yaml"
+    # paths:
+    #   - "forms-flow-documents/**"
+    #   - "forms-flow-api-utils/**"
+    #   - "deployment/openshift/forms-flow-documents_bc.yaml"
+    #   - "deployment/openshift/forms-flow-documents_dc.yaml"
 
 defaults:
   run:
