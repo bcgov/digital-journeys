@@ -106,8 +106,10 @@ jobs:
         with:
           # registry: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools
           registry: ${{ env.OPENSHIFT_REGISTRY_URL }}
-          username: ${{ secrets.SA_USERNAME }}
-          password: ${{ secrets.SA_USERNAME_TOKEN }}
+          # username: ${{ secrets.SA_USERNAME }}
+          username: ${{ env.OPENSHIFT_USERNAME }}
+          # password: ${{ secrets.SA_USERNAME_TOKEN }}
+          password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
