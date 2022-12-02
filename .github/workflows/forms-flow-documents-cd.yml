@@ -96,7 +96,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: ${{ matrix.image }}
-          tags: ${ENVIRONMENT}
+          tags: ${{ env.ENVIRONMENT }}
       
       - run: echo ${{ steps.meta.outputs.tags }}
       
