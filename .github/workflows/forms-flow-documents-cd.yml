@@ -30,10 +30,9 @@ env:
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
-  # ENVIRONMENT: ${{ github.event.inputs.environment }}
-  # ENVIRONMENT: dev
-  ENVIRONMENT: ${{ github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
-
+  TEST_VALUE: test
+  ENVIRONMENT: ${{ !TEST_VALUE && 'dev' ||  TEST_VALUE  }}
+  # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
 
 jobs:
   ##################################### Build and push Image #####################################
