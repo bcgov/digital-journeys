@@ -25,7 +25,7 @@ defaults:
     shell: bash
 
 env:
-  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
+  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
