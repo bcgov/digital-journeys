@@ -43,7 +43,8 @@ jobs:
       - name: echo environment
         run: |
           echo ${{ github.event.inputs.environment }}
-          echo ${tt}
+          echo ${tt}1
+          echo 1
           echo ENVIRONMENT: ${ENVIRONMENT}
   
   # # Apply buildConfigs on Openshift
