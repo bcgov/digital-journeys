@@ -66,15 +66,8 @@ jobs:
     strategy:
       matrix:
         include:
-          # - image: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
-          # - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
-          # - image: ${{ env.imageURL }}
-          - image: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents
-            # context: ${{ env.APP_NAME }}
-            # context: forms-flow-documents
-            dockerfile: Dockerfile.prod
-            # name: ${{ env.APP_NAME }}
-            # name: forms-flow-documents
+          # - image: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents
+          - dockerfile: Dockerfile.prod
     permissions:
       contents: read
       packages: write
@@ -96,7 +89,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ matrix.image }}
+          # images: ${{ matrix.image }}
+          images: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
           tags: ${{ env.ENVIRONMENT }}
       
       - run: echo ${{ steps.meta.outputs.tags }}
