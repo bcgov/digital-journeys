@@ -30,15 +30,11 @@ jobs:
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
     runs-on: ubuntu-latest
-    environment: dev
     env:
       BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
-      # NAMESPACE: d89793-tools
-
     steps:
       - name: Log in to OpenShift
         run: |
-          echo BUILD NAMESPACE: $BUILD_NAMESPACE
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
       - name: Checkout repository
