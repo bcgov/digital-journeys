@@ -71,7 +71,8 @@ jobs:
             # context: ${{ env.APP_NAME }}
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
-            name: ${{ env.APP_NAME }}
+            # name: ${{ env.APP_NAME }}
+            name: forms-flow-documents
     permissions:
       contents: read
       packages: write
