@@ -33,6 +33,7 @@ env:
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+  imageURL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
 
 jobs:
   ##################################### Build and push Image #####################################
@@ -58,8 +59,8 @@ jobs:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
-    env:
-      imageURL: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
+    # env:
+    #   imageURL: ${{ env.OPENSHIFT_REGISTRY_URL }}/${{ env.APP_NAME }}
     strategy:
       matrix:
         include:
