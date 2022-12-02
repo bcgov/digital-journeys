@@ -32,7 +32,7 @@ env:
   APP_NAME: forms-flow-documents
   # ENVIRONMENT: ${{ github.event.inputs.environment }}
   # ENVIRONMENT: dev
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+  ENVIRONMENT: ${{ github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
 
 
 jobs:
