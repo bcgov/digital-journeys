@@ -28,41 +28,48 @@ env:
   BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
+  OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
+  APP_NAME: forms-flow-documents
+  ENVIRONMENT: dev
 
 jobs:
   ##################################### Build and push Image #####################################
-  
-  # Apply buildConfigs on Openshift
-  apply-openshift-buildConfigs:
+
+  echoEnvironment:
     runs-on: ubuntu-latest
-    # env:
-    #   BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
     steps:
-      - name: Log in to OpenShift
-        run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+      - name: echo environment
+        run: echo ${{ github.event.inputs.environment }}
+  
+  # # Apply buildConfigs on Openshift
+  # apply-openshift-buildConfigs:
+  #   name: Apply openshift buildConfigs
+  #   if: github.repository == 'bcgov/digital-journeys'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Log in to OpenShift
+  #       run: |
+  #         oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: apply openshift buildConfigs
-        working-directory: ./deployment/openshift
-        run: |
-          oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+  #     - name: apply openshift buildConfigs
+  #       working-directory: ./deployment/openshift
+  #       run: |
+  #         oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
   # build-and-push-image:
+  #   name: Build the image and push it to the registry
   #   if: github.repository == 'bcgov/digital-journeys'
-  #   name: Build Image
   #   runs-on: ubuntu-latest
-  #   env:
-  #     OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   #   strategy:
   #     matrix:
   #       include:
-  #         - image: ${OPENSHIFT_REGISTRY_URL}/forms-flow-documents
-  #           context: forms-flow-documents
+  #         - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
+  #           context: ${APP_NAME}
   #           dockerfile: Dockerfile.prod
-  #           name:  forms-flow-documents
+  #           name:  ${APP_NAME}
   #   permissions:
   #     contents: read
   #     packages: write
