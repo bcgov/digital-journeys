@@ -27,114 +27,91 @@ defaults:
 env:
   BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
+  OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
-  tt: ${{ secrets.TEST_VALUE }}
-  ENVIRONMENT: ${{ !secrets.TEST_VALUE && 'dev' ||  secrets.TEST_VALUE  }}
-  # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
-  # ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
 
 jobs:
   ##################################### Build and push Image #####################################
-
-  echoEnvironment:
+  # Apply buildConfigs on Openshift
+  apply-openshift-buildConfigs:
+    name: Apply openshift buildConfigs
+    if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     steps:
-      - name: echo environment
+      - name: Log in to OpenShift
         run: |
-          echo ${{ github.event.inputs.environment }}
-          echo ${tt}1
-          echo 1
-          echo ENVIRONMENT: ${ENVIRONMENT}
-  
-  # # Apply buildConfigs on Openshift
-  # apply-openshift-buildConfigs:
-  #   name: Apply openshift buildConfigs
-  #   if: github.repository == 'bcgov/digital-journeys'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Log in to OpenShift
-  #       run: |
-  #         oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-  #     - name: apply openshift buildConfigs
-  #       working-directory: ./deployment/openshift
-  #       run: |
-  #         oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+      - name: apply openshift buildConfigs
+        working-directory: ./deployment/openshift
+        run: |
+          oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
-  # build-and-push-image:
-  #   name: Build the image and push it to the registry
-  #   if: github.repository == 'bcgov/digital-journeys'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
-  #           context: ${APP_NAME}
-  #           dockerfile: Dockerfile.prod
-  #           name:  ${APP_NAME}
-  #   permissions:
-  #     contents: read
-  #     packages: write
+  build-and-push-image:
+    name: Build the image and push it to the registry
+    if: github.repository == 'bcgov/digital-journeys'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
+            context: ${APP_NAME}
+            dockerfile: Dockerfile.prod
+            name:  ${APP_NAME}
+    permissions:
+      contents: read
+      packages: write
     
-  #   needs:
-  #     - apply-openshift-buildConfigs
+    needs:
+      - apply-openshift-buildConfigs
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v1
-  #       with:
-  #         install: true
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
       
-  #     - name: Set Build TAG for dev
-  #       if: ${{!github.event.inputs.environment}}
-  #       run: echo "BUILD_TAG=dev" >> $GITHUB_ENV
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ matrix.image }}
+          tags: ${ENVIRONMENT}
       
-  #     - name: Set BUILD TAG for test and prod
-  #       if: ${{github.event.inputs.environment}}
-  #       run: echo "BUILD_TAG=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+      - run: echo ${{ steps.meta.outputs.tags }}
       
-  #     - run: echo ${{ env.BUILD_TAG }}
-      
-  #     - name: Docker meta
-  #       id: meta
-  #       uses: docker/metadata-action@v3
-  #       with:
-  #         images: ${{ matrix.image }}
-  #         tags: ${{ env.BUILD_TAG }}
-      
-  #     - run: echo ${{ steps.meta.outputs.tags }}
-      
-  #     - name: Log in to the Container registry
-  #       uses: docker/login-action@v1
-  #       with:
-  #         registry: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
-  #         username: ${{ secrets.SA_USERNAME }}
-  #         password: ${{ secrets.SA_USERNAME_TOKEN }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${OPENSHIFT_REGISTRY_URL}
+          username: ${OPENSHIFT_USERNAME}
+          password: ${OPENSHIFT_TOKEN}
 
-  #     - name: Cache Docker layers
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: /tmp/.buildx-cache
-  #         key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-buildx-${{ matrix.name }}
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.name }}
 
-  #     - name: Build and push Docker image
-  #       uses: docker/build-push-action@v2
-  #       with:
-  #         context: forms-flow-documents
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ${APP_NAME}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   
   
   
