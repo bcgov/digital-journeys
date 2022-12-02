@@ -56,13 +56,11 @@ jobs:
   build-and-push-image:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
-    env:
-      IMAGE_URL: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - image: ${IMAGE_URL}
+          - image: ${OPENSHIFT_REGISTRY_URL}/${APP_NAME}
             context: ${APP_NAME}
             dockerfile: Dockerfile.prod
             name:  ${APP_NAME}
@@ -95,7 +93,7 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${OPENSHIFT_REGISTRY_URL}
+          registry: ${OPENSHIFT_SERVER_URL}
           username: ${OPENSHIFT_USERNAME}
           password: ${OPENSHIFT_TOKEN}
 
