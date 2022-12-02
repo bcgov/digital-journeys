@@ -51,10 +51,13 @@ jobs:
     # if: github.event_name == 'push' && github.repository == 'bcgov/digital-journeys'
     name: Build Image
     runs-on: ubuntu-latest
+    env:
+      OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
     strategy:
       matrix:
         include:
-          - image: ${{ secrets.OPENSHIFT_REGISTRY_URL }}/forms-flow-documents
+          # - image: ${{ OPENSHIFT_REGISTRY_URL }}/forms-flow-documents
+          - image: ${OPENSHIFT_REGISTRY_URL}/forms-flow-documents
             context: forms-flow-documents
             dockerfile: Dockerfile.prod
             name:  forms-flow-documents
