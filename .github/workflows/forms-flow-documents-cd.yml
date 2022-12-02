@@ -28,6 +28,7 @@ env:
   BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE_GLOBAL }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
+  OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_REGISTRY_URL: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
@@ -95,7 +96,7 @@ jobs:
         with:
           registry: ${{ secrets.OPENSHIFT_REGISTRY_URL }}
           username: ${OPENSHIFT_USERNAME}
-          password: ${OPENSHIFT_TOKEN}
+          password: ${OPENSHIFT_REGISTRY_TOKEN}
 
       - name: Cache Docker layers
         uses: actions/cache@v2
