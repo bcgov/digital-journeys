@@ -71,7 +71,7 @@ jobs:
           # - image: ${{ env.imageURL }}
           - image: image-registry.apps.silver.devops.gov.bc.ca/d89793-tools/forms-flow-documents
             # context: ${{ env.APP_NAME }}
-            context: forms-flow-documents
+            # context: forms-flow-documents
             dockerfile: Dockerfile.prod
             # name: ${{ env.APP_NAME }}
             # name: forms-flow-documents
