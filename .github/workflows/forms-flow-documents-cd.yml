@@ -32,7 +32,7 @@ env:
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-documents
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
 
 jobs:
   ##################################### Build and push Image #####################################
@@ -118,9 +118,10 @@ jobs:
   # Apply deployConfigs on Openshift in Dev
   apply-deploymentConfigsDev:
     name: Apply deploymentConfigs in Dev environment
-    # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     # environment: ${{ env.ENVIRONMENT }}
-    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
+    # environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    environment: 
+      name: ${{ env.ENVIRONMENT }}
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.NAMESPACE }}
