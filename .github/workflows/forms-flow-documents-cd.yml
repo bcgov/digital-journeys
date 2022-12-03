@@ -119,7 +119,8 @@ jobs:
   apply-deploymentConfigsDev:
     name: Apply deploymentConfigs in Dev environment
     # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
-    environment: ${{ env.ENVIRONMENT }}
+    # environment: ${{ env.ENVIRONMENT }}
+    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment  }}
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.NAMESPACE }}
