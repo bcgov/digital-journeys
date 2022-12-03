@@ -122,7 +122,9 @@ jobs:
       my_environment: ${{ steps.setenv.outputs.my_environment }}
     steps:
     - id: setenv
-      run: echo "::set-output name=my_environment::${ENVIRONMENT}"
+      # run: echo "::set-output name=my_environment::${ENVIRONMENT}"
+      run: echo "my_environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+
 
   # Apply deployConfigs on Openshift in Dev
   apply-deploymentConfigsDev:
