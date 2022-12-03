@@ -118,7 +118,7 @@ jobs:
   # Apply deployConfigs on Openshift in Dev
   apply-deploymentConfigsDev:
     name: Apply deploymentConfigs in Dev environment
-    if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
+    # if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     environment: ${{ env.ENVIRONMENT }}
     runs-on: ubuntu-latest
     env:
