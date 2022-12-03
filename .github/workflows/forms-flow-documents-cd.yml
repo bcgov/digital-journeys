@@ -35,6 +35,16 @@ env:
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
 
 jobs:
+  set_environment:
+    name: Make environment variables available to the rest of the workflow
+    runs-on: ubuntu-latest
+    outputs:
+      my_environment: ${{ steps.setenv.outputs.my_environment }}
+    steps:
+    - id: setenv
+      # run: echo "::set-output name=my_environment::${ENVIRONMENT}"
+      run: echo "my_environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+
   test-env:
     environment: dev
     runs-on: ubuntu-latest
@@ -48,6 +58,7 @@ jobs:
         echo NAMESPACE: ${NAMESPACE}
         echo NAMESPACE2: ${NAMESPACE2}
         echo FORMSFLOW_DOC_API_URL: ${FORMSFLOW_DOC_API_URL}
+        echo my_environment: ${{ needs.set_environment.outputs.my_environment }}
 
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
