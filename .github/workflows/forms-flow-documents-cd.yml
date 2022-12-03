@@ -114,6 +114,15 @@ jobs:
   
   
   # ##################################### Deployment #####################################
+  
+  set_environment:
+    name: Make environment variables available to the rest of the workflow
+    runs-on: ubuntu-latest
+    outputs:
+      my_environment: ${{ steps.setenv.outputs.my_environment }}
+    steps:
+    - id: setenv
+      run: echo "::set-output name=my_environment::${ENVIRONMENT}"
 
   # Apply deployConfigs on Openshift in Dev
   apply-deploymentConfigsDev:
@@ -121,7 +130,8 @@ jobs:
     # environment: ${{ env.ENVIRONMENT }}
     # environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     environment: 
-      name: ${{ env.ENVIRONMENT }}
+      name: ${{ needs.set_environment.outputs.my_environment }}
+      # name: ${{ env.ENVIRONMENT }}
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.NAMESPACE }}
