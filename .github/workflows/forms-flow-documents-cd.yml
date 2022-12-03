@@ -35,158 +35,172 @@ env:
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
 
 jobs:
+  test-env:
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      NAMESPACE: ${{ secrets.NAMESPACE }}
+      NAMESPACE2: ${{ secrets.NAMESPACE2 }}
+      FORMSFLOW_DOC_API_URL: ${{ secrets.FORMSFLOW_DOC_API_URL }}
+    steps:
+    - name: Testing job environment
+      run: |
+        echo NAMESPACE: ${NAMESPACE}
+        echo NAMESPACE2: ${NAMESPACE2}
+        echo FORMSFLOW_DOC_API_URL: ${FORMSFLOW_DOC_API_URL}
+
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
-  apply-openshift-buildConfigs:
-    name: Apply openshift buildConfigs
-    if: github.repository == 'bcgov/digital-journeys'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log in to OpenShift
-        run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+  # apply-openshift-buildConfigs:
+  #   name: Apply openshift buildConfigs
+  #   if: github.repository == 'bcgov/digital-journeys'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Log in to OpenShift
+  #       run: |
+  #         oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: apply openshift buildConfigs
-        working-directory: ./deployment/openshift
-        run: |
-          oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+  #     - name: apply openshift buildConfigs
+  #       working-directory: ./deployment/openshift
+  #       run: |
+  #         oc -n ${BUILD_NAMESPACE} process -f forms-flow-documents_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
   
-  build-and-push-image:
-    name: Build the image and push it to the registry
-    if: github.repository == 'bcgov/digital-journeys'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - dockerfile: Dockerfile.prod
-    permissions:
-      contents: read
-      packages: write
+  # build-and-push-image:
+  #   name: Build the image and push it to the registry
+  #   if: github.repository == 'bcgov/digital-journeys'
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - dockerfile: Dockerfile.prod
+  #   permissions:
+  #     contents: read
+  #     packages: write
     
-    needs:
-      - apply-openshift-buildConfigs
+  #   needs:
+  #     - apply-openshift-buildConfigs
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
       
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          install: true
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         install: true
       
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
-          tags: ${{ env.ENVIRONMENT }}
+  #     - name: Docker meta
+  #       id: meta
+  #       uses: docker/metadata-action@v3
+  #       with:
+  #         images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
+  #         tags: ${{ env.ENVIRONMENT }}
       
-      - run: echo ${{ steps.meta.outputs.tags }}
+  #     - run: echo ${{ steps.meta.outputs.tags }}
       
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}
-          username: ${{ env.OPENSHIFT_USERNAME }}
-          password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v2
+  #       with:
+  #         registry: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}
+  #         username: ${{ env.OPENSHIFT_USERNAME }}
+  #         password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ env.APP_NAME }}
+  #     - name: Cache Docker layers
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: /tmp/.buildx-cache
+  #         key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-buildx-${{ env.APP_NAME }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: ${{ env.APP_NAME }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+  #     - name: Build and push Docker image
+  #       uses: docker/build-push-action@v2
+  #       with:
+  #         context: ${{ env.APP_NAME }}
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
   
   
   
   # ##################################### Deployment #####################################
   
-  set_environment:
-    name: Make environment variables available to the rest of the workflow
-    runs-on: ubuntu-latest
-    outputs:
-      my_environment: ${{ steps.setenv.outputs.my_environment }}
-    steps:
-    - id: setenv
-      # run: echo "::set-output name=my_environment::${ENVIRONMENT}"
-      run: echo "my_environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+  # set_environment:
+  #   name: Make environment variables available to the rest of the workflow
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     my_environment: ${{ steps.setenv.outputs.my_environment }}
+  #   steps:
+  #   - id: setenv
+  #     # run: echo "::set-output name=my_environment::${ENVIRONMENT}"
+  #     run: echo "my_environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
 
 
-  # Apply deployConfigs on Openshift in Dev
-  apply-deploymentConfigsDev:
-    name: Apply deploymentConfigs in Dev environment
-    # environment: ${{ env.ENVIRONMENT }}
-    # environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
-    environment: 
-      name: ${{ needs.set_environment.outputs.my_environment }}
-      # name: ${{ env.ENVIRONMENT }}
-    runs-on: ubuntu-latest
-    env:
-      # NAMESPACE: ${{ secrets.NAMESPACE }}
-      NAMESPACE: ${{ secrets.NAMESPACE2 }}
-      # NAMESPACE: d89793-dev
-      # IMAGE_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
-      # IMAGE_NAMESPACE: d89793-tools
-      # APP_NAME: forms-flow-documents
-      FORMSFLOW_DOC_API_URL: ${{ secrets.FORMSFLOW_DOC_API_URL }}
-      # FORMSFLOW_DOC_API_URL: digital-journeys-forms-flow-documents-dev.apps.silver.devops.gov.bc.ca
+  # # Apply deployConfigs on Openshift in Dev
+  # apply-deploymentConfigsDev:
+  #   name: Apply deploymentConfigs in Dev environment
+  #   # environment: ${{ env.ENVIRONMENT }}
+  #   # environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+  #   environment: 
+  #     name: ${{ needs.set_environment.outputs.my_environment }}
+  #     # name: ${{ env.ENVIRONMENT }}
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     # NAMESPACE: ${{ secrets.NAMESPACE }}
+  #     NAMESPACE: ${{ secrets.NAMESPACE2 }}
+  #     # NAMESPACE: d89793-dev
+  #     # IMAGE_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+  #     # IMAGE_NAMESPACE: d89793-tools
+  #     # APP_NAME: forms-flow-documents
+  #     FORMSFLOW_DOC_API_URL: ${{ secrets.FORMSFLOW_DOC_API_URL }}
+  #     # FORMSFLOW_DOC_API_URL: digital-journeys-forms-flow-documents-dev.apps.silver.devops.gov.bc.ca
     
-    needs:
-      - apply-openshift-buildConfigs
-      - build-and-push-image
+  #   needs:
+  #     - apply-openshift-buildConfigs
+  #     - build-and-push-image
     
-    steps:
-      - name: Checkout Target Branch
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Target Branch
+  #       uses: actions/checkout@v2
 
-      - name: Log in to OpenShift
-        run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+  #     - name: Log in to OpenShift
+  #       run: |
+  #         oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
   
-      - name: apply deploymentConfig
-        working-directory: ./deployment/openshift
-        run: |
-          oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f forms-flow-documents_dc.yaml \
-                -p NAME=${APP_NAME} \
-                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                -p TAG_NAME=${ENVIRONMENT} \
-                -p FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL} \
-                -p CPU_REQUEST=100m \
-                -p CPU_LIMIT=200m \
-                -p MEMORY_REQUEST=100Mi \
-                -p MEMORY_LIMIT=2Gi | \
-          oc -n ${NAMESPACE} apply -f -
+  #     - name: apply deploymentConfig
+  #       working-directory: ./deployment/openshift
+  #       run: |
+  #         oc -n ${NAMESPACE} project
+  #         oc -n ${NAMESPACE} process -f forms-flow-documents_dc.yaml \
+  #               -p NAME=${APP_NAME} \
+  #               -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+  #               -p TAG_NAME=${ENVIRONMENT} \
+  #               -p FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL} \
+  #               -p CPU_REQUEST=100m \
+  #               -p CPU_LIMIT=200m \
+  #               -p MEMORY_REQUEST=100Mi \
+  #               -p MEMORY_LIMIT=2Gi | \
+  #         oc -n ${NAMESPACE} apply -f -
       
-      - name: verify deploymentConfig
-        run: |
-          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-          ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-            $ROLLOUT_STATUS_CMD
-            ATTEMPTS=$((attempts + 1))
-            sleep 10
-          done
-          oc project ${NAMESPACE}     
-          echo "Listing pods.."
-          oc get pods|grep "${APP_NAME}"
-          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-          echo "${APP_NAME} is exposed at 'https://'${ROUTE}" 
+  #     - name: verify deploymentConfig
+  #       run: |
+  #         # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+  #         ATTEMPTS=0
+  #         ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+  #         until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+  #           $ROLLOUT_STATUS_CMD
+  #           ATTEMPTS=$((attempts + 1))
+  #           sleep 10
+  #         done
+  #         oc project ${NAMESPACE}     
+  #         echo "Listing pods.."
+  #         oc get pods|grep "${APP_NAME}"
+  #         export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+  #         echo "${APP_NAME} is exposed at 'https://'${ROUTE}" 
   
   # # Apply deployConfigs on Openshift in Test
   # apply-deploymentConfigsTest:
