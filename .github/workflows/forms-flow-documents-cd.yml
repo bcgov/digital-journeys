@@ -47,8 +47,9 @@ jobs:
 
   test-env:
     # environment: ${{ needs.set_environment.outputs.my_environment }}
-    environment: 
-      name: ${{ needs.set_environment.outputs.my_environment }}
+    # environment: 
+    #   name: ${{ needs.set_environment.outputs.my_environment }}
+    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.NAMESPACE }}
