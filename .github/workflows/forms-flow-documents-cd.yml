@@ -46,7 +46,9 @@ jobs:
       run: echo "my_environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
 
   test-env:
-    environment: ${{ needs.set_environment.outputs.my_environment }}
+    # environment: ${{ needs.set_environment.outputs.my_environment }}
+    environment: 
+      name: ${{ needs.set_environment.outputs.my_environment }}
     runs-on: ubuntu-latest
     env:
       NAMESPACE: ${{ secrets.NAMESPACE }}
