@@ -136,7 +136,8 @@ jobs:
       # name: ${{ env.ENVIRONMENT }}
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: ${{ secrets.NAMESPACE }}
+      # NAMESPACE: ${{ secrets.NAMESPACE }}
+      NAMESPACE: ${{ secrets.NAMESPACE2 }}
       # NAMESPACE: d89793-dev
       # IMAGE_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
       # IMAGE_NAMESPACE: d89793-tools
