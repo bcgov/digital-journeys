@@ -54,7 +54,7 @@ const View = React.memo((props) => {
         "printPdf",
         printToPDF
       );
-    }, 1000);
+    }, 2000);
     return () => {
       clearInterval(enableFormButtonInterval);
     };

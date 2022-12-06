@@ -222,7 +222,7 @@ const Edit = React.memo((props) => {
         );
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF();
+        printToPDF({ pdfName: customEvent.pdfName });
         break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(customEvent.error);

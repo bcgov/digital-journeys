@@ -442,7 +442,7 @@ const View = React.memo((props) => {
         break;
       }
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF();
+        printToPDF({pdfName: evt.pdfName});
         break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(evt.error);
@@ -513,7 +513,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading || employeeData.loading}
+        // active={isFormSubmissionLoading || employeeData.loading}
         spinner
         // text={<Translation>{(t) => t("Loading...")}</Translation>}
         text={
