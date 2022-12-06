@@ -157,7 +157,7 @@ class DraftService:
             # was created, update the application with new mapper
             application.update({"form_process_mapper_id": mapper.id})
         payload = ApplicationService.get_start_task_payload(
-            application, mapper, data["form_url"], data["web_form_url"]
+            application, mapper, data["form_url"], data["web_form_url"], token
         )
         ApplicationService.start_task(mapper, payload, token, application)
         return application
