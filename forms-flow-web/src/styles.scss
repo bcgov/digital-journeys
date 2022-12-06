@@ -471,10 +471,14 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 }*/
 .formio-component-datagrid .datagrid-table>tbody>tr>td>button.formio-button-remove-row {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  border: none;
-  padding: 0 5px;
+  /*bottom: 1.0rem;*/
+  top: 1rem;
+  right: 1.15rem;
+  padding: 10px 25px;
+  white-space: nowrap;
+}
+.formio-component-datagrid .datagrid-table>tbody>tr>td>button.formio-button-remove-row:after {
+  content: "Remove Section";
 }
 /*.datagrid-table .fieldset-body {
   display: flex;
@@ -484,6 +488,8 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   /*flex: 0 0 100%;*/
   padding-left: 1.25rem;
   padding-right: 0.25rem;
+  /*padding-bottom: 1.75rem;*/
+  padding-top: 1.75rem;
 }
 @media (min-width: 768px) {
   .datagrid-table .fieldset-body .formio-component {
