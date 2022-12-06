@@ -28,7 +28,7 @@ env:
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
-  OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
+  OPENSHIFT_SERVER_URL: https://api.silver.devops.gov.bc.ca:6443
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-web
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
