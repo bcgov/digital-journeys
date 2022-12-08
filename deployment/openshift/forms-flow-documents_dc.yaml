@@ -130,11 +130,11 @@ objects:
                   configMapKeyRef:
                     key: WEB_API_BASE_URL
                     name: ${FORMSFLOW_CONFIG_NAME}-config
-              # - name: FORMSFLOW_DOC_API_URL
-              #   valueFrom:
-              #     configMapKeyRef:
-              #       key: FORMSFLOW_DOC_API_URL
-              #       name: ${FORMSFLOW_CONFIG_NAME}-config
+              - name: FORMSFLOW_DOC_API_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: FORMSFLOW_DOC_API_URL
+                    name: ${FORMSFLOW_CONFIG_NAME}-config
               - name: CHROME_DRIVER_PATH
                 valueFrom:
                   configMapKeyRef:
