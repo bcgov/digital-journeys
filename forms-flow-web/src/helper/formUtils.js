@@ -35,8 +35,10 @@ const enableFormButton = (formio, enableButtonInterval, buttonKey, onClick) => {
     const button = document.getElementsByName(`data[${buttonKey}]`)[0];
     if (button) {
       button.removeAttribute("disabled");
+      const pdfName = formio._data?.name;
+      const formName = formio._data?.formName;
       if (onClick) {
-        button.onclick = onClick;
+        button.onclick = () => onClick({ pdfName, formName });
       }
     }
   }

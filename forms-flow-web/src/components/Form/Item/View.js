@@ -442,7 +442,7 @@ const View = React.memo((props) => {
         break;
       }
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF({pdfName: evt.pdfName});
+        printToPDF({ formName: evt.formName, pdfName: evt.pdfName });
         break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(evt.error);
