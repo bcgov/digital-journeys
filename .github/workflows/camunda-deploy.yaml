@@ -41,7 +41,7 @@ jobs:
     env:
       BUILD_ID: ${{ github.event.number }}
       BUILD_NAMESPACE: d89793-tools
-      BRANCH: main
+      BRANCH: hotfix/DGJ_779-fix_missing_schedule_in_ODS
       BUILD_TAG: latest
       APP: forms-flow-bpm
     steps:
@@ -235,7 +235,7 @@ jobs:
       BUILD_ID: ${{ github.event.number }}
       NAMESPACE: ${{ secrets.NAMESPACE }}
       BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
-      BRANCH: main
+      BRANCH: hotfix/DGJ_779-fix_missing_schedule_in_ODS
       APP: forms-flow-bpm
       WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
     needs:
