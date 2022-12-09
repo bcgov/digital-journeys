@@ -209,7 +209,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF();
+        printToPDF({ formName: customEvent.formName, pdfName: customEvent.pdfName });
         break;
       default:
         return;
