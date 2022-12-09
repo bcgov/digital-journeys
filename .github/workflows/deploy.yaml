@@ -71,18 +71,18 @@ jobs:
 
 
       # Build the app images
-      # - name: Build App images
-      #   working-directory: "./deployment/openshift"
-      #   run: |
-      #     test -n "${BRANCH}"
-      #     test -n "${BUILD_NAMESPACE}"
-      #     echo "BUILIDING ${APP} with tag: ${{ env.BUILD_TAG }}"
-      #           oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
-      #           -p SOURCE_REPOSITORY_REF=${BRANCH} \
-      #           -p TAG=${{ env.BUILD_TAG }} \
-      #           -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
-      #           -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
-      #     oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
+      - name: Build App images
+        working-directory: "./deployment/openshift"
+        run: |
+          test -n "${BRANCH}"
+          test -n "${BUILD_NAMESPACE}"
+          echo "BUILIDING ${APP} with tag: ${{ env.BUILD_TAG }}"
+                oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml \
+                -p SOURCE_REPOSITORY_REF=${BRANCH} \
+                -p TAG=${{ env.BUILD_TAG }} \
+                -p SOURCE_REPOSITORY_URL="https://github.com/bcgov/digital-journeys" \
+                -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
+          oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
 
 
        # Build the api images
@@ -134,35 +134,35 @@ jobs:
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
-      # - name: Deploy APP
-      #   run: |
-      #     test -n "${NAMESPACE}"
-      #     test -n "${BUILD_NAMESPACE}"
-      #     test -n "${BRANCH}"
-      #     echo "Current namespace is ${NAMESPACE}"
-      #     oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-      #           -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-      #           -p TAG_NAME=dev \
-      #           -p CPU_REQUEST=100m \
-      #           -p CPU_LIMIT=200m \
-      #           -p MEMORY_REQUEST=100Mi \
-      #           -p MEMORY_LIMIT=2Gi \
-      #           -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
-      #     oc -n ${NAMESPACE} apply -f -
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=dev \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
 
-      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-      #     ATTEMPTS=0
-      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
-      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-      #       $ROLLOUT_STATUS_CMD
-      #       ATTEMPTS=$((attempts + 1))
-      #       sleep 10
-      #     done
-      #     oc project ${NAMESPACE}     
-      #     echo "Listing pods.."
-      #     oc get pods|grep "${APP}"
-      #     export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-      #     echo "${APP} is exposed at 'https://'${ROUTE}" 
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
   
       - name: Deploy API
         run: |
@@ -229,35 +229,35 @@ jobs:
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
-      # - name: Deploy APP
-      #   run: |
-      #     test -n "${NAMESPACE}"
-      #     test -n "${BUILD_NAMESPACE}"
-      #     test -n "${BRANCH}"
-      #     echo "Current namespace is ${NAMESPACE}"
-      #     oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-      #           -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-      #           -p TAG_NAME=test \
-      #           -p CPU_REQUEST=100m \
-      #           -p CPU_LIMIT=200m \
-      #           -p MEMORY_REQUEST=100Mi \
-      #           -p MEMORY_LIMIT=2Gi \
-      #           -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
-      #     oc -n ${NAMESPACE} apply -f -
-      #     #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
-      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-      #     ATTEMPTS=0
-      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
-      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-      #       $ROLLOUT_STATUS_CMD
-      #       ATTEMPTS=$((attempts + 1))
-      #       sleep 10
-      #     done
-      #     oc project ${NAMESPACE}     
-      #     echo "Listing pods.."
-      #     oc get pods|grep "${APP}"
-      #     export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-      #     echo "${APP} is exposed at 'https://'${ROUTE}" 
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=test \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
 
       - name: Deploy API
         run: |
@@ -325,35 +325,35 @@ jobs:
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
-      # - name: Deploy APP
-      #   run: |
-      #     test -n "${NAMESPACE}"
-      #     test -n "${BUILD_NAMESPACE}"
-      #     test -n "${BRANCH}"
-      #     echo "Current namespace is ${NAMESPACE}"
-      #     oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
-      #           -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-      #           -p TAG_NAME=production \
-      #           -p CPU_REQUEST=100m \
-      #           -p CPU_LIMIT=200m \
-      #           -p MEMORY_REQUEST=100Mi \
-      #           -p MEMORY_LIMIT=2Gi \
-      #           -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
-      #     oc -n ${NAMESPACE} apply -f -
-      #     #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
-      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-      #     ATTEMPTS=0
-      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
-      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-      #       $ROLLOUT_STATUS_CMD
-      #       ATTEMPTS=$((attempts + 1))
-      #       sleep 10
-      #     done
-      #     oc project ${NAMESPACE}     
-      #     echo "Listing pods.."
-      #     oc get pods|grep "${APP}"
-      #     export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-      #     echo "${APP} is exposed at 'https://'${ROUTE}" 
+      - name: Deploy APP
+        run: |
+          test -n "${NAMESPACE}"
+          test -n "${BUILD_NAMESPACE}"
+          test -n "${BRANCH}"
+          echo "Current namespace is ${NAMESPACE}"
+          oc -n ${NAMESPACE} process -f deployment/openshift/web_dc.yaml \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=production \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi \
+                -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
+          oc -n ${NAMESPACE} apply -f -
+          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP}"
+          export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
+          echo "${APP} is exposed at 'https://'${ROUTE}" 
 
       - name: Deploy API
         run: |
