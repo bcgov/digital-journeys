@@ -45,9 +45,18 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   } else if (form.toLowerCase().includes('telework agreement')) {
     employee = submission?.data?.name;
     employee = employee === "" ? undefined : employee;
-  } else if (form.toLowerCase().includes('complaint form article')) {
-    employee = `${submission?.data?.legalNameFirstName} ${submission?.data?.legalNameLastName}`;
-    employee = employee.trim() === "" ? undefined : employee;
+  } else if (form.toLowerCase().includes('bullying misuse of authority complaint form') ||
+    form.toLowerCase().includes('complaint intake form')) {
+    if (submission?.data?.firstName !== undefined && 
+      submission?.data?.lastName !== undefined) {
+        employee = `${submission?.data?.firstName} ${submission?.data?.lastName}`;
+        employee = employee.trim() === "" ? undefined : employee;
+    } else if (submission?.data?.legalNameFirstName !== undefined && 
+      submission?.data?.legalNameLastName !== undefined) {
+        employee = `${submission?.data?.legalNameFirstName} ${submission?.data?.legalNameLastName}`;
+        employee = employee.trim() === "" ? undefined : employee;
+    }
+    
   }
   return employee;
 };
