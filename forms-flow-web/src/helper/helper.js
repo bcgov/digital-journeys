@@ -1,3 +1,6 @@
+import { FORM_NAMES } from "../constants/formConstants";
+import startCase from "lodash/startCase";
+
 const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
 };
@@ -37,16 +40,24 @@ const getEmployeeNameFromSubmission = (form, submission) => {
     return '';
   }
   let employee = "";
-  if (form.toLowerCase().includes('sl review') ||
-      form.toLowerCase().includes('senior leadership review')) {
+  if (
+    startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.slreview).toLowerCase()) ||
+    startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.srleadershipreview).toLowerCase())) {
     employee = submission?.data?.employeeName?.name === undefined ?
     submission?.data?.employeeName : submission?.data?.employeeName?.name;
     employee = employee === "" ? undefined : employee;
-  } else if (form.toLowerCase().includes('telework agreement')) {
+  } else if (
+    startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.teleworkagreement).toLowerCase())) {
     employee = submission?.data?.name;
     employee = employee === "" ? undefined : employee;
-  } else if (form.toLowerCase().includes('bullying misuse of authority complaint form') ||
-    form.toLowerCase().includes('complaint intake form')) {
+  } else if (
+    startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.complaintintakeform).toLowerCase())
+    || startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.complaintform).toLowerCase())) {
     if (submission?.data?.firstName !== undefined && 
       submission?.data?.lastName !== undefined) {
         employee = `${submission?.data?.firstName} ${submission?.data?.lastName}`;
