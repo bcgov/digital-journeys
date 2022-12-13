@@ -9,7 +9,7 @@ export const COMPLAINT_INTAKE_FORM_1_10 = "1.10_COMPLAINT_INTAKE_FORM";
 let submitSuccessPage = {
   seniorleadershipreview: SL_REVIEW_SUBMISSION,
   teleworkagreement: TELEWORK_SUBMISSION,
-  writtencomplaintform: COMPLAINT_INTAKE_FORM_1_10,
+  "bullying-and-harassment-complaint-article-1-10": COMPLAINT_INTAKE_FORM_1_10,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey) => {
