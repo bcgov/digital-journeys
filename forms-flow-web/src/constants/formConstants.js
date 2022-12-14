@@ -1,5 +1,3 @@
-
-
 export const FORM_NAMES = {
     slreview: 'SL review',
     srleadershipreview: 'Senior Leadership Review Form',
