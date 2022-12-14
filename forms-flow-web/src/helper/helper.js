@@ -55,6 +55,8 @@ const getEmployeeNameFromSubmission = (form, submission) => {
     employee = employee === "" ? undefined : employee;
   } else if (
     startCase(form).toLowerCase()
+    .includes(startCase(FORM_NAMES.complaintform110).toLowerCase())
+    || startCase(form).toLowerCase()
     .includes(startCase(FORM_NAMES.complaintintakeform).toLowerCase())
     || startCase(form).toLowerCase()
     .includes(startCase(FORM_NAMES.complaintform).toLowerCase())) {

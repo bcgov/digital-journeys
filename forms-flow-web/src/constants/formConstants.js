@@ -5,5 +5,6 @@ export const FORM_NAMES = {
     srleadershipreview: 'Senior Leadership Review Form',
     teleworkagreement: 'Telework agreement',
     complaintintakeform: 'Complaint Intake Form',
-    complaintform: 'Bullying and Harassment Complaint Form'
+    complaintform: 'Bullying and Harassment Complaint Form',
+    complaintform110: 'Bully / Misuse of Authority Complaint'
   };
