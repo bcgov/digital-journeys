@@ -312,7 +312,7 @@ services:
     ports:
       - '5006:5006'
     volumes:
-      - ./forms-flow-documents:/app:rw
+      - ./forms-flow-documents:/digital-journeys:cached,rw
     environment:
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}

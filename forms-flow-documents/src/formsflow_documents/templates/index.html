@@ -5,6 +5,10 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/digital-journeys-0-1-0-min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-style.css') }}"/> 
+
   <style type="text/css" media="print">
     .formio-component {
       break-inside: avoid;
@@ -19,6 +23,46 @@
     .fa-question-circle {
       display: none;
     }
+
+    .card > .card-header {
+        display: block;
+    }
+
+    .formio-component-panel {
+      border: none !important;
+    }
+
+    /** Prevent Page breaks inside these components **/
+    .formio-component, .formio-form-group {
+      page-break-inside:avoid;
+    }
+
+    /** Allow page breaks within the bigger components that potentially have multiple children */
+    .formio-component-form { page-break-inside:auto; }
+
+    .formio-component-panel, .formio-component-panel .card-body {
+          break-inside: auto !important;
+    }
+
+    .formio-component.formio-component-fieldset,
+    .formio-component-well.formio-form-group,
+    .formio-component.formio-component-content,
+    .formio-component-tabs.formio-form-group,
+    .formio-component-columns.formio-form-group,
+    .formio-component.formio-component-datagrid {
+        page-break-inside: auto;
+    }
+    .formio-component-panel .card {
+        display: block !important;
+    }
+
+    .formio-component.formio-component-datagrid tr {
+        page-break-inside: avoid;
+    }
+    
+    .hidden-in-print {
+      display: none !important;
+    }
   </style>
 
   <script defer src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
@@ -29,8 +73,8 @@
   </script>
 </head>
 
-<body onload="renderForm()">
-  <div style="margin: 10px;">
+<body style="font-family: BCSans" onload="renderForm()">
+  <div style="margin: 32px;">
     <div id="formio"></div>
   </div>
 </body>
