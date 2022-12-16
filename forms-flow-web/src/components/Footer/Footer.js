@@ -24,10 +24,6 @@ const BCGovFooter = React.memo(() => {
       href: "https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA",
       label: "Copyright",
     },
-    {
-      href: "mailto:digitaljourneys@gov.bc.ca",
-      label: "Contact Us",
-    },
   ];
 
   return (
@@ -38,6 +34,12 @@ const BCGovFooter = React.memo(() => {
             <a href={item.href}>{item.label}</a>
           </li>
         ))}
+        <li key="Contact Us">
+          <a 
+          href="mailto:digitaljourneys@gov.bc.ca" 
+          target="_blank"
+          rel="noreferrer">Contact Us</a>
+        </li>
       </ul>
     </Footer>
   );
