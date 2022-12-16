@@ -264,8 +264,9 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for submitting your bullying and harassment 
-            complaint form (Article 1.10).
+            Thank you for submitting your
+            Bullying / Misuse of Authority 
+            Complaint Form (Article 1.10)
           </span>
           <div className="success-content-body">
             <ul>
