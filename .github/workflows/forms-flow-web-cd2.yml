@@ -43,6 +43,11 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       - name: Log in to OpenShift
         run: |
           oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
