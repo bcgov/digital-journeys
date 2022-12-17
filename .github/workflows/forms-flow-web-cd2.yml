@@ -36,6 +36,27 @@ env:
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
 
 jobs:
+  # Logs environment variables
+  Print-envs:
+    name: Print environment variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: |
+          echo BUILD_NAMESPACE: $BUILD_NAMESPACE
+          echo OPENSHIFT_TOKEN: $OPENSHIFT_TOKEN
+          echo OPENSHIFT_USERNAME: $OPENSHIFT_USERNAME
+          echo OPENSHIFT_REGISTRY_TOKEN: $OPENSHIFT_REGISTRY_TOKEN
+          echo OPENSHIFT_SERVER_URL: $OPENSHIFT_SERVER_URL
+          echo OPENSHIFT_IMAGE_REGISTRY_URL: $OPENSHIFT_IMAGE_REGISTRY_URL
+          echo APP_NAME: $APP_NAME
+          echo ENVIRONMENT: $ENVIRONMENT
+          echo github.event.inputs.environment: $github.event.inputs.environment
+          echo branch is ${GITHUB_REF#refs/heads/}
+          
+      - name: Checkout Target Branch
+        uses: actions/checkout@v1
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
@@ -43,10 +64,6 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch is ${GITHUB_REF#refs/heads/}"
-
       - name: Log in to OpenShift
         run: |
           oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
