@@ -1,4 +1,4 @@
-name: Deploy web app to Openshift
+name: forms-flow-web-cd
 
 on:
   workflow_dispatch:
