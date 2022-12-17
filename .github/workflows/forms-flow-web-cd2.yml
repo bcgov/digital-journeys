@@ -34,6 +34,7 @@ env:
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-web
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+  BRANCH: ${GITHUB_REF#refs/heads/}
 
 jobs:
   # Logs environment variables
@@ -41,7 +42,7 @@ jobs:
     name: Print environment variables
     runs-on: ubuntu-latest
     steps:
-      - name: Extract branch name
+      - name: Print environment variables
         shell: bash
         run: |
           echo BUILD_NAMESPACE: $BUILD_NAMESPACE
@@ -54,6 +55,7 @@ jobs:
           echo ENVIRONMENT: $ENVIRONMENT
           echo github.event.inputs.environment: ${{ github.event.inputs.environment }}
           echo branch: ${GITHUB_REF#refs/heads/}
+          echo branch2: $BRANCH
           
       - name: Checkout Target Branch
         uses: actions/checkout@v1
