@@ -124,12 +124,14 @@ jobs:
             ${{ runner.os }}-buildx-${{ env.APP_NAME }}
       
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        # uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ${{ env.APP_NAME }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          dockerfile: ./${{ env.APP_NAME }}/Dockerfile.prod
   
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
