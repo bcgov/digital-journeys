@@ -18,6 +18,7 @@ on:
       - "forms-flow-web/**"
       - "deployment/openshift/web_bc-2.yaml"
       - "deployment/openshift/web_dc.yaml"
+      - ".github/workflows/forms-flow-web-cd.yml"
 
 defaults:
   run:
