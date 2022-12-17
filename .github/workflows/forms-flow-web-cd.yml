@@ -13,7 +13,8 @@ on:
         - test
         - production
   push:
-    branches: [ main, 723-web-api-deployment ]
+    # branches: [ main, 723-web-api-deployment ]
+    branches: [ 723-web-api-deployment ]
     paths:
       - "forms-flow-web/**"
       - "deployment/openshift/web_bc-2.yaml"
