@@ -45,8 +45,7 @@ jobs:
     steps:
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
+        run: echo "branch is ${GITHUB_REF#refs/heads/}"
 
       - name: Log in to OpenShift
         run: |
