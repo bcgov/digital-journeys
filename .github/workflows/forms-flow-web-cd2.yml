@@ -34,7 +34,7 @@ env:
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-web
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
-  BRANCH: ${GITHUB_REF#refs/heads/}
+  BRANCH: ${{ GITHUB_REF#refs/heads/ }}
 
 jobs:
   # Logs environment variables
