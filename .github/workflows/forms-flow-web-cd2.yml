@@ -52,7 +52,7 @@ jobs:
           echo OPENSHIFT_IMAGE_REGISTRY_URL: $OPENSHIFT_IMAGE_REGISTRY_URL
           echo APP_NAME: $APP_NAME
           echo ENVIRONMENT: $ENVIRONMENT
-          echo github.event.inputs.environment: ${github.event.inputs.environment}
+          echo github.event.inputs.environment: ${{ github.event.inputs.environment }}
           echo branch: ${GITHUB_REF#refs/heads/}
           
       - name: Checkout Target Branch
