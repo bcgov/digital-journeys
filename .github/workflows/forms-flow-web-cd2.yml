@@ -78,10 +78,10 @@ jobs:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - dockerfile: Dockerfile.prod
+    # strategy:
+    #   matrix:
+    #     include:
+    #       - dockerfile: Dockerfile.prod
     permissions:
       contents: read
       packages: write
