@@ -132,7 +132,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # dockerfile: ./${{ env.APP_NAME }}/Dockerfile.prod
-          dockerfile: Dockerfile.prod
+          # dockerfile: Dockerfile.prod
+          file: Dockerfile.prod
   
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
