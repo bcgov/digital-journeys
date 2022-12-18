@@ -131,7 +131,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          dockerfile: ./${{ env.APP_NAME }}/Dockerfile.prod
+          # dockerfile: ./${{ env.APP_NAME }}/Dockerfile.prod
+          dockerfile: Dockerfile.prod
   
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
