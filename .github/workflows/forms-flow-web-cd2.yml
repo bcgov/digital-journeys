@@ -97,7 +97,7 @@ jobs:
       
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
           tags: ${{ env.ENVIRONMENT }}
@@ -120,7 +120,7 @@ jobs:
             ${{ runner.os }}-buildx-${{ env.APP_NAME }}
       
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ${{ env.APP_NAME }}
           push: true
