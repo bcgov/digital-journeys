@@ -37,6 +37,7 @@ env:
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
+  # Namespace for the triggered environment, e.g., d89793-dev
   NAMESPACE: ${{ secrets.NAMESPACE }}
   # App url without http(s) prefix
   APP_URL : ${{ secrets.FORMS_FLOW_WEBAPI_URL }}

@@ -35,6 +35,10 @@ env:
   ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
+  # Namespace for the triggered environment, e.g., d89793-dev
+  NAMESPACE: ${{ secrets.NAMESPACE }}
+  # App url without http(s) prefix
+  APP_URL : ${{ secrets.secrets.FFAWEB_URL }}
 
 jobs:
   # Logs environment variables
@@ -54,6 +58,8 @@ jobs:
           echo ENVIRONMENT: $ENVIRONMENT
           echo branch: $BRANCH
           echo docker file name: $DOCKER_FILE_NAME
+          echo namespace: $NAMESPACE
+          echo APP_URL: $APP_URL
   
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
@@ -134,9 +140,6 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    env:
-      NAMESPACE: ${{ secrets.NAMESPACE }}
-      FFAWEB_URL: ${{ secrets.FFAWEB_URL }}
     
     needs:
       - apply-openshift-buildConfigs
@@ -158,7 +161,7 @@ jobs:
                 -p NAME=${APP_NAME} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                 -p TAG_NAME=${ENVIRONMENT} \
-                -p FFAWEB_URL=${FFAWEB_URL} \
+                -p FFAWEB_URL=${APP_URL} \
                 -p CPU_REQUEST=100m \
                 -p CPU_LIMIT=200m \
                 -p MEMORY_REQUEST=100Mi \
