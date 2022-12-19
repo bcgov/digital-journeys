@@ -38,7 +38,7 @@ env:
   # Namespace for the triggered environment, e.g., d89793-dev
   NAMESPACE: ${{ secrets.NAMESPACE }}
   # App url without http(s) prefix
-  APP_URL : ${{ secrets.secrets.FFAWEB_URL }}
+  APP_URL : ${{ secrets.FFAWEB_URL }}
 
 jobs:
   # Logs environment variables
