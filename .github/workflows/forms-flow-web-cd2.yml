@@ -126,7 +126,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ./${{ env.APP_NAME }}/Dockerfile.local
+          file: ./${{ env.APP_NAME }}/Dockerfile.prod
   
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
