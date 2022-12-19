@@ -5,23 +5,6 @@ metadata:
   annotations:
     description: ""
     tags: forms-flow-webapi
-# parameters:
-#   - name: SOURCE_REPOSITORY_URL
-#     displayName: Git Repository URL
-#     description: The URL of the repository with your application source code.
-#     value: https://github.com/bcgov/digital-journeys
-#   - name: SOURCE_REPOSITORY_REF
-#     displayName: Git Reference
-#     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
-#     value: main
-#   - name: SOURCE_CONTEXT_DIR
-#     displayName: Git context directory
-#     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
-#     value: /forms-flow-api
-#   - name: TAG
-#     displayName: Output Tag for the application image
-#     description: Set this to the appropriate tag depending upon the environmnet you are building
-#     required: true
     
 objects:
   - apiVersion: image.openshift.io/v1
@@ -32,36 +15,3 @@ objects:
         description: "Keeps track of changes in the application image"
       labels:
         app: forms-flow-webapi
-# - apiVersion: build.openshift.io/v1
-#   kind: BuildConfig
-#   metadata:
-#     name: forms-flow-webapi
-#     labels:
-#       app: forms-flow-webapi
-#   spec:
-#     resources:
-#       limits:
-#         cpu: '1'
-#         memory: 8Gi
-#       requests:
-#         cpu: '1'
-#         memory: 4Gi
-#     runPolicy: Serial
-#     source:
-#       contextDir: ${SOURCE_CONTEXT_DIR}
-#       git:
-#         ref: ${SOURCE_REPOSITORY_REF}
-#         uri: ${SOURCE_REPOSITORY_URL}
-#     output:
-#       to:
-#         kind: ImageStreamTag
-#         name: 'forms-flow-webapi:${TAG}'
-#     strategy:
-#       type: Docker
-#       dockerStrategy:
-#         dockerfilePath: Dockerfile.prod
-
-#     triggers:
-#       - type: ImageChange
-#         imageChange: {}
-#       - type: ConfigChange
