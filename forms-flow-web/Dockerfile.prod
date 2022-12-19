@@ -1,5 +1,4 @@
 # base image
-# FROM artifacts.developer.gov.bc.ca/docker-remote/node:14.20.0-alpine as build-stage
 FROM node:14.20.0-alpine as build-stage
 
 # set working directory
@@ -20,7 +19,6 @@ RUN npm install
 COPY . /app/
 RUN npm run build
 
-# FROM artifacts.developer.gov.bc.ca/docker-remote/nginx:1.22 as production-stage
 FROM nginx:1.22 as production-stage
 
 RUN mkdir /app
