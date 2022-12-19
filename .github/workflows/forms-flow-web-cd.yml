@@ -1,4 +1,4 @@
-name: forms-flow-web-cd
+name: forms-flow-web-deploy
 
 on:
   workflow_dispatch:
@@ -53,6 +53,7 @@ jobs:
           echo APP_NAME: $APP_NAME
           echo ENVIRONMENT: $ENVIRONMENT
           echo branch: $BRANCH
+          echo docker file name: $DOCKER_FILE_NAME
   
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
