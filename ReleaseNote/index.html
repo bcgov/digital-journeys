@@ -1,0 +1,536 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Web application to support PSA Digital Journeys">
+      
+      
+      
+        <link rel="canonical" href="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/ReleaseNote/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>Release Note - PSA Digital Journeys</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#release-note" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PSA Digital Journeys" class="md-header__button md-logo" aria-label="PSA Digital Journeys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PSA Digital Journeys
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Release Note
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bcgov/digital-journeys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bcgov/digital-journeys
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../forms/" class="md-tabs__link">
+      Forms
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../workflows/" class="md-tabs__link">
+      Workflows
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../upgrading/" class="md-tabs__link">
+      Upgrading
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-bpm/starter-examples/listeners/listeners-readme.md" class="md-tabs__link">
+      Listeners
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PSA Digital Journeys" class="md-nav__button md-logo" aria-label="PSA Digital Journeys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    PSA Digital Journeys
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bcgov/digital-journeys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bcgov/digital-journeys
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../forms/" class="md-nav__link">
+        Forms
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        Workflows
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrading/" class="md-nav__link">
+        Upgrading
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-bpm/starter-examples/listeners/listeners-readme.md" class="md-nav__link">
+        Listeners
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="release-note">Release Note</h1>
+<p>It will give a context to how a <code>developer</code> and a <code>form designer</code> can manage release notes on the system. It will not limit only to the release note. <em>If management wants to display some important message in the popup, we can use the same feature.</em></p>
+<blockquote>
+<p><strong>How it will work?</strong>
+1. A <code>form designer</code> needs to create a release note using a <code>form builder</code> and provide that form file to the <code>developer</code>.
+2. A <code>developer</code> needs to use the JSON file provided by the <code>form designer</code> and add a new release note in the system using available APIs.</p>
+</blockquote>
+<h2 id="available-api-endpoints">Available API endpoints</h2>
+<p>Release note endpoints are available under the web-API URL.
+- <code>/release-note</code>
+    - It will use to create/update/list release notes in the system.
+    - It supports <code>POST</code> and <code>GET</code> methods. (Note, the PUT method is not implemented. It can add in a future version).
+- <code>/release-note/unread</code>
+    - It supports the <code>GET</code> method and pulls an unread release note for the logged-in user.
+    <em>It will pull only one release note at a time.</em>
+- <code>/release-note/read</code>
+    - It supports the <code>POST</code> method and marks read the displayed release note.</p>
+<h2 id="operations">Operations</h2>
+<h3 id="add-release-note">Add release note</h3>
+<p>Add a new release note.<br />
+<strong>Endpoint</strong> : POST /release-note<br />
+<strong>Header</strong> : { "Authorization": "Bearer &lt; <em>FORM DESIGNER TOKEN</em> &gt;" }<br />
+<strong>Body</strong>: A json object.
+- title: Release note title / Message title.
+- content: &lt; formio <code>form object</code> &gt;
+    - When we export form, it will export in json format and it contains one key <strong>forms</strong>. It is an array and the first object of this array is a <code>form object</code> that we have to pass here. The form .json file will look like this . <code>{ "forms": [ {&lt;form details&gt;} ] }</code>.</p>
+<h3 id="modify-release-note">Modify release note</h3>
+<p>No separate API was built to update details in the release note. Because new changes must be visible to all the users again. We will add a new release note with the updated content and mark the old release note as inactive.<br />
+<strong>Endpoint</strong> : POST /release-note<br />
+<strong>Header</strong> : { "Authorization": "Bearer &lt; <em>FORM DESIGNER TOKEN</em> &gt;" }<br />
+<strong>Body</strong>: A json object.
+- <em>title: Release note title / Message title</em>.
+- <em>content: &lt; formio <code>orm object</code> &gt;</em>
+- <strong>release_note_id: &lt; old release note id &gt;</strong>
+    - Old <em>release note id</em> can be fould using <strong>list release note</strong>.</p>
+<h3 id="list-release-notes">List release notes</h3>
+<p>It will list all the active release notes.<br />
+<strong>Endpoint</strong> : GET /release-note<br />
+<strong>Header</strong> : { "Authorization": "Bearer &lt; <em>FORM DESIGNER TOKEN</em> &gt;" }</p>
+<h3 id="fetch-unread-release-note">Fetch unread release note</h3>
+<p>One unread and active release note can be retrieved based on the user token. It will return 404 (not found) if no unread release note is found for the logged-in user.<br />
+<strong>Endpoint</strong> : GET /release-note/unread<br />
+<strong>Header</strong> : { "Authorization": "Bearer &lt; <em>USER TOKEN</em> &gt;" }  </p>
+<h3 id="mark-read-release-note-for-user">Mark read release note for user</h3>
+<p>It will mark release note read for the logged-in user.<br />
+<strong>Endpoint</strong> : POST /release-note/read<br />
+<strong>Header</strong> : { "Authorization": "Bearer &lt; <em>USER TOKEN</em> &gt;" }<br />
+<strong>Body</strong>: A json object.
+- release_note_id: Release note id that will mark read for the logged-in user.</p>
+<h2 id="how-to-add-release-note">How to add Release note</h2>
+<p>Let&apos;s understand the role of the designer and developer here in detail. Please go to the example section to see the sample release note .json and how it will be displayed on the web page.</p>
+<h3 id="form-designer">Form Designer</h3>
+<ul>
+<li>The form Designer needs to go to the <strong>Create Form</strong> page and design HTML content for the release note using the formio builder.</li>
+<li>Once the Form was designed, Go to the form list tab, select the release note form and click on <strong>Download Form</strong>. It will download one JSON file. That needs to pass on to the <strong>developer</strong>.</li>
+<li>It can be create on any lower environment like <code>DEV</code> or <code>TEST</code>.
+     <strong>Notes</strong><ul>
+<li>The form name is not important, So feel free to pick any unique name or title here.</li>
+<li>No need to keep the created release note once you export the form&apos;s JSON and share it with the developer.</li>
+<li>To edit release notes, One can use the <code>upload form</code> feature on the form tab. Edit the required details and share them with the developer again to update the release note table.</li>
+<li>In the form builder, there is a provision for the custom class. So if you want to change any style like space between lines, header design, font size, etc. The designer can coordinate it with the developer and find an existing style class for it or the developer can add a new style class for the new style requirement.</li>
+</ul>
+</li>
+</ul>
+<h3 id="developer">Developer</h3>
+<p>To add a release note in the system. Developers can perform actions like adding, updating, and list release notes. Let&apos;s see how a release note can be added after receiving the .json file from the <strong>form designer</strong>.
+- Open <strong>postman</strong> or any API manager tool.
+- Follow <strong>Add release note</strong> operations steps.
+- In case of modify release note, please follow <strong>Modify release note</strong>.
+    - Please collect old release note id using <strong>List release notes</strong>.</p>
+<h2 id="emample">Emample</h2>
+<ul>
+<li>If you want to start editing the sample form, Please download it from <a href="form-release-note.json">here</a>. (for designer)<ul>
+<li>Upload it in the form tab by clicking on 'upload form'.</li>
+<li>Now you can edit it with new content.</li>
+<li>Download it again and share the same with developer.</li>
+</ul>
+</li>
+<li>Please find sample add release note json <a href="add-release-note.json">here</a>. (for developer)</li>
+<li>To checkout content of the above JSON file, please see below release-note popup.
+<img alt="" src="ReleaseNote.PNG" /></li>
+</ul>
+<h2 id="future-enhancement">Future enhancement</h2>
+<p>Currently, there is no frontend developed that is used to manage release notes. The below list can be reviewed and select required features and implements the same. No needs to add all the features/points.
+- Add new frontend that will list all the release notes.
+- Add a page where you can upload release note data and no need to ask any developer. It will work with the DESIGNER role only.
+    - Create/modify component for the release note module separately than the form tab. It will take more time to replicate or use the same components to enable add/edit release note directly on the release-note page and no needs to go to the form tab.
+- From the list one can in-active any release notes.
+- Extend
+    - List users who read the release note.
+    - Re-enable a release note for one user by deleting its read entry.
+    - Add a release note for the selected users only.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "toc.integrate"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+    
+    
+  </body>
+</html>

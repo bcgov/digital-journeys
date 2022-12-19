@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/forms/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/upgrading/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/workflows/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/ReleaseNote/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>

@@ -1,0 +1,585 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Web application to support PSA Digital Journeys">
+      
+      
+      
+        <link rel="canonical" href="https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/upgrading/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>Upgrading - PSA Digital Journeys</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#upgrading-forms-flow-ai-version" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PSA Digital Journeys" class="md-header__button md-logo" aria-label="PSA Digital Journeys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PSA Digital Journeys
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Upgrading
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="red" data-md-color-accent="red"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bcgov/digital-journeys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bcgov/digital-journeys
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../forms/" class="md-tabs__link">
+      Forms
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../workflows/" class="md-tabs__link">
+      Workflows
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
+      Upgrading
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-bpm/starter-examples/listeners/listeners-readme.md" class="md-tabs__link">
+      Listeners
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PSA Digital Journeys" class="md-nav__button md-logo" aria-label="PSA Digital Journeys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    PSA Digital Journeys
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bcgov/digital-journeys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bcgov/digital-journeys
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../forms/" class="md-nav__link">
+        Forms
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        Workflows
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Upgrading
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Upgrading
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-remote-upstream" class="md-nav__link">
+    Adding a remote upstream
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-merge-branch" class="md-nav__link">
+    Creating a merge branch
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merging-forms-flow-ai-and-dgj-overridden-files" class="md-nav__link">
+    Merging forms-flow-ai and DGJ overridden files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps-to-validate-the-changes-to-the-local-build" class="md-nav__link">
+    Steps to validate the changes to the local build
+  </a>
+  
+    <nav class="md-nav" aria-label="Steps to validate the changes to the local build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mongodb" class="md-nav__link">
+    Mongodb
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgres" class="md-nav__link">
+    Postgres
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-bpm/starter-examples/listeners/listeners-readme.md" class="md-nav__link">
+        Listeners
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="upgrading-forms-flow-ai-version">Upgrading forms-flow-ai version</h1>
+<p>This document contains useful information and a basic guide for upgrading the locally saved forms-flow-ai files with the ones from the source repo.</p>
+<h2 id="adding-a-remote-upstream">Adding a remote upstream</h2>
+<p>The repository should already have the forms-flow-ai repository set as a remote upstream, allowing new branches to be pulled from it's origin.
+However, in the event that the remote repository is ever disconnected for any reason, and needs to be re-added you can use the command:
+<code>git remote add formsflow {url_to_repo}</code>.</p>
+<p>From there, the usual fetch commands can be used to get new branches: <code>git fetch formsflow</code></p>
+<h2 id="creating-a-merge-branch">Creating a merge branch</h2>
+<p>Create a new branch off the main (with all the latest changes) in your local DGJ repo and from there, you can issue the <code>merge</code> command by <code>git merge {forms_flow_ai_target_branch/tag} -s -recursive --allow-unrelated-histories</code></p>
+<p>Please note that new versions of form-flow-ai can usually be found under <code>Tags</code>. For example to merge the <code>v5</code> of form-flow-ai with a new local branch while on the main branch with latest changes, run:
+<div class="highlight"><pre><span></span><code>  <span class="c1"># This will create a new branch off main</span>
+  $ git checkout -b update-to-v5-branch
+  <span class="c1"># This will merge v5 (tag) with the newly created update-to-v5-branch</span>
+  $ git merge v5.0.0  -s recursive --allow-unrelated-histories
+</code></pre></div></p>
+<p>This will begin a merge operation bringing in changes from the forms-flow-ai target branch/tag into the current branch.</p>
+<p>Git may prompt you that certain files or folders are preventing the merge from occuring. Two culprits previously were:
+<code>forms-flow-bpm/src/main/resources/mail-config.properties</code>
+and
+<code>forms-flow-forms/mongo_entrypoint/*</code>.
+The recommended approach is to manually apply these files on-top of a completed merge, by moving them to a temporary directory, deleting them in the repository, and issuing the merge command as normal. These files should be reinstated at the end of the merge. The mongo_entrypoint folder should not contain any changes from the forms-flow repo, and mail-config.properties should always contain the current changes from the DGJ repo.</p>
+<h2 id="merging-forms-flow-ai-and-dgj-overridden-files">Merging forms-flow-ai and DGJ overridden files</h2>
+<p>There will be numerous conflicts that need to be reconciled during the merge. These files will be any that have had custom work done on them during the history of the DGJ project. The goal is to update the file with the new forms-flow-ai changes first, and apply the custom DGJ implementations overtop. In some instances, the DGJ implementations may need to be updated to work with the new forms-flow-ai changes, however this should be addressed on a case-by-case basis during the regression testing process. For now, the most accurate way to accomplish this is to accept all changes from the forms-flow-ai incoming branch as a base, and add the custom DGJ implementations in on top. VSCode will show this as two side-by-side windows, one for each of the incoming branches, and a 'Result' window at the bottom. Click the '...' menu on the left window pane and select 'accept all changes', then using the checkboxes in the vertical margin between the two windows, manually select which changes from the right side DGJ file to apply overtop. the Result window should update to reflect the selections, and should show the forms-flow-ai file with just the DGJ changes added in. In some circumstances, the diff will not be clean and changes will be shown intersecting new code blocks, or be outside of a bracket pair. In these cases, it is perfectly acceptable to copy the target DGJ code, and paste it directly into the Results window in an acceptable spot.</p>
+<p>For more complex files with less obvious differences between what was forms-flow-ai changes, and what was DGJ custom code, a manual inspection of both files can be done. for each of the highlighted blocks in both windows, you can view the file on the specific branch or tag in both the forms-flow-ai and DGJ repositories. By using the history functionality in the file source viewer, you can inspect each of the pieces of code and walk back through individual changes or additions and ensure you are only accepting the new updates and the DGJ implementation. This most commonly occurs when code has been removed from the forms-flow-ai repo since the last update due to deprecation or functionality change, or alternatively if a section of code has undergone simultaneous changes from both a forms-flow update and a DGJ change.</p>
+<p>Once the conflict was resolved in a file, click <code>+</code> on that file in the source control menu in VS Code. This will move that file to <code>Staged Changes</code>.</p>
+<p>Once all conflicting files have been addressed this way, save all open files, stage the changes, and issue the command <code>git merge --continue</code>. The merge should finalize at this point and leave you with an unconflicted repository.</p>
+<p>If while you're working on update branch, new commits were added to the main branch, you you need to: 
+1. Go to main branch and pull the latest changes
+2. Checkout the update branch and run merge command <code>git merge main</code></p>
+<h2 id="steps-to-validate-the-changes-to-the-local-build">Steps to validate the changes to the local build</h2>
+<p>Upon building the app, it is not uncommon to have a variety of compilation errors. These may need to be manually addressed, but by far the most common has been missing imports from the merge due to consistent changes in these areas of the files. It is also significantly more common to occur in the <code>forms-flow-bpm</code> subfolder than the <code>forms-flow-web</code> subfolder.</p>
+<p>Once the application is building successfully, additional steps may need to be taken in the event that database changes were included in any of the updates.</p>
+<h3 id="mongodb">Mongodb</h3>
+<p>The mongoDB disc might need to be reset. To do this, delete the <code>./mongodb</code> folder, and re-run the build. Docker exec into the running container, and cd to the <code>./script</code> folder. Run the resourceId_{your_OS-type}.bat with the command <code>./resourceId_{your_OS_type}.sh admin@example.com changeme</code>. Update the <code>./.env</code> file at the project root (not in the running container) with the keys provided by the file output.</p>
+<h3 id="postgres">Postgres</h3>
+<p>TODO: figure out if migrations are even possible. might be worth to reset the posgres DB on local anyways, because if Mongo was reset it will orphan any Tasks left unfinished. Migration will need to be figured out for the prod environment however.</p>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../workflows/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Workflows" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Workflows
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "toc.integrate"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+    
+    
+  </body>
+</html>
