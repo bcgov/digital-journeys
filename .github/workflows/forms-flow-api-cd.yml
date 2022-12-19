@@ -13,13 +13,12 @@ on:
         - test
         - production
   push:
-    # branches: [ main ]
-    branches: [ 723-web-api-deployment ]
-    # paths:
-      # - "forms-flow-api/**"
-      # - "forms-flow-api-utils/**"
-      # - "deployment/openshift/webapi_bc.yaml"
-      # - "deployment/openshift/webapi_dc.yaml"
+    branches: [ main ]
+    paths:
+      - "forms-flow-api/**"
+      - "forms-flow-api-utils/**"
+      - "deployment/openshift/webapi_bc.yaml"
+      - "deployment/openshift/webapi_dc.yaml"
 
 defaults:
   run:
