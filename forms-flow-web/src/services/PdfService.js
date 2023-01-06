@@ -22,13 +22,18 @@ export const exportToPdf = ({formId, formName, pdfName}) => {
 };
 
 export const printToPDF = ({ pdfName, formName }) => {
+  // hide block with class .hidden-in-print
+  const hiddenInPrint = document.querySelectorAll(".hidden-in-print");
+  hiddenInPrint.forEach((btmElm) => (btmElm.style.display = "none"));
   // Hiding the floating buttons during the PDF generation
-  const floatingButtons = document.querySelectorAll("button.floatingButton");
+  const selectors = "button.floatingButton,.formio-component-button";
+  const floatingButtons = document.querySelectorAll(selectors);
   floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "hidden"));
   toast.success("Downloading...");
   exportToPdf({ formId: "formview", pdfName, formName });
   setTimeout(() => {
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
+    hiddenInPrint.forEach((btmElm) => (btmElm.style.display = "block"));
   }, 2000);
 };
 
