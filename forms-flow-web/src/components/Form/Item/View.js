@@ -609,7 +609,7 @@ const doProcessActions = (submission, ownProps) => {
             dispatch(setMaintainBPMFormPagination(true));
 
             dispatch(setDraftSubmission({})); // check "saveDraft" for more detail
-            redirectToFormSuccessPage(dispatch, push, form?.path);
+            redirectToFormSuccessPage(dispatch, push, form?.path, submission);
           }
         } else {
           toast.error(

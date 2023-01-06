@@ -295,7 +295,7 @@ const doProcessActions = (submission, ownProps) => {
       applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
-          redirectToFormSuccessPage(dispatch, push, form?.path);
+          redirectToFormSuccessPage(dispatch, push, form?.path, submission);
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>
