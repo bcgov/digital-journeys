@@ -7,7 +7,7 @@ export const SL_REVIEW_FINAL_SUBMISSION = "SL_REVIEW_FINAL_SUBMISSION";
 export const COMPLAINT_INTAKE_FORM_1_10 = "1.10_COMPLAINT_INTAKE_FORM";
 export const COMPLAINT_INTAKE_FORM_1_10_LDB = "1.10_COMPLAINT_INTAKE_FORM_LDB";
 
-let submitSuccessPage = {
+const submitSuccessPage = {
   seniorleadershipreview: SL_REVIEW_SUBMISSION,
   teleworkagreement: TELEWORK_SUBMISSION,
   "bullying-and-harassment-complaint-article-1-10": COMPLAINT_INTAKE_FORM_1_10,
