@@ -27,9 +27,6 @@ function renderFormWithSubmission() {
       form.submission = submission;
       form.ready.then(() => {
         formReady();
-        // setTimeout(() => {
-        //   formReady();
-        // }, 5000);
       });
     });
   });
