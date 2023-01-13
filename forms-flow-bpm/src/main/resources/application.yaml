@@ -35,7 +35,7 @@ formsflow.ai:
     spring:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
-        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
+        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:30000}
   ods:
     url: ${ODS_URL}
     security:
