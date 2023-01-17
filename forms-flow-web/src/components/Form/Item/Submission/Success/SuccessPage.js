@@ -272,7 +272,7 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                The Liquor Distribution Board (LDB) will notify 
+                The Liquor Distribution Branch (LDB) will notify 
                 your union within 10 days of your complaint.
               </li>
               <li>
@@ -306,7 +306,7 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                The Liquor Distribution Board (LDB) will notify 
+                The Liquor Distribution Branch (LDB) will notify 
                 your union within 10 days of your complaint.
               </li>
               <li>
