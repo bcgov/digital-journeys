@@ -26,9 +26,11 @@ export const printToPDF = ({ pdfName, formName }) => {
   if (window.location.href.includes('/task/')) {
     maxWidth = '1920px';
   }
-  const appContainer = document.querySelectorAll("div.app-container.container")[0];
-  appContainer.style.maxWidth = maxWidth;
-  appContainer.style.minWidth = maxWidth;
+  const appContainer = document.querySelectorAll("div.app-container.container");
+  if (appContainer.length > 0) {
+    appContainer[0].style.maxWidth = maxWidth;
+    appContainer[0].style.minWidth = maxWidth;
+  }
   // hide block with class .hidden-in-print
   const hiddenInPrint = document.querySelectorAll(".hidden-in-print");
   let changeElm = [];
@@ -48,8 +50,10 @@ export const printToPDF = ({ pdfName, formName }) => {
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
     changeElm.forEach((elm) => (elm.style.display = "block"));
     changeElm = [];
-    appContainer.style.maxWidth = '';
-    appContainer.style.minWidth = '';
+    if (appContainer.length > 0) {
+      appContainer[0].style.maxWidth = '';
+      appContainer[0].style.minWidth = '';
+    }
   }, 2000);
 };
 
