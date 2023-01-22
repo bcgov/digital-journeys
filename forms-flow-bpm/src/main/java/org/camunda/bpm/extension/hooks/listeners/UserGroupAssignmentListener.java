@@ -86,6 +86,7 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
         String managerEmail = String.valueOf(execution.getVariables().get("managerEmail"));
+        String managerUsername = managerEmail + "_idir";
         String groupPathToBeAdded = String.valueOf(this.groupPath.getValue(execution));
         
         if (managerEmail == null || managerEmail.isEmpty() || 
@@ -103,16 +104,16 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
         }
 
         try {
-            UserRepresentation userRepresentation = getUser(managerEmail, realmResource);
+            UserRepresentation userRepresentation = getUser(managerUsername, realmResource);
             if (userRepresentation == null) {
                 // Create a new user with this email
-                createKeycloakUser(managerEmail, realmResource);
+                createKeycloakUser(managerEmail, managerUsername, realmResource);
                 
                 // Get the created user
-                userRepresentation = getUser(managerEmail, realmResource);
+                userRepresentation = getUser(managerUsername, realmResource);
                 
                 if (userRepresentation == null) {
-                    System.out.println("User was not found after creation: " + managerEmail);
+                    System.out.println("User was not found after creation: " + managerUsername);
                     return;
                 }
             }
@@ -134,14 +135,14 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
         }
     }
 
-    private UserRepresentation getUser(String managerEmail, RealmResource realmResource) throws RuntimeException {
-        List<UserRepresentation> userRepresentations = realmResource.users().search(managerEmail, 0, 1);
+    private UserRepresentation getUser(String managerUsername, RealmResource realmResource) throws RuntimeException {
+        List<UserRepresentation> userRepresentations = realmResource.users().search(managerUsername, 0, 1);
 
         if (userRepresentations.size() > 1) {
-            System.out.println("More than one user found for email: " + managerEmail);
-            throw new RuntimeException("More than one user found for email: " + managerEmail);
+            System.out.println("More than one user found for username: " + managerUsername);
+            throw new RuntimeException("More than one user found for username: " + managerUsername);
         } else if (userRepresentations.size() == 0) { 
-            System.out.println("No user found by email: " + managerEmail);
+            System.out.println("No user found by username: " + managerUsername);
             return null;
         } 
         
@@ -149,9 +150,9 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
         return userRepresentation;
     }
 
-    private void createKeycloakUser(String managerEmail, RealmResource realmResource) throws RuntimeException {
+    private void createKeycloakUser(String managerEmail, String managerUsername, RealmResource realmResource) throws RuntimeException {
         UserRepresentation userRepresentation = new UserRepresentation();
-        userRepresentation.setUsername(managerEmail);
+        userRepresentation.setUsername(managerUsername);
         userRepresentation.setEmail(managerEmail);
         userRepresentation.setEnabled(true) ;
         Response response = realmResource.users().create(userRepresentation);
@@ -191,6 +192,6 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
             return;
         }
         userResource.joinGroup(groupToBeAdded.getId());
-        System.out.println("group: " + groupToBeAdded.getPath() + " was successfully added to user: " + user.getEmail());
+        System.out.println("group: " + groupToBeAdded.getPath() + " was successfully added to user: " + user.getUsername());
     }
 }
