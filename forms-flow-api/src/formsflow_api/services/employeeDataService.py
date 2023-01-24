@@ -2,9 +2,10 @@ import requests
 import re
 from urllib.parse import unquote
 from http import HTTPStatus
-from flask import current_app
+from flask import current_app, g
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.models.employee_data import EmployeeData
+from formsflow_api.models.employee_data_bceid import EmployeeDataBceid
 
 class EmployeeDataService: 
     
@@ -33,7 +34,19 @@ class EmployeeDataService:
       raise BusinessException(
           {"message": "No user data found"}, HTTPStatus.NOT_FOUND
         )
-
+    
+    @staticmethod
+    def get_employee_data_from_bceid():
+      email = g.token_info.get("email")
+      family_name = g.token_info.get("family_name")
+      given_name = g.token_info.get("given_name")
+      data = {
+        "first_name": given_name,
+        "last_name": family_name,
+        "email": email
+      }
+      emp_data = EmployeeDataBceid(data)
+      return emp_data.__dict__
 
     @staticmethod
     def get_employee_names(args):
