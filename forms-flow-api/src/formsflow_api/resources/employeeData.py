@@ -24,14 +24,17 @@ class EmployeeDataResource(Resource):
         """Get the employee data based on bcGov guid."""
         try:
             GUID = g.token_info.get("bcgovguid")
+            BCeID = g.token_info.get("bceid_user_guid")
         except:
             return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-        if not GUID:
-            return {"message": "user had no guid!"}, HTTPStatus.NOT_FOUND
-
         try:
-            userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
+            if BCeID:
+                userData = EmployeeDataService.get_employee_data_from_bceid()
+            elif GUID:
+                userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
+            else:
+                return {"message": "user idp is not any of IDIR or BCeID!"}, HTTPStatus.NOT_FOUND
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
