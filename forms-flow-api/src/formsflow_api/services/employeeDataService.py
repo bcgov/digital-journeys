@@ -49,6 +49,19 @@ class EmployeeDataService:
       return emp_data.__dict__
 
     @staticmethod
+    def get_employee_data_from_bcsc():
+      email = g.token_info.get("email")
+      family_name = g.token_info.get("family_name")
+      given_name = g.token_info.get("given_name")
+      data = {
+        "first_name": given_name,
+        "last_name": family_name,
+        "email": email
+      }
+      emp_data = EmployeeDataBceid(data)
+      return emp_data.__dict__
+
+    @staticmethod
     def get_employee_names(args):
       try:
         employee_data_api_url = current_app.config.get("EMPLOYEE_SEARCH_API_URL")

@@ -25,12 +25,15 @@ class EmployeeDataResource(Resource):
         try:
             GUID = g.token_info.get("bcgovguid")
             BCeID = g.token_info.get("bceid_user_guid")
+            BCSC = g.token_info.get("bcsc_user_guid")
         except:
             return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
         try:
             if BCeID:
                 userData = EmployeeDataService.get_employee_data_from_bceid()
+            elif BCSC:
+                userData = EmployeeDataService.get_employee_data_from_bcsc()
             elif GUID:
                 userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
             else:
