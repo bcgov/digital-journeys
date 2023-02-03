@@ -44,8 +44,10 @@
             <div id="header-main-row" class="row">
                 <div class="header-main-left">
                     <div id="logo" role="banner">
-                        <a href="#"><img src="${url.resourcesPath}/img/gov_bc_logo.svg" alt="Government of B.C." title="Government of B.C."></a>
-                        ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}
+                        <a href="#" style="float:left"><img src="${url.resourcesPath}/img/gov_bc_logo.svg" alt="Government of B.C." title="Government of B.C."></a>
+                        <div style="float:left;padding:9px;border-left:1px solid #fcba19;margin:5px;">
+                            ${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}
+                        </div>
                     </div>
                 </div>
             </div>

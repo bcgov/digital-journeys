@@ -1,7 +1,7 @@
 /* Patternfly CSS places a "bg-login.jpg" as the background on this ".login-pf" class.
    This clashes with the "keycloak-bg.png' background defined on the body below.
    Therefore the Patternfly background must be set to none. */
-.login-pf {
+   .login-pf {
     background: none;
 }
 
@@ -31,6 +31,7 @@ p.instruction {
     color: #ffffff;
     font-size: 16px;
     cursor: pointer !important;
+    font-weight: 400 !important;
 }
 
 /*h1#kc-page-title {
@@ -154,7 +155,7 @@ div.kc-logo-text span {
 
 #kc-content-wrapper {
     margin-top: 20px;
-    padding: 0px 20px 20px 0px;
+    /* padding: 0px 20px 20px 0px; */
 }
 
 #kc-form-wrapper {
@@ -257,6 +258,7 @@ ul#kc-totp-supported-apps {
 /* Social */
 .kc-social-links {
     margin-top: 20px;
+    padding: 0px 10px;
 }
 
 .kc-social-provider-logo {
@@ -274,7 +276,7 @@ ul#kc-totp-supported-apps {
 .kc-social-item {
     margin-bottom: var(--pf-global--spacer--sm);
     font-size: 15px;
-    text-align: center;
+    text-align: left;
 }
 
 .kc-social-provider-name {
@@ -619,6 +621,8 @@ ul#kc-totp-supported-apps {
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    font-weight: 500;
+    font-size: 18px;
 }
 
 label {
@@ -628,42 +632,49 @@ label {
     font-weight: 700;
 }
 .bc-gov-background {
-    background-color: #336699 !important;
-    border-color: #336699 !important;
+    /* background-color: #336699 !important;
+    border-color: #336699 !important; */
+    max-width: 380px;
 }
 .helpdesk { 
     text-align: left;
-    font-size: 12px; 
+    font-size: 14px; 
 }
 .helpdesk > h2 {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     margin: 10px auto 5px auto;
 }
 .sign-in-cls { width: auto !important; }
+.social-provider-container {
+    background: #f9f9f9;
+    border-color: #ececec;
+}
+/* .social-path-row {
+    padding: 20px !important;
+} */
 
 /* Make signin and social provider in a row */
 @media only screen and (max-width: 767px) {
     .card-pf { 
         margin: 20px 5% !important;
-        background: #f9f9f9;
-        border-color: #ececec;
+        background: #fff;
+        border-color: #fff;
+        /* background: #f9f9f9;
+        border-color: #ececec; */
     }
     #panel-heading-header-placement {
         display: none;
     }
     #panel-heading-header {
-        display: block;
+        display: none;
     }
-
-    #kc-content-wrapper {
-        padding: 0px 20px 20px 20px !important;
-    }
+    .mode-row { display: none; }
+    #kc-form { display: none; }
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
-
     .card-pf {
         background: #fff;
         border-color: #fff;
@@ -674,31 +685,51 @@ label {
         flex-wrap: wrap;
     }
     #kc-form {
-        width: 55%;
-        margin-right: 10%;
+        /* width: 55%;
+        margin-right: 10%; */
+        display: none;
     }
     #kc-form-wrapper {
         margin-top: 0px;
         padding: 20px 20px;
-        background: #f9f9f9;
-        border-color: #ececec;
+        /* background: #f9f9f9;
+        border-color: #ececec; */
     }
     .pf-c-alert, .pf-m-inline {
         width: 100%;
         margin-bottom: 20px;
     }
-    #kc-social-providers { width: 35%; }
+    #kc-social-providers { width: 90%; }
     /*.pf-c-button.pf-m-block { width: auto; }*/
     .mode-row { display: none; }
     #panel-heading-header-placement {
-        display: block;
+        display: node;
     }
     #panel-heading-header {
         display: none;
     }
+    .social-path-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .helpdesk {
+        width: 40%;
+        /*margin-right: 5%;*/
+    }
+    .social-provider-container {
+        width: 55%;
+        margin-right: 5%;
+    }
 }
 @media only screen and (max-width: 1139px) {
     .card-pf { margin: 20px 5% !important; }
+}
+@media only screen and (min-width: 1140px) {
+    .helpdesk, .social-provider-container {
+        width: 45%;
+        margin-right: 5%;
+    }
 }
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {

@@ -84,33 +84,29 @@
         <#if realm.password && social.providers??>
             <div id="kc-social-providers" class="${properties.kcFormSocialAccountSectionClass!}">
                 <hr class="mode-row"/>
-                <h4 style="font-weight: bold;text-align:left">${msg("identity-provider-login-label")}</h4>
-
-                <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 5>${properties.kcFormSocialAccountListGridClass!}</#if>">
-                    <#list social.providers as p>
-                        <a id="social-${p.alias}" class="${properties.kcFormSocialAccountListButtonClass!} <#if social.providers?size gt 5>${properties.kcFormSocialAccountGridItem!}</#if>"
-                                type="button" href="${p.loginUrl}">
-                            <#if p.iconClasses?has_content>
-                                <i class="${properties.kcCommonLogoIdP!} ${p.iconClasses!}" aria-hidden="true"></i>
-                                <span class="${properties.kcFormSocialAccountNameClass!} kc-social-icon-text">${p.displayName!}</span>
-                            <#else>
-                                <span class="${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
-                            </#if>
-                        </a>
-                    </#list>
-                </ul>
-                <div class="helpdesk">
+                
+                <div class="social-path-container">
+                <div class="social-provider-container social-path-row">
+                <header class="login-pf-header panel-heading">${msg("identity-provider-login-label")}</header>
+                    <ul class="${properties.kcFormSocialAccountListClass!} <#if social.providers?size gt 5>${properties.kcFormSocialAccountListGridClass!}</#if>">
+                        <#list social.providers as p>
+                            <a id="social-${p.alias}" class="${properties.kcFormSocialAccountListButtonClass!} <#if social.providers?size gt 5>${properties.kcFormSocialAccountGridItem!}</#if>"
+                                    type="button" href="${p.loginUrl}">
+                                <#if p.iconClasses?has_content>
+                                    <i class="${properties.kcCommonLogoIdP!} ${p.iconClasses!}" aria-hidden="true"></i>
+                                    <span class="${properties.kcFormSocialAccountNameClass!} kc-social-icon-text">${p.displayName!}</span>
+                                <#else>
+                                    <span class="${properties.kcFormSocialAccountNameClass!}">${p.displayName!}</span>
+                                </#if>
+                            </a>
+                        </#list>
+                    </ul>
+                </div>
+                <div class="helpdesk social-path-row">
                     <h2>Need Help?</h2>
-                    <p>"Contact the BC Services Card Help Desk if you need help with:<br/>
-                    Setting up the BC Services Card app<br/>
-                    Using the app to log in</p>
-
-                    <h2>BC Services Card Help Desk</h2>
-                    <p>Open Monday to Friday (except statutory holidays) from 7:30 am to 5 pm Pacific Standard Time, or 8:30 am to 6 pm Mountain Time.</p>
-                    <br/>
-                    <p>1-888-356-2741 (Canada and USA toll free)</p>
-
-                    <p>604-660-2355 (Within Lower Mainland or outside Canada and USA)</p>
+                    <p>Contact the Digital Journeys team at:</p>
+                    <p>Email: <a href="mailto:DigitalJourneys@gov.bc.ca">DigitalJourneys@gov.bc.ca</a></p>
+                </div>
                 </div>
             </div>
         </#if>
