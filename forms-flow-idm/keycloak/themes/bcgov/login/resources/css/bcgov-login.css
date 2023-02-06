@@ -1,3 +1,35 @@
+@font-face {
+	font-family: 'BC Sans';
+	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Regular.woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'BC Sans';
+	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Bold.woff');
+	font-weight: bold;
+	font-style: normal;	
+}
+
+@font-face {
+	font-family: 'BC Sans';
+	src: url('.https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Italic.woff');
+	font-weight: normal;
+	font-style: italic;	
+}
+
+@font-face {
+	font-family: 'BC Sans';
+	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-BoldItalic.woff');
+	font-weight: bold;
+	font-style: italic;	
+}
+body {
+	font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif' !important;
+	color: #313132;
+	font-size: 16px;
+}
 /* Patternfly CSS places a "bg-login.jpg" as the background on this ".login-pf" class.
    This clashes with the "keycloak-bg.png' background defined on the body below.
    Therefore the Patternfly background must be set to none. */
@@ -258,7 +290,7 @@ ul#kc-totp-supported-apps {
 /* Social */
 .kc-social-links {
     margin-top: 20px;
-    padding: 0px 10px;
+    padding: 0px 10px 15px 10px;
 }
 
 .kc-social-provider-logo {
@@ -623,6 +655,7 @@ ul#kc-totp-supported-apps {
     border-top-right-radius: 3px;
     font-weight: 500;
     font-size: 18px;
+    text-align: left;
 }
 
 label {

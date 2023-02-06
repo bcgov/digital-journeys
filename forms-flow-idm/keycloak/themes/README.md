@@ -20,7 +20,7 @@ __Step 3__ : Create ConfigMap
 Needs to select all file that should attached with the configMaps. It will not read file reside under sub-directory hence we have to select it using absolute path.
 e.g.
 ```
-oc create configmap test-theme \
+oc create configmap keycloak-themev-bcgov \
 --from-file=login/login-reset-password.ftl \
 --from-file=login/login-update-password.ftl \
 --from-file=login/login.ftl \
@@ -32,7 +32,7 @@ oc create configmap test-theme \
 --from-file=login/resources/css/bcgov-login.css \
 --from-file=login/resources/css/kc-app.min.css \
 --from-file=login/resources/css/kc-base.min.css \
---from-file=login/messages/messages_en.properties
+--from-file=login/messages/messages_en.properties 
 ```
 ### Steps to apply configMap into SatefulSet
 
