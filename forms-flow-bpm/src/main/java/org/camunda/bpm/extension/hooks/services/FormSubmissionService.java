@@ -176,10 +176,10 @@ public class FormSubmissionService {
     }
 
     public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
-        return this.retrieveFormValues(formUrl, true, false);
+        return this.retrieveFormValues(formUrl, true, false, new ArrayList<String>());
     }
 
-    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo, boolean hasNestedObjects) throws IOException {
+    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo, boolean hasNestedObjects, List<String> flatObjectExclusionList) throws IOException {
         Map<String,Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
         if(StringUtils.isNotEmpty(submission)) {
@@ -204,7 +204,7 @@ public class FormSubmissionService {
                         }
                     }
                 } else {
-                    if (hasNestedObjects && entry.getValue().isObject()) {
+                    if (hasNestedObjects && entry.getValue().isObject() && !flatObjectExclusionList.contains(entry.getKey())) {
                         ObjectNode objectNode = (ObjectNode) entry.getValue();
                         Iterator<Map.Entry<String, JsonNode>> objectElements = objectNode.fields();
 

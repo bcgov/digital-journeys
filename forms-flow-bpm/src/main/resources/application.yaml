@@ -35,7 +35,7 @@ formsflow.ai:
     spring:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
-        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
+        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:120000}
   ods:
     url: ${ODS_URL}
     security:
@@ -44,6 +44,8 @@ formsflow.ai:
     url: ${FORMIO_FILE_URL}
   app:
     url: ${WEB_BASE_URL}
+  documentApi:
+    url: ${FORMSFLOW_DOC_API_URL}
 
 
 camunda.bpm:

@@ -4,8 +4,8 @@
 1. [Calculated Form Values](#calculated-form-values)
    1. [Examples](#examples)
 2. [Auto-populate form fields](#how-to-auto-populate-form-fields-with-the-user-data)
-3. [Uploading a form](#uploading-a-form
-)
+3. [Uploading a form](#uploading-a-form)
+4. [Form Access](#form-access)
 
 ## Calculated Form Values
 
@@ -18,9 +18,9 @@ These calculations can be made by selected the field you wish to contain the cal
 
 ![img.png](images/img.png)
 
-## Examples
+### Examples
 
-### Telework Calculated "Number of days teleworking in a week"
+#### Telework Calculated "Number of days teleworking in a week"
 
 #### Calculate a value based on the number of boxes checked representing days of the week:
 
@@ -91,3 +91,10 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
    - `path`: change it to something else like `Telework-test-1`.
 4. Upload the file to the `Forms` page through the `Upload Form` button. You the will see the new form along with the old form in the list of forms. 
 5. Add the necessary workflow and then publish the form if that is the desired behaviour. You can assign the same workflow to the duplicated form or assign a different workflow.
+
+## Form access
+A form designer can specify which IDPs (Identity Providers, e.g., IDIR, BCeID and BCSC) forms should support . For example _Telework_ form should only be accessible for IDIR users while _1.10_ form supports IDIR and BCeID among other IDPs. A form designer can set one or more supported IDPs for a form through a hidden form field called `formSupportedIdentityProviders`. In that field, under `Data` tab, a form designer can enter one or more IDPs in `Default Value` field. Supported IDPs are `idir`, `bceid` and `bcsc`. These IDPs may change in the future. Multiple values are supported and should be separated by a comma `,`.
+
+For example if you want a form to be accessible for IDIR users enter `idir` under `Default value`. If you want to support both IDIR and BCeID, please enter `idir,bceid`.
+
+![formSupportedIdentityProviders.png](images/formSupportedIdentityProviders.png)

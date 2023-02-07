@@ -50,7 +50,7 @@
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.33",
     "mongodb": "^4.11.0",
-    "mongoose": "^6.2.8",
+    "mongoose": "^6.7.1",
     "mssql": "^7.3.1",
     "mysql": "^2.18.1",
     "nodemailer": "^6.7.3",
@@ -65,7 +65,7 @@
     "superagent-retry": "^0.6.0",
     "through": "^2.3.8",
     "vanilla-text-mask": "^5.1.1",
-    "vm2": "^3.9.9"
+    "vm2": "^3.9.10"
   },
   "devDependencies": {
     "eslint": "^7.32.0",

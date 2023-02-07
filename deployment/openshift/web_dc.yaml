@@ -131,12 +131,12 @@ parameters:
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: ""
+    value: "d89793-tools"
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
-    value: ""
+    value: latest
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
