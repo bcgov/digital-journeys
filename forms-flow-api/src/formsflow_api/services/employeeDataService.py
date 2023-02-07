@@ -38,8 +38,18 @@ class EmployeeDataService:
     @staticmethod
     def get_employee_data_from_bceid():
       email = g.token_info.get("email")
-      family_name = g.token_info.get("family_name")
       given_name = g.token_info.get("given_name")
+      family_name = g.token_info.get("family_name")
+
+      # BCeID currently provides user's display_name under given_name attribute. 
+      # Therefore we need to manually extract given_name and family_name from it.
+      if (given_name and not family_name):
+        # split the first word into given name and the rest into family name.
+        names = given_name.split(" ", 1)
+        given_name = names[0]
+        if (len(names) > 1):
+          family_name = names[1]
+      
       data = {
         "first_name": given_name,
         "last_name": family_name,
