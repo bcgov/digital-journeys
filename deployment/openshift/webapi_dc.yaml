@@ -5,6 +5,34 @@ label:
 metadata:
   name: forms-flow-webapi
 objects:
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: ${WEB_API_URL}
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${NAME}
+  spec:
+    selector:
+      app: ${NAME}
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5000
+
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
@@ -34,209 +62,180 @@ objects:
           app: ${NAME}
       spec:
         containers:
-        - env:
-          - name: BPM_API_URL
-            valueFrom:
-              configMapKeyRef:
-                key: BPM_API_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: INSIGHT_API_URL
-            valueFrom:
-              secretKeyRef:
-                key: INSIGHTS_API_BASE
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: INSIGHT_API_KEY
-            valueFrom:
-              secretKeyRef:
-                key: INSIGHTS_API_KEY
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_ADMIN_USERNAME
-            valueFrom:
-              secretKeyRef:
-                key: KEYCLOAK_ADMIN_USERNAME
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: KEYCLOAK_ADMIN_PASSWORD
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_URL
-            valueFrom:
-              secretKeyRef:
-                key: keycloak_url
-                name: ${FORMSFLOW_CONFIG_NAME}-secret
-          - name: KEYCLOAK_URL_REALM
-            valueFrom:
-              secretKeyRef:
-                key: keycloak_realm
-                name: ${FORMSFLOW_CONFIG_NAME}-secret
-          - name: BPM_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                key: BPM_CLIENT_ID
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: BPM_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: BPM_CLIENT_SECRET
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: BPM_TOKEN_API
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_TOKEN_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: DATABASE_URL  
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_ALGORITHMS
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_ALGORITHMS
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_AUDIENCE
-            valueFrom:
-              secretKeyRef:
-                key: WEB_CLIENTID
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_CACHING_ENABLED
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_ISSUER
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_ISSUER
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_JWKS_URI
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_JWKS_URI
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: JWT_OIDC_WELL_KNOWN_CONFIG
-            valueFrom:
-              configMapKeyRef:
-                key: KEYCLOAK_JWT_OIDC_CONFIG
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: WEB_API_BASE_URL
-            valueFrom:
-              configMapKeyRef:
-                key: WEB_API_BASE_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: FORMSFLOW_API_CORS_ORIGINS
-            value: '*'
-          - name: EMPLOYEE_DATA_API_URL
-            valueFrom:
-              secretKeyRef:
-                key: EMPLOYEE_DATA_API_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config      
-          - name: EMPLOYEE_SEARCH_API_URL
-            valueFrom:
-              secretKeyRef:
-                key: EMPLOYEE_SEARCH_API_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: MINISTRY_NAMES_API_URL
-            valueFrom:
-              secretKeyRef:
-                key: MINISTRY_NAMES_API_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: ODS_AUTH_TOKEN
-            valueFrom:
-              secretKeyRef:
-                key: ODS_AUTH_TOKEN
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: FORMIO_URL
-            valueFrom:
-              secretKeyRef:
-                key: FORMIO_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config      
-          - name: FORMIO_ROOT_EMAIL
-            valueFrom:
-              secretKeyRef:
-                key: FORMIO_ROOT_EMAIL
-                name: ${FORMSFLOW_CONFIG_NAME}-config      
-          - name: FORMIO_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: FORMIO_ROOT_PASSWORD
-                name: ${FORMSFLOW_CONFIG_NAME}-config      
-          - name: FORMIO_JWT_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: FORMIO_JWT_SECRET
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_ENABLE_CLIENT_AUTH
-            valueFrom:
-              secretKeyRef:
-                key: KEYCLOAK_ENABLE_CLIENT_AUTH
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: SL_REVIEW_ENDPOINT
-            valueFrom:
-              secretKeyRef:
-                key: SL_REVIEW_ENDPOINT
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: ODS_URL
-            valueFrom:
-              secretKeyRef:
-                key: ODS_URL
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}
-        ports:
-        - containerPort: 5000
-        resources: {}
-        stdin: true
-        tty: true
+          - env:
+            - name: BPM_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: BPM_API_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: INSIGHT_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: INSIGHTS_API_BASE
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: INSIGHT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: INSIGHTS_API_KEY
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: KEYCLOAK_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: KEYCLOAK_ADMIN_USERNAME
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: KEYCLOAK_ADMIN_PASSWORD
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: KEYCLOAK_URL
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak_url
+                  name: ${FORMSFLOW_CONFIG_NAME}-secret
+            - name: KEYCLOAK_URL_REALM
+              valueFrom:
+                secretKeyRef:
+                  key: keycloak_realm
+                  name: ${FORMSFLOW_CONFIG_NAME}-secret
+            - name: BPM_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: BPM_CLIENT_ID
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: BPM_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: BPM_CLIENT_SECRET
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: BPM_TOKEN_API
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_TOKEN_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_ALGORITHMS
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_ALGORITHMS
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  key: WEB_CLIENTID
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_CACHING_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_ISSUER
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_JWKS_URI
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_JWKS_URI
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: JWT_OIDC_WELL_KNOWN_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: KEYCLOAK_JWT_OIDC_CONFIG
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: WEB_API_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: WEB_API_BASE_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: FORMSFLOW_API_CORS_ORIGINS
+              value: '*'
+            - name: EMPLOYEE_DATA_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: EMPLOYEE_DATA_API_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: EMPLOYEE_SEARCH_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: EMPLOYEE_SEARCH_API_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: MINISTRY_NAMES_API_URL
+              valueFrom:
+                secretKeyRef:
+                  key: MINISTRY_NAMES_API_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: ODS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: ODS_AUTH_TOKEN
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: FORMIO_URL
+              valueFrom:
+                secretKeyRef:
+                  key: FORMIO_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: FORMIO_ROOT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  key: FORMIO_ROOT_EMAIL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: FORMIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: FORMIO_ROOT_PASSWORD
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: FORMIO_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: FORMIO_JWT_SECRET
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+              valueFrom:
+                secretKeyRef:
+                  key: KEYCLOAK_ENABLE_CLIENT_AUTH
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: SL_REVIEW_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  key: SL_REVIEW_ENDPOINT
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: ODS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: ODS_URL
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+            name: ${NAME}
+            ports:
+            - containerPort: 5000
+            resources: {}
+            stdin: true
+            tty: true
         restartPolicy: Always
     test: false
     triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}
-        from:
-          kind: ImageStreamTag
-          namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
-      type: ImageChange
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - ${NAME}
+          from:
+            kind: ImageStreamTag
+            namespace: "${IMAGE_NAMESPACE}"
+            name: "${NAME}:${TAG_NAME}"
+        type: ImageChange
   status: {}
-
--
-  apiVersion: v1
-  kind: Service
-  metadata:
-    name: ${NAME}
-  spec:
-    selector:
-      app: ${NAME}
-    ports:
-      - protocol: TCP
-        port: 5000
-        targetPort: 5000
-
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    labels:
-      app: ${NAME}
-    name: ${NAME}
-  spec:
-    host: ${WEB_API_URL}
-    tls:
-      insecureEdgeTerminationPolicy: Redirect
-      termination: edge
-    to:
-      kind: Service
-      name: ${NAME}
-    wildcardPolicy: None
 
 parameters:
   - name: NAME
@@ -250,14 +249,14 @@ parameters:
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: formsflow-ai
+    value: "d89793-tools"
   - name: INSTANCE
     description: The name of this instance of the application
     displayName: Application Instance Name
   - name: FORMSFLOW_CONFIG_NAME
     description: Secrets are referred from this.
     required: true
-    value: forms-flow-ai  
+    value: forms-flow-ai
   - name: FORMSFLOW_SECRET
     description: Secrets are referred from this.
     required: true
@@ -287,14 +286,14 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
-  - name: KEYCLOAK_REALM
-    displayName: KEYCLOAK_REALM
-    description:
-      KEYCLOAK_REALM
-    required: false
-  - name: KEYCLOAK_URL
-    description: The URL used to connnect to the OIDC provider.
-    required: false
+  # - name: KEYCLOAK_REALM
+  #   displayName: KEYCLOAK_REALM
+  #   description:
+  #     KEYCLOAK_REALM
+  #   required: false
+  # - name: KEYCLOAK_URL
+  #   description: The URL used to connnect to the OIDC provider.
+  #   required: false
   - name: WEB_API_URL
     displayName: WEB_API_URL
     description:
