@@ -26,6 +26,7 @@ export const printToPDF = ({ pdfName, formName }) => {
   if (window.location.href.includes('/task/')) {
     maxWidth = '1920px';
   }
+  const checkedRadio = document.querySelectorAll('input[type="radio"]:checked');
   const appContainer = document.querySelectorAll("div.app-container.container");
   if (appContainer.length > 0) {
     appContainer[0].style.maxWidth = maxWidth;
@@ -47,6 +48,7 @@ export const printToPDF = ({ pdfName, formName }) => {
   toast.success("Downloading...");
   exportToPdf({ formId: "formview", pdfName, formName });
   setTimeout(() => {
+    checkedRadio.forEach((ele) => ele.checked = true);
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
     changeElm.forEach((elm) => (elm.style.display = "block"));
     changeElm = [];
