@@ -449,6 +449,53 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 .table-bordered thead td {
   background-color: $whileBackgroundColor !important;
 }
+.formio-component-datagrid .datagrid-table>tbody>tr>td:last-child,
+.formio-component-datagrid .datagrid-table>thead>tr>th:last-child {
+  padding: 0px;
+  width: 0px;
+}
+.formio-component-datagrid .datagrid-table,
+.formio-component-datagrid .datagrid-table>tfoot>tr>td {
+  border: none;
+}
+.formio-component-datagrid .datagrid-table>tfoot>tr>td {
+  border: none;
+  text-align: right;
+}
+.formio-component-datagrid .datagrid-table>thead {
+  display: none;
+}
+/*.formio-component-datagrid .datagrid-table>tfoot>tr>td>button.formio-button-add-row {
+  background: white;
+  color: $linkColor;
+}*/
+.formio-component-datagrid .datagrid-table>tbody>tr>td>button.formio-button-remove-row {
+  position: absolute;
+  /*bottom: 1.0rem;*/
+  top: 1rem;
+  right: 1.15rem;
+  padding: 10px 25px;
+  white-space: nowrap;
+}
+.formio-component-datagrid .datagrid-table>tbody>tr>td>button.formio-button-remove-row:after {
+  content: "Remove Section";
+}
+/*.datagrid-table .fieldset-body {
+  display: flex;
+  flex-wrap: wrap;
+}*/
+.formio-component-datagrid .datagrid-table fieldset {
+  /*flex: 0 0 100%;*/
+  padding-left: 1.25rem;
+  padding-right: 0.25rem;
+  /*padding-bottom: 1.75rem;*/
+  padding-top: 1.75rem;
+}
+@media (min-width: 768px) {
+  .datagrid-table .fieldset-body .formio-component {
+    flex: 0 0 41.67%;
+  }
+}
 .navbar-dark.navbar-toggler {
   border-color: white;
 }
@@ -1011,4 +1058,8 @@ button.floatingButton.floating-right-bottom-2 {
 button.floatingButton.floating-right-bottom-3 {
 	bottom: 180px;
 	right: 40px;
+}
+
+.show-in-print-only {
+  display: none;
 }

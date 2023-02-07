@@ -96,10 +96,11 @@ function timeFormatter(cell) {
 
 const nameFormatter = (cell, row) => {
   const employee = getEmployeeNameFromSubmission(cell, row);
-  const name = employee !== '' ? `${cell} for ${employee}` : cell;
+  const name = employee !== '' ?
+  `${cell} for ${employee === undefined ? undefined : startCase(employee)}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>
-      {startCase(name)}
+      {name}
     </label>
   );
 };

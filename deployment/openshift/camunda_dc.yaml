@@ -218,6 +218,16 @@ objects:
                     secretKeyRef:
                       name: forms-flow-ai-config
                       key: ODS_AUTH_TOKEN
+                - name: FORMSFLOW_DOC_API_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: forms-flow-ai-config
+                      key: FORMSFLOW_DOC_API_URL
+                - name: BPM_CLIENT_CONN_TIMEOUT
+                  valueFrom:
+                    configMapKeyRef:
+                      name: forms-flow-ai-config
+                      key: BPM_CLIENT_CONN_TIMEOUT
 
               imagePullPolicy: Always
               livenessProbe:

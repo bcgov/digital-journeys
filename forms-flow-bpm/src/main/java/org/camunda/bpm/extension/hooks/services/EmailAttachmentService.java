@@ -31,11 +31,11 @@ public class EmailAttachmentService {
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
-    @Value("${formsflow.ai.fileService.url}")
-    private String fileServiceUrl;
-
     @Value("${formsflow.ai.formio.url}")
     private String formioUrl;
+
+    @Value("${formsflow.ai.documentApi.url}")
+    private String documentApiUrl;
 
     /**
      * Retrieves the given attachment from the Formio file service as a URLDataSource
@@ -64,8 +64,8 @@ public class EmailAttachmentService {
         return null;
     }
 
-    public ByteArrayDataSource generatePdf(String formId, String submissionid) throws IOException {
-        String url = String.format("%s/pdf?form=%s&submission=%s&baseUrl=%s", fileServiceUrl,/*fileServiceUrl.replace("/file", ""),*/ formId, submissionid, formioUrl);
+    public ByteArrayDataSource generatePdf(String formId, String submissionId) throws IOException {
+        String url = String.format("%s/form/%s/submission/%s/export/pdf", documentApiUrl, formId, submissionId);
 
         Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.GET, null);
 

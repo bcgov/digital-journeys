@@ -35,6 +35,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import { setFormSubmitted } from "../../../actions/formActions";
+import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
@@ -51,6 +52,7 @@ import {
   MULTITENANCY_ENABLED,
   DRAFT_ENABLED,
   DRAFT_POLLING_RATE,
+  STAFF_DESIGNER,
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
@@ -61,11 +63,15 @@ import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
-import { convertFormLinksToOpenInNewTabs } from "../../../helper/formUtils";
+import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
+  hasUserAccessToForm } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
+import MessageModal from "../../../containers/MessageModal";
+import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../../constants/formConstants";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
+  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -111,6 +117,8 @@ const View = React.memo((props) => {
   // eslint-disable-next-line no-unused-vars
   const [notified, setNotified] = useState(false);
   const [defaultVals, setDefaultVals] = useState({});
+  
+  const [hasFormAccess, setHasFormAccess] = useState(true);
 
   const {
     isAuthenticated,
@@ -122,6 +130,7 @@ const View = React.memo((props) => {
     form: { form, isActive, url },
     getEmployeeData,
     employeeData,
+    user,
   } = props;
   const formRef = useRef(null);
   const dispatch = useDispatch();
@@ -198,6 +207,14 @@ const View = React.memo((props) => {
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err) {
               toast.success(t("Submission saved to draft."));
+              /* issue/722
+              before this requirement, it creates new draft on form load.
+              Now is is not saving it as draft "if few fields in form" are
+              blank.
+              In this change, it keeps state.draft with previous form data.
+              hence it required to clear on the form close. 
+              */
+              dispatch(setDraftSubmission({}));
             }
             if (!err) {
               setDraftSaved(true);
@@ -206,6 +223,16 @@ const View = React.memo((props) => {
             }
           })
         );
+      }
+    } else if (draftSubmissionId === undefined && !isDraftCreated) {
+      if (
+        validFormId &&
+        DRAFT_ENABLED &&
+        ((isAuthenticated && formStatus === "active") ||
+          (!isAuthenticated && publicFormStatus?.status == "active"))
+      ) {
+        // let payload = getDraftReqFormat(validFormId, draftData?.data);
+        dispatch(draftCreateMethod(payload, setIsDraftCreated));
       }
     }
   };
@@ -222,20 +249,22 @@ const View = React.memo((props) => {
     }
   }, [isDraftCreated]);
 
+  /*  commented below code, for more detail please visit below link
+      https://github.com/bcgov/digital-journeys/issues/722  */
   /**
    * Will create a draft application when the form is selected for entry.
    */
-  useEffect(() => {
-    if (
-      validFormId &&
-      DRAFT_ENABLED &&
-      ((isAuthenticated && formStatus === "active") ||
-        (!isAuthenticated && publicFormStatus?.status == "active"))
-    ) {
-      let payload = getDraftReqFormat(validFormId, draftData?.data);
-      dispatch(draftCreateMethod(payload, setIsDraftCreated));
-    }
-  }, [validFormId, formStatus, publicFormStatus]);
+  // useEffect(() => {
+  //   if (
+  //     validFormId &&
+  //     DRAFT_ENABLED &&
+  //     ((isAuthenticated && formStatus === "active") ||
+  //       (!isAuthenticated && publicFormStatus?.status == "active"))
+  //   ) {
+  //     let payload = getDraftReqFormat(validFormId, draftData?.data);
+  //     dispatch(draftCreateMethod(payload, setIsDraftCreated));
+  //   }
+  // }, [validFormId, formStatus, publicFormStatus]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -362,16 +391,43 @@ const View = React.memo((props) => {
 
   let convertFormLinksInterval = null;
   useEffect(() => {
+    if (areFormLinksWereConverted) {
+      return; 
+    }
     convertFormLinksInterval = setInterval(() => {
-      convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
+      /* check formRef before calling function of formio */
+      if (formRef.current !== null) {
+        const done = convertFormLinksToOpenInNewTabs(
+          formRef.current?.formio,
+          convertFormLinksInterval
+        );
+        setAreFormLinksWereConverted(done);
+      }
     }, 1000);
     return () => {
       clearInterval(convertFormLinksInterval);
     };
   });
+
+  if (!user.role.some(el => el === STAFF_DESIGNER)) {
+    let formAccessInterval = null;
+    useEffect(() => {
+      formAccessInterval = setInterval(() => {
+        /* check formRef before calling function of formio */
+        if (formRef.current !== null) {
+          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
+            formRef.current?.formio, 
+            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, formAccessInterval);
+          if (Array.isArray(formSupportedIdentityProviders)) {
+            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
+          }
+        }
+      }, 1000);
+      return () => {
+        clearInterval(formAccessInterval);
+      };
+    });
+  }
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
@@ -413,7 +469,7 @@ const View = React.memo((props) => {
         break;
       }
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF();
+        printToPDF({ formName: evt.formName, pdfName: evt.pdfName });
         break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(evt.error);
@@ -452,6 +508,14 @@ const View = React.memo((props) => {
         )} */}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
+          <MessageModal
+            modalOpen={!hasFormAccess}
+            title="Form Access Error"
+            message={"You do not have access to this form!"}
+            onConfirm={() => {
+              window.location.replace(`${window.location.origin}/form`);
+            }}
+          />
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
@@ -579,7 +643,8 @@ const doProcessActions = (submission, ownProps) => {
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
 
-            redirectToFormSuccessPage(dispatch, push, form?.path);
+            dispatch(setDraftSubmission({})); // check "saveDraft" for more detail
+            redirectToFormSuccessPage(dispatch, push, form?.path, submission);
           }
         } else {
           toast.error(

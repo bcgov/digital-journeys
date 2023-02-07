@@ -6,7 +6,8 @@ on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ main ]
+    # Issue 723, change it to master so it won't take main branch changes
+    branches: [ master ] 
   workflow_dispatch:
     inputs:
       environment:

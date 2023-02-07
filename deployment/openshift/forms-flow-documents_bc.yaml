@@ -1,16 +1,16 @@
 kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
-  name: forms-flow-web
+  name: forms-flow-documents
   annotations:
     description: ""
-    tags: forms-flow-web
+    tags: forms-flow-documents
 objects:
   - apiVersion: image.openshift.io/v1
     kind: ImageStream
     metadata:
-      name: forms-flow-web
+      name: forms-flow-documents
       annotations:
         description: "Keeps track of changes in the application image"
       labels:
-        app: forms-flow-web
+        app: forms-flow-documents

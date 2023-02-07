@@ -14,6 +14,9 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
 
 @Named("SendSubmissionToODSDelegate")
 public class SendSubmissionToODSDelegate extends BaseListener implements JavaDelegate {
@@ -41,6 +44,12 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
         String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
+        // List of object keys that should not be flatten on send to ODS
+        List<String> flatObjectExclusionList = (List) execution.getVariableLocal("flatObjectExclusionList");
+        // If exceptions not defined, set an empty list
+        if (flatObjectExclusionList == null) {
+            flatObjectExclusionList = new ArrayList<String>();
+        }
 
         LOGGER.warn(String.format("Sending values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
 
@@ -56,7 +65,7 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         
         String applicationId = String.valueOf(execution.getVariable("applicationId"));
 
-        Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false, true);
+        Map<String, Object> values = formSubmissionService.retrieveFormValues(formUrl, false, true, flatObjectExclusionList);
 
         if (idir != null) {
             values.put("idir", String.valueOf(idir));

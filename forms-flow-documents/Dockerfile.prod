@@ -9,7 +9,6 @@ RUN  apt-get update \
   && apt-get install -y curl \
   && apt-get install -y unzip \
   && apt-get install -y git \
-  && apt-get install lsyncd -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Chrome WebDriver
@@ -43,10 +42,6 @@ RUN : \
 ADD . /forms-flow-documents/app
 RUN pip install -e .
 
-COPY ./lsyncd.conf lsyncd.conf
-
 EXPOSE 5006
-RUN chmod u+x ./entrypoint.dev
-
-CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
-
+RUN chmod u+x ./entrypoint
+ENTRYPOINT ["/bin/sh", "entrypoint"]

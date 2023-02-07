@@ -76,4 +76,16 @@ public class ApplicationAccessHandler extends AbstractAccessHandler {
                 .block();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
+
+    public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
+        payload = (payload == null) ? new JsonObject().toString() : payload;
+        return webClient.method(method)
+                .uri(url )
+                .attributes(clientRegistrationId("keycloak-client"))
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
+                .bodyToMono(byte[].class);
+    }
 }

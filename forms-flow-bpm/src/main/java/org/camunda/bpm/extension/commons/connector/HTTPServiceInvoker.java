@@ -49,6 +49,8 @@ public class HTTPServiceInvoker {
     private String odsUrl;
     @Value("${formsflow.ai.fileService.url}")
     private String fileServiceUrl;
+    @Value("${formsflow.ai.documentApi.url}")
+    private String documentApiUrl;
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
@@ -91,6 +93,8 @@ public class HTTPServiceInvoker {
             return "ODSAccessHandler";
         } else if (StringUtils.contains(url, fileServiceUrl)) {
             return "fileAccessHandler";
+        } else if (StringUtils.contains(url, documentApiUrl)) {
+            return APPLICATION_ACCESS_HANDLER;
         }
  		return "";
     }
