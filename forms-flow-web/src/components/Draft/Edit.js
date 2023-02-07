@@ -36,14 +36,18 @@ import {
   MULTITENANCY_ENABLED,
   DRAFT_ENABLED,
   DRAFT_POLLING_RATE,
+  STAFF_DESIGNER,
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
-import { convertFormLinksToOpenInNewTabs } from "../../helper/formUtils";
+import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
+  hasUserAccessToForm } from "../../helper/formUtils";
 import { printToPDF } from "../../services/PdfService";
+import MessageModal from "../../containers/MessageModal";
+import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../constants/formConstants";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -79,6 +83,9 @@ const View = React.memo((props) => {
   const { formId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
+
+  const [hasFormAccess, setHasFormAccess] = useState(true);
+
   const {
     isAuthenticated,
     submission,
@@ -88,6 +95,7 @@ const View = React.memo((props) => {
     errors,
     options,
     form: { form, isActive, url },
+    user,
   } = props;
   const dispatch = useDispatch();
 
@@ -151,6 +159,26 @@ const View = React.memo((props) => {
     };
   });
 
+  if (!user.role.some(el => el === STAFF_DESIGNER)) {
+    let formAccessInterval = null;
+    useEffect(() => {
+      formAccessInterval = setInterval(() => {
+        /* check formRef before calling function of formio */
+        if (formRef.current !== null) {
+          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
+            formRef.current?.formio, 
+            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, formAccessInterval);
+          if (Array.isArray(formSupportedIdentityProviders)) {
+            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
+          }
+        }
+      }, 1000);
+      return () => {
+        clearInterval(formAccessInterval);
+      };
+    });
+  }
+
   if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -207,6 +235,14 @@ const View = React.memo((props) => {
       } */}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
+          <MessageModal
+            modalOpen={!hasFormAccess}
+            title="Form Access Error"
+            message={"You do not have access to this form!"}
+            onConfirm={() => {
+              window.location.replace(`${window.location.origin}/form`);
+            }}
+          />
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
@@ -295,7 +331,7 @@ const doProcessActions = (submission, ownProps) => {
       applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
-          redirectToFormSuccessPage(dispatch, push, form?.path);
+          redirectToFormSuccessPage(dispatch, push, form?.path, submission);
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>

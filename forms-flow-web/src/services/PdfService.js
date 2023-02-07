@@ -22,13 +22,38 @@ export const exportToPdf = ({formId, formName, pdfName}) => {
 };
 
 export const printToPDF = ({ pdfName, formName }) => {
+  let maxWidth = '1440px';
+  if (window.location.href.includes('/task/')) {
+    maxWidth = '1920px';
+  }
+  const appContainer = document.querySelectorAll("div.app-container.container");
+  if (appContainer.length > 0) {
+    appContainer[0].style.maxWidth = maxWidth;
+    appContainer[0].style.minWidth = maxWidth;
+  }
+  // hide block with class .hidden-in-print
+  const hiddenInPrint = document.querySelectorAll(".hidden-in-print");
+  let changeElm = [];
+  hiddenInPrint.forEach((elm) => {
+    if (elm.style.display === "" || elm.style.display === "block") {
+      elm.style.display = "none";
+      changeElm.push(elm);
+    }
+  });
   // Hiding the floating buttons during the PDF generation
-  const floatingButtons = document.querySelectorAll("button.floatingButton");
+  const selectors = "button.floatingButton,.formio-component-button";
+  const floatingButtons = document.querySelectorAll(selectors);
   floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "hidden"));
   toast.success("Downloading...");
   exportToPdf({ formId: "formview", pdfName, formName });
   setTimeout(() => {
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
+    changeElm.forEach((elm) => (elm.style.display = "block"));
+    changeElm = [];
+    if (appContainer.length > 0) {
+      appContainer[0].style.maxWidth = '';
+      appContainer[0].style.minWidth = '';
+    }
   }, 2000);
 };
 
