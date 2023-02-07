@@ -49,7 +49,7 @@ const getFormSupportedIdentityProviders = (formio, key, interval) => {
   if (formio) {
     clearInterval(interval);
     formio.everyComponent((component) => {
-      if (component.component.key === key){
+      if (component.component.key === key) {
         // Parse identity providers string (e.g., idir,bceid or idir) into an array
         formSupportedIdentityProviders = component.component?.defaultValue?.replace(/\s/g, '')?.split(",");
       }
@@ -67,10 +67,77 @@ const hasUserAccessToForm = (formSupportedIdentityProviders, username) => {
   return formSupportedIdentityProviders.some(el => el === userIdentityProvider);
 };
 
+const getDefaultValues = (data, form, page = '') => {
+  if (form === undefined) {
+    return {};
+  }
+  if (Object.keys(data)?.length === 0 || form.components?.length === 0) {
+    return;
+  }
+
+  // A recursive function to get all the key properties of the form
+  function findAllKeys(obj, target) {
+    const keys = [];
+    const fnd = (obj) => {
+      if (!obj || Object.entries(obj).length === 0) {
+        return;
+      }
+      for (const [k, v] of Object.entries(obj)) {
+        if (k === target) {
+          if (page === 'draft') {
+            // If draft let's check fields are diabled or not
+            // If disabled then and then fetch new value
+            if (Object.getOwnPropertyDescriptor(data, v)) {
+              if (obj.disabled) {
+                keys.push(v);
+              }
+            } else {
+              keys.push(v);
+            }
+          } else {
+            keys.push(v);
+          }
+        }
+        if (typeof v === "object") {
+          fnd(v);
+        }
+      }
+    };
+    fnd(obj);
+    return keys;
+  }
+  const keys = findAllKeys(form.components, "key");
+  const uniqueKeys = [...new Set(keys)];
+
+  const filteredComponents = uniqueKeys?.filter((comp) => {
+    const dataArray = Object.keys(data);
+    if (comp.includes("_")) {
+      return dataArray.some((dataItem) => comp.split("_")[0] === dataItem);
+    }
+    return dataArray.some((el2) => comp === el2);
+  });
+
+  const defaultValuesArray = filteredComponents?.map((filteredComp) => {
+    if (filteredComp.includes("_")) {
+      return {
+        [filteredComp]: data[filteredComp.split("_")[0]],
+      };
+    }
+    return { [filteredComp]: data[filteredComp] };
+  });
+
+  const defaultValuesObject = defaultValuesArray?.reduce(
+    (acc, curr) => ({ ...acc, ...curr }),
+    {}
+  );
+
+  return { data: defaultValuesObject };
+};
 export {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
   enableFormButton,
   getFormSupportedIdentityProviders,
-  hasUserAccessToForm
+  hasUserAccessToForm,
+  getDefaultValues
 };
