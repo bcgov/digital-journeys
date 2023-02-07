@@ -13,7 +13,9 @@ async function fetchSubmission() {
 
 // Help web driver to idetify the form rendered completely.
 function formReady() {
-  document.getElementById("formio").classList.add("completed");
+  setTimeout(() => {
+    document.getElementById("formio").classList.add("completed");
+  }, 2500);
 }
 
 // Render form with form adapter 
@@ -26,7 +28,7 @@ function renderFormWithSubmission() {
     fetchSubmission().then((submission) => {
       form.submission = submission;
       form.ready.then(() => {
-        formReady();
+        setTimeout(formReady, 4500);
       });
     });
   });

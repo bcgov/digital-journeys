@@ -6,3 +6,5 @@ export const FORM_NAMES = {
     complaintform: 'Bullying and Harassment Complaint Form',
     complaintform110: 'Bullying / Misuse of Authority Complaint'
   };
+
+export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME = 'formSupportedIdentityProviders';
