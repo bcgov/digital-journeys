@@ -22,6 +22,16 @@ export const exportToPdf = ({formId, formName, pdfName}) => {
 };
 
 export const printToPDF = ({ pdfName, formName }) => {
+  let maxWidth = '1440px';
+  if (window.location.href.includes('/task/')) {
+    maxWidth = '1920px';
+  }
+  const checkedRadio = document.querySelectorAll('input[type="radio"]:checked');
+  const appContainer = document.querySelectorAll("div.app-container.container");
+  if (appContainer.length > 0) {
+    appContainer[0].style.maxWidth = maxWidth;
+    appContainer[0].style.minWidth = maxWidth;
+  }
   // hide block with class .hidden-in-print
   const hiddenInPrint = document.querySelectorAll(".hidden-in-print");
   let changeElm = [];
@@ -38,9 +48,14 @@ export const printToPDF = ({ pdfName, formName }) => {
   toast.success("Downloading...");
   exportToPdf({ formId: "formview", pdfName, formName });
   setTimeout(() => {
+    checkedRadio.forEach((ele) => ele.checked = true);
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
     changeElm.forEach((elm) => (elm.style.display = "block"));
     changeElm = [];
+    if (appContainer.length > 0) {
+      appContainer[0].style.maxWidth = '';
+      appContainer[0].style.minWidth = '';
+    }
   }, 2000);
 };
 

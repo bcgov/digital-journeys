@@ -43,14 +43,14 @@
     "formiojs": "^4.14.5",
     "fs-extra": "^10.0.1",
     "html-entities": "^2.3.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "mailgun.js": "^3.7.0",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.2",
     "moment-timezone": "^0.5.33",
-    "mongodb": "^4.4.1",
-    "mongoose": "^6.2.8",
+    "mongodb": "^4.11.0",
+    "mongoose": "^6.7.1",
     "mssql": "^8.0.0",
     "mysql": "^2.18.1",
     "nodemailer": "^6.7.3",
@@ -65,7 +65,7 @@
     "superagent-retry": "^0.6.0",
     "through": "^2.3.8",
     "vanilla-text-mask": "^5.1.1",
-    "vm2": "^3.9.9"
+    "vm2": "^3.9.10"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
