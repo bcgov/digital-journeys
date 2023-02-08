@@ -423,7 +423,7 @@ const View = React.memo((props) => {
         }
       }
     }
-  }, [user]);
+  });
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
