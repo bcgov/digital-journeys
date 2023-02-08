@@ -170,7 +170,7 @@
 		<dependency>
 			<groupId>org.camunda.template-engines</groupId>
 			<artifactId>camunda-template-engines-freemarker</artifactId>
-			<version>1.0.0</version>
+			<version>1.1.0</version>
 		</dependency>
 
 		<dependency>
