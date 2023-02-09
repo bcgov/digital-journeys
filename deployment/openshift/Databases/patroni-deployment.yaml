@@ -175,6 +175,8 @@ objects:
             value: 0.0.0.0:5432
           - name: PATRONI_RESTAPI_LISTEN
             value: 0.0.0.0:8008
+          securityContext:
+            allowPrivilegeEscalation: true
           ports:
           - containerPort: 8008
             protocol: TCP
