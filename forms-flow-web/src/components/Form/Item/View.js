@@ -118,7 +118,7 @@ const View = React.memo((props) => {
   const [notified, setNotified] = useState(false);
   const [defaultVals, setDefaultVals] = useState({});
   
-  const [hasFormAccess, setHasFormAccess] = useState(true);
+  const [hasFormAccess, setHasFormAccess] = useState(false);
 
   const {
     isAuthenticated,
@@ -409,25 +409,21 @@ const View = React.memo((props) => {
     };
   });
 
-  if (!user.role.some(el => el === STAFF_DESIGNER)) {
-    let formAccessInterval = null;
-    useEffect(() => {
-      formAccessInterval = setInterval(() => {
-        /* check formRef before calling function of formio */
-        if (formRef.current !== null) {
-          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
-            formRef.current?.formio, 
-            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, formAccessInterval);
-          if (Array.isArray(formSupportedIdentityProviders)) {
-            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
-          }
+  useEffect(() => {
+    if (user && user.role.some(el => el === STAFF_DESIGNER)) {
+      setHasFormAccess(true);
+    } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
+      /* check formRef before calling function of formio */
+      if (formRef.current !== null) {
+        const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
+          formRef.current?.formio, 
+          FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, null);
+        if (Array.isArray(formSupportedIdentityProviders)) {
+          setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
         }
-      }, 1000);
-      return () => {
-        clearInterval(formAccessInterval);
-      };
-    });
-  }
+      }
+    }
+  });
 
   if (isActive || isPublicStatusLoading || formStatusLoading) {
     return (
