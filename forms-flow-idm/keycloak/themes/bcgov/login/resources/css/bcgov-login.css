@@ -1,27 +1,27 @@
 @font-face {
 	font-family: 'BC Sans';
-	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Regular.woff');
+	src: url('../webfonts/BCSans-Regular.woff');
 	font-weight: normal;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'BC Sans';
-	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Bold.woff');
+	src: url('../webfonts/BCSans-Bold.woff');
 	font-weight: bold;
 	font-style: normal;	
 }
 
 @font-face {
 	font-family: 'BC Sans';
-	src: url('.https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-Italic.woff');
+	src: url('../webfonts/BCSans-Italic.woff');
 	font-weight: normal;
 	font-style: italic;	
 }
 
 @font-face {
 	font-family: 'BC Sans';
-	src: url('https://www2.gov.bc.ca/StaticWebResources/static/shared/fonts/BCSans/BCSans-BoldItalic.woff');
+	src: url('../webfonts/BCSans-BoldItalic.woff');
 	font-weight: bold;
 	font-style: italic;	
 }
