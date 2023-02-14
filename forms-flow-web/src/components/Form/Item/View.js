@@ -64,7 +64,7 @@ import SavingLoading from "../../Loading/SavingLoading";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
-  hasUserAccessToForm } from "../../../helper/formUtils";
+  hasUserAccessToForm, getDefaultValues } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 import MessageModal from "../../../containers/MessageModal";
 import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../../constants/formConstants";
@@ -333,60 +333,13 @@ const View = React.memo((props) => {
 
   }, [getForm, getEmployeeData, isAuthenticated, dispatch]);
 
-  const getDefaultValues = (data) => {
-    if (Object.keys(data)?.length === 0 || form.components?.length === 0) {
-      return;
-    }
-
-    // A recursive function to get all the key properties of the form
-    function findAllKeys(obj, target) {
-      const keys = [];
-      const fnd = (obj) => {
-        if (!obj || Object.entries(obj).length === 0) {
-          return;
-        }
-        for (const [k, v] of Object.entries(obj)) {
-          if (k === target) {
-            keys.push(v);
-          }
-          if (typeof v === "object") {
-            fnd(v);
-          }
-        }
-      };
-      fnd(obj);
-      return keys;
-    }
-    const keys = findAllKeys(form.components, "key");
-    const uniqueKeys = [...new Set(keys)];
-
-    const filteredComponents = uniqueKeys?.filter((comp) => {
-      const dataArray = Object.keys(data);
-      if (comp.includes("_")) {
-        return dataArray.some((dataItem) => comp.split("_")[0] === dataItem);
-      }
-      return dataArray.some((el2) => comp === el2);
-    });
-
-    const defaultValuesArray = filteredComponents?.map((filteredComp) => {
-      if (filteredComp.includes("_")) {
-        return {
-          [filteredComp]: data[filteredComp.split("_")[0]],
-        };
-      }
-      return { [filteredComp]: data[filteredComp] };
-    });
-
-    const defaultValuesObject = defaultValuesArray?.reduce(
-      (acc, curr) => ({ ...acc, ...curr }),
-      {}
-    );
-
-    return { data: defaultValuesObject };
-  };
-
+  /** 
+   * Move  getDefaultValues function into form Utils helper 
+   * reference ticket,
+   * https://github.com/bcgov/digital-journeys/issues/835
+  */
   useEffect(() => {
-    setDefaultVals(getDefaultValues(employeeData.data));
+    setDefaultVals(getDefaultValues(employeeData.data, form));
   }, [employeeData.data, form]);
 
   let convertFormLinksInterval = null;
