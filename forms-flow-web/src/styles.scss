@@ -197,6 +197,17 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 .formio-errors .error {
   color: $red;
 }
+.formio-wizard-nav-container 
+{
+  display: flex;
+  flex-wrap: wrap;
+}
+.btn-wizard-nav-submit,
+.btn-wizard-nav-next,
+.btn-wizard-nav-previous {
+  margin-left:5px;
+    width: 180px; 
+}
 .is-invalid {
   background-color: #ffd1d1;
 }
@@ -862,7 +873,8 @@ header span:hover {
   color: #fff;
 }
 
-.alert-info {
+.alert-info,
+.alert-bc-warning {
   background-color: #F9F1C6;
   padding: 15px;
   display: flex;
@@ -875,12 +887,52 @@ header span:hover {
 ;
 }
 
-.alert-info > p {
+.alert-info,
+.alert-bc-warning > p {
   color: #6C4A00;
   margin: 0;
 }
 
-.alert-info.formio-hidden {
+.alert-bc-error {
+  background-color: #f2dede;
+  padding: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  &:before {
+    margin-right: 11px;
+    content: url(./assets/danger.svg);
+  }
+;
+}
+
+.alert-bc-error > p {
+  color: #a12622;
+  margin: 0;
+}
+
+.alert-bc-info {
+  background-color: #d9eaf7;
+  padding: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  &:before {
+    margin-right: 11px;
+    content: url(./assets/info.svg);
+  }
+;
+}
+
+.alert-bc-info > p {
+  color: #313132;
+  margin: 0;
+}
+
+.alert-info.formio-hidden,
+.alert-bc-error.formio-hidden,
+.alert-bc-info.formio-hidden,
+.alert-bc-warning.formio-hidden {
   padding: 0;
   background-color: transparent;
   &:before {
