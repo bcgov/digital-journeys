@@ -10,10 +10,10 @@ server:
   port: 8080
   ssl:
     key-store: classpath:/keystore.ks
-    key-store-password: "@BCG0vernm3nt++"
+    key-store-password: BCG0vernm3nt++
     key-store-type: pkcs12
     key-alias: camunda
-    key-password: @BCG0vernm3nt++
+    key-password: BCG0vernm3nt++
   servlet:
     context-path: /camunda
     session:
