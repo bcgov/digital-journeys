@@ -2,7 +2,7 @@
 version: "3.7"
 
 x-redash-service: &redash-service
-  image: formsflow/redash:10.1.2
+  image: formsflow/redash:10.1.4
   depends_on:
       - postgres
       - redis
@@ -38,7 +38,7 @@ services:
     depends_on:
       - server
   redis:
-    image: redis:6-alpine
+    image: redis:6.2.10-alpine
     restart: always
   postgres:
     image: postgres:9.6-alpine
