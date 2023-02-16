@@ -1,5 +1,13 @@
+/**
+ * Initial steps involves running this script:
+ * 1. Connect to your openshift environment (e.g., dev, test) using Openshift CLI
+ * 2. forward patroni-0 pod's db port to your local. Use the following command to forward your 5432 port: $oc port-forward 5432
+ */
+
+
 const { Client } = require("pg");
 
+// Please change this to connect to webApi and Camunda databases (database name is different for webApi and Camunda).
 const dbConfig = {
   host: "db-host-here",
   port: 5432,
@@ -86,6 +94,8 @@ const main = async () => {
   // Connect to DB
   await dbClient.connect();
 
+  /** Step 1 - webApi db >> application table **/
+
   // Get all the applications without "_idir" postfix
   const { rows: applicationsResults } = await dbClient.query(
     "SELECT id, created_by from application Where created_by <> '' AND created_by IS NOT NULL"
@@ -110,6 +120,8 @@ const main = async () => {
     );
     await migrateApplications(el);
   });
+
+  /** Step 2 - webApi db >> application_audit table **/
 
   // Get all the applicationAudits without "_idir" postfix
   const { rows: applicationAuditResults } = await dbClient.query(
@@ -136,6 +148,8 @@ const main = async () => {
     await migrateApplicationAudits(el);
   });
 
+  /** Step 3 - bpm (Camunda) db >> act_ru_task table **/
+
   // Get all the Camunda task assignees without "_idir" postfix
   const { rows: taskAssigneeResults } = await dbClient.query(
     "SELECT id_, assignee_ from act_ru_task Where assignee_ <> '' AND assignee_ IS NOT NULL"
@@ -160,6 +174,8 @@ const main = async () => {
     await migrateTaskAssignees(el);
   });
 
+  /** Step 4 - bpm (Camunda) db >> act_ru_authorization table **/
+
   // Get all the Camunda authorization for users without "_idir" postfix
   const { rows: authorizationForUsersResults } = await dbClient.query(
     "SELECT id_, user_id_ from act_ru_authorization Where user_id_ <> '' AND user_id_ IS NOT NULL"
@@ -172,6 +188,7 @@ const main = async () => {
           el.user_id_.includes("_bcsc") ||
           el.user_id_.includes("_bceid") ||
           el.user_id_.includes("service-account-forms-flow-bpm") ||
+          el.user_id_.includes("formsflow/formsflow-client") ||
           el.user_id_ === "*"
         )
     );
@@ -180,9 +197,9 @@ const main = async () => {
   );
   authorizationForUsersWithoutIdirPostfix.forEach(async (el, index) => {
     console.log(
-      `Updating ${index + 1}/${authorizationForUsersWithoutIdirPostfix.length}: id: ${
-        el.id_
-      }, user_id_: ${el.user_id_}`
+      `Updating ${index + 1}/${
+        authorizationForUsersWithoutIdirPostfix.length
+      }: id: ${el.id_}, user_id_: ${el.user_id_}`
     );
     await migrateAuthorizationForUsers(el);
   });
