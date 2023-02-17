@@ -26,6 +26,7 @@ class FormProcessMapperSchema(Schema):
     task_variable = fields.Str(data_key="taskVariable")
     version = fields.Str(data_key="version")
     process_tenant = fields.Str(data_key="processTenant")
+    supported_idp = fields.Str(data_key="supportedIdp", allow_none=True)
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -46,3 +47,4 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     form_name = fields.Str(data_key="formName", required=False)
     sort_by = fields.Str(data_key="sortBy", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    supported_idp = fields.Str(data_key="supported_idp", required=False)

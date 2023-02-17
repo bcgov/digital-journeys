@@ -8,6 +8,9 @@ import _camelCase from "lodash/camelCase";
 import {
   MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
+import { 
+  FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME
+} from "../../../constants/formConstants";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,6 +25,7 @@ import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
+import { getFormSupportedIDPFromJSON } from "../../../helper/formUtils";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -180,8 +184,14 @@ const Edit = React.memo(() => {
         newFormData.name = addTenankey(newFormData.name, tenantKey);
       }
     }
+    const idp = getFormSupportedIDPFromJSON(form,
+      FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME);
+    const newForm = {
+      ...newFormData,
+      supportedIdp : idp
+    };
     dispatch(
-      saveForm("form", newFormData, (err, submittedData) => {
+      saveForm("form", newForm, (err, submittedData) => {
         if (!err) {
           // checking any changes
           if (isMapperSaveNeeded(submittedData)) {
@@ -193,6 +203,7 @@ const Edit = React.memo(() => {
               formName: submittedData.title,
               id: processListData.id,
               formId: submittedData._id,
+              supportedIdp: newForm.supportedIdp
             };
 
             // PUT request : when application count is zero.

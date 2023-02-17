@@ -52,6 +52,7 @@ class FormResourceList(Resource):
             sort_by: str = dict_data.get("sort_by", "id")
             sort_order: str = dict_data.get("sort_order", "desc")
             auth_list = auth_form_details.get("authorizationList") or {}
+            supported_idp: str = dict_data.get("supported_idp")
             resource_list = [group["resourceId"] for group in auth_list]
             if (
                 auth_form_details.get("adminGroupEnabled") is True
@@ -61,14 +62,14 @@ class FormResourceList(Resource):
                     form_process_mapper_schema,
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_mappers(
-                    page_no, limit, form_name, sort_by, sort_order
+                    page_no, limit, form_name, sort_by, sort_order, supported_idp
                 )
             else:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_mappers(
-                    page_no, limit, form_name, sort_by, sort_order, resource_list
+                    page_no, limit, form_name, sort_by, sort_order, supported_idp, resource_list
                 )
             return (
                 (

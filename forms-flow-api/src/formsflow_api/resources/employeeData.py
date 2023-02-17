@@ -21,28 +21,29 @@ class EmployeeDataResource(Resource):
     @profiletime
     @auth.require
     def get():
-        """Get the employee data based on bcGov guid."""
-        try:
-            GUID = g.token_info.get("bcgovguid")
-            BCeID = g.token_info.get("bceid_user_guid")
-            BCSC = g.token_info.get("bcsc_user_guid")
-        except:
-            return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        # """Get the employee data based on bcGov guid."""
+        # try:
+        #     GUID = g.token_info.get("bcgovguid")
+        #     BCeID = g.token_info.get("bceid_user_guid")
+        #     BCSC = g.token_info.get("bcsc_user_guid")
+        # except:
+        #     return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
-        try:
-            if BCeID:
-                userData = EmployeeDataService.get_employee_data_from_bceid()
-            elif BCSC:
-                userData = EmployeeDataService.get_employee_data_from_bcsc()
-            elif GUID:
-                userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
-            else:
-                return {"message": "user idp is not any of IDIR or BCeID!"}, HTTPStatus.NOT_FOUND
-        except BusinessException as err:
-            current_app.logger.warning(err.error)
-            return err.error, err.status_code
+        # try:
+        #     if BCeID:
+        #         userData = EmployeeDataService.get_employee_data_from_bceid()
+        #     elif BCSC:
+        #         userData = EmployeeDataService.get_employee_data_from_bcsc()
+        #     elif GUID:
+        #         userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
+        #     else:
+        #         return {"message": "user idp is not any of IDIR or BCeID!"}, HTTPStatus.NOT_FOUND
+        # except BusinessException as err:
+        #     current_app.logger.warning(err.error)
+        #     return err.error, err.status_code
         
-        return userData, HTTPStatus.OK
+        # return userData, HTTPStatus.OK
+        return {"firstName":"Bhumin", "lastName": "Patel", "email":"bhumin@gov.bc.ca"}, HTTPStatus.OK
 
 
 @cors_preflight("GET, OPTIONS")

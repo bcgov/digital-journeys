@@ -22,6 +22,7 @@ class FormProcessMapperService:
         form_name: str,
         sort_by: str,
         sort_order: str,
+        supported_idp: str = None,
         process_key: list = None,
     ):  # pylint: disable=too-many-arguments
         """Get all form process mappers."""
@@ -32,6 +33,7 @@ class FormProcessMapperService:
             sort_by=sort_by,
             sort_order=sort_order,
             process_key=process_key,
+            supported_idp=supported_idp
         )
         mapper_schema = FormProcessMapperSchema()
         return (

@@ -5,6 +5,9 @@ import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { 
+  FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME
+} from "../../constants/formConstants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +21,7 @@ import {
 } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
+import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -128,9 +132,12 @@ const Create = React.memo(() => {
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
+    const idp = getFormSupportedIDPFromJSON(form,
+      FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME);
     const newForm = {
       ...newFormData,
       tags: ["common"],
+      supportedIdp: idp,
     };
     newForm.submissionAccess = submissionAccess;
     newForm.access = formAccess;
@@ -151,6 +158,7 @@ const Create = React.memo(() => {
           formName: form.title,
           formRevisionNumber: "V1", // to do
           anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+          supportedIdp: newForm.supportedIdp
         };
         dispatch(setFormSuccessData("form", form));
         Formio.cache = {}; //removing formio cache
