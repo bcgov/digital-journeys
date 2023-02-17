@@ -6,7 +6,6 @@ import {
   saveSubmission,
   Form,
   selectError,
-  getForm,
   Errors,
 } from "react-formio";
 import { push } from "connected-react-router";
@@ -24,7 +23,6 @@ import {
   setFormSubmissionError,
   setFormSubmissionLoading,
   setFormSubmitted,
-  setMaintainBPMFormPagination,
 } from "../../actions/formActions";
 import { postCustomSubmission } from "../../apiManager/services/FormServices";
 import {
@@ -32,7 +30,6 @@ import {
   getDraftReqFormat,
 } from "../../apiManager/services/bpmServices";
 import { draftUpdate } from "../../apiManager/services/draftService";
-import { fetchEmployeeData } from "../../apiManager/services/employeeDataService";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -47,7 +44,7 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
 import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
-  hasUserAccessToForm, getDefaultValues } from "../../helper/formUtils";
+  hasUserAccessToForm } from "../../helper/formUtils";
 import { printToPDF } from "../../services/PdfService";
 import MessageModal from "../../containers/MessageModal";
 import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../constants/formConstants";
@@ -88,8 +85,6 @@ const View = React.memo((props) => {
   const exitType = useRef("UNMOUNT");
 
   const [hasFormAccess, setHasFormAccess] = useState(true);
-  const [defaultVals, setDefaultVals] = useState({});
-  const [isfetchedlatestdata, setIsfetchedlatestdata] = useState(false);
 
   const {
     isAuthenticated,
@@ -101,14 +96,12 @@ const View = React.memo((props) => {
     options,
     form: { form, isActive, url },
     user,
-    getEmployeeData,
-    employeeData,
   } = props;
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
-    if (draftSubmission?.id) {
+    if (draftSubmission?.id && exitType !== "UNMOUNT") {
       if (dataChanged) {
         setDraftSaved(false);
         if (!showNotification) setShowNotification(true);
@@ -185,28 +178,6 @@ const View = React.memo((props) => {
       };
     });
   }
-
-  useEffect(() => {
-    setDefaultVals(submission.submission);
-    getForm();
-    getEmployeeData();
-    dispatch(setMaintainBPMFormPagination(true));
-  }, [getEmployeeData, dispatch]);
-
-  useEffect(() => {
-    if (!isfetchedlatestdata) {
-      const defaultData = getDefaultValues(employeeData.data, form, 'draft');
-      if (defaultData !== undefined &&
-        Object.keys(defaultData.data).length > 0) {
-        submission.submission.data = {
-          ...submission.submission.data,
-          ...defaultData.data
-        };
-        setDefaultVals(submission.submission);
-        setIsfetchedlatestdata(true);
-      }
-    }
-  }, [employeeData.data, form]);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -307,7 +278,7 @@ const View = React.memo((props) => {
           {
             <Form
               form={form}
-              submission={defaultVals}
+              submission={submission.submission}
               url={url}
               options={{
                 ...options,
@@ -392,7 +363,6 @@ const mapStateToProps = (state) => {
       },
     },
     submissionError: selectRoot("formDelete", state).formSubmissionError,
-    employeeData: state.employeeData,
   };
 };
 
@@ -443,7 +413,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       const ErrorDetails = { modalOpen: false, message: "" };
       dispatch(setFormSubmissionError(ErrorDetails));
     },
-    getEmployeeData: () => dispatch(fetchEmployeeData()),
   };
 };
 
