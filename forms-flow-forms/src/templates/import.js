@@ -866,6 +866,7 @@ module.exports = (router) => {
               "name": result.name,
               "path": result.path,
               "tags": result.tags,
+              "supportedidp": result?.supportedidp,
               "components": result.components
           };
 

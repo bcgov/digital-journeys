@@ -368,11 +368,26 @@ const View = React.memo((props) => {
     } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
       /* check formRef before calling function of formio */
       if (formRef.current !== null) {
-        const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
-          formRef.current?.formio, 
-          FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, null);
-        if (Array.isArray(formSupportedIdentityProviders)) {
-          setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
+        if (formRef.current?.formio 
+          && formRef.current.formio?._form
+          && formRef.current.formio._form?.supportedidp !== undefined) {
+            if (formRef.current.formio._form?.supportedidp === "") {
+              setHasFormAccess(true);
+            } else {
+              setHasFormAccess(
+                hasUserAccessToForm(
+                  formRef.current.formio._form?.supportedidp.split(","),
+                  user.username
+                )
+              );
+            }
+        } else {
+          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
+            formRef.current?.formio, 
+            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, null);
+          if (Array.isArray(formSupportedIdentityProviders)) {
+            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
+          }
         }
       }
     }

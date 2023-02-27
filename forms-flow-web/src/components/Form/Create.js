@@ -5,9 +5,6 @@ import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
-import { 
-  FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME
-} from "../../constants/formConstants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
@@ -132,8 +129,7 @@ const Create = React.memo(() => {
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
-    const idp = getFormSupportedIDPFromJSON(form,
-      FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME);
+    const idp = getFormSupportedIDPFromJSON(form);
     const newForm = {
       ...newFormData,
       tags: ["common"],
@@ -337,6 +333,39 @@ const Create = React.memo(() => {
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
+            <div id="form-group-supportedidp" className="form-group">
+              <label htmlFor="supportedidp" className="control-label field-required">
+                <Translation>{(t) => t("Supported IDPs (comma separated)")}</Translation>
+                {addingTenantKeyInformation("supportedidp")}
+              </label>
+              <div className="input-group mb-2">
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                <input
+                  type="text"
+                  className="form-control"
+                  id="supportedidp"
+                  placeholder={t("Supported IDPs (comma separated)")}
+                  style={{ textTransform: "lowercase", width: "120px" }}
+                  value={form.supportedidp || ""}
+                  onChange={(event) => handleChange("supportedidp", event)}
+                />
+              </div>
+            </div>
+          </div>
+          <div 
+            className="col-lg-4 col-md-4 col-sm-4" 
+            style={{disaplay: "none"}}>
             <div
               id="form-group-anonymous"
               className="form-group"

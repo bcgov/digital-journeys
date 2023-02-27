@@ -37,9 +37,6 @@ import {
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
-import { 
-  FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME
-} from "../../constants/formConstants";
 import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 class StepperPage extends PureComponent {
@@ -238,8 +235,7 @@ class StepperPage extends PureComponent {
         applicationCount > 0
       );
     };
-    const idp = getFormSupportedIDPFromJSON(form.form,
-      FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME);
+    const idp = getFormSupportedIDPFromJSON(form.form);
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,

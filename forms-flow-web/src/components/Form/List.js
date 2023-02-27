@@ -19,9 +19,6 @@ import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
 } from "../../constants/constants";
-import { 
-  FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME
-} from "../../constants/formConstants";
 import "../Form/List.scss";
 import {
   setFormFailureErrorData,
@@ -255,8 +252,7 @@ const List = React.memo((props) => {
                 formData.path = checkAndAddTenantKey(formData.path, tenantKey);
                 formData.name = checkAndAddTenantKey(formData.name, tenantKey);
               }
-              const idp = getFormSupportedIDPFromJSON(formData,
-                FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME);
+              const idp = getFormSupportedIDPFromJSON(formData);
               const newFormData = {
                 ...formData,
                 supportedIdp: idp,
