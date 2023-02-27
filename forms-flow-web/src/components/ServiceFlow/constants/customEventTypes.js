@@ -7,4 +7,5 @@ export const CUSTOM_EVENT_TYPE = {
   SAVE_DRAFT: "saveDraft",
   PRINT_PDF: "printPDF",
   ERROR_CUSTOM_VALIDATION: "errorCustomValidation",
+  POPUP: "popup",
 };

@@ -12,7 +12,9 @@ const MessageModal = React.memo((props) => {
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
+        <Modal.Body>
+          <div dangerouslySetInnerHTML={{ __html: message }} />
+        </Modal.Body>
         <Modal.Footer>
           <Button type="button" className="btn btn-default" onClick={onConfirm}>
             {t("Ok")}

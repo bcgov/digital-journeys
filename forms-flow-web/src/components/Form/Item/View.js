@@ -118,6 +118,9 @@ const View = React.memo((props) => {
   const [defaultVals, setDefaultVals] = useState({});
   
   const [hasFormAccess, setHasFormAccess] = useState(false);
+  
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState();
 
   const {
     isAuthenticated,
@@ -427,6 +430,10 @@ const View = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF({ formName: evt.formName, pdfName: evt.pdfName });
         break;
+      case CUSTOM_EVENT_TYPE.POPUP:
+        setPopupData({ title: evt.title, body: evt.body });
+        setShowPopup(true);
+        break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(evt.error);
         break;
@@ -472,6 +479,14 @@ const View = React.memo((props) => {
               window.location.replace(`${window.location.origin}/form`);
             }}
           />
+          
+          {popupData && 
+            <MessageModal
+              modalOpen={showPopup}
+              title={popupData.title}
+              message={popupData.body}
+              onConfirm={() => setShowPopup(false)}
+            />}
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
