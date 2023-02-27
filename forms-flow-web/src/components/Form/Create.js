@@ -18,6 +18,7 @@ import {
 } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
+import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -128,9 +129,11 @@ const Create = React.memo(() => {
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
+    const idp = getFormSupportedIDPFromJSON(form);
     const newForm = {
       ...newFormData,
       tags: ["common"],
+      supportedIdp: idp,
     };
     newForm.submissionAccess = submissionAccess;
     newForm.access = formAccess;
@@ -151,6 +154,7 @@ const Create = React.memo(() => {
           formName: form.title,
           formRevisionNumber: "V1", // to do
           anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+          supportedIdp: newForm.supportedIdp
         };
         dispatch(setFormSuccessData("form", form));
         Formio.cache = {}; //removing formio cache
@@ -329,6 +333,39 @@ const Create = React.memo(() => {
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
+            <div id="form-group-supportedidp" className="form-group">
+              <label htmlFor="supportedidp" className="control-label field-required">
+                <Translation>{(t) => t("Supported IDPs (comma separated)")}</Translation>
+                {addingTenantKeyInformation("supportedidp")}
+              </label>
+              <div className="input-group mb-2">
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                <input
+                  type="text"
+                  className="form-control"
+                  id="supportedidp"
+                  placeholder={t("e.g. idir or idir,bceid")}
+                  style={{ textTransform: "lowercase", width: "120px" }}
+                  value={form.supportedidp || ""}
+                  onChange={(event) => handleChange("supportedidp", event)}
+                />
+              </div>
+            </div>
+          </div>
+          <div 
+            className="col-lg-4 col-md-4 col-sm-4" 
+            style={{disaplay: "none"}}>
             <div
               id="form-group-anonymous"
               className="form-group"

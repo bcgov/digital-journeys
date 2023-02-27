@@ -93,8 +93,11 @@ Step 3: If you want to use one piece of user data more than once in a form, you 
 5. Add the necessary workflow and then publish the form if that is the desired behaviour. You can assign the same workflow to the duplicated form or assign a different workflow.
 
 ## Form access
-A form designer can specify which IDPs (Identity Providers, e.g., IDIR, BCeID and BCSC) forms should support . For example _Telework_ form should only be accessible for IDIR users while _1.10_ form supports IDIR and BCeID among other IDPs. A form designer can set one or more supported IDPs for a form through a hidden form field called `formSupportedIdentityProviders`. In that field, under `Data` tab, a form designer can enter one or more IDPs in `Default Value` field. Supported IDPs are `idir`, `bceid` and `bcsc`. These IDPs may change in the future. Multiple values are supported and should be separated by a comma `,`.
+A form designer can specify which IDPs (Identity Providers, e.g., IDIR, BCeID and BCSC) forms should support . For example _Telework_ form should only be accessible for IDIR users while _1.10_ form supports IDIR and BCeID among other IDPs. 
+A form designer can set one or more supported IDPs for a form thorugh form meta data.Supported IDPs are `idir`, `bceid` and `bcsc`. These IDPs may change in the future. Multiple values are supported and should be separated by a comma `,`.
 
-For example if you want a form to be accessible for IDIR users enter `idir` under `Default value`. If you want to support both IDIR and BCeID, please enter `idir,bceid`.
+For example if you want a form to be accessible for IDIR users enter `idir`. If you want to support both IDIR and BCeID, please enter `idir,bceid`.
 
-![formSupportedIdentityProviders.png](images/formSupportedIdentityProviders.png)
+**Note**: If you make any change in supported IDPs. Please reach to the 3rd step `Preview and Confirm` and click `save` to apply that changes for form and form-list page. 
+
+![formSupportedIdentityProviders.png](images/form-edit-supportedidps.png)

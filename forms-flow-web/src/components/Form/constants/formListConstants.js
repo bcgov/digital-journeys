@@ -13,6 +13,7 @@ const columnsToPick = [
   "name",
   "path",
   "tags",
+  "supportedidp",
   "components",
 ];
 

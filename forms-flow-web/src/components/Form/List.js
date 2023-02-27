@@ -55,6 +55,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormioRoleIds } from "../../apiManager/services/userservices";
+import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -71,6 +72,7 @@ const List = React.memo((props) => {
     onYes,
     tenants,
     path,
+    userDetail,
   } = props;
   const searchInputBox = useRef("");
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
@@ -150,7 +152,11 @@ const List = React.memo((props) => {
       getFormsInit(1, updatedQuery);
     } else {
       setShowClearButton(searchText);
-      dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
+      let username = userDetail?.username; 
+      if (username) {
+        username = username.split("_")[(username.split("_")).length - 1];
+      }
+      dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText, username));
     }
 
   }, [
@@ -162,6 +168,7 @@ const List = React.memo((props) => {
     sortBy,
     sortOrder,
     searchText,
+    userDetail
   ]);
 
 
@@ -245,8 +252,10 @@ const List = React.memo((props) => {
                 formData.path = checkAndAddTenantKey(formData.path, tenantKey);
                 formData.name = checkAndAddTenantKey(formData.name, tenantKey);
               }
+              const idp = getFormSupportedIDPFromJSON(formData);
               const newFormData = {
                 ...formData,
+                supportedIdp: idp,
                 tags: ["common"],
                 ...tenantDetails,
               };
@@ -573,6 +582,7 @@ const mapStateToProps = (state) => {
     isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
     tenants: selectRoot("tenants", state),
     path: selectRoot("formDelete", state).formDelete.path,
+    userDetail: selectRoot("user", state).userDetail || undefined,
   };
 };
 

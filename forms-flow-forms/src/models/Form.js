@@ -145,6 +145,11 @@ module.exports = (formio) => {
         type: Number,
         default: null
       },
+      supportedidp: {
+        type: String,
+        description: 'Supported IDPs (comma separated)',
+        index: true
+      },
       access: [formio.schemas.PermissionSchema],
       submissionAccess: [formio.schemas.PermissionSchema],
       fieldMatchAccess: {

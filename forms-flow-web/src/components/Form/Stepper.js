@@ -37,6 +37,8 @@ import {
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
+import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
+
 class StepperPage extends PureComponent {
   constructor(props) {
     super(props);
@@ -233,6 +235,7 @@ class StepperPage extends PureComponent {
         applicationCount > 0
       );
     };
+    const idp = getFormSupportedIDPFromJSON(form.form);
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
@@ -241,6 +244,7 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+      supportedIdp: idp,
     };
 
     if (workflow) {

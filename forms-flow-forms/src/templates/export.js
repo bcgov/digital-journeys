@@ -141,6 +141,7 @@ module.exports = (router) => {
             'display',
             'action',
             'tags',
+            'supportedidp',
             'settings',
             'components',
             'access',

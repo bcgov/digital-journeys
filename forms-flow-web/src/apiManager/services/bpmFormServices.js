@@ -18,6 +18,7 @@ export const fetchBPMFormList = (
   sortBy,
   sortOrder,
   formName,
+  userIdp,
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => {};
@@ -25,6 +26,9 @@ export const fetchBPMFormList = (
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     if (formName) {
       url += `&formName=${formName}`;
+    }
+    if (userIdp) {
+      url += `&supported_idp=${userIdp}`;
     }
     httpGETRequest(url, {}, UserService.getToken())
       .then((res) => {

@@ -17,6 +17,7 @@ from formsflow_api_utils.utils.user_context import UserContext, user_context
 from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
+from sqlalchemy import or_
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -49,6 +50,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     deleted = db.Column(db.Boolean, nullable=True, default=False)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
+    supported_idp = db.Column(db.String(1024), nullable=True)
 
     __table_args__ = (
         UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
@@ -72,6 +74,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
+                mapper.supported_idp = mapper_info.get("supported_idp")
                 mapper.save()
                 return mapper
         except Exception as err:  # pylint: disable=broad-except
@@ -97,6 +100,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "is_anonymous",
                 "task_variable",
                 "process_tenant",
+                "supported_idp",
             ],
             mapper_info,
         )
@@ -166,12 +170,18 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         sort_by=None,
         sort_order=None,
         process_key=None,
+        supported_idp=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers."""
         query = cls.filter_conditions(**filters)
         if process_key is not None:
             query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        if supported_idp is not None:
+            query = query.filter(or_(FormProcessMapper.supported_idp.like(f"%{supported_idp}%"),
+                    FormProcessMapper.supported_idp == None))
+        else:
+            query = query.filter(FormProcessMapper.supported_idp == None)
         query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:

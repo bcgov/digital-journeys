@@ -140,11 +140,19 @@ const getDefaultValues = (data, form, page = '') => {
   return { data: defaultValuesObject };
 };
 
+const getFormSupportedIDPFromJSON = (formio) => {
+  if (formio?.supportedidp && formio.supportedidp !== "") {
+    return formio.supportedidp;
+  }
+  return null;
+};
+
 export {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
   enableFormButton,
   getFormSupportedIdentityProviders,
   hasUserAccessToForm,
-  getDefaultValues
+  getDefaultValues,
+  getFormSupportedIDPFromJSON
 };

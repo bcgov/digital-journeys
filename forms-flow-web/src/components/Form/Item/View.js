@@ -63,11 +63,10 @@ import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
-import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
+import { convertFormLinksToOpenInNewTabs, 
   hasUserAccessToForm, getDefaultValues } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 import MessageModal from "../../../containers/MessageModal";
-import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../../constants/formConstants";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -368,11 +367,19 @@ const View = React.memo((props) => {
     } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
       /* check formRef before calling function of formio */
       if (formRef.current !== null) {
-        const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
-          formRef.current?.formio, 
-          FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, null);
-        if (Array.isArray(formSupportedIdentityProviders)) {
-          setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
+        if (formRef.current?.formio 
+          && formRef.current.formio?._form
+          && formRef.current.formio._form?.supportedidp !== undefined) {
+            if (formRef.current.formio._form?.supportedidp === "") {
+              setHasFormAccess(true);
+            } else {
+              setHasFormAccess(
+                hasUserAccessToForm(
+                  formRef.current.formio._form?.supportedidp.split(","),
+                  user.username
+                )
+              );
+            }
         }
       }
     }
