@@ -98,4 +98,6 @@ A form designer can set one or more supported IDPs for a form thorugh form meta 
 
 For example if you want a form to be accessible for IDIR users enter `idir`. If you want to support both IDIR and BCeID, please enter `idir,bceid`.
 
+**Note**: If you make any change in supported IDPs. Please reach to the 3rd step `Preview and Confirm` and click `save` to apply that changes for form and form-list page. 
+
 ![formSupportedIdentityProviders.png](images/form-edit-supportedidps.png)

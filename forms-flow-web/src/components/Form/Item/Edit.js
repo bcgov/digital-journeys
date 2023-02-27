@@ -480,7 +480,7 @@ const Edit = React.memo(() => {
                   type="text"
                   className="form-control"
                   id="supportedidp"
-                  placeholder={t("Supported IDPs (comma separated)")}
+                  placeholder={t("e.g. idir or idir,bceid")}
                   style={{ textTransform: "lowercase", width: "120px" }}
                   value={form.supportedidp || ""}
                   onChange={(event) => handleChange("supportedidp", event)}
