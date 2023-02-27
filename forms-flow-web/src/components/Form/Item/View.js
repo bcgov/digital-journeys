@@ -63,11 +63,10 @@ import SavingLoading from "../../Loading/SavingLoading";
 
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
-import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
+import { convertFormLinksToOpenInNewTabs, 
   hasUserAccessToForm, getDefaultValues } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 import MessageModal from "../../../containers/MessageModal";
-import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../../constants/formConstants";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -381,13 +380,6 @@ const View = React.memo((props) => {
                 )
               );
             }
-        } else {
-          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
-            formRef.current?.formio, 
-            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, null);
-          if (Array.isArray(formSupportedIdentityProviders)) {
-            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
-          }
         }
       }
     }
