@@ -9,9 +9,9 @@ const MessageModal = React.memo((props) => {
   return (
     <>
       <Modal show={modalOpen}>
-        <Modal.Header>
+        {title && <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
+        </Modal.Header>}
         <Modal.Body>
           <div dangerouslySetInnerHTML={{ __html: message }} />
         </Modal.Body>

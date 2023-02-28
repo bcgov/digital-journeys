@@ -18,6 +18,8 @@ import RemoteSelect from "./formComponents/RemoteSelect";
 import MinistrySelect from "./formComponents/MinistrySelect";
 import UploadProvider from "./formComponents/UploadProvider";
 import PanelComponent from "./formComponents/Panel";
+import TextFieldComponent from "./formComponents/TextField";
+import TextAreaComponent from "./formComponents/TextArea";
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -44,16 +46,18 @@ import("formsflow-formio-custom-elements/dist/customformio-ex").then(
 );
 
 // Add custom file upload provider
-Formio.Providers.addProvider('storage', 'digital-journeys', UploadProvider);
+Formio.Providers.addProvider("storage", "digital-journeys", UploadProvider);
 
 // Override the default file upload component with the custom one to provide
 // reasonable default values
-Components.setComponent('file', DGJFileUpload);
-Components.setComponent('panel', PanelComponent);
+Components.setComponent("file", DGJFileUpload);
+Components.setComponent("panel", PanelComponent);
+Components.setComponent("textfield", TextFieldComponent);
+Components.setComponent("textarea", TextAreaComponent);
 
 // Adding two remote select components extending original formio Select
-Components.addComponent('remoteSelect', RemoteSelect);
-Components.addComponent('ministrySelect', MinistrySelect);
+Components.addComponent("remoteSelect", RemoteSelect);
+Components.addComponent("ministrySelect", MinistrySelect);
 
 ReactDOM.render(
   <FlagsProvider features={featureFlags}>
