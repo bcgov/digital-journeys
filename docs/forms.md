@@ -6,6 +6,7 @@
 2. [Auto-populate form fields](#how-to-auto-populate-form-fields-with-the-user-data)
 3. [Uploading a form](#uploading-a-form)
 4. [Form Access](#form-access)
+5. [Reusable Popup](#reusable-popup)
 
 ## Calculated Form Values
 
@@ -101,3 +102,36 @@ For example if you want a form to be accessible for IDIR users enter `idir`. If 
 **Note**: If you make any change in supported IDPs. Please reach to the 3rd step `Preview and Confirm` and click `save` to apply that changes for form and form-list page. 
 
 ![formSupportedIdentityProviders.png](images/form-edit-supportedidps.png)
+
+## Reusable Popup
+A reusable popup was added to the TOOL. A form designer can pass the popup content and trigger it with followings:
+- A button with `Custom` action. Please add a `button` to your form, select `Custom` under `Action` and add the following code to add the title and body of popup and trigger it:
+```javascript
+const titleText = `my title`;
+const bodyText = `
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+`;
+
+form.emit('customEvent', {
+    type: "popup",
+    component: component,
+    title: titleText,
+    body: bodyText
+});
+``` 
+
+Please note that `title` is optional and should be text while `body` is required and support both text and HTML.
+
+![form-popup-custom-button.png](images/form-popup-custom-button.png)
+
+The popup will be displayed like the image below:
+
+![form-popup-custom-button-example.png](images/form-popup-custom-button-example.png)
+
+- Tooltip in `Text Field` and `Text Area`. A form designer can make the tooltip, in the `Text Field` and `Text Area` open in a popup. In order to make tooltip, open as popup, please add `<!-- popup -->` to the first line of tooltip. The content of the tooltip can be text or HTML. 
+![form-popup-tooltip.png](images/form-popup-tooltip.png)
+
+The popup will be displayed like the image below:
+
+![form-popup-tooltip-example.png](images/form-popup-tooltip-example.png)
