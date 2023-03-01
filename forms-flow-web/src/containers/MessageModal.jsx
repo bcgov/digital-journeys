@@ -8,11 +8,13 @@ const MessageModal = React.memo((props) => {
   const { t } = useTranslation();
   return (
     <>
-      <Modal show={modalOpen}>
-        <Modal.Header>
+      <Modal show={modalOpen} onHide={onConfirm}>
+        {title && <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{message}</Modal.Body>
+        </Modal.Header>}
+        <Modal.Body>
+          <div dangerouslySetInnerHTML={{ __html: message }} />
+        </Modal.Body>
         <Modal.Footer>
           <Button type="button" className="btn btn-default" onClick={onConfirm}>
             {t("Ok")}
