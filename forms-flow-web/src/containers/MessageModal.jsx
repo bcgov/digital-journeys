@@ -8,7 +8,7 @@ const MessageModal = React.memo((props) => {
   const { t } = useTranslation();
   return (
     <>
-      <Modal show={modalOpen}>
+      <Modal show={modalOpen} onHide={onConfirm}>
         {title && <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>}
