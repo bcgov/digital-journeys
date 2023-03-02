@@ -276,6 +276,9 @@ export default React.memo(() => {
                 your union within 10 days of your complaint.
               </li>
               <li>
+                LDB will assess your complaint and contact you regarding the process and timeline for next steps.
+              </li>
+              <li>
                 You may ask for assistance from your union 
                 representative either before or after 
                 submitting your complaint.
@@ -310,6 +313,9 @@ export default React.memo(() => {
                 your union within 10 days of your complaint.
               </li>
               <li>
+                LDB will assess your complaint and contact you regarding the process and timeline for next steps.
+              </li>
+              <li>
                 You may ask for assistance from your union 
                 representative either before or after 
                 submitting your complaint.
@@ -337,6 +343,9 @@ export default React.memo(() => {
               <li>
                 The Public Service Agency (PSA) will notify 
                 your union within 10 days of your complaint.
+              </li>
+              <li>
+                PSA will assess your complaint and contact you regarding the process and timeline for next steps.
               </li>
               <li>
                 You may ask for assistance from your union 
