@@ -43,11 +43,10 @@ import SubmissionError from "../../containers/SubmissionError";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
-import { convertFormLinksToOpenInNewTabs, getFormSupportedIdentityProviders, 
+import { convertFormLinksToOpenInNewTabs, 
   hasUserAccessToForm } from "../../helper/formUtils";
 import { printToPDF } from "../../services/PdfService";
 import MessageModal from "../../containers/MessageModal";
-import { FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME } from "../../constants/formConstants";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -162,25 +161,29 @@ const View = React.memo((props) => {
     };
   });
 
-  if (!user.role.some(el => el === STAFF_DESIGNER)) {
-    let formAccessInterval = null;
-    useEffect(() => {
-      formAccessInterval = setInterval(() => {
-        /* check formRef before calling function of formio */
-        if (formRef.current !== null) {
-          const formSupportedIdentityProviders = getFormSupportedIdentityProviders(
-            formRef.current?.formio, 
-            FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME, formAccessInterval);
-          if (Array.isArray(formSupportedIdentityProviders)) {
-            setHasFormAccess(hasUserAccessToForm(formSupportedIdentityProviders, user.username));
-          }
+  useEffect(() => {
+    if (user && user.role.some(el => el === STAFF_DESIGNER)) {
+      setHasFormAccess(true);
+    } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
+      /* check formRef before calling function of formio */
+      if (formRef.current !== null) {
+        if (formRef.current?.formio 
+          && formRef.current.formio?._form
+          && formRef.current.formio._form?.supportedidp !== undefined) {
+            if (formRef.current.formio._form?.supportedidp === "") {
+              setHasFormAccess(true);
+            } else {
+              setHasFormAccess(
+                hasUserAccessToForm(
+                  formRef.current.formio._form?.supportedidp.split(","),
+                  user.username
+                )
+              );
+            }
         }
-      }, 1000);
-      return () => {
-        clearInterval(formAccessInterval);
-      };
-    });
-  }
+      }
+    }
+  });
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -247,7 +250,7 @@ const View = React.memo((props) => {
             title="Form Access Error"
             message={"You do not have access to this form!"}
             onConfirm={() => {
-              window.location.replace(`${window.location.origin}/form`);
+              window.location.replace(`${window.location.origin}/draft`);
             }}
           />
           {popupData && (
