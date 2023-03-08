@@ -502,6 +502,14 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
   /*padding-bottom: 1.75rem;*/
   padding-top: 1.75rem;
 }
+.component-grid-custom-padding {
+  padding-left: 1.25rem;
+  padding-right: 0.25rem;
+  padding-top: 1.75rem;
+}
+.custom-data-grid-add-row-float-left .formio-button-add-row{
+  float: left;
+}
 @media (min-width: 768px) {
   .datagrid-table .fieldset-body .formio-component {
     flex: 0 0 41.67%;
