@@ -23,3 +23,8 @@ from formsflow_api.schemas.user import UserlocaleReqSchema
 
 from .process import ProcessListSchema
 from formsflow_api.schemas.release_note import ReleaseNoteSchema
+from .keycloak_admin import (
+    KeycloakResponseSchema, 
+    KeycloakUserSchema, 
+    RequestUserSchema
+)

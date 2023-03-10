@@ -3,9 +3,14 @@
 from http import HTTPStatus
 from flask import g, current_app, request
 from flask_restx import Namespace, Resource
-from formsflow_api_utils.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import (
+    DESIGNER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_api.services import EmployeeDataService
+from formsflow_api.services import EmployeeDataService, KeycloakService
 
 
 
@@ -65,3 +70,31 @@ class EmployeeNames(Resource):
             return err.error, err.status_code
 
         return employee_names, HTTPStatus.OK
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/user-group", methods=["POST", "OPTIONS"])
+class EmployeeGroup(Resource):
+    """Employee and Group Data"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    @auth.has_one_of_roles([DESIGNER_GROUP])
+    def post():
+        """Process users"""
+        try:
+            data = request.get_json()
+            group = data.get("group")
+            users = data.get("users")
+            if group and users:
+                obj = KeycloakService()
+                result, groupId = obj.add_users(group, users)
+                if groupId:
+                    # print(er)
+                    return result, HTTPStatus.OK
+                return {"errorMessage": "Group not found"}, HTTPStatus.NOT_FOUND
+            else:
+                return {"errorMessage": "Provide group and users"}, HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return {"errorMessage": f"Resource function error: {e}"}, HTTPStatus.BAD_REQUEST

@@ -166,3 +166,26 @@ class KeycloakAdminAPIService:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         if response.status_code == 204:
             return f"Updated - {url_path}"
+
+    @profiletime
+    def create_request(  # pylint: disable=inconsistent-return-statements
+        self, url_path, data=None
+    ):
+        """Method to add POST request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
+        : data: The request data object
+        """
+        url = f"{self.base_url}/{url_path}"
+        try:
+            response = self.session.request(
+                "POST",
+                url,
+                data=json.dumps(data),
+            )
+            current_app.logger.debug(f"keycloak Admin API POST request URL: {url}")
+            current_app.logger.debug(f"Keycloak Admin POST API payload {data}")
+            current_app.logger.debug(f"Keycloak response: {response}")
+            return response.status_code, response
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
