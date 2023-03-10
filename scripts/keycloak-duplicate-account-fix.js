@@ -46,7 +46,7 @@ const main = async () => {
     GROUP BY email
     HAVING COUNT(*) > 1; 
   */
-  const duplicateAccountsEmails = [];
+  const duplicateAccountsEmails = ["email1", "email2"];
 
   for (let i = 0; i < duplicateAccountsEmails.length; i++) {
     const email = duplicateAccountsEmails[i];
@@ -88,7 +88,6 @@ const main = async () => {
     SELECT username, id, email
     from user_entity
     WHERE username LIKE '%@idir';
-
   */
   const usersWithLegacyUsername = [{ id: "", username: "", email: "" }];
   for (let i = 0; i < usersWithLegacyUsername.length; i++) {
