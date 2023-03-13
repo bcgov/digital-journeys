@@ -26,6 +26,7 @@ class EmployeeDataResource(Resource):
             GUID = g.token_info.get("bcgovguid")
             BCeID = g.token_info.get("bceid_user_guid")
             BCSC = g.token_info.get("bcsc_user_guid")
+            LDB = g.token_info.get("ldb_uid")
         except:
             return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
@@ -34,10 +35,12 @@ class EmployeeDataResource(Resource):
                 userData = EmployeeDataService.get_employee_data_from_bceid()
             elif BCSC:
                 userData = EmployeeDataService.get_employee_data_from_bcsc()
+            elif LDB:
+                userData = EmployeeDataService.get_employee_data_from_ldb()
             elif GUID:
                 userData = EmployeeDataService.get_employee_data_from_bcgov(GUID)
             else:
-                return {"message": "user idp is not any of IDIR or BCeID!"}, HTTPStatus.NOT_FOUND
+                return {"message": "user idp is not supported!"}, HTTPStatus.NOT_FOUND
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code

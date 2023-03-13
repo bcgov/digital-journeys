@@ -5,7 +5,7 @@ from http import HTTPStatus
 from flask import current_app, g
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.models.employee_data import EmployeeData
-from formsflow_api.models.employee_data_bceid import EmployeeDataBceid
+from formsflow_api.models.employee_data_bceid import EmployeeDataFromKeycloak
 
 class EmployeeDataService: 
     
@@ -55,7 +55,7 @@ class EmployeeDataService:
         "last_name": family_name,
         "email": email
       }
-      emp_data = EmployeeDataBceid(data)
+      emp_data = EmployeeDataFromKeycloak(data)
       return emp_data.__dict__
 
     @staticmethod
@@ -68,7 +68,20 @@ class EmployeeDataService:
         "last_name": family_name,
         "email": email
       }
-      emp_data = EmployeeDataBceid(data)
+      emp_data = EmployeeDataFromKeycloak(data)
+      return emp_data.__dict__
+    
+    @staticmethod
+    def get_employee_data_from_ldb():
+      email = g.token_info.get("email")
+      family_name = g.token_info.get("family_name")
+      given_name = g.token_info.get("given_name")
+      data = {
+        "first_name": given_name,
+        "last_name": family_name,
+        "email": email
+      }
+      emp_data = EmployeeDataFromKeycloak(data)
       return emp_data.__dict__
 
     @staticmethod
