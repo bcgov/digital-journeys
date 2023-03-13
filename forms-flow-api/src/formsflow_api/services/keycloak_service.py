@@ -7,6 +7,7 @@ from formsflow_api.schemas import (
     KeycloakResponseSchema, KeycloakUserSchema,
     RequestUserSchema
 )
+supportedIdps = ["idir"]
 
 class KeycloakService:  # pylint: disable=too-few-public-methods
     """This class manages keycloak service."""
@@ -42,9 +43,12 @@ class KeycloakService:  # pylint: disable=too-few-public-methods
             fields = ",".join(e.messages.keys())
             result["message"] = f"{fields} fields required with valid data"
             return result
+        idp = userData.get("idp")
+        if idp is None or idp not in supportedIdps:
+            result["message"] = f"Supported IDPs are {*supportedIdps,}"
+            return result
 
         username = userData.get("email")
-        idp = userData.get("idp")
         if idp and idp !="":
             username = f"{username}_{idp}"
         userData["username"] = username
@@ -58,13 +62,13 @@ class KeycloakService:  # pylint: disable=too-few-public-methods
             if status == 201:
                 userId = self.get_user_id(username)
                 result["message"] = "success"
-                result["status"] = "true"
+                result["status"] = True
             else:
                 result["message"] = f"Failed to create user with status: {status}"
         else:
             current_app.logger.debug(f"get user {userId}")
             result["message"] = "success"
-            result["status"] = "true"
+            result["status"] = True
 
         result["user_id"] = userId
         result.update(userData)

@@ -88,10 +88,9 @@ class EmployeeGroup(Resource):
             group = data.get("group")
             users = data.get("users")
             if group and users:
-                obj = KeycloakService()
-                result, groupId = obj.add_users(group, users)
+                kcService = KeycloakService()
+                result, groupId = kcService.add_users(group, users)
                 if groupId:
-                    # print(er)
                     return result, HTTPStatus.OK
                 return {"errorMessage": "Group not found"}, HTTPStatus.NOT_FOUND
             else:
