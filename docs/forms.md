@@ -7,6 +7,7 @@
 3. [Uploading a form](#uploading-a-form)
 4. [Form Access](#form-access)
 5. [Reusable Popup](#reusable-popup)
+6. [Form Retention](#form-retention)
 
 ## Calculated Form Values
 
@@ -135,3 +136,23 @@ The popup will be displayed like the image below:
 The popup will be displayed like the image below:
 
 ![form-popup-tooltip-example.png](images/form-popup-tooltip-example.png)
+
+
+
+## Form Retention
+
+| Form                      | Draft       | Incomplete  | Complete    | 
+| ------------------------  | ----------- | ----------- | ----------- | 
+| `Telework`                | ?           | 60 days     | 60 days     |
+| `1.10 Formal Complaint`   | ?           | N/A         | 60 days     |
+| `SL Review`               | ?           | ?           | ?           |
+
+### Description of Workflow States for Forms
+- `Telework`
+  - Incomplete: After employee submission but before manager review
+  - Complete: After manager review
+- `1.10 Formal Complaint`
+  - Complete: After employee submission
+- `SL Review`
+  - Incomplete: After initial SL submission
+  - Complete: Once the SL submission has been updated and meets the end criteria (which will be discussed)
