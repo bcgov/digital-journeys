@@ -190,7 +190,7 @@ jobs:
           test -n "${BRANCH}"
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f deployment/openshift/bpm_dc.yaml \
+          oc -n ${NAMESPACE} process -f bpm_dc.yaml \
                 -p CAMUNDA_ANALYTICS_JDBC_URL=${CAMUNDA_ANALYTICS_JDBC_URL} \
                 -p CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER} \
                 -p FORMIO_FILE_URL="${CAMUNDA_FORMIO_FILE_URL}" \
