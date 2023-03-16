@@ -406,9 +406,6 @@ parameters:
   - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
     description: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
     required: true
-  - name: FORMSFLOW_API_URL
-    description: FORMSFLOW_API_URL
-    required: true
   - name: FORMIO_FILE_URL
     description: FORMIO_FILE_URL
     required: true
@@ -416,9 +413,6 @@ parameters:
     description: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
     required: true
     value: "3"
-  - name: FORMIO_URL
-    description: FORMIO_URL
-    required: true
   - name: CAMUNDA_APP_ROOT_LOG_FLAG
     description: CAMUNDA_APP_ROOT_LOG_FLAG
     required: true
@@ -435,10 +429,6 @@ parameters:
     description: CAMUNDA_JOB_MAX_POOL_SIZE
     required: true
     value: "10"
-  - name: KEYCLOAK_URL
-    description: The URL used to connnect to the OIDC provider.
-    required: true
-    value: ""
   - name: CAMUNDA_URL
     displayName: CAMUNDA_URL
     description:
