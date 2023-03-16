@@ -80,7 +80,10 @@ objects:
                 - name: WAIT_FOR
                   value: ${DATABASE_SERVICE_NAME}:${DATABASE_PORT}
                 - name: KEYCLOAK_URL
-                  value: ${FORMSFLOW_CONFIG_NAME}-secret
+                  valueFrom:
+                    secretKeyRef:
+                      key: keycloak_url
+                      name: ${FORMSFLOW_CONFIG_NAME}-secret
                 - name: KEYCLOAK_URL_REALM
                   valueFrom:
                     secretKeyRef:
