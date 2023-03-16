@@ -47,25 +47,6 @@ env:
 
 jobs:
   # Logs environment variables
-  Print-camunda-envs:
-    name: Test Print Camunda environment variables
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test Print environment variables
-        run: |
-          echo CAMUNDA_URL: $CAMUNDA_URL
-          echo BUILD_NAMESPACE: $BUILD_NAMESPACE
-          echo OPENSHIFT_TOKEN: $OPENSHIFT_TOKEN
-          echo OPENSHIFT_USERNAME: $OPENSHIFT_USERNAME
-          echo OPENSHIFT_REGISTRY_TOKEN: $OPENSHIFT_REGISTRY_TOKEN
-          echo OPENSHIFT_SERVER_URL: $OPENSHIFT_SERVER_URL
-          echo OPENSHIFT_IMAGE_REGISTRY_URL: $OPENSHIFT_IMAGE_REGISTRY_URL
-          echo APP_NAME: $APP_NAME
-          echo ENVIRONMENT: $ENVIRONMENT
-          echo branch: $BRANCH
-          echo docker file name: $DOCKER_FILE_NAME
-          echo namespace: $NAMESPACE
-
   Print-envs:
     name: Print environment variables
     runs-on: ubuntu-latest
