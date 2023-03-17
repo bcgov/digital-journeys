@@ -50,8 +50,6 @@ jobs:
   Print-envs:
     name: Print environment variables
     runs-on: ubuntu-latest
-    needs:
-      - Print-camunda-envs
     steps:
       - name: Print environment variables
         run: |

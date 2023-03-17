@@ -473,4 +473,3 @@ parameters:
     description: CPU Limit for container
     required: true
     value: "400m"
-
