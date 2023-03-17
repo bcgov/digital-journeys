@@ -44,6 +44,9 @@ env:
   CAMUNDA_FORMIO_FILE_URL: ${{ secrets.CAMUNDA_FORMIO_FILE_URL }}
   CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL: ${{ secrets.CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL }}
   CAMUNDA_URL: ${{ secrets.CAMUNDA_URL }}
+  SMTP_SERVER: "apps.smtp.gov.bc.ca"
+  DATABASE_SERVICE_NAME: patroni
+  DATABASE_NAME: formsflow-bpm
 
 jobs:
   # Logs environment variables
@@ -172,9 +175,9 @@ jobs:
                 -p CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER} \
                 -p FORMIO_FILE_URL="${CAMUNDA_FORMIO_FILE_URL}" \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                -p SMTP_SERVER="apps.smtp.gov.bc.ca" \
-                -p DATABASE_SERVICE_NAME=patroni \
-                -p DATABASE_NAME=formsflow-bpm \
+                -p SMTP_SERVER=${SMTP_SERVER} \
+                -p DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
+                -p DATABASE_NAME=${DATABASE_NAME} \
                 -p IMAGE_TAG=${ENVIRONMENT} \
                 -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}" \
                 -p CAMUNDA_URL="${CAMUNDA_URL}" \
