@@ -6,7 +6,12 @@ on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
-    branches: [ main ]
+    # Issue 821, change it to master so it won't take main branch changes
+    branches: [ master ]
+    paths:
+      - "forms-flow-bpm/**"
+      - "deployment/openshift/camunda_bc.yaml"
+      - "deployment/openshift/camunda_dc.yaml"
   workflow_dispatch:
     inputs:
       environment:
