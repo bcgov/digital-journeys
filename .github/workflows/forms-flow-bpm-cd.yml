@@ -146,8 +146,7 @@ jobs:
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
-    # if: github.repository == 'bcgov/digital-journeys'
-    if: ${{github.repository == 'bcgov/digital-journeys' && github.event.inputs.environment == 'dev'}}
+    if: github.repository == 'bcgov/digital-journeys'
     environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     
@@ -169,6 +168,7 @@ jobs:
           test -n "${NAMESPACE}"
           test -n "${BUILD_NAMESPACE}"
           test -n "${BRANCH}"
+          echo "Current ENV is ${ENVIRONMENT}"
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} project
           oc -n ${NAMESPACE} process -f bpm_dc.yaml \
