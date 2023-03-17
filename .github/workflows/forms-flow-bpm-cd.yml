@@ -72,8 +72,6 @@ jobs:
     name: Apply openshift buildConfigs
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
-    needs:
-      - Print-envs
     steps:
       - name: Log in to OpenShift
         run: |
