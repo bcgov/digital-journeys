@@ -81,9 +81,9 @@ objects:
                   value: ${DATABASE_SERVICE_NAME}:${DATABASE_PORT}
                 - name: KEYCLOAK_URL
                   valueFrom:
-                    secretKeyRef:
-                      key: keycloak_url
-                      name: ${FORMSFLOW_CONFIG_NAME}-secret
+                    configMapKeyRef:
+                      key: KEYCLOAK_URL
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: KEYCLOAK_URL_REALM
                   valueFrom:
                     secretKeyRef:
@@ -112,7 +112,10 @@ objects:
                 - name: CAMUNDA_HIKARI_MAX_POOLSIZE
                   value: ${CAMUNDA_HIKARI_MAX_POOLSIZE}
                 - name: CAMUNDA_ANALYTICS_JDBC_URL
-                  value: ${CAMUNDA_ANALYTICS_JDBC_URL}
+                  valueFrom:
+                    configMapKeyRef:
+                      key: CAMUNDA_ANALYTICS_JDBC_URL
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: CAMUNDA_FORMBUILDER_PIPELINE_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -139,7 +142,10 @@ objects:
                       key: formio_root_password
                       name: ${FORMSFLOW_CONFIG_NAME}-secret
                 - name: CAMUNDA_JDBC_USER
-                  value: ${CAMUNDA_JDBC_USER}
+                  valueFrom:
+                    configMapKeyRef:
+                      key: CAMUNDA_JDBC_USER
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
                   value: ${CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE}
                 - name: CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD
@@ -172,7 +178,10 @@ objects:
                 - name: CAMUNDA_HIKARI_CONN_TIMEOUT
                   value: ${CAMUNDA_HIKARI_CONN_TIMEOUT}
                 - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
-                  value: ${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}
+                  valueFrom:
+                    configMapKeyRef:
+                      key: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: CAMUNDA_JDBC_DB
                   value: ${DATABASE_NAME}
                 - name: FORMSFLOW_API_URL
@@ -183,9 +192,15 @@ objects:
                 - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
                   value: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION}
                 - name: FORMIO_URL
-                  value: ${FORMSFLOW_CONFIG_NAME}-config
+                  valueFrom:
+                    configMapKeyRef:
+                      key: FORMIO_URL
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: FORMIO_FILE_URL
-                  value: ${FORMIO_FILE_URL}
+                  valueFrom:
+                    configMapKeyRef:
+                      key: CAMUNDA_FORMIO_FILE_URL
+                      name: ${FORMSFLOW_CONFIG_NAME}-config
                 - name: CAMUNDA_ANALYTICS_JDBC_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -344,9 +359,6 @@ parameters:
     description: CAMUNDA_HIKARI_MAX_POOLSIZE.
     required: true
     value: "10"
-  - name: CAMUNDA_ANALYTICS_JDBC_URL
-    description: CAMUNDA_ANALYTICS_JDBC_URL
-    required: true
   - name: CAMUNDA_JOB_CORE_POOL_SIZE
     description: CAMUNDA_JOB_CORE_POOL_SIZE
     required: true
@@ -371,9 +383,6 @@ parameters:
     description: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
     required: true
     value: "600000"
-  - name: CAMUNDA_JDBC_USER
-    description: CAMUNDA_JDBC_USER
-    required: true
   - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
     description: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
     required: true
@@ -406,12 +415,6 @@ parameters:
     description: CAMUNDA_HIKARI_CONN_TIMEOUT
     required: true
     value: "20000"
-  - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
-    description: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
-    required: true
-  - name: FORMIO_FILE_URL
-    description: FORMIO_FILE_URL
-    required: true
   - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
     description: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
     required: true

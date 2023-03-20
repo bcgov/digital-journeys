@@ -39,10 +39,6 @@ env:
   WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
   WEBSOCKET_SECURITY_ORIGIN: ${{ secrets.WEBSOCKET_SECURITY_ORIGIN }}
   # Camunda related config params
-  CAMUNDA_ANALYTICS_JDBC_URL: ${{ secrets.CAMUNDA_ANALYTICS_JDBC_URL }}
-  CAMUNDA_JDBC_USER: ${{ secrets.CAMUNDA_JDBC_USER }}
-  CAMUNDA_FORMIO_FILE_URL: ${{ secrets.CAMUNDA_FORMIO_FILE_URL }}
-  CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL: ${{ secrets.CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL }}
   CAMUNDA_URL: ${{ secrets.CAMUNDA_URL }}
   SMTP_SERVER: "apps.smtp.gov.bc.ca"
   DATABASE_SERVICE_NAME: patroni
@@ -171,15 +167,11 @@ jobs:
           echo "Current namespace is ${NAMESPACE}"
           oc -n ${NAMESPACE} project
           oc -n ${NAMESPACE} process -f bpm_dc.yaml \
-                -p CAMUNDA_ANALYTICS_JDBC_URL=${CAMUNDA_ANALYTICS_JDBC_URL} \
-                -p CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER} \
-                -p FORMIO_FILE_URL="${CAMUNDA_FORMIO_FILE_URL}" \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER=${SMTP_SERVER} \
                 -p DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
                 -p DATABASE_NAME=${DATABASE_NAME} \
                 -p IMAGE_TAG=${ENVIRONMENT} \
-                -p CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL="${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}" \
                 -p CAMUNDA_URL="${CAMUNDA_URL}" \
                 -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                 -p WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" | \
