@@ -158,6 +158,7 @@ jobs:
           oc -n ${NAMESPACE} project
           oc -n ${NAMESPACE} process -f forms-flow-forms_dc.yaml \
                 -p NAME=${APP_NAME} \
+                -p FFA_FORMS_URL=${APP_URL} \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p IMAGE_TAG=${ENVIRONMENT} \
                 -p CPU_REQUEST=100m \
