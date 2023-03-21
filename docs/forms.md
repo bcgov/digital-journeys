@@ -141,12 +141,12 @@ The popup will be displayed like the image below:
 
 ## Form Retention
 
-| Form                      | Draft       | Incomplete  | Complete    | 
+| Form                      | Draft*       | Incomplete  | Complete    | 
 | ------------------------  | ----------- | ----------- | ----------- | 
 | `Telework`                | ?           | 60 days     | 60 days     |
 | `1.10 Formal Complaint`   | ?           | N/A         | 60 days     |
 | `SL Review`               | ?           | ?           | ?           |
-
+\* Unsubmitted drafts
 ### Description of Workflow States for Forms
 - `Telework`
   - Incomplete: After employee submission but before manager review
@@ -155,4 +155,4 @@ The popup will be displayed like the image below:
   - Complete: After employee submission
 - `SL Review`
   - Incomplete: After initial SL submission
-  - Complete: Once the SL submission has been updated and meets the end criteria (which will be discussed)
+  - Complete: Once the SL submission has been updated and meets the end criteria (which will be discussed and updated here)
