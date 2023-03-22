@@ -36,32 +36,32 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: DEBUG
-                name: ${FORMIO_SECRET}
+                name: ${FORMIO_SECRET}-secret
           - name: NODE_CONFIG
             valueFrom:
               secretKeyRef:
                 key: NODE_CONFIG
-                name: ${FORMIO_SECRET}
+                name: ${FORMIO_SECRET}-secret
           - name: ROOT_EMAIL
             valueFrom:
               secretKeyRef:
                 key: formio_root_email
-                name: ${FORMIO_SECRET}
+                name: ${FORMIO_SECRET}-secret
           - name: ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: formio_root_password
-                name: ${FORMIO_SECRET}
+                name: ${FORMIO_SECRET}-secret
           - name: FORMIO_DOMAIN
             valueFrom:
               secretKeyRef:
                 key: FORMIO_DOMAIN
-                name: ${FORMIO_SECRET}
+                name: ${FORMIO_SECRET}-secret
           - name: FORMIO_JWT_SECRET
             valueFrom:
               secretKeyRef:
                 key: formio_jwt_secret
-                name: ${FORMIO_SECRET}    
+                name: ${FORMIO_SECRET}-secret
           image: image-registry.openshift-image-registry.svc:5000/${TOOLS_WORKSPACE}/${NAME}:${IMAGE_TAG}
           name: ${NAME}
           ports:
