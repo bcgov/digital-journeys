@@ -146,6 +146,7 @@ The popup will be displayed like the image below:
 | `Telework`                | ?           | 60 days     | 60 days     |
 | `1.10 Formal Complaint`   | ?           | N/A         | 60 days     |
 | `SL Review`               | ?           | ?           | ?           |
+
 \* Unsubmitted drafts
 ### Description of Workflow States for Forms
 - `Telework`
