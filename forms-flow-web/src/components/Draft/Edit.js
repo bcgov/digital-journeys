@@ -24,6 +24,9 @@ import {
   setFormSubmissionLoading,
   setFormSubmitted,
 } from "../../actions/formActions";
+import {
+  setDraftDetail
+} from "../../actions/draftActions";
 import { postCustomSubmission } from "../../apiManager/services/FormServices";
 import {
   getProcessReq,
@@ -44,7 +47,7 @@ import SubmissionError from "../../containers/SubmissionError";
 import SavingLoading from "../Loading/SavingLoading";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
 import { convertFormLinksToOpenInNewTabs, 
-  hasUserAccessToForm } from "../../helper/formUtils";
+  hasUserAccessToForm, getDefaultValues } from "../../helper/formUtils";
 import { printToPDF } from "../../services/PdfService";
 import MessageModal from "../../containers/MessageModal";
 
@@ -98,12 +101,13 @@ const View = React.memo((props) => {
     options,
     form: { form, isActive, url },
     user,
+    employeeData,
   } = props;
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
-    if (draftSubmission?.id && exitType !== "UNMOUNT") {
+    if (draftSubmission?.id) {
       if (dataChanged) {
         setDraftSaved(false);
         if (!showNotification) setShowNotification(true);
@@ -113,6 +117,7 @@ const View = React.memo((props) => {
               toast.success(
               t("Submission saved to draft.")
               );
+              dispatch(setDraftDetail(null));
             }
             if (!err) {
               setDraftSaved(true);
@@ -142,7 +147,7 @@ const View = React.memo((props) => {
       let payload = getDraftReqFormat(formId, draftRef.current);
       if (poll) saveDraft(payload, exitType.current);
     };
-  }, [poll, exitType.current]);
+  }, [poll, exitType.current, draftSubmission]);
 
   let convertFormLinksInterval = null;
   useEffect(() => {
@@ -191,6 +196,27 @@ const View = React.memo((props) => {
         <Loading />
       </div>
     );
+  }
+
+  /** Is form enable to fetch default data from ODS?
+   * EmployeeData and Submission are required, Check before processing.
+   * "enableDraftDefault" is hidden param/field in the form,
+   * to enable, please add it in the form and set value "true".
+   */
+  if (employeeData && submission && submission.submission) {
+    if (submission.submission?.data) {
+      if (submission.submission.data?.enableDraftDefault !== undefined &&
+        submission.submission.data?.enableDraftDefault === "true") {
+        // Let's fetch default value for disbled fiedls only
+        const vals = getDefaultValues(employeeData.data, form, 'draft');
+        if (vals) {
+          submission.submission.data = {
+            ...submission.submission.data,
+            ...vals.data
+          };
+        }
+      }
+    }
   }
 
   if (isFormSubmitted && !isAuthenticated) { 
@@ -370,6 +396,7 @@ const mapStateToProps = (state) => {
     tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     submission: selectRoot("draft", state),
+    employeeData: selectRoot("employeeData", state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [selectError("form", state), selectError("submission", state)],
     options: {
