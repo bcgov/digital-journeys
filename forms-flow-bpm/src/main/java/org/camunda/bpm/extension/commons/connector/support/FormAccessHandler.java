@@ -98,7 +98,15 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                     .body(Mono.just(payload), String.class)
                     .retrieve()
                     .onStatus(HttpStatus::is4xxClientError,
-                            response -> Mono.error(new FormioServiceException(response.toString())))
+                            response -> {
+                                // Don't throw error for 404 errors for delete requests
+                                if (HttpMethod.DELETE.name().equals(method.name()) && 
+                                    response.statusCode().equals(HttpStatus.NOT_FOUND)) {
+                                    return Mono.empty();
+                                } else {
+                                    return Mono.error(new FormioServiceException(response.toString())); // Throw error for other 4xx errors
+                                }
+                            })
                     .toEntity(String.class)
                     .block();
         }
