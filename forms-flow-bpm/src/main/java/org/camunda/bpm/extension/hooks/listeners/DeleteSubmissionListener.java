@@ -52,6 +52,8 @@ public class DeleteSubmissionListener extends BaseListener implements JavaDelega
         if (response.getStatusCode().value() == HttpStatus.OK.value()) {
             System.out.println("Application was deleted successfully: " + applicationUrl);
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        } else if (response.getStatusCode().value() == HttpStatus.BAD_REQUEST.value()) {
+            System.out.println("Application was not found for deletion! " +  applicationUrl);
         } else {
             throw new ApplicationServiceException("Unable to delete application for: " + applicationUrl + ". Message Body: " +
                     response.getBody());

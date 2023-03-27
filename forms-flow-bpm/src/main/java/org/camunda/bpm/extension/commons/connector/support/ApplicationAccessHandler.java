@@ -47,7 +47,16 @@ public class ApplicationAccessHandler extends AbstractAccessHandler {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(Mono.just(payload), String.class)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
+                .onStatus(HttpStatus::is4xxClientError,
+                            clientResponse -> {
+                                // Don't throw error for 400 errors for delete requests
+                                if (HttpMethod.DELETE.name().equals(method.name()) && 
+                                    clientResponse.statusCode().equals(HttpStatus.BAD_REQUEST)) {
+                                    return Mono.empty();
+                                } else {
+                                    return Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)); // Throw error for other 4xx errors
+                                }
+                            })
                 .toEntity(String.class)
                 .block();
 

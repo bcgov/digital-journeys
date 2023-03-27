@@ -91,6 +91,8 @@ public class FormSubmissionService {
         if (response.getStatusCode().value() == HttpStatus.OK.value()) {
             System.out.println("Submission was deleted successfully: " +  submissionUrl);
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        } else if (response.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+            System.out.println("Submission was not found for deletion! " +  submissionUrl);
         } else {
             throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
                     response.getBody());
