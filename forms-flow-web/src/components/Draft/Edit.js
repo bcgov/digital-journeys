@@ -203,18 +203,18 @@ const View = React.memo((props) => {
    * "enableDraftDefault" is hidden param/field in the form,
    * to enable, please add it in the form and set value "true".
    */
-  if (employeeData && submission && submission.submission) {
-    if (submission.submission?.data) {
-      if (submission.submission.data?.enableDraftDefault !== undefined &&
-        submission.submission.data?.enableDraftDefault === "true") {
-        // Let's fetch default value for disbled fiedls only
-        const vals = getDefaultValues(employeeData.data, form, 'draft');
-        if (vals) {
-          submission.submission.data = {
-            ...submission.submission.data,
-            ...vals.data
-          };
-        }
+  if (employeeData && submission && submission.submission &&
+    submission.submission?.data?.enableDraftDefault) {
+      console.log("got the formfield", form);
+    if (submission.submission.data?.enableDraftDefault === "true") {
+      // Let's fetch default value for disabled fiedls only
+      console.log("got the formfield with value true");
+      const vals = getDefaultValues(employeeData.data, form, 'draft');
+      if (vals) {
+        submission.submission.data = {
+          ...submission.submission.data,
+          ...vals.data
+        };
       }
     }
   }
