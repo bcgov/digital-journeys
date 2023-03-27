@@ -205,10 +205,8 @@ const View = React.memo((props) => {
    */
   if (employeeData && submission && submission.submission &&
     submission.submission?.data?.enableDraftDefault) {
-      console.log("got the formfield", form);
     if (submission.submission.data?.enableDraftDefault === "true") {
       // Let's fetch default value for disabled fiedls only
-      console.log("got the formfield with value true");
       const vals = getDefaultValues(employeeData.data, form, 'draft');
       if (vals) {
         submission.submission.data = {
