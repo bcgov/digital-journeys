@@ -8,6 +8,7 @@
 4. [Form Access](#form-access)
 5. [Reusable Popup](#reusable-popup)
 6. [Form Retention](#form-retention)
+7. [Fetch default values in Draft](#fetch-default-values-in-draft)
 
 ## Calculated Form Values
 
@@ -157,3 +158,9 @@ The popup will be displayed like the image below:
 - `SL Review`
   - Incomplete: After initial SL submission
   - Complete: Once the SL submission has been updated and meets the end criteria (which will be discussed and updated here)
+
+## Fetch default values in Draft
+In the new form submission, we fetched logged-in users' data and pre-fill in the form.  If we want to fetch the same in the draft edit form, the below settings are required.
+
+1. Make the field `disabled` for which we want to fetch the latest data from the user object.
+2. Add the hidden field `enableDraftDefault` and set its value to `true` in the form.

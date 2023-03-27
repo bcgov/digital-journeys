@@ -7,6 +7,7 @@ import { getForm, getSubmission } from "react-formio";
 // import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { getDraftById } from "../../apiManager/services/draftService";
+import { fetchEmployeeData } from "../../apiManager/services/employeeDataService";
 import Edit from "./Edit";
 import { push } from "connected-react-router";
 
@@ -22,6 +23,7 @@ const EditDraft = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
+    dispatch(fetchEmployeeData());
     dispatch(
       getDraftById(draftId, (err, res) => {
         if (!err) {
