@@ -20,6 +20,7 @@ import UploadProvider from "./formComponents/UploadProvider";
 import PanelComponent from "./formComponents/Panel";
 import TextFieldComponent from "./formComponents/TextField";
 import TextAreaComponent from "./formComponents/TextArea";
+import DGJSelectComponent from "./formComponents/SelectComponent";
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -54,6 +55,7 @@ Components.setComponent("file", DGJFileUpload);
 Components.setComponent("panel", PanelComponent);
 Components.setComponent("textfield", TextFieldComponent);
 Components.setComponent("textarea", TextAreaComponent);
+Components.setComponent("select", DGJSelectComponent);
 
 // Adding two remote select components extending original formio Select
 Components.addComponent("remoteSelect", RemoteSelect);
