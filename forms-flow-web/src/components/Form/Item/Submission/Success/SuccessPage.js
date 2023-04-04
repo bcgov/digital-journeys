@@ -285,9 +285,9 @@ export default React.memo(() => {
                 before or after submitting your complaint.
               </li>
               <li>
-                You may also ask your union representative at any time for an
-                update on the status of a review or investigation arising from
-                your complaint.
+                Starting 10 days after your submission, you may ask your union
+                representative for an update on the status of a review or
+                investigation arising from your complaint.
               </li>
               <li>
                 You may access or download a copy of your complaint by visiting
@@ -320,9 +320,9 @@ export default React.memo(() => {
                 before or after submitting your complaint.
               </li>
               <li>
-                You may also ask your union representative at any time for an
-                update on the status of a review or investigation arising from
-                your complaint.
+                Starting 10 days after your submission, you may ask your union
+                representative for an update on the status of a review or
+                investigation arising from your complaint.
               </li>
             </ul>
           </div>
@@ -350,9 +350,9 @@ export default React.memo(() => {
                 before or after submitting your complaint.
               </li>
               <li>
-                You may also ask your union representative at any time for an
-                update on the status of a review or investigation arising from
-                your complaint.
+                Starting 10 days after your submission, you may ask your union
+                representative for an update on the status of a review or
+                investigation arising from your complaint.
               </li>
             </ul>
           </div>
