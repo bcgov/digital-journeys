@@ -2,13 +2,19 @@
 export const RESUBMITTED_STATUS_EVENT = "application_resubmitted";
 export const ACKNOWLEDGED_EVENT = "application_acknowledged";
 
-//export const RETURNED_STATUS = "Returned";
 export const RESUBMIT_STATUS = "Resubmit";
 export const AWAITING_ACKNOWLEDGEMENT = "Awaiting Acknowledgement";
 export const SUBMITTED_STATUS = "Submitted";
-//export const NEW_STATUS = "New";
+export const RESUBMITTED_STATUS = "Resubmitted";
+export const VALIDATED_STATUS = "Validated";
 
-export const CLIENT_EDIT_STATUS = [AWAITING_ACKNOWLEDGEMENT, RESUBMIT_STATUS, SUBMITTED_STATUS];
+export const CLIENT_EDIT_STATUS = [
+  AWAITING_ACKNOWLEDGEMENT,
+  RESUBMIT_STATUS,
+  SUBMITTED_STATUS,
+  RESUBMITTED_STATUS,
+  VALIDATED_STATUS,
+];
 
 export const UPDATE_EVENT_STATUS = [RESUBMIT_STATUS, AWAITING_ACKNOWLEDGEMENT];
 

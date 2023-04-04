@@ -1123,3 +1123,8 @@ button.floatingButton.floating-right-bottom-3 {
 .show-in-print-only {
   display: none;
 }
+
+// Hide the submit button on the wizard form. Will allow the designer to add custom submit buttons
+.btn-wizard-nav-submit {
+  display: none;
+}

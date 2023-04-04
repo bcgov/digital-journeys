@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0lk9z5q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.2.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
+  <bpmn:process id="maternity-parental-and-pre-placement-adoption" name="maternity-parental-and-pre-placement-adoption" isExecutable="true" camunda:versionTag="1">
+    <bpmn:startEvent id="StartEvent_1" name="Submitted form">
+      <bpmn:outgoing>Flow_112i5g2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_112i5g2" sourceRef="StartEvent_1" targetRef="maternity-form-send-confirmation-email">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus','Submitted');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Activity_0qfrc2u" name="Update Application" camunda:assignee="${managerEmail}_idir">
+      <bpmn:extensionElements>
+        <camunda:taskListener event="complete">
+          <camunda:script scriptFormat="javascript">var action = task.getExecution().getVariable('action');
+task.getExecution().setVariable('applicationStatus', action);
+
+task.getExecution().setVariable('managersSignatureTimestamp', new Date().toISOString());</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.AddFormPermissionListener" event="create" id="AddFormPermission">
+          <camunda:field name="permissions">
+            <camunda:expression>["read", "write"]</camunda:expression>
+          </camunda:field>
+          <camunda:field name="user">
+            <camunda:expression>${managerEmail}</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19jo2x6</bpmn:incoming>
+      <bpmn:incoming>Flow_1gtynuh</bpmn:incoming>
+      <bpmn:outgoing>Flow_08x5h59</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0mogxwp">
+      <bpmn:incoming>Flow_0lmv6hd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_08x5h59" sourceRef="Activity_0qfrc2u" targetRef="Task_1hko8r7" />
+    <bpmn:exclusiveGateway id="Gateway_09ic8nm" name="Should end?">
+      <bpmn:incoming>Flow_0i45cxy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gtynuh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0lmv6hd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1gtynuh" sourceRef="Gateway_09ic8nm" targetRef="Activity_0qfrc2u">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0lmv6hd" sourceRef="Gateway_09ic8nm" targetRef="Event_0mogxwp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="maternity-form-send-confirmation-email" name="Send Confirmation Email to Submitter">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="text">Thank you for your submission</camunda:inputParameter>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Thank you for your submission</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_112i5g2</bpmn:incoming>
+      <bpmn:outgoing>Flow_19jo2x6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19jo2x6" sourceRef="maternity-form-send-confirmation-email" targetRef="Activity_0qfrc2u">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:task id="Task_1hko8r7" name="Update Application Status">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus", "managersSignatureTimestamp"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08x5h59</bpmn:incoming>
+      <bpmn:outgoing>Flow_0i45cxy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0i45cxy" sourceRef="Task_1hko8r7" targetRef="Gateway_09ic8nm" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="maternity-parental-and-pre-placement-adoption">
+      <bpmndi:BPMNEdge id="Flow_19jo2x6_di" bpmnElement="Flow_19jo2x6">
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="630" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lmv6hd_di" bpmnElement="Flow_0lmv6hd">
+        <di:waypoint x="1075" y="120" />
+        <di:waypoint x="1192" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gtynuh_di" bpmnElement="Flow_1gtynuh">
+        <di:waypoint x="1050" y="145" />
+        <di:waypoint x="1050" y="310" />
+        <di:waypoint x="680" y="310" />
+        <di:waypoint x="680" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08x5h59_di" bpmnElement="Flow_08x5h59">
+        <di:waypoint x="730" y="120" />
+        <di:waypoint x="810" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_112i5g2_di" bpmnElement="Flow_112i5g2">
+        <di:waypoint x="208" y="120" />
+        <di:waypoint x="390" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0i45cxy_di" bpmnElement="Flow_0i45cxy">
+        <di:waypoint x="910" y="120" />
+        <di:waypoint x="1025" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="153" y="145" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x5o01j_di" bpmnElement="Activity_0qfrc2u">
+        <dc:Bounds x="630" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="maternity-form-send-confirmation-email_di" bpmnElement="maternity-form-send-confirmation-email">
+        <dc:Bounds x="390" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0mogxwp_di" bpmnElement="Event_0mogxwp">
+        <dc:Bounds x="1192" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_09ic8nm_di" bpmnElement="Gateway_09ic8nm" isMarkerVisible="true">
+        <dc:Bounds x="1025" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1019" y="73" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
+        <dc:Bounds x="810" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
