@@ -29,3 +29,7 @@ class EmployeeData():
    self.supervisorName = data["supervisor_name"]
    self.managerEmail = data["supervisor_email"]
    self.supervisorPositionTitle = data["supervisor_position_title"]
+   self.empCtg = data["EMPL_CTG"]
+   self.appointmentStatus = data["appointment_status"]
+   self.salAdminPlan = data["sal_admin_plan"]
+   
