@@ -1,4 +1,5 @@
 import requests
+from http import HTTPStatus
 from flask import current_app
 from formsflow_api_utils.exceptions import BusinessException
 
@@ -14,13 +15,15 @@ class InfluenzaService:
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
             raise BusinessException(
-                {"message": "Failed to look up ministry in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+                {"message": "Failed to look up ministries in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
         ministry_names_res = response_from_ods.json()
         if ministry_names_res and "value" in ministry_names_res and len(ministry_names_res["value"]) > 0:
             return ministry_names_res["value"]
-        return []
+        raise BusinessException(
+          {"message": "No ministry data found"}, HTTPStatus.NOT_FOUND
+        )
     
     @staticmethod
     def get_cities():
@@ -37,7 +40,9 @@ class InfluenzaService:
         cities_res = response_from_ods.json()
         if cities_res and "value" in cities_res and len(cities_res["value"]) > 0:
             return cities_res["value"]
-        return []
+        raise BusinessException(
+          {"message": "No city data found"}, HTTPStatus.NOT_FOUND
+        )
     
     @staticmethod
     def get_worksites(args):
@@ -59,6 +64,9 @@ class InfluenzaService:
             )
         
         worksites_res = response_from_ods.json()
+        print(worksites_res)
         if worksites_res and "value" in worksites_res and len(worksites_res["value"]) > 0:
             return worksites_res["value"]
-        return []
+        raise BusinessException(
+          {"message": "No worksite data found"}, HTTPStatus.NOT_FOUND
+        )
