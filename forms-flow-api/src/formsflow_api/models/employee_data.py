@@ -32,4 +32,3 @@ class EmployeeData():
    self.empCtg = data["EMPL_CTG"]
    self.appointmentStatus = data["appointment_status"]
    self.salAdminPlan = data["sal_admin_plan"]
-   
