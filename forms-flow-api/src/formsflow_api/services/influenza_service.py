@@ -1,5 +1,6 @@
 import requests
 from flask import current_app
+from formsflow_api_utils.exceptions import BusinessException
 
 class InfluenzaService:
     """This class manages Influenza form related service."""
@@ -12,8 +13,9 @@ class InfluenzaService:
             response_from_ods = requests.get(ministry_api_url,
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
-            current_app.logger.error(e)
-            return []
+            raise BusinessException(
+                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+            )
         
         ministry_names_res = response_from_ods.json()
         if ministry_names_res and "value" in ministry_names_res and len(ministry_names_res["value"]) > 0:
@@ -28,8 +30,9 @@ class InfluenzaService:
             response_from_ods = requests.get(cities_api_url,
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
-            current_app.logger.error(e)
-            return []
+            raise BusinessException(
+                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+            )
         
         cities_res = response_from_ods.json()
         if cities_res and "value" in cities_res and len(cities_res["value"]) > 0:
@@ -51,8 +54,9 @@ class InfluenzaService:
             response_from_ods = requests.get(url,
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
-            current_app.logger.error(e)
-            return []
+            raise BusinessException(
+                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+            )
         
         worksites_res = response_from_ods.json()
         if worksites_res and "value" in worksites_res and len(worksites_res["value"]) > 0:
