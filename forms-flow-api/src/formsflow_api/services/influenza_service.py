@@ -14,7 +14,7 @@ class InfluenzaService:
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
             raise BusinessException(
-                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+                {"message": "Failed to look up ministry in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
         ministry_names_res = response_from_ods.json()
@@ -31,7 +31,7 @@ class InfluenzaService:
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
             raise BusinessException(
-                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+                {"message": "Failed to look up cities in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
         cities_res = response_from_ods.json()
@@ -55,7 +55,7 @@ class InfluenzaService:
                         headers={"Authorization": current_app.config.get("ODS_AUTH_TOKEN")})
         except Exception as e:
             raise BusinessException(
-                {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+                {"message": "Failed to look up worksites in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
             )
         
         worksites_res = response_from_ods.json()
