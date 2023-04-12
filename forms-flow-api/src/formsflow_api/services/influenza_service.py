@@ -64,7 +64,6 @@ class InfluenzaService:
             )
         
         worksites_res = response_from_ods.json()
-        print(worksites_res)
         if worksites_res and "value" in worksites_res and len(worksites_res["value"]) > 0:
             return worksites_res["value"]
         raise BusinessException(
