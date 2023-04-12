@@ -14,6 +14,7 @@ from formsflow_api.services.ministry_names_service import MinistryNamesService
 from formsflow_api.services.employeeDataService import EmployeeDataService
 from formsflow_api.services.release_note import ReleaseNoteService
 from formsflow_api.services.keycloak_service import KeycloakService
+from formsflow_api.services.influenza_service import InfluenzaService
 
 __all__ = [
     "ApplicationService",
@@ -28,5 +29,6 @@ __all__ = [
     "EmployeeDataService",
     "MinistryNamesService",
     "ReleaseNoteService",
-    "KeycloakService"
+    "KeycloakService",
+    "InfluenzaService"
 ]
