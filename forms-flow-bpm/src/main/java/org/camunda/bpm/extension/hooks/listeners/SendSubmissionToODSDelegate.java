@@ -14,6 +14,7 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
         String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
+        String objectKeycase = String.valueOf(execution.getVariableLocal("objectKeycase"));
         // List of object keys that should not be flatten on send to ODS
         List<String> flatObjectExclusionList = (List) execution.getVariableLocal("flatObjectExclusionList");
         // If exceptions not defined, set an empty list
@@ -82,9 +84,14 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         if (managerGuid != null) {
             values.put("manager_guid", String.valueOf(managerGuid));
         }
-
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(values);
+        String json = "";
+        if (objectKeycase.equals("snake_case")) {
+            json = objectMapper.writeValueAsString(convertToSnake(values));
+        } else {
+            json = objectMapper.writeValueAsString(values);
+        }
+        System.out.println(json);
 
         boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
 
@@ -108,5 +115,18 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
     
     public String getEndpointUrl(String endpoint, String applicationId) {
         return odsUrl + "/" + endpoint + "(" + applicationId + ")";
+    }
+
+    public String camelToSnake(String str) {
+        String regex = "([a-z])([A-Z]+)";
+        return str.replaceAll(regex, "$1_$2").toLowerCase();
+    }
+
+    public Map<String, Object> convertToSnake(Map<String, Object> values) {
+        Map<String, Object> map = new HashMap<>();
+        for (var entry : values.entrySet()) {
+            map.put(camelToSnake(entry.getKey()), entry.getValue());
+        }
+        return map;
     }
 }

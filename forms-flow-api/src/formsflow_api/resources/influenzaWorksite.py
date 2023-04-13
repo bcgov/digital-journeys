@@ -68,3 +68,22 @@ class InfluenzaWorksite(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+
+
+@cors_preflight("GET,  OPTIONS")
+@API.route("/worksite_registration", methods=["GET", "OPTIONS"])
+class InfluenzaWorksite(Resource):
+    """Worksite's registration"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """get influenza worksite registrations"""
+        try:
+            args = request.args
+            worksites = InfluenzaService.get_worksite_registrations(args)
+            return worksites, HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
