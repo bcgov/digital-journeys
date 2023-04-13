@@ -64,7 +64,7 @@ import SavingLoading from "../../Loading/SavingLoading";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs, 
-  hasUserAccessToForm, getDefaultValues } from "../../../helper/formUtils";
+  hasUserAccessToForm, getDefaultValues, setValueForComponents } from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 import MessageModal from "../../../containers/MessageModal";
 
@@ -133,6 +133,7 @@ const View = React.memo((props) => {
     getEmployeeData,
     employeeData,
     user,
+    authToken
   } = props;
   const formRef = useRef(null);
   const dispatch = useDispatch();
@@ -363,6 +364,22 @@ const View = React.memo((props) => {
       clearInterval(convertFormLinksInterval);
     };
   });
+
+  /* Pass values to the form components
+   A component with the same key should be present in the form otherwise it will be ignored */
+  let valueForComponentsInterval = null;
+  useEffect(() => {
+    valueForComponentsInterval = setInterval(() => {
+      if (formRef.current !== null && formRef.current?.formio) {
+        const keyValuePairs = [{key: "token", value: authToken}];
+        setValueForComponents(formRef.current.formio, valueForComponentsInterval, keyValuePairs);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(valueForComponentsInterval);
+    };
+    // Add the states to the dependency array to re-run the effect when they change 
+  }, [authToken]);
 
   useEffect(() => {
     if (user && user.role.some(el => el === STAFF_DESIGNER)) {
@@ -629,6 +646,7 @@ const doProcessActions = (submission, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
+    authToken: state.user.bearerToken,
     tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,

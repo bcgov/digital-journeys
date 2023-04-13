@@ -1,3 +1,5 @@
+import Utils from 'formiojs/utils';
+
 const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
   if (formio) {
     clearInterval(convertFormLinksInterval);
@@ -12,6 +14,13 @@ const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
   }
   formio.redraw();
   return true;
+};
+
+const setValueForComponents = (formio, valueForComponentsInterval, keyValuePairs) => {
+    clearInterval(valueForComponentsInterval);
+    keyValuePairs.forEach(keyValuePair => {
+      Utils.getComponent(formio.components, keyValuePair.key)?.setValue(keyValuePair.value);
+    });
 };
 
 const scrollToErrorOnValidation = (formio, scrollToErrorInterval) => {
@@ -154,5 +163,6 @@ export {
   getFormSupportedIdentityProviders,
   hasUserAccessToForm,
   getDefaultValues,
-  getFormSupportedIDPFromJSON
+  getFormSupportedIDPFromJSON, 
+  setValueForComponents
 };

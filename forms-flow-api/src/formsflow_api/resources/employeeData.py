@@ -100,3 +100,23 @@ class EmployeeGroup(Resource):
                 return {"errorMessage": "Provide group and users"}, HTTPStatus.BAD_REQUEST
         except Exception as e:
             return {"errorMessage": f"Resource function error: {e}"}, HTTPStatus.BAD_REQUEST
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/info", methods=["GET", "OPTIONS"])
+class EmployeeInfo(Resource):
+    """Employee Info"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """Get the employee info."""
+        args = request.args
+    
+        try:
+            employee_info = EmployeeDataService.get_employee_info(args)
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+        
+        return employee_info, HTTPStatus.OK
