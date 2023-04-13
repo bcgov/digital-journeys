@@ -143,7 +143,8 @@ const Edit = React.memo((props) => {
     };
   });
 
-  // Pass values to the form components
+  /* Pass values to the form components
+   A component with the same key should be present in the form otherwise it will be ignored */
   let valueForComponentsInterval = null;
   useEffect(() => {
     valueForComponentsInterval = setInterval(() => {
