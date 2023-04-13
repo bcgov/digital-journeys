@@ -32,3 +32,4 @@ class EmployeeData():
    self.empCtg = data["EMPL_CTG"]
    self.appointmentStatus = data["appointment_status"]
    self.salAdminPlan = data["sal_admin_plan"]
+   self.fullPartTime = data["full_part_time"]
