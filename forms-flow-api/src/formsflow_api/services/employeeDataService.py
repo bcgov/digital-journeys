@@ -114,3 +114,44 @@ class EmployeeDataService:
       if employee_names_res and employee_names_res["value"] and len(employee_names_res["value"]) > 0:
         return employee_names_res["value"]
       return []
+    
+    @staticmethod
+    def get_employee_info(args):
+      employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      
+      # Get the query params
+      email = args.get("email")
+      emp_id = args.get("employeeId")
+      select = args.get("select")
+
+      # Generate the filter query
+      filter_list = []
+      if email:
+        filter_list.append(f"email eq '{email}'")
+      
+      if emp_id:
+        filter_list.append(f"EMPLID eq '{emp_id}'")
+      
+      if not filter_list:
+        raise BusinessException(
+          {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
+        )
+      
+      filter_query = "$filter=" + " and ".join(filter_list)
+      select_query = f"$select={select}" if select else ""
+
+      try:
+        url = f"{employee_data_api_url}?{filter_query}{select_query}"
+        ods_response = requests.get(url, headers={"Authorization": auth_token})
+        employee_info = ods_response.json().get("value")
+        if employee_info and len(employee_info) > 0:
+          return employee_info[0]
+        else:
+          raise BusinessException(
+            {"message": "No user data found"}, HTTPStatus.NOT_FOUND
+          )
+      except:
+        raise BusinessException(
+          {"message": "Failed to look up user info in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )

@@ -40,6 +40,7 @@ import _ from "lodash";
 import {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
+  setValueForComponents,
 } from "../../../../../helper/formUtils";
 
 import { setBPMTaskDetailLoader } from "../../../../../actions/bpmTaskActions";
@@ -73,6 +74,7 @@ const Edit = React.memo((props) => {
     task,
     user,
     showPrintButton,
+    authToken,
   } = props;
 
   const formRef = useRef(null);
@@ -140,6 +142,21 @@ const Edit = React.memo((props) => {
       clearInterval(convertFormLinksInterval);
     };
   });
+
+  // Pass values to the form components
+  let valueForComponentsInterval = null;
+  useEffect(() => {
+    valueForComponentsInterval = setInterval(() => {
+      if (formRef.current !== null && formRef.current?.formio) {
+        const keyValuePairs = [{key: "token", value: authToken}];
+        setValueForComponents(formRef.current.formio, valueForComponentsInterval, keyValuePairs);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(valueForComponentsInterval);
+    };
+    // Add the states to the dependency array to re-run the effect when they change 
+  }, [authToken]);
 
   // If this is an application edit, get the application's task
   useEffect(() => {
@@ -301,6 +318,7 @@ Edit.defaultProps = {
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
+    authToken: state.user.bearerToken,
     form: selectRoot("form", state),
     submission: selectRoot("submission", state),
     isAuthenticated: state.user.isAuthenticated,
