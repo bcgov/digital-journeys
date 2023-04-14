@@ -20,8 +20,6 @@ class EmployeeDataService:
       try:
         response_from_BCGov = requests.get("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid),
                        headers={"Authorization": test_auth_token})
-        print("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid))
-        print("token" + test_auth_token)
       except:
         raise BusinessException(
           {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
@@ -29,13 +27,9 @@ class EmployeeDataService:
       
       #TODO: check response for data and return accordingly. No all users have data
       employee_data_res = response_from_BCGov.json()
-      print("employee_data_res")
-      print(employee_data_res)
 
       if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
         emp_data = EmployeeData(employee_data_res["value"][0])
-        print("emp_data.__dict__")
-        print(emp_data.__dict__)
         return emp_data.__dict__
       raise BusinessException(
           {"message": "No user data found"}, HTTPStatus.NOT_FOUND
@@ -149,17 +143,8 @@ class EmployeeDataService:
 
       try:
         url = f"{employee_data_api_url}?{filter_query}{select_query}"
-        print("url: " + url )
-        print("auth_token: " + auth_token)
         ods_response = requests.get(url, headers={"Authorization": auth_token})
-        print("ods_response")
-        print(ods_response)
-        employee_info1 = ods_response.json()["value"]
-        print("employee_info1")
-        print(employee_info1)
         employee_info = ods_response.json().get("value")
-        print("employee_info")
-        print(employee_info)
         if employee_info and len(employee_info) > 0:
           return employee_info[0]
         else:
