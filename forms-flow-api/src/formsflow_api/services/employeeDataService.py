@@ -137,19 +137,26 @@ class EmployeeDataService:
         raise BusinessException(
           {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
         )
-      
+
       filter_query = "$filter=" + " and ".join(filter_list)
-      select_query = f"$select={select}" if select else ""
+
+      # Append queries (filter, select and etc.) to a list and join them with '&'
+      queries = []
+      queries.append(filter_query)
+      if select:
+        select_query = f"$select={select}"
+        queries.append(select_query)
+      query = '&'.join(queries)
 
       try:
-        url = f"{employee_data_api_url}?{filter_query}{select_query}"
+        url = f"{employee_data_api_url}?{query}"
         ods_response = requests.get(url, headers={"Authorization": auth_token})
         employee_info = ods_response.json().get("value")
         if employee_info and len(employee_info) > 0:
           return employee_info[0]
         else:
           raise BusinessException(
-            {"message": "No user data found"}, HTTPStatus.NOT_FOUND
+            {"message": "No user info found"}, HTTPStatus.NOT_FOUND
           )
       except:
         raise BusinessException(
