@@ -143,13 +143,10 @@ class EmployeeDataService:
       # Append queries (filter, select and etc.) to a list and join them with '&'
       queries = []
       queries.append(filter_query)
-
       if select:
         select_query = f"$select={select}"
         queries.append(select_query)
-      
       query = '&'.join(queries)
-      print(query)
 
       try:
         url = f"{employee_data_api_url}?{query}"
