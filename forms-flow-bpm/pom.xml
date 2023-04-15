@@ -302,7 +302,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-websocket</artifactId>
-			<version>5.3.23</version>
+			<version>5.3.27</version>
 		</dependency>
 
 		<dependency>
