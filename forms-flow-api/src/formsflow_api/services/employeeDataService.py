@@ -151,7 +151,11 @@ class EmployeeDataService:
       try:
         url = f"{employee_data_api_url}?{query}"
         ods_response = requests.get(url, headers={"Authorization": auth_token})
+        print("after ods_response:")
+        print(ods_response)
         employee_info = ods_response.json().get("value")
+        print("employee_info:")
+        print(employee_info)
         if employee_info and len(employee_info) > 0:
           return employee_info[0]
         else:
