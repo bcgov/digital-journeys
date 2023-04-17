@@ -151,20 +151,15 @@ class EmployeeDataService:
       try:
         url = f"{employee_data_api_url}?{query}"
         ods_response = requests.get(url, headers={"Authorization": auth_token})
-        print("after ods_response:")
-        print(ods_response)
-        employee_info = ods_response.json().get("value")
-        print("employee_info:")
-        print(employee_info)
-        if employee_info and len(employee_info) > 0:
-          return employee_info[0]
-        else:
-          print("in No user info found exception")
-          raise BusinessException(
-            {"message": "No user info found"}, HTTPStatus.NOT_FOUND
-          )
       except:
-        print("in Failed to look up user info in ODS exception")
         raise BusinessException(
           {"message": "Failed to look up user info in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+
+      employee_info = ods_response.json().get("value")
+      if employee_info and len(employee_info) > 0:
+        return employee_info[0]
+      else:
+        raise BusinessException(
+          {"message": "No user info found"}, HTTPStatus.NOT_FOUND
         )

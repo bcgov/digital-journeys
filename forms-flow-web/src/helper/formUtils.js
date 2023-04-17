@@ -1,4 +1,3 @@
-import Utils from 'formiojs/utils';
 
 const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
   if (formio) {
@@ -18,8 +17,12 @@ const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
 
 const setValueForComponents = (formio, valueForComponentsInterval, keyValuePairs) => {
     clearInterval(valueForComponentsInterval);
-    keyValuePairs.forEach(keyValuePair => {
-      Utils.getComponent(formio.components, keyValuePair.key)?.setValue(keyValuePair.value);
+    formio.everyComponent((component) => {
+      keyValuePairs.forEach(keyValuePair => {
+        if (component.component.key === keyValuePair.key) {
+          component.setValue(keyValuePair.value);
+        }
+      });
     });
 };
 
