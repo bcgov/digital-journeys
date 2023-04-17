@@ -159,10 +159,12 @@ class EmployeeDataService:
         if employee_info and len(employee_info) > 0:
           return employee_info[0]
         else:
+          print("in No user info found exception")
           raise BusinessException(
             {"message": "No user info found"}, HTTPStatus.NOT_FOUND
           )
       except:
+        print("in Failed to look up user info in ODS exception")
         raise BusinessException(
           {"message": "Failed to look up user info in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
         )
