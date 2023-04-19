@@ -87,3 +87,40 @@ class InfluenzaWorksite(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+
+
+@cors_preflight("GET,  OPTIONS")
+@API.route("/worksites_ministries", methods=["GET", "OPTIONS"])
+class InfluenzaWorksite(Resource):
+    """worksites_ministries"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """get influenza worksites_ministries"""
+        try:
+            args = request.args
+            worksites_ministries = InfluenzaService.get_worksites_ministries(args)
+            return worksites_ministries, HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+@cors_preflight("GET,  OPTIONS")
+@API.route("/worksites_registrations", methods=["GET", "OPTIONS"])
+class InfluenzaWorksite(Resource):
+    """worksites_registrations"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """get influenza worksites_registrations"""
+        try:
+            args = request.args
+            worksites_registrations = InfluenzaService.get_worksites_registrations(args)
+            return worksites_registrations, HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
