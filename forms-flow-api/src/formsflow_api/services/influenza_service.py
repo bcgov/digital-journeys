@@ -62,3 +62,113 @@ class InfluenzaService:
         raise BusinessException(
           {"message": "No worksite data found"}, HTTPStatus.NOT_FOUND
         )
+
+    @staticmethod
+    def get_worksites_ministries(args):
+      worksite_ministry_url = current_app.config.get("ODS_URL") + "/ods_datamart_influenza_vw_worksites_ministries_joined"
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      
+      # Get the query params
+      ministry_id = args.get("ministry_id")
+      worksite_id = args.get("worksite_id")
+      wm_id = args.get("wm_id")
+      m_name = args.get("m_name")
+      select = args.get("select")
+
+      # Generate the filter query
+      filter_list = []
+      if ministry_id:
+        filter_list.append(f"ministry_id eq '{ministry_id}'")
+      if wm_id:
+        filter_list.append(f"wm_id eq '{wm_id}'")
+      if worksite_id:
+        filter_list.append(f"worksite_id eq '{worksite_id}'")
+      if m_name:
+        filter_list.append(f"m_name eq '{m_name}'")
+      if not filter_list:
+        raise BusinessException(
+          {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
+        )
+
+      filter_query = "$filter=" + " and ".join(filter_list)
+
+      # Append queries (filter, select and etc.) to a list and join them with '&'
+      queries = []
+      queries.append(filter_query)
+      if select:
+        select_query = f"$select={select}"
+        queries.append(select_query)
+      query = '&'.join(queries)
+
+      try:
+        url = f"{worksite_ministry_url}?{query}"
+        response = requests.get(url, headers={"Authorization": auth_token})
+      except:
+        raise BusinessException(
+          {"message": "Failed to look up worksites in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+
+      value = response.json().get("value")
+      if value:
+        return value
+      else:
+        raise BusinessException(
+          {"message": "No worksites found"}, HTTPStatus.NOT_FOUND
+        )
+    
+    @staticmethod
+    def get_worksites_registrations(args):
+      worksites_registrations_url = current_app.config.get("ODS_URL") + "/ods_datamart_influenza_vw_registrations_worksites_joined"
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      
+      # Get the query params
+      application_id = args.get("application_id")
+      ministry_id = args.get("ministry_id")
+      registrations_id = args.get("registrations_id")
+      worksite_id = args.get("worksite_id")
+      ministry_name = args.get("ministry_name")
+      select = args.get("select")
+
+      # Generate the filter query
+      filter_list = []
+      if application_id:
+        filter_list.append(f"application_id eq '{application_id}'")
+      if ministry_id:
+        filter_list.append(f"ministry_id eq '{ministry_id}'")
+      if ministry_name:
+        filter_list.append(f"ministry_name eq '{ministry_name}'")
+      if registrations_id:
+        filter_list.append(f"registrations_id eq '{registrations_id}'")
+      if worksite_id:
+        filter_list.append(f"worksite_id eq '{worksite_id}'")
+      
+      if not filter_list:
+        raise BusinessException(
+          {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
+        )
+
+      filter_query = "$filter=" + " and ".join(filter_list)
+
+      # Append queries (filter, select and etc.) to a list and join them with '&'
+      queries = []
+      queries.append(filter_query)
+      if select:
+        select_query = f"$select={select}"
+        queries.append(select_query)
+      query = '&'.join(queries)
+
+      try:
+        url = f"{worksites_registrations_url}?{query}"
+        response = requests.get(url, headers={"Authorization": auth_token})
+      except:
+        raise BusinessException(
+          {"message": "Failed to look up worksites_registrations in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+
+      value = response.json().get("value")
+      if value:
+        return value
+      else:
+        raise BusinessException(
+          {"message": "No worksites_registrations found"}, HTTPStatus.NOT_FOUND
+        )
