@@ -70,7 +70,7 @@ class InfluenzaWorksite(Resource):
             return err.error, err.status_code
 
 
-
+@cors_preflight("GET,  OPTIONS")
 @API.route("/worksite_registration", methods=["GET", "OPTIONS"])
 class InfluenzaWorksite(Resource):
     """Worksite's registration"""
