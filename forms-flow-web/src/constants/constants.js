@@ -212,3 +212,8 @@ export const DRAFT_ENABLED =
 export const SL_REVIEW_PROCESS_NAME =
   (window._env_ && window._env_.REACT_APP_SL_REVIEW_PROCESS_NAME) ||
   process.env.REACT_APP_SL_REVIEW_PROCESS_NAME;
+
+export const EDIT_SUBMISSION_PAGE = {
+  isReviewSubmission: "isReviewSubmission",
+  isEditSubmission: "isEditSubmission",
+};

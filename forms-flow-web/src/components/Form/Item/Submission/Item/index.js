@@ -14,6 +14,7 @@ import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   STAFF_REVIEWER,
+  EDIT_SUBMISSION_PAGE,
 } from "../../../../../constants/constants";
 import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstants";
 import Loading from "../../../../../containers/Loading";
@@ -115,7 +116,11 @@ const Item = React.memo(() => {
         {editAllowed ? (
           <Route
             path={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit`}
-            component={Edit}
+            render={(props) => 
+              <Edit {...props} 
+                editSubmissionPage={EDIT_SUBMISSION_PAGE.isEditSubmission} 
+              />
+            }
           />
         ) : null}
         <Route
