@@ -36,7 +36,6 @@ import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
 import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 
-import _ from "lodash";
 import {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
@@ -75,6 +74,7 @@ const Edit = React.memo((props) => {
     user,
     showPrintButton,
     authToken,
+    editSubmissionPage,
   } = props;
 
   const formRef = useRef(null);
@@ -101,7 +101,7 @@ const Edit = React.memo((props) => {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
         !CLIENT_EDIT_STATUS.includes(applicationStatus)
-      ) {
+        ) {
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }
     }
@@ -178,21 +178,16 @@ const Edit = React.memo((props) => {
     useSelector((state) => state?.bpmTasks?.bpmTasks) &&
     useSelector((state) => state.bpmTasks.bpmTasks)[0];
 
-  // Pass along the current task with the given submission
-  // so it can be used for validation purposes.
-  const submissionWithTask = _.merge(
-    {},
-    {
-      data: {
-        task: {
-          assignedToMe:
-            task?.assignee && user?.preferred_username === task?.assignee,
-          ...(task || {}),
-        },
-      },
-    },
-    updatedSubmission
-  );
+  /* Pass along the current task and the page where this 
+  * component is opened in (e.g., edit submission page, review submission page), 
+  * so it can be used for validation purposes. 
+  * */
+  updatedSubmission.editSubmissionPage = editSubmissionPage;
+  updatedSubmission.task = {
+            assignedToMe:
+              task?.assignee && user?.preferred_username === task?.assignee,
+            ...(task || {}),
+          };
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
@@ -284,8 +279,7 @@ const Edit = React.memo((props) => {
         <div className="ml-4 mr-4" id="formview">
           <Form
             form={form}
-            // submission={updatedSubmission}
-            submission={submissionWithTask}
+            submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={(submission) =>

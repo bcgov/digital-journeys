@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Row, Tab, Tabs } from "react-bootstrap";
+import _ from "lodash";
 import TaskHeader from "./TaskHeader";
 import {
   reloadTaskFormSubmission,
@@ -38,6 +39,7 @@ import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
+  EDIT_SUBMISSION_PAGE,
 } from "../../../constants/constants";
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
@@ -50,7 +52,6 @@ import {
 } from "../../../constants/constants";
 import { redirectToSuccessPage } from "../../../constants/successTypes";
 import { printToPDF } from "../../../services/PdfService";
-import { setValueForComponents } from "../../../helper/formUtils";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -68,6 +69,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const taskFormSubmissionReload = useSelector(
     (state) => state.bpmTasks.taskFormSubmissionReload
   );
+
+  const submission = useSelector((state) => state.submission.submission);
+  const isSubmissionLoaded = !(_.isEmpty(submission));
+
   const dispatch = useDispatch();
   const currentUser = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
@@ -81,9 +86,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const userRoles = useSelector((state) => state.user.roles);
-  const authToken = useSelector((state) => state.user.bearerToken);
-
-  const formRef = useRef(null);
 
   useEffect(() => {
     if (taskId) {
@@ -118,22 +120,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
       setProcessInstanceId(task?.processInstanceId);
     }
   }, [task?.processInstanceId]);
-
-  /* Pass values to the form components
-   A component with the same key should be present in the form otherwise it will be ignored */
-  let valueForComponentsInterval = null;
-  useEffect(() => {
-    valueForComponentsInterval = setInterval(() => {
-      if (formRef.current !== null && formRef.current?.formio) {
-        const keyValuePairs = [{key: "token", value: authToken}];
-        setValueForComponents(formRef.current.formio, valueForComponentsInterval, keyValuePairs);
-      }
-    }, 1000);
-    return () => {
-      clearInterval(valueForComponentsInterval);
-    };
-    // Add the states to the dependency array to re-run the effect when they change 
-  }, [authToken]);
 
   const getFormSubmissionData = useCallback(
     (formUrl) => {
@@ -300,12 +286,12 @@ const ServiceFlowTaskDetails = React.memo(() => {
                   }),
                 }}
               >
-                {task?.assignee === currentUser ? (
+                {task?.assignee === currentUser && isSubmissionLoaded ? (
                   <FormEdit
                     onFormSubmit={onFormSubmitCallback}
                     onCustomEvent={onCustomEventCallBack}
                     showPrintButton={false}
-                    ref={formRef}
+                    editSubmissionPage={EDIT_SUBMISSION_PAGE.isReviewSubmission}
                   />
                 ) : (
                   <FormView showPrintButton={false} />
