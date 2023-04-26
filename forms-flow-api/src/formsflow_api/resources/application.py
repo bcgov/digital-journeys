@@ -21,8 +21,9 @@ from formsflow_api.schemas import (
     ApplicationUpdateSchema,
 )
 from formsflow_api.services import ApplicationService
-
+from formsflow_api.services import InfluenzaService
 from formsflow_api.models import Application
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace("Application", description="Application")
 
@@ -392,21 +393,30 @@ class ApplicationResourceByApplicationStatus(Resource):
 @cors_preflight("DELETE, OPTIONS")
 @API.route("/<int:application_id>/delete", methods=["DELETE", "OPTIONS"])
 class ApplicationResourceByIdDelete(Resource):
-    """Delete application by id."""
+    """Delete application from all DB sources by id."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def delete(application_id):
+    @user_context
+    def delete(application_id, **kwargs):
         """Delete application by id."""
         try:
             application = Application.find_by_id(application_id=application_id)
             if not application:
                 raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
+            # Ensure only the application owner or an authorized admin role can delete the application
+            user: UserContext = kwargs["user"]
+            user_id = user.user_name
+            user_roles = user._roles
+            if application.created_by != user_id and 'formsflow-designer' not in user_roles:
+                raise BusinessException(f"User {user_id} is not authorized to delete application {application_id}", HTTPStatus.UNAUTHORIZED)
+            
             ApplicationService.delete_application(application_id)
             ApplicationService.delete_submission_by_application(application)
-            ApplicationService.delete_application_from_ODS(application_id)
-            return f"Application was successfully deleted with id: {application_id}", HTTPStatus.OK
+            InfluenzaService.delete_worksites_registrations(application_id)
+            # ApplicationService.delete_application_from_ODS(application_id)
+            return f"Application was successfully deleted from all DB sources with id: {application_id}", HTTPStatus.OK
         except BusinessException as err:
             current_app.logger.error(err.error)
             return err.error, err.status_code

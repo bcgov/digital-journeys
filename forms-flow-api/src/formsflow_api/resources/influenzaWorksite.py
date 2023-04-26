@@ -133,6 +133,7 @@ class InfluenzaWorksiteById(Resource):
     @staticmethod
     @profiletime
     @auth.require
+    @auth.has_one_of_roles(["formsflow-designer"])
     def delete(application_id: int):
         """delete influenza worksites_registrations by application_id"""
         try:

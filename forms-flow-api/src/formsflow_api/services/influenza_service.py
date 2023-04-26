@@ -183,7 +183,8 @@ class InfluenzaService:
            headers={"Authorization": auth_token},
            json={"application_id": application_id}
           )
+        current_app.logger.info(f"application was deleted in ODS (warehouse) by id {application_id}")
       except:
         raise BusinessException(
-          {"message": "Failed to delete worksites_registration in ODS with application_id: " + str(application_id)}, HTTPStatus.INTERNAL_SERVER_ERROR
+          {"message": f"Failed to delete worksites_registration in ODS (warehouse) with application_id: {application_id}"}, HTTPStatus.INTERNAL_SERVER_ERROR
         )
