@@ -124,3 +124,21 @@ class InfluenzaWorksite(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+
+@cors_preflight("DELETE, OPTIONS")
+@API.route("/worksites_registrations/<int:application_id>", methods=["DELETE", "OPTIONS"])
+class InfluenzaWorksiteById(Resource):
+    """Resource for worksites_registrations by id"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    @auth.has_one_of_roles(["formsflow-designer"])
+    def delete(application_id: int):
+        """delete influenza worksites_registrations by application_id"""
+        try:
+            InfluenzaService.delete_worksites_registrations(application_id)
+            return "Deleted", HTTPStatus.OK
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code

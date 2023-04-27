@@ -172,3 +172,19 @@ class InfluenzaService:
         raise BusinessException(
           {"message": "No worksites_registrations found"}, HTTPStatus.NOT_FOUND
         )
+    
+    @staticmethod
+    def delete_worksites_registrations(application_id):
+      delete_worksites_registrations_url = current_app.config.get("ODS_URL") + "/ods_datamart_influenza_delete_registration"
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      try:
+        requests.post(
+           delete_worksites_registrations_url, 
+           headers={"Authorization": auth_token},
+           json={"application_id": application_id}
+          )
+        current_app.logger.info(f"application was deleted in ODS (warehouse) by id {application_id}")
+      except:
+        raise BusinessException(
+          {"message": f"Failed to delete worksites_registration in ODS (warehouse) with application_id: {application_id}"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )

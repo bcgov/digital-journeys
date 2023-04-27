@@ -507,7 +507,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         application = Application.find_by_id(application_id=application_id)
         if application:
             application.delete()
-            current_app.logger.info(f"application was deleted by id {application_id}")
+            current_app.logger.info(f"application was deleted in webApi DB by id {application_id}")
         else:
             raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
     
@@ -517,6 +517,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         formio_service = FormioService()
         form_io_token = formio_service.get_formio_access_token()
         formio_service.delete_submission(form_io_token, application.latest_form_id, application.submission_id)
+        current_app.logger.info(f"application was deleted in formio DB by submission id {application.submission_id}")
 
     @staticmethod
     def delete_application_from_ODS(application_id: int):
