@@ -537,10 +537,19 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             raise BusinessException(
                 f"Failed to delete the application in ODS at {delete_application_in_ODS_url}", 
                 HTTPStatus.BAD_REQUEST)
-
-        
-        
     
+    @staticmethod
+    def delete_process_instance(process_instance_id: str, token: str):
+        """Delete process instance from Camunda."""
+        
+        response = BPMService.delete_process_instance(process_instance_id, token)
+        if response.ok:
+            current_app.logger.info(f"process_instance was deleted in Camunda by process_id {process_instance_id}")
+        elif response.status_code == 404:
+            current_app.logger.warning(f"process_instance was not found in Camunda DB by process_id {process_instance_id}")
+        else:
+            current_app.logger.error(f"Something went wrong deleting process_instance in Camunda by process_id {process_instance_id}")        
+
     @staticmethod
     def get_submission_for_application(application_list):
     # fetch submission data for each application, https://github.com/bcgov/digital-journeys/issues/604

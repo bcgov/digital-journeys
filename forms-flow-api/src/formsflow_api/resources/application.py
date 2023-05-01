@@ -402,7 +402,7 @@ class ApplicationResourceByIdDelete(Resource):
     def delete(application_id, **kwargs):
         """Delete application by id."""
         try:
-            application = Application.find_by_id(application_id=application_id)
+            application = Application.find_by_id_with_fields(application_id=application_id)
             if not application:
                 raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
             # Ensure only the application owner or an authorized admin role can delete the application
@@ -411,11 +411,21 @@ class ApplicationResourceByIdDelete(Resource):
             user_roles = user._roles
             if application.created_by != user_id and 'formsflow-designer' not in user_roles:
                 raise BusinessException(f"User {user_id} is not authorized to delete application {application_id}", HTTPStatus.UNAUTHORIZED)
-            
+            # Delete application from webApi
             ApplicationService.delete_application(application_id)
+            # Delete application's submission from formio
             ApplicationService.delete_submission_by_application(application)
-            InfluenzaService.delete_worksites_registrations(application_id)
-            # ApplicationService.delete_application_from_ODS(application_id)
+            # Delete applications's process_instance from Camunda
+            if application.process_instance_id:
+                token = request.headers["Authorization"]
+                ApplicationService.delete_process_instance(application.process_instance_id, token)
+            # Delete from external sources depending on the process_key
+            sl_review_process_key = current_app.config.get("SL_REVIEW_PROCESS_KEY")
+            influenza_worksite_process_key = current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY")
+            if application.process_key == influenza_worksite_process_key:
+                InfluenzaService.delete_worksites_registrations(application_id)
+            if application.process_key == sl_review_process_key:
+                ApplicationService.delete_application_from_ODS(application_id)
             return f"Application was successfully deleted from all DB sources with id: {application_id}", HTTPStatus.OK
         except BusinessException as err:
             current_app.logger.error(err.error)

@@ -209,9 +209,13 @@ export const DRAFT_ENABLED =
     ? true
     : false;
 
-export const SL_REVIEW_PROCESS_NAME =
-  (window._env_ && window._env_.REACT_APP_SL_REVIEW_PROCESS_NAME) ||
-  process.env.REACT_APP_SL_REVIEW_PROCESS_NAME;
+export const SL_REVIEW_PROCESS_KEY =
+  (window._env_ && window._env_.REACT_APP_SL_REVIEW_PROCESS_KEY) ||
+  process.env.REACT_APP_SL_REVIEW_PROCESS_KEY;
+
+export const INFLUENZA_WORKSITE_PROCESS_KEY =
+  (window._env_ && window._env_.REACT_APP_INFLUENZA_WORKSITE_PROCESS_KEY) ||
+  process.env.REACT_APP_INFLUENZA_WORKSITE_PROCESS_KEY;
 
 export const EDIT_SUBMISSION_PAGE = {
   isReviewSubmission: "isReviewSubmission",

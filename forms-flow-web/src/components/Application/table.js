@@ -16,7 +16,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 import { setSelectedApplicationForDelete } from "../../actions/applicationActions";
 import { useDispatch } from "react-redux";
-import { SL_REVIEW_PROCESS_NAME } from "../../constants/constants";
+import { SL_REVIEW_PROCESS_KEY, INFLUENZA_WORKSITE_PROCESS_KEY } from "../../constants/constants";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -78,6 +78,9 @@ const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
     );
   };
 
+  // Form submission associated with these process keys can be deleted
+  const allowedProcessKeysForDeletion = [SL_REVIEW_PROCESS_KEY, INFLUENZA_WORKSITE_PROCESS_KEY];
+
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <div
@@ -94,7 +97,7 @@ const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
           </span>
         </div>
       </div>
-      {row.processName === SL_REVIEW_PROCESS_NAME && (
+      { allowedProcessKeysForDeletion.some(el => el === row.processKey) && (
         <div
           style={{ textDecoration: "none", marginLeft: "16px" }}
           onClick={() => handleDeleteApplication(row)}
