@@ -73,6 +73,29 @@ class Application(
         )
         query = query.filter(cls.id == application_id)
         return FormProcessMapper.tenant_authorization(query=query).first()
+    
+    @classmethod
+    def find_by_id_with_fields(cls, application_id: int) -> Application:
+        """Find application that matches the provided id."""
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).add_columns(
+            cls.id,
+            cls.application_status,
+            cls.submission_id,
+            cls.latest_form_id,
+            cls.form_process_mapper_id,
+            cls.process_instance_id,
+            cls.created_by,
+            cls.created,
+            cls.modified,
+            cls.modified_by,
+            FormProcessMapper.form_name.label("application_name"),
+            FormProcessMapper.process_key.label("process_key"),
+            FormProcessMapper.process_name.label("process_name"),
+            FormProcessMapper.process_tenant.label("process_tenant"),
+        ).filter(cls.id == application_id)
+        return FormProcessMapper.tenant_authorization(query=query).first()
 
     @classmethod
     def find_auth_by_id(cls, application_id: int) -> Application:

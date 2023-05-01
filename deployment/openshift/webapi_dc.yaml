@@ -215,6 +215,16 @@ objects:
                 secretKeyRef:
                   key: ODS_URL
                   name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: SL_REVIEW_PROCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: SL_REVIEW_PROCESS_KEY
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
+            - name: INFLUENZA_WORKSITE_PROCESS_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: INFLUENZA_WORKSITE_PROCESS_KEY
+                  name: ${FORMSFLOW_CONFIG_NAME}-config
             image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
             name: ${NAME}
             ports:

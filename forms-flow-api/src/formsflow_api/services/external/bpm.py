@@ -132,6 +132,14 @@ class BPMService(BaseBPMService):
             + "/activity-instances"
         )
         return cls.get_request(url, token)
+    
+    @classmethod
+    def delete_process_instance(cls, process_instance_id, token):
+        """Delete a process instance."""
+        # the default /engine-rest-ext/v1/process-instance not working for delete so using /engine-rest/process-instance
+        bpm_api_base = current_app.config.get("BPM_API_URL")
+        url = f"{bpm_api_base}/engine-rest-ext/process-instance/{process_instance_id}"
+        return cls.delete_request(url, token)
 
     @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):

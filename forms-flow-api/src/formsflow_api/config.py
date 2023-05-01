@@ -111,6 +111,10 @@ class _Config:  # pylint: disable=too-few-public-methods
     SL_REVIEW_ENDPOINT = os.getenv("SL_REVIEW_ENDPOINT")
     ODS_URL = os.getenv("ODS_URL")
 
+    # Process keys
+    SL_REVIEW_PROCESS_KEY = os.getenv("SL_REVIEW_PROCESS_KEY")
+    INFLUENZA_WORKSITE_PROCESS_KEY = os.getenv("INFLUENZA_WORKSITE_PROCESS_KEY")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

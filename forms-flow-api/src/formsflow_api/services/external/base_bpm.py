@@ -55,6 +55,16 @@ class BaseBPMService:
             )
             # response.raise_for_status()
         return data
+    
+    @classmethod
+    def delete_request(cls, url, token):
+        """Delete HTTP request in BPM API with auth header."""
+        headers = cls._get_headers_(token)
+        response = requests.delete(url, headers=headers, timeout=HTTP_TIMEOUT)
+        current_app.logger.debug(
+            "DELETE URL : %s, Response Code : %s", url, response.status_code
+        )
+        return response
 
     @classmethod
     def _get_headers_(cls, token):
