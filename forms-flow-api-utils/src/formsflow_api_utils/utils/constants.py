@@ -14,6 +14,7 @@ if FORMSFLOW_API_CORS_ORIGINS != "*":
 DESIGNER_GROUP = "formsflow-designer"
 REVIEWER_GROUP = "formsflow-reviewer"
 CLIENT_GROUP = "formsflow-client"
+COLD_FLU_ADMIN_GROUP = "cold-flu-admin"
 FORMSFLOW_ROLES = [DESIGNER_GROUP, REVIEWER_GROUP, CLIENT_GROUP]
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 

@@ -213,6 +213,55 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             get_all_applications_count,
             draft_count,
         )
+    
+    @staticmethod
+    @user_context
+    def get_all_applications_by_user_by_process_keys_and_count(  # pylint: disable=too-many-arguments,too-many-locals
+        page_no: int,
+        limit: int,
+        order_by: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
+        application_id: int,
+        application_name: str,
+        application_status: str,
+        created_by: str,
+        sort_order: str,
+        token: str,
+        process_keys: list,
+        **kwargs
+    ):
+        """Get applications by user by process keys."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        
+        (
+            applications,
+            get_all_applications_count,
+        ) = Application.find_applications_by_process_key(
+            application_id=application_id,
+            application_name=application_name,
+            application_status=application_status,
+            created_by=created_by,
+            page_no=page_no,
+            limit=limit,
+            order_by=order_by,
+            modified_from=modified_from,
+            modified_to=modified_to,
+            sort_order=sort_order,
+            created_from=created_from,
+            created_to=created_to,
+            process_key=process_keys,
+            user_id=user_id,
+        )
+        draft_count = Draft.get_draft_count()
+        return (
+            application_schema.dump(applications, many=True),
+            get_all_applications_count,
+            draft_count,
+        )
 
     @staticmethod
     @user_context
