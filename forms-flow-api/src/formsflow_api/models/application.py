@@ -312,12 +312,20 @@ class Application(
         order_by: str,
         sort_order: str,
         process_key: str,
+        user_id: str = None,
         **filters,
     ):
-        """Fetch applications list based on searching parameters for Reviewer."""
+        """Fetch applications list based on searching parameters for Reviewer/admin roles."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        if user_id:
+            # get all applications created by user plus applications for the process_keys
+            query = query.filter(or_(
+                FormProcessMapper.process_key.in_(process_key), 
+                Application.created_by == user_id))
+        else:
+            # get all applications for the process_keys
+            query = query.filter(FormProcessMapper.process_key.in_(process_key))
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
