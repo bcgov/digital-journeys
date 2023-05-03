@@ -15,6 +15,7 @@ const submitSuccessPage = {
   "bullying-and-harassment-complaint-article-1-10": COMPLAINT_INTAKE_FORM_1_10,
   "bullying-and-harassment-complaint-article-1-10-ldb": COMPLAINT_INTAKE_FORM_1_10_LDB,
   "bullying-and-harassment-complaint-article-1-10-noemail": COMPLAINT_INTAKE_FORM_1_10_NOEMAIL,
+  "2023influenzaworksiteregistration": INFLUENZA_WORKSITE_REGISTRATION,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
