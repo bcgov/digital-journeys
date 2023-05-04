@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import startCase from "lodash/startCase";
 import {
   textFilter,
   customFilter,
@@ -39,10 +38,9 @@ https://github.com/bcgov/digital-journeys/issues/598 */
 //   );
 // };
 
-
 // const linkDraft = (cell, row, redirectUrl) => {
 // eslint-disable-next-line
-const LinkDraft = React.memo(({cell, row, redirectUrl}) => {
+const LinkDraft = React.memo(({ cell, row, redirectUrl }) => {
   const dispatch = useDispatch();
   const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
   const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
@@ -95,9 +93,8 @@ function timeFormatter(cell) {
 }
 
 const nameFormatter = (cell, row) => {
-  const employee = getEmployeeNameFromSubmission(cell, row);
-  const name = employee !== '' ?
-  `${cell} for ${employee === undefined ? undefined : startCase(employee)}` : cell;
+  const submitterName = getEmployeeNameFromSubmission(cell, row);
+  const name = submitterName ? `${cell} for ${submitterName}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>
       {name}
@@ -152,8 +149,8 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
       text: <Translation>{(t) => t("Action")}</Translation>,
       // formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
       formatter: (cell, row) => {
-      return <LinkDraft cell={cell} row={row} redirectUrl={redirectUrl} />;
-    },
+        return <LinkDraft cell={cell} row={row} redirectUrl={redirectUrl} />;
+      },
       headerStyle: () => {
         return { width: "20%" };
       },
