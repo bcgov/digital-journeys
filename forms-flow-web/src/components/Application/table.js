@@ -1,6 +1,5 @@
 import React from "react";
 // import { Link } from "react-router-dom";
-import startCase from "lodash/startCase";
 import {
   textFilter,
   customFilter,
@@ -16,7 +15,10 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 import { setSelectedApplicationForDelete } from "../../actions/applicationActions";
 import { useDispatch } from "react-redux";
-import { SL_REVIEW_PROCESS_KEY, INFLUENZA_WORKSITE_PROCESS_KEY } from "../../constants/constants";
+import {
+  SL_REVIEW_PROCESS_KEY,
+  INFLUENZA_WORKSITE_PROCESS_KEY,
+} from "../../constants/constants";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -50,7 +52,7 @@ export const defaultSortedBy = [
    https://github.com/bcgov/digital-journeys/issues/609 */
 // const linkSubmission = (cell, row, redirectUrl) => {
 // eslint-disable-next-line
-const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
+const LinkSubmission = React.memo(({ cell, row, redirectUrl }) => {
   const dispatch = useDispatch();
   const url = row.isClientEdit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
@@ -79,7 +81,10 @@ const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
   };
 
   // Form submission associated with these process keys can be deleted
-  const allowedProcessKeysForDeletion = [SL_REVIEW_PROCESS_KEY, INFLUENZA_WORKSITE_PROCESS_KEY];
+  const allowedProcessKeysForDeletion = [
+    SL_REVIEW_PROCESS_KEY,
+    INFLUENZA_WORKSITE_PROCESS_KEY,
+  ];
 
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -97,7 +102,7 @@ const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
           </span>
         </div>
       </div>
-      { allowedProcessKeysForDeletion.some(el => el === row.processKey) && (
+      {allowedProcessKeysForDeletion.some((el) => el === row.processKey) && (
         <div
           style={{ textDecoration: "none", marginLeft: "16px" }}
           onClick={() => handleDeleteApplication(row)}
@@ -121,16 +126,15 @@ function timeFormatter(cell) {
 }
 
 const nameFormatter = (cell, row) => {
-  const employee = getEmployeeNameFromSubmission(cell, row?.submission);
-  const name = employee !== '' ? 
-  `${cell} for ${employee === undefined ? undefined : startCase(employee)}` : cell;
+  const submitterName = getEmployeeNameFromSubmission(cell, row?.submission);
+  const name = submitterName ? `${cell} for ${submitterName}` : cell;
   return (
     <label className="text-truncate w-100" title={name}>
       {name}
     </label>
   );
 };
-const customStyle = { border: "1px solid #ced4da", fontStyle: "normal"};
+const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
 export const columns_history = [
   {
     dataField: "applicationname",
@@ -259,7 +263,11 @@ const customTotal = (from, to, size) => (
     <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
-export const customDropUp = ({ options, currSizePerPage, onSizePerPageChange }) => {
+export const customDropUp = ({
+  options,
+  currSizePerPage,
+  onSizePerPageChange,
+}) => {
   return (
     <DropdownButton
       drop="up"

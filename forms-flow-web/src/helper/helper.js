@@ -1,5 +1,4 @@
 import { FORM_NAMES } from "../constants/formConstants";
-import startCase from "lodash/startCase";
 
 const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
@@ -36,48 +35,38 @@ const checkAndAddTenantKey = (value, tenankey) => {
 };
 
 const getEmployeeNameFromSubmission = (form, submission) => {
-  if (submission === undefined) {
-    return '';
-  }
-  let employee = "";
-  if (
-    startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.slreview).toLowerCase()) ||
-    startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.srleadershipreview).toLowerCase())) {
-    employee = submission?.data?.employeeName?.name === undefined ?
-    submission?.data?.employeeName : submission?.data?.employeeName?.name;
-    employee = employee === "" ? undefined : employee;
-  } else if (
-    startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.teleworkagreement).toLowerCase())) {
-    employee = submission?.data?.name;
-    employee = employee === "" ? undefined : employee;
-  } else if (
-    startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.complaintform110).toLowerCase())
-    || startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.complaintintakeform).toLowerCase())
-    || startCase(form).toLowerCase()
-    .includes(startCase(FORM_NAMES.complaintform).toLowerCase())) {
-    if (submission?.data?.firstName !== undefined && 
-      submission?.data?.lastName !== undefined) {
-        employee = `${submission?.data?.firstName} ${submission?.data?.lastName}`;
-        employee = employee.trim() === "" ? undefined : employee;
-    } else if (submission?.data?.legalNameFirstName !== undefined && 
-      submission?.data?.legalNameLastName !== undefined) {
-        employee = `${submission?.data?.legalNameFirstName} ${submission?.data?.legalNameLastName}`;
-        employee = employee.trim() === "" ? undefined : employee;
+  if (!submission?.data) return "";
+  const formData = submission.data;
+
+  let submitterName = "";
+  const formNameLower = form.toLowerCase();
+
+  if (formNameLower.includes(FORM_NAMES.SENIOR_LEADER_REVIEW.toLowerCase())) {
+    submitterName = formData?.employeeName?.name || formData?.employeeName;
+  } else if (formNameLower.includes(FORM_NAMES.TELEWORK.toLowerCase())) {
+    submitterName = formData?.name;
+  } else if (formNameLower.includes(FORM_NAMES.COMPLIANT_1_10.toLowerCase())) {
+    if (formData?.firstName && formData?.lastName) {
+      submitterName = `${formData.firstName} ${formData.lastName}`;
+    } else if (formData?.legalNameFirstName && formData?.legalNameLastName) {
+      submitterName = `${formData.legalNameFirstName} ${formData.legalNameLastName}`;
     }
-    
+  } else if (
+    formNameLower.includes(
+      FORM_NAMES.INFLUENZA_WORKSITE_REGISTRATION.toLowerCase()
+    )
+  ) {
+    const firstName = formData?.primary_first_name || "";
+    const lastName = formData?.primary_last_name || "";
+    submitterName = `${firstName} ${lastName}`;
   }
-  return employee;
+  return submitterName ? submitterName.trim() : "";
 };
 
-export { 
+export {
   replaceUrl,
   addTenankey,
   removeTenantKey,
-  checkAndAddTenantKey, 
-  getEmployeeNameFromSubmission
+  checkAndAddTenantKey,
+  getEmployeeNameFromSubmission,
 };

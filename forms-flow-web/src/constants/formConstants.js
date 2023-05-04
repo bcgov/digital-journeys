@@ -1,10 +1,9 @@
 export const FORM_NAMES = {
-    slreview: 'SL review',
-    srleadershipreview: 'Senior Leadership Review Form',
-    teleworkagreement: 'Telework agreement',
-    complaintintakeform: 'Complaint Intake Form',
-    complaintform: 'Bullying and Harassment Complaint Form',
-    complaintform110: 'Bullying / Misuse of Authority Complaint'
+    SL_REVIEW: 'SL review',
+    SENIOR_LEADER_REVIEW: 'Senior Leadership Review Form',
+    TELEWORK: 'Telework agreement',
+    COMPLIANT_1_10: 'Bullying / Misuse of Authority Complaint Form (Article 1.10)',
+    INFLUENZA_WORKSITE_REGISTRATION: '2023 Influenza Worksite Registration',
   };
 
 export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME = 'formSupportedIdentityProviders';
