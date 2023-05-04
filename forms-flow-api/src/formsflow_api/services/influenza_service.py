@@ -188,3 +188,37 @@ class InfluenzaService:
         raise BusinessException(
           {"message": f"Failed to delete worksites_registration in ODS (warehouse) with application_id: {application_id}"}, HTTPStatus.INTERNAL_SERVER_ERROR
         )
+    
+    @staticmethod
+    def get_registration_for_contact(args):
+      registration_contact_url = current_app.config.get("ODS_URL") + "/ods_datamart_influenza_vw_registrations_by_primary_contact"
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      
+      # Get the query params
+      email = args.get("email")
+
+      # Generate the filter query
+      filter_list = []
+      if email:
+        filter_list.append(f"email='{email}'")
+      
+      if not filter_list:
+        raise BusinessException(
+          {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
+        )
+
+      filter_query = ",".join(filter_list)
+      query = '('+filter_query+')'
+
+      try:
+        url = f"{registration_contact_url}{query}"
+        response = requests.get(url, headers={"Authorization": auth_token})
+      except:
+        raise BusinessException(
+          {"message": "Failed to look up registration in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+      if response.text != "":
+        return {"data": response.text}
+      raise BusinessException(
+        {"message": "No registration found for given contact"}, HTTPStatus.NOT_FOUND
+      )

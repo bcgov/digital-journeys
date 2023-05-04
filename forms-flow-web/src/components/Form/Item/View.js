@@ -118,6 +118,7 @@ const View = React.memo((props) => {
   const [defaultVals, setDefaultVals] = useState({});
   
   const [hasFormAccess, setHasFormAccess] = useState(false);
+  const [addEditForm, setAddEditForm] = useState({isAllow: true});
   
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState();
@@ -454,6 +455,14 @@ const View = React.memo((props) => {
         setPopupData({ title: evt.title, body: evt.body });
         setShowPopup(true);
         break;
+      case CUSTOM_EVENT_TYPE.FORMACCESS:
+        setAddEditForm({ 
+          isAllow: evt.isAllow,
+          title: evt.title,
+          message: evt.message,
+          redirectPath: evt.redirectPath,
+        });
+        break;
       default:
         return;
     }
@@ -494,6 +503,14 @@ const View = React.memo((props) => {
             message={"You do not have access to this form!"}
             onConfirm={() => {
               window.location.replace(`${window.location.origin}/form`);
+            }}
+          />
+          <MessageModal
+            modalOpen={!addEditForm.isAllow}
+            title={addEditForm.title}
+            message={addEditForm.message}
+            onConfirm={() => {
+              window.location.replace(`${window.location.origin}/${addEditForm.redirectPath}`);
             }}
           />
           {popupData && 

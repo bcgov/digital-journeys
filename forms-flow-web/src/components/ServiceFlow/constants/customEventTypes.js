@@ -8,4 +8,5 @@ export const CUSTOM_EVENT_TYPE = {
   PRINT_PDF: "printPDF",
   ERROR_CUSTOM_VALIDATION: "errorCustomValidation",
   POPUP: "popup",
+  FORMACCESS: "formaccess",
 };
