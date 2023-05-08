@@ -375,18 +375,17 @@ export default React.memo(() => {
                 <a 
                 href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu"
                 >
-                  Cold & Flu page on MyHR
+                  Cold & Flu page on the Careers & MyHR website
                 </a>&nbsp;
                 regularly for the most current information on the program.
                 
               </li>
               
               <li>
-                If you have any questions, or need to edit your submission, 
-                please email&nbsp;
+              If you have any questions, please email&nbsp;
                 <a href="mailto:Cold.Flu@gov.bc.ca">
-                  Cold.Flu@gov.bc.ca.
-                </a>
+                  Cold.Flu@gov.bc.ca
+                </a>.
               </li>
             </ul>
           </div>
