@@ -33,3 +33,4 @@ class EmployeeData():
    self.appointmentStatus = data.get("appointment_status")
    self.salAdminPlan = data.get("sal_admin_plan")
    self.fullPartTime = data.get("full_part_time")
+   self.phone = data.get("phone")
