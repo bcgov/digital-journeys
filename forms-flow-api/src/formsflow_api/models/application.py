@@ -229,14 +229,21 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
-    def find_id_by_user(cls, application_id: int, user_id: str) -> Application:
+    def find_id_by_user(cls, application_id: int, user_id: str, process_keys: list = None) -> Application:
         """Find application that matches the provided id."""
-        result = (
-            cls.query.join(
+        query = cls.query.join(
                 FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
-            .filter(and_(cls.id == application_id, cls.created_by == user_id))
-            .add_columns(
+        if process_keys:
+            # get the application created by user or an application containing one of the the process_keys
+            query = query.filter(
+                or_(cls.created_by == user_id, FormProcessMapper.process_key.in_(process_keys)),
+                cls.id == application_id
+            )
+        else:
+            # get the application created by user
+            query = query.filter(and_(cls.id == application_id, cls.created_by == user_id))
+        query = query.add_columns(
                 cls.id,
                 cls.application_status,
                 cls.submission_id,
@@ -252,8 +259,7 @@ class Application(
                 FormProcessMapper.process_name.label("process_name"),
                 FormProcessMapper.process_tenant.label("process_tenant"),
             )
-        )
-        result = FormProcessMapper.tenant_authorization(query=result)
+        result = FormProcessMapper.tenant_authorization(query=query)
         return result.one_or_none()
 
     @classmethod

@@ -36,6 +36,7 @@ class FormioRoles(Enum):
     DESIGNER = "administrator"
     ANONYMOUS = "anonymous"
     RESOURCE_ID = "RESOURCE_ID"
+    COLD_FLU_ADMIN = "cold-flu-admin"
 
     @classmethod
     def contains(cls, item: str) -> bool:

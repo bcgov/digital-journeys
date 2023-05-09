@@ -192,6 +192,15 @@ class ApplicationResourceById(Resource):
                     application_schema_dump,
                     status,
                 )
+            if auth.has_role([COLD_FLU_ADMIN_GROUP]):
+                influenza_worksite_process_key = current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY")
+                if influenza_worksite_process_key is None:
+                    current_app.logger.warning("INFLUENZA_WORKSITE_PROCESS_KEY is not set")
+                application, status = ApplicationService.get_application_by_user(
+                    application_id=application_id, process_keys=[influenza_worksite_process_key]
+                )
+                return (application, status)
+            
             application, status = ApplicationService.get_application_by_user(
                 application_id=application_id
             )
