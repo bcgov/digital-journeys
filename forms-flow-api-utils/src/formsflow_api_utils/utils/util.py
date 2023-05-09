@@ -15,6 +15,7 @@ from .constants import (
     CLIENT_GROUP,
     DESIGNER_GROUP,
     REVIEWER_GROUP,
+    COLD_FLU_ADMIN_GROUP,
 )
 from .enums import (
     ApplicationSortingParameters,
@@ -108,6 +109,8 @@ def get_role_ids_from_user_groups(role_ids, user_role):
         return role_ids
     if REVIEWER_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
+    if COLD_FLU_ADMIN_GROUP in user_role:
+        return find_matching_roles([FormioRoles.COLD_FLU_ADMIN.name, FormioRoles.CLIENT.name], role_ids)
     if CLIENT_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
     return None
@@ -117,6 +120,14 @@ def filter_list_by_user_role(formio_role, role_ids):
     """Iterate over role_ids and return entries with matching formio role."""
     return list(filter(lambda item: item["type"] == formio_role, role_ids))
 
+def find_matching_roles(role_ids, user_role):
+    matching_roles = []
+
+    for role in role_ids:
+        if role['type'].upper() in (user_role_item.upper() for user_role_item in user_role):
+            matching_roles.append(role)
+
+    return matching_roles
 
 def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
     """Retrieves the formid and submission id from the url parameters."""
