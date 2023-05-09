@@ -386,12 +386,12 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     @user_context
-    def get_application_by_user(application_id: int, **kwargs):
+    def get_application_by_user(application_id: int, process_keys: list = None, **kwargs):
         """Get application by user id."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         application = Application.find_id_by_user(
-            application_id=application_id, user_id=user_id
+            application_id=application_id, user_id=user_id, process_keys=process_keys
         )
         if application:
             return ApplicationSchema().dump(application), HTTPStatus.OK

@@ -11,6 +11,7 @@ from formsflow_api_utils.utils import (
     CLIENT_GROUP,
     DESIGNER_GROUP,
     REVIEWER_GROUP,
+    COLD_FLU_ADMIN_GROUP,
     auth,
     cache,
     cors_preflight,
@@ -50,6 +51,8 @@ class FormioResource(Resource):
                 filter_list.append(FormioRoles.REVIEWER.name)
             if CLIENT_GROUP in user.roles:
                 filter_list.append(FormioRoles.CLIENT.name)
+            if COLD_FLU_ADMIN_GROUP in user.roles:
+                filter_list.append(FormioRoles.COLD_FLU_ADMIN.name)
             return item["type"] in filter_list
 
         @after_this_request
