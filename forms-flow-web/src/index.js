@@ -21,6 +21,7 @@ import PanelComponent from "./formComponents/Panel";
 import TextFieldComponent from "./formComponents/TextField";
 import TextAreaComponent from "./formComponents/TextArea";
 import DGJSelectComponent from "./formComponents/SelectComponent";
+import DGJCurrencyComponent from "./formComponents/CurrencyComponent";
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -56,6 +57,7 @@ Components.setComponent("panel", PanelComponent);
 Components.setComponent("textfield", TextFieldComponent);
 Components.setComponent("textarea", TextAreaComponent);
 Components.setComponent("select", DGJSelectComponent);
+Components.setComponent("currency", DGJCurrencyComponent);
 
 // Adding two remote select components extending original formio Select
 Components.addComponent("remoteSelect", RemoteSelect);
