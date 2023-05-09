@@ -42,6 +42,7 @@ class FormioResource(Resource):
         """Get role ids from cache."""
         user: UserContext = kwargs["user"]
         assert user.token_info is not None
+
         def filter_user_based_role_ids(item):
             filter_list = []
             if DESIGNER_GROUP in user.roles:
@@ -53,6 +54,7 @@ class FormioResource(Resource):
             if COLD_FLU_ADMIN_GROUP in user.roles:
                 filter_list.append(FormioRoles.COLD_FLU_ADMIN.name)
             return item["type"] in filter_list
+
         @after_this_request
         def add_jwt_token_as_header(response):
             _role_ids = [
