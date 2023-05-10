@@ -362,13 +362,14 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-          Thank you for registering your worksite for the 2023 Cold and Flu Program
+          Thank you for registering your worksite for the 2023 
+          Cold and Flu Program
           </span>
           <div className="success-content-body">
             <ul>
               <li>
-                Our nurse teams will reach out to you closer to the fall to 
-                begin organizing your clinic.
+              Our nurse teams will reach out to you July-August 
+              to begin organizing your clinic.
               </li>
               <li>
                 You may check the&nbsp;
@@ -382,9 +383,9 @@ export default React.memo(() => {
               </li>
               
               <li>
-              If you have any questions, please email&nbsp;
+              If you have any questions, please email the&nbsp;
                 <a href="mailto:Cold.Flu@gov.bc.ca">
-                  Cold.Flu@gov.bc.ca
+                Cold and Flu team
                 </a>.
               </li>
             </ul>
