@@ -120,7 +120,7 @@ def filter_list_by_user_role(formio_role, role_ids):
     """Iterate over role_ids and return entries with matching formio role."""
     return list(filter(lambda item: item["type"] == formio_role, role_ids))
 
-def find_matching_roles(role_ids, user_role):
+def find_matching_roles(user_role, role_ids):
     matching_roles = []
 
     for role in role_ids:
