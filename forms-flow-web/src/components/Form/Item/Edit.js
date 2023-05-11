@@ -22,7 +22,7 @@ import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
 import { addTenankey, removeTenantKey } from "../../../helper/helper";
-import { getFormSupportedIDPFromJSON } from "../../../helper/formUtils";
+import { getFormSupportedIDPFromJSON, mergeFormioAccessRoles } from "../../../helper/formUtils";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -171,7 +171,29 @@ const Edit = React.memo(() => {
   const saveFormData = () => {
     setFormSubmitted(true);
     const newFormData = addHiddenApplicationComponent(form);
-    newFormData.submissionAccess = submissionAccess;
+
+    const roleIdsFromLocalStorage = localStorage.getItem("roleIds")
+      ? JSON.parse(localStorage.getItem("roleIds"))
+      : undefined;
+    const COLD_FLU_ADMIN_ROLE_ID = roleIdsFromLocalStorage?.find(
+      (el) => el.type === "COLD_FLU_ADMIN"
+    )?.roleId;
+    const prevFormDataSubmissionAccess = _cloneDeep(formData).submissionAccess;
+    // Keep cold-flu-admin role if exists
+    if (COLD_FLU_ADMIN_ROLE_ID &&
+      prevFormDataSubmissionAccess
+        .map((el) => el.roles)
+        .flat()
+        .some((el) => el === COLD_FLU_ADMIN_ROLE_ID)
+    ) {
+      const mergedSubmissionAccess = mergeFormioAccessRoles(
+        prevFormDataSubmissionAccess,
+        submissionAccess
+      );
+      newFormData.submissionAccess = mergedSubmissionAccess;
+    } else {
+      newFormData.submissionAccess = submissionAccess;
+    }
     newFormData.access = formAccess;
     if (MULTITENANCY_ENABLED && tenantKey) {
       if (newFormData.path) {

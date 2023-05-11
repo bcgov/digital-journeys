@@ -159,6 +159,32 @@ const getFormSupportedIDPFromJSON = (formio) => {
   return null;
 };
 
+function mergeFormioAccessRoles(array1, array2) {
+  const mergedArray = [];
+
+  // Helper function to merge roles by type
+  const mergeRoles = (obj, array) => {
+    const existingObj = array.find(item => item.type === obj.type);
+    if (existingObj) {
+      existingObj.roles = [...new Set([...existingObj.roles, ...obj.roles])];
+    } else {
+      array.push({ ...obj, roles: [...new Set([...obj.roles])] });
+    }
+  };
+
+  // Iterate through array1 and merge roles by type
+  array1.forEach(obj => {
+    mergeRoles(obj, mergedArray);
+  });
+
+  // Iterate through array2 and merge roles by type
+  array2.forEach(obj => {
+    mergeRoles(obj, mergedArray);
+  });
+
+  return mergedArray;
+}
+
 export {
   convertFormLinksToOpenInNewTabs,
   scrollToErrorOnValidation,
@@ -167,5 +193,6 @@ export {
   hasUserAccessToForm,
   getDefaultValues,
   getFormSupportedIDPFromJSON, 
-  setValueForComponents
+  setValueForComponents,
+  mergeFormioAccessRoles,
 };
