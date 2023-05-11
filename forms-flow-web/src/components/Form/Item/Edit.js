@@ -281,7 +281,7 @@ const Edit = React.memo(() => {
     dispatchFormAction({ type: path, value });
   };
 
-  const formChange = (newForm) => 
+  const formChange = (newForm) =>
     dispatchFormAction({ type: "formChange", value: newForm });
 
   // loading up to set the data to the form variable
