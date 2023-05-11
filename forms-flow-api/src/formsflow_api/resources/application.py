@@ -443,8 +443,17 @@ class ApplicationResourceByIdDelete(Resource):
             user: UserContext = kwargs["user"]
             user_id = user.user_name
             user_roles = user._roles
-            if application.created_by != user_id and 'formsflow-designer' not in user_roles:
+            sl_review_process_key = current_app.config.get("SL_REVIEW_PROCESS_KEY")
+            influenza_worksite_process_key = current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY")
+            is_not_creator = application.created_by != user_id
+            is_not_designer = 'formsflow-designer' not in user_roles
+            is_influenza_worksite = application.process_key == influenza_worksite_process_key
+            is_sl_review = application.process_key == sl_review_process_key
+            is_not_coldflu_admin = 'cold-flu-admin' not in user_roles
+
+            if is_not_creator and (is_influenza_worksite and is_not_coldflu_admin) and is_not_designer:
                 raise BusinessException(f"User {user_id} is not authorized to delete application {application_id}", HTTPStatus.UNAUTHORIZED)
+
             # Delete application from webApi
             ApplicationService.delete_application(application_id)
             # Delete application's submission from formio
@@ -454,11 +463,9 @@ class ApplicationResourceByIdDelete(Resource):
                 token = request.headers["Authorization"]
                 ApplicationService.delete_process_instance(application.process_instance_id, token)
             # Delete from external sources depending on the process_key
-            sl_review_process_key = current_app.config.get("SL_REVIEW_PROCESS_KEY")
-            influenza_worksite_process_key = current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY")
-            if application.process_key == influenza_worksite_process_key:
+            if is_influenza_worksite:
                 InfluenzaService.delete_worksites_registrations(application_id)
-            if application.process_key == sl_review_process_key:
+            if is_sl_review:
                 ApplicationService.delete_application_from_ODS(application_id)
             return f"Application was successfully deleted from all DB sources with id: {application_id}", HTTPStatus.OK
         except BusinessException as err:
