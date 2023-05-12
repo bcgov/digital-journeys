@@ -33,6 +33,12 @@
       "description": "A person who can do form submission.",
       "admin": false,
       "default": false
+    },
+    "cold-flu-admin": {
+      "title": "cold-flu-admin",
+      "description": "A person who can view all cold-flu form submissions.",
+      "admin": false,
+      "default": false
     }
   },
   "forms": {

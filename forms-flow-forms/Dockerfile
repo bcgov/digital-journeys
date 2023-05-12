@@ -5,7 +5,7 @@
 
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM docker.io/node:14.18.3
+FROM node:16-buster
 
 # set working directory
 WORKDIR /forms-flow-forms/app
