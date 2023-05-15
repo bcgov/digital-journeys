@@ -271,9 +271,7 @@ class ApplicationResourceById(Resource):
     @auth.require
     @profiletime
     def patch(application_id):
-        """Update application details.
-
-        : application_id:- Update the application for particular application_id
+        """Update application by field.
         """
         try:
             data = {"modified": datetime.datetime.now()}
