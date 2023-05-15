@@ -507,35 +507,3 @@ class ApplicationResourceByIdDelete(Resource):
         except BusinessException as err:
             current_app.logger.error(err.error)
             return err.error, err.status_code
-
-# @cors_preflight("PATCH, OPTIONS")
-# @API.route("/<int:application_id>/update", methods=["PATCH", "OPTIONS"])
-# class ApplicationResourceByIdUpdate(Resource):
-#     """Update application date by id."""
-
-#     @staticmethod
-#     @auth.require
-#     @profiletime
-#     @user_context
-#     def patch(application_id, **kwargs):
-#         """Update application date by id."""
-#         try:
-#             data = {"modified": datetime.datetime.now()}
-#             ApplicationService.update_application(
-#                 application_id=application_id, data=data, 
-#             )
-#             # print("application", application)
-#             # if not application:
-#             #     raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
-#             return "Updated successfully", HTTPStatus.OK
-#         except PermissionError as err:
-#             response, status = (
-#                 {
-#                     "type": "Permission Denied",
-#                     "message": f"Access to application-{application_id} is prohibited.",
-#                 },
-#                 HTTPStatus.FORBIDDEN,
-#             )
-#             current_app.logger.warning(response)
-#             current_app.logger.warning(err)
-#             return response, status
