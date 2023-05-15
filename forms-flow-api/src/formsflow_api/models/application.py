@@ -60,6 +60,7 @@ class Application(
                 "form_process_mapper_id",
                 "process_instance_id",
                 "modified_by",
+                "modified",
             ],
             mapper_info,
         )

@@ -25,6 +25,7 @@ from formsflow_api.services import ApplicationService
 from formsflow_api.services import InfluenzaService
 from formsflow_api.models import Application
 from formsflow_api_utils.utils.user_context import UserContext, user_context
+import datetime
 
 API = Namespace("Application", description="Application")
 
@@ -166,8 +167,8 @@ class ApplicationsResource(Resource):
             return response, status
 
 
-@cors_preflight("GET,PUT,DELETE,OPTIONS")
-@API.route("/<int:application_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
+@cors_preflight("GET,PUT,PATCH,DELETE,OPTIONS")
+@API.route("/<int:application_id>", methods=["GET", "PUT", "PATCH", "DELETE", "OPTIONS"])
 class ApplicationResourceById(Resource):
     """Resource for getting application by id."""
 
@@ -241,6 +242,43 @@ class ApplicationResourceById(Resource):
                 dict_data["submission_id"] = submission_id
             ApplicationService.update_application(
                 application_id=application_id, data=dict_data
+            )
+            return "Updated successfully", HTTPStatus.OK
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to application-{application_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+
+        except BaseException as submission_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(submission_err)
+
+            return response, status
+    
+    @staticmethod
+    @auth.require
+    @profiletime
+    def patch(application_id):
+        """Update application details.
+
+        : application_id:- Update the application for particular application_id
+        """
+        try:
+            data = {"modified": datetime.datetime.now()}
+            ApplicationService.update_application(
+                application_id=application_id, data=data, 
             )
             return "Updated successfully", HTTPStatus.OK
         except PermissionError as err:
@@ -471,3 +509,35 @@ class ApplicationResourceByIdDelete(Resource):
         except BusinessException as err:
             current_app.logger.error(err.error)
             return err.error, err.status_code
+
+# @cors_preflight("PATCH, OPTIONS")
+# @API.route("/<int:application_id>/update", methods=["PATCH", "OPTIONS"])
+# class ApplicationResourceByIdUpdate(Resource):
+#     """Update application date by id."""
+
+#     @staticmethod
+#     @auth.require
+#     @profiletime
+#     @user_context
+#     def patch(application_id, **kwargs):
+#         """Update application date by id."""
+#         try:
+#             data = {"modified": datetime.datetime.now()}
+#             ApplicationService.update_application(
+#                 application_id=application_id, data=data, 
+#             )
+#             # print("application", application)
+#             # if not application:
+#             #     raise BusinessException(f"Invalid application by id:{application_id}", HTTPStatus.BAD_REQUEST)
+#             return "Updated successfully", HTTPStatus.OK
+#         except PermissionError as err:
+#             response, status = (
+#                 {
+#                     "type": "Permission Denied",
+#                     "message": f"Access to application-{application_id} is prohibited.",
+#                 },
+#                 HTTPStatus.FORBIDDEN,
+#             )
+#             current_app.logger.warning(response)
+#             current_app.logger.warning(err)
+#             return response, status
