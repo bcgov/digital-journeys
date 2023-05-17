@@ -7,6 +7,8 @@ export const AWAITING_ACKNOWLEDGEMENT = "Awaiting Acknowledgement";
 export const SUBMITTED_STATUS = "Submitted";
 export const RESUBMITTED_STATUS = "Resubmitted";
 export const VALIDATED_STATUS = "Validated";
+export const SUBMITTED_VALIDATION_STATUS = "Submitted - Validation";
+export const SUBMITTED_FINAL_STATUS = "Submitted - Final";
 
 export const CLIENT_EDIT_STATUS = [
   AWAITING_ACKNOWLEDGEMENT,
@@ -14,6 +16,8 @@ export const CLIENT_EDIT_STATUS = [
   SUBMITTED_STATUS,
   RESUBMITTED_STATUS,
   VALIDATED_STATUS,
+  SUBMITTED_VALIDATION_STATUS,
+  SUBMITTED_FINAL_STATUS,
 ];
 
 export const UPDATE_EVENT_STATUS = [RESUBMIT_STATUS, AWAITING_ACKNOWLEDGEMENT];
