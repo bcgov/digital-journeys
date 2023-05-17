@@ -54,11 +54,13 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   } else if (
     formNameLower.includes(
       FORM_NAMES.INFLUENZA_WORKSITE_REGISTRATION.toLowerCase()
+    ) || formNameLower.includes(
+      FORM_NAMES.INFLUENZA_CLINIC_WORKSITE_REGISTRATION.toLowerCase()
     )
   ) {
     const firstName = formData?.primary_first_name || "";
     const lastName = formData?.primary_last_name || "";
-    submitterName = `${firstName} ${lastName}`;
+    submitterName = `${firstName} ${lastName}`.replace(/''/g, "'");
   }
   return submitterName ? submitterName.trim() : "";
 };
