@@ -12,7 +12,7 @@ For easy access, we have added an API. A developer can POST data on a given API.
 
 ## Available API endpoints
 
-**Endpoint** : POST /release-note  
+**Endpoint** : POST /user-group  
 **Header** : { "Authorization": "Bearer < *FORM DESIGNER TOKEN* >" }  
 **Body**: A json object.
 - group: Group name to which we want to assign users.
@@ -26,7 +26,7 @@ For easy access, we have added an API. A developer can POST data on a given API.
 Example,
 
 **Request body**
-```
+```json
 {
     "group": "sl-review-****",
     "users": [
@@ -43,7 +43,7 @@ Example,
 **Response body**
 
 (You can see 2 users, one with success and one with error message)
-```
+```json
 [
     {
         "firstName": "Bhumin",

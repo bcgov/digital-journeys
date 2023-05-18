@@ -4,7 +4,12 @@ export const FORM_NAMES = {
     TELEWORK: 'Telework agreement',
     COMPLIANT_1_10: 'Bullying / Misuse of Authority Complaint Form (Article 1.10)',
     INFLUENZA_WORKSITE_REGISTRATION: '2023 Influenza Worksite Registration',
-    INFLUENZA_CLINIC_WORKSITE_REGISTRATION: '2023 Influenza Clinic Worksite Registration',
   };
+  /** 
+   * Note: influenza constant will be removed in near future.
+   * Same apply for all old legacy forms too.
+   * please review "Form display name in draft and submission list" on below link
+   * https://github.com/bcgov/digital-journeys/blob/main/docs/forms.md
+   */
 
 export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME = 'formSupportedIdentityProviders';

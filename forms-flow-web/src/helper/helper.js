@@ -40,8 +40,15 @@ const getEmployeeNameFromSubmission = (form, submission) => {
 
   let submitterName = "";
   const formNameLower = form.toLowerCase();
-
-  if (formNameLower.includes(FORM_NAMES.SENIOR_LEADER_REVIEW.toLowerCase())) {
+  /** 
+   * Else If conditions can be remove in future
+   * submissionDisplayName field will be add as hidden field. 
+   * please review "Form display name in draft and submission list" on below link
+   * https://github.com/bcgov/digital-journeys/blob/main/docs/forms.md
+   */
+  if (formData?.submissionDisplayName) {
+    submitterName = formData?.submissionDisplayName;
+  } else if (formNameLower.includes(FORM_NAMES.SENIOR_LEADER_REVIEW.toLowerCase())) {
     submitterName = formData?.employeeName?.name || formData?.employeeName;
   } else if (formNameLower.includes(FORM_NAMES.TELEWORK.toLowerCase())) {
     submitterName = formData?.name;
@@ -54,13 +61,11 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   } else if (
     formNameLower.includes(
       FORM_NAMES.INFLUENZA_WORKSITE_REGISTRATION.toLowerCase()
-    ) || formNameLower.includes(
-      FORM_NAMES.INFLUENZA_CLINIC_WORKSITE_REGISTRATION.toLowerCase()
     )
   ) {
     const firstName = formData?.primary_first_name || "";
     const lastName = formData?.primary_last_name || "";
-    submitterName = `${firstName} ${lastName}`.replace(/''/g, "'");
+    submitterName = `${firstName} ${lastName}`;
   }
   return submitterName ? submitterName.trim() : "";
 };
