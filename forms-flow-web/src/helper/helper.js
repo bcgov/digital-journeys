@@ -41,7 +41,6 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   let submitterName = "";
   const formNameLower = form.toLowerCase();
   /** 
-   * Else If conditions can be remove in future
    * submissionDisplayName field will be add as hidden field. 
    * please review "Form display name in draft and submission list" on below link
    * https://github.com/bcgov/digital-journeys/blob/main/docs/forms.md

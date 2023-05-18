@@ -6,8 +6,6 @@ export const FORM_NAMES = {
     INFLUENZA_WORKSITE_REGISTRATION: '2023 Influenza Worksite Registration',
   };
   /** 
-   * Note: influenza constant will be removed in near future.
-   * Same apply for all old legacy forms too.
    * please review "Form display name in draft and submission list" on below link
    * https://github.com/bcgov/digital-journeys/blob/main/docs/forms.md
    */
