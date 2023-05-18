@@ -9,6 +9,7 @@
 5. [Reusable Popup](#reusable-popup)
 6. [Form Retention](#form-retention)
 7. [Fetch default values in Draft](#fetch-default-values-in-draft)
+8. [Form display name in draft and submission list](#form-display-name-in-draft-and-submission-list)
 
 ## Calculated Form Values
 
@@ -164,3 +165,26 @@ In the new form submission, we fetched logged-in users' data and pre-fill in the
 
 1. Make the field `disabled` for which we want to fetch the latest data from the user object.
 2. Add the hidden field `enableDraftDefault` and set its value to `true` in the form.
+
+## Form display name in draft and submission list
+
+
+![submissionDisplayName.png](images/submissionDisplayName.png)
+When we open the submitted form tab, We see a list of submitted forms. In the above image, we can see two parts of "Form name"
+- "Form title"
+- "Submission Display Name"
+
+Here "Submission Display Name" is varying form to form. And that value is fetched from the submission data only.
+
+let's define steps that prepare "Submission Display Name" value.
+1. Add hidden field in form with name `submissionDisplayName`
+2. Go to "data" tab and "Calculated Value" section.
+3. Add Javascript code that prepare "Submission Display Name" value.
+
+**e.g.**
+In Cold/Flu form we are displaying primary contact first and last name. So the script will be.
+```javascript
+if (data?.primary_first_name && data?.primary_last_name) {
+  value = `${data.primary_first_name} ${data.primary_last_name}`;
+}
+```
