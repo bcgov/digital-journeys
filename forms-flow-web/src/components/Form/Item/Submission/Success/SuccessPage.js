@@ -222,40 +222,30 @@ export default React.memo(() => {
               <li>
                 The information you’ve provided will be shared with Executive
                 Talent Management and Corporate Workforce Strategies in the
-                Public Service Agency. Ministry-specific results will be shared
-                with the identified ministry key contacts (DMO and/or ministry
-                Human Resources) to inform ministry leadership development.
+                Public Service Agency, ministry SLR key contact
+                (ministry-specific data), and DMC/DMCPSR to inform executive
+                succession and senior leadership development strategies,
+                programs and activities at both the ministry and corporate
+                levels.
               </li>
 
               <li>
-                Data will be provided for DMC/ DMCPSR to inform executive
-                succession and development strategies, programs and activities.
+                Shortly, you will receive an email with a PDF copy of the form
+                for your records.
               </li>
 
               <li>
-                The file will remain available in the system until the end of
-                the day on March 17th, 2023.
+                You will also receive an email with a survey about your
+                experience with this SLR process. Your feedback will help us
+                improve the next review process.
               </li>
 
               <li>
-                Now that the SLR process is complete, please encourage the
-                senior leader to target their learning and development plan,
-                goals, and actions to support their career aspirations and
-                readiness to compete for an executive role.
-              </li>
-
-              <li>
-                You will receive a PDF copy of this form via email. A PDF copy
-                can also be downloaded using the “Print as PDF” button on the
-                top right of the form. We encourage you to share the completed
-                PDF form with the senior leader.
-              </li>
-
-              <li>
-                If you have any questions, please contact{" "}
+                Thank you. If you have any questions, please contact{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
-                  PSA.SeniorLeadershipReview@gov.bc.ca
+                  the SLR Team
                 </a>
+                .
               </li>
             </ul>
           </div>
