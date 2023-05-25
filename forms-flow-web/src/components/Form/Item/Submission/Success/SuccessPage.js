@@ -125,9 +125,9 @@ export default React.memo(() => {
             <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Reach out to the{" "}
+                validate senior leader readiness.{" "}
                 <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
-                  ministry key contact
+                  Reach out to the ministry key contact
                 </a>{" "}
                 for further instruction.
               </li>
@@ -154,7 +154,7 @@ export default React.memo(() => {
               </li>
 
               <li>
-                If you have any questions,
+                If you have any questions,{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
                   please contact the SLR team
                 </a>
@@ -176,9 +176,9 @@ export default React.memo(() => {
             <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Reach out to the{" "}
+                validate senior leader readiness.{" "}
                 <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
-                  ministry key contact
+                  Reach out to the ministry key contact
                 </a>{" "}
                 for further instruction.
               </li>
@@ -205,7 +205,7 @@ export default React.memo(() => {
               </li>
 
               <li>
-                If you have any questions,
+                If you have any questions,{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
                   please contact the SLR team
                 </a>
