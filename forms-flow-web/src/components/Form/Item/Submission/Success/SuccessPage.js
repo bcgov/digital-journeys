@@ -116,18 +116,20 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Almost done! Your Nomination has been submitted for your ministry to
+            Almost done! Your nomination has been submitted for your ministry to
             validate. Please make sure to come back and complete the final
             sign-off after discussions with your Deputy Minister (DM). Next
-            Steps:
+            steps:
           </span>
           <div className="success-content-body">
             <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Contact the Executive Director
-                of your ministry human resources department or the DMO for
-                further instruction.
+                validate senior leader readiness.{" "}
+                <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
+                  Reach out to the ministry key contact
+                </a>{" "}
+                for further instruction.
               </li>
 
               <li>
@@ -141,20 +143,20 @@ export default React.memo(() => {
               <li>
                 When validated and finalized, all forms must be signed and
                 submitted by you using the ‘Final Submission’ button by 11:59 PM
-                on January 27th, 2023.
+                on September 29, 2023.
               </li>
 
               <li>
-                After January 27, 2023, unsigned forms that have not been
+                After September 29, 2023, unsigned forms that have not been
                 submitted as final will be considered incomplete and will not be
                 included in the data captured for corporate reporting. These
                 files will be deleted from the system.
               </li>
 
               <li>
-                If you have any questions, please contact{" "}
+                If you have any questions,{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
-                  PSA.SeniorLeadershipReview@gov.bc.ca
+                  please contact the SLR team
                 </a>
               </li>
             </ol>
@@ -165,18 +167,20 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Almost done! Your Nomination has been submitted for your ministry to
+            Almost done! Your nomination has been submitted for your ministry to
             validate. Please make sure to come back and complete the final
             sign-off after discussions with your Deputy Minister (DM). Next
-            Steps:
+            steps:
           </span>
           <div className="success-content-body">
             <ol>
               <li>
                 The ministry will communicate the approach you will be using to
-                validate senior leader readiness. Contact the Executive Director
-                of your ministry human resources department or the DMO for
-                further instruction.
+                validate senior leader readiness.{" "}
+                <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
+                  Reach out to the ministry key contact
+                </a>{" "}
+                for further instruction.
               </li>
 
               <li>
@@ -190,20 +194,20 @@ export default React.memo(() => {
               <li>
                 When validated and finalized, all forms must be signed and
                 submitted by you using the ‘Final Submission’ button by 11:59 PM
-                on January 27th, 2023.
+                on September 29, 2023.
               </li>
 
               <li>
-                After January 27, 2023, unsigned forms that have not been
+                After September 29, 2023, unsigned forms that have not been
                 submitted as final will be considered incomplete and will not be
                 included in the data captured for corporate reporting. These
                 files will be deleted from the system.
               </li>
 
               <li>
-                If you have any questions, please contact{" "}
+                If you have any questions,{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
-                  PSA.SeniorLeadershipReview@gov.bc.ca
+                  please contact the SLR team
                 </a>
               </li>
             </ol>
@@ -352,31 +356,27 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-          Thank you for registering your worksite for the 2023 
-          Cold and Flu Program
+            Thank you for registering your worksite for the 2023 Cold and Flu
+            Program
           </span>
           <div className="success-content-body">
             <ul>
               <li>
-              Our nurse teams will reach out to you July-August 
-              to begin organizing your clinic.
+                Our nurse teams will reach out to you July-August to begin
+                organizing your clinic.
               </li>
               <li>
                 You may check the&nbsp;
-                <a 
-                href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu"
-                >
+                <a href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu">
                   Cold & Flu page on the Careers & MyHR website
-                </a>&nbsp;
-                regularly for the most current information on the program.
-                
+                </a>
+                &nbsp; regularly for the most current information on the
+                program.
               </li>
-              
+
               <li>
-              If you have any questions, please email the&nbsp;
-                <a href="mailto:Cold.Flu@gov.bc.ca">
-                Cold and Flu team
-                </a>.
+                If you have any questions, please email the&nbsp;
+                <a href="mailto:Cold.Flu@gov.bc.ca">Cold and Flu team</a>.
               </li>
             </ul>
           </div>
