@@ -15,6 +15,7 @@ DESIGNER_GROUP = "formsflow-designer"
 REVIEWER_GROUP = "formsflow-reviewer"
 CLIENT_GROUP = "formsflow-client"
 COLD_FLU_ADMIN_GROUP = "cold-flu-admin"
+SL_REVIEW_ADMIN_GROUP = "sl-review-adm"
 FORMSFLOW_ROLES = [DESIGNER_GROUP, REVIEWER_GROUP, CLIENT_GROUP]
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 
