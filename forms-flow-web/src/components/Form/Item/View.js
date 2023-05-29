@@ -123,6 +123,8 @@ const View = React.memo((props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState();
 
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
+
   const {
     isAuthenticated,
     hideComponents,
@@ -463,6 +465,9 @@ const View = React.memo((props) => {
           redirectPath: evt.redirectPath,
         });
         break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
+        setIsCustomFormSubmissionLoading(true);
+        break;
       default:
         return;
     }
@@ -552,13 +557,13 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading || employeeData.loading}
+        active={isFormSubmissionLoading || isCustomFormSubmissionLoading || employeeData.loading}
         spinner
         // text={<Translation>{(t) => t("Loading...")}</Translation>}
         text={
           employeeData.loading
             ? "Loading user data..."
-            : isFormSubmissionLoading
+            : isFormSubmissionLoading || isCustomFormSubmissionLoading
             ? "Submitting..."
             : "Loading..."
         }

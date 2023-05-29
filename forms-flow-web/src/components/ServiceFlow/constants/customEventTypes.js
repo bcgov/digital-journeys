@@ -9,4 +9,5 @@ export const CUSTOM_EVENT_TYPE = {
   ERROR_CUSTOM_VALIDATION: "errorCustomValidation",
   POPUP: "popup",
   FORMACCESS: "formaccess",
+  CUSTOM_SUBMISSION_LOADING: "customSubmissionLoading",
 };

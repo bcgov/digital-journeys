@@ -79,6 +79,8 @@ const Edit = React.memo((props) => {
 
   const formRef = useRef(null);
 
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
+
   const applicationStatus = useSelector(
     (state) => state.applications.applicationDetail?.applicationStatus || ""
   );
@@ -242,7 +244,10 @@ const Edit = React.memo((props) => {
         break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(customEvent.error);
-        break;  
+        break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
+        setIsCustomFormSubmissionLoading(true);
+        break;
       default:
         return;
     }
@@ -271,9 +276,9 @@ const Edit = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading}
+        active={isFormSubmissionLoading || isCustomFormSubmissionLoading}
         spinner
-        text={t("Loading...")}
+        text={isFormSubmissionLoading || isCustomFormSubmissionLoading ? "Submitting..." : "Loading..."}
         className="col-12"
       >
         <div className="ml-4 mr-4" id="formview">
