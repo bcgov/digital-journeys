@@ -126,7 +126,10 @@ export default React.memo(() => {
               <li>
                 The ministry will communicate the approach you will be using to
                 validate senior leader readiness.{" "}
-                <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
+                <a
+                  href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx"
+                  target="_blank"
+                >
                   Reach out to the ministry key contact
                 </a>{" "}
                 for further instruction.
@@ -177,7 +180,10 @@ export default React.memo(() => {
               <li>
                 The ministry will communicate the approach you will be using to
                 validate senior leader readiness.{" "}
-                <a href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx">
+                <a
+                  href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx"
+                  target="_blank"
+                >
                   Reach out to the ministry key contact
                 </a>{" "}
                 for further instruction.
