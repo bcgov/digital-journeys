@@ -129,6 +129,7 @@ export default React.memo(() => {
                 <a
                   href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Reach out to the ministry key contact
                 </a>{" "}
@@ -183,6 +184,7 @@ export default React.memo(() => {
                 <a
                   href="https://bcgov.sharepoint.com/teams/06164/SitePages/Ministry-Validation.aspx"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Reach out to the ministry key contact
                 </a>{" "}
