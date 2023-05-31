@@ -364,7 +364,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thanks your form has be resubmitted
+            Thank you. Your form has been resubmitted.
           </span>
           <div className="success-content-body">
             <ul>
