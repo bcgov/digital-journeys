@@ -360,6 +360,35 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.INFLUENZA_WORKSITE_REGISTRATION_EDIT)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thanks your form has be resubmitted
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                Our nurse teams will reach out to you July-August to begin
+                organizing your clinic.
+              </li>
+              <li>
+                You may check the&nbsp;
+                <a href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu">
+                  Cold & Flu page on the Careers & MyHR website
+                </a>
+                &nbsp; regularly for the most current information on the
+                program.
+              </li>
+
+              <li>
+                If you have any questions, please email the&nbsp;
+                <a href="mailto:Cold.Flu@gov.bc.ca">Cold and Flu team</a>.
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     } else if (search.includes(successTypes.INFLUENZA_WORKSITE_REGISTRATION)) {
       return (
         <>
