@@ -73,6 +73,8 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
 
         if(HttpMethod.PATCH.name().equals(method.name())) {
             logger.info("payload="+payload);
+            logger.info("accessToken="+accessToken);
+            System.out.println("accessToken="+accessToken);
             Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.patch()
                     .uri(url)
                     .bodyValue(payload)
@@ -80,11 +82,19 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .retrieve()
+                    // .onStatus(HttpStatus::is4xxClientError,
+                    //         response -> Mono.error(new FormioServiceException(response.toString())))
                     .onStatus(HttpStatus::is4xxClientError,
-                            response -> Mono.error(new FormioServiceException(response.toString())))
+                            response -> {
+                                logger.error("4xx Client error on PATCH request");
+                                logger.error("response: " + response.toString());
+                                System.out.println("response: " + response.toString());
+                                return Mono.error(new FormioServiceException(response.toString()));
+                            })
                     .toEntity(String.class);
 
             ResponseEntity<String> response = entityMono.block();
+            logger.info("Response from PATCH request={}", response);
             if(response !=null && "Token Expired".equalsIgnoreCase(response.getBody())) {
                 return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(TOKEN_EXPIRY_CODE));
             }
