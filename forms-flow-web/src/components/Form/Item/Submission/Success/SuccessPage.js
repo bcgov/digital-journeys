@@ -247,13 +247,7 @@ export default React.memo(() => {
               </li>
 
               <li>
-                You will also receive an email with a survey about your
-                experience with this SLR process. Your feedback will help us
-                improve the next review process.
-              </li>
-
-              <li>
-                Thank you. If you have any questions, please contact{" "}
+                If you have any questions, please contact{" "}
                 <a href="mailto:PSA.SeniorLeadershipReview@gov.bc.ca">
                   the SLR Team
                 </a>
