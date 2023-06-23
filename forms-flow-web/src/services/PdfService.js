@@ -41,6 +41,15 @@ export const printToPDF = ({ pdfName, formName }) => {
       changeElm.push(elm);
     }
   });
+  /** .show-in-print-only has property display:none 
+  * so no need to check for style.display none or block.
+  */
+  const showInPrint = document.querySelectorAll(".show-in-print-only");
+  let changeHiddenElm = [];
+  showInPrint.forEach((elm) => {
+      elm.style.display = "block";
+      changeHiddenElm.push(elm);
+  });
   // Hiding the floating buttons during the PDF generation
   const selectors = "button.floatingButton,.formio-component-button";
   const floatingButtons = document.querySelectorAll(selectors);
@@ -51,6 +60,8 @@ export const printToPDF = ({ pdfName, formName }) => {
     checkedRadio.forEach((ele) => ele.checked = true);
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
     changeElm.forEach((elm) => (elm.style.display = "block"));
+    changeHiddenElm.forEach((elm) => (elm.style.display = "none"));
+    changeHiddenElm = [];
     changeElm = [];
     if (appContainer.length > 0) {
       appContainer[0].style.maxWidth = '';
