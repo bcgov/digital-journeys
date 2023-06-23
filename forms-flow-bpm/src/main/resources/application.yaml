@@ -52,6 +52,10 @@ formsflow.ai:
     url: ${WEB_BASE_URL}
   documentApi:
     url: ${FORMSFLOW_DOC_API_URL}
+  crm:
+    url: ${CRM_URL}
+    security:
+      token: ${CRM_AUTH_TOKEN}
 
 
 camunda.bpm:
