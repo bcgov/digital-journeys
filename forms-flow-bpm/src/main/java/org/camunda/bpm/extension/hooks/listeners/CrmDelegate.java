@@ -52,7 +52,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String FORM_URL = "formUrl";
     private static final String INCIDENTS = "incidents";
     private static final String CONTACTS = "contacts";
-    private static final String TEST_PDF = "test.pdf";
+    private static final String ATTACHMENT_FILE_NAME = "attachment.pdf";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -181,9 +181,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private void generateAndAddPDFForForm(String formId, String submissionId, int crmIncidentId) throws Exception {
-        String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, TEST_PDF);
-        addCrmAttachment(crmIncidentId, pdfEncodedBase64, TEST_PDF);
-        System.out.println("Finished generating and adding PDF for form");
+        String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, ATTACHMENT_FILE_NAME);
+        attachment(crmIncidentId, pdfEncodedBase64, ATTACHMENT_FILE_NAME);
+        attachment.out.println("Finished generating and adding PDF for form");
     }
 
     private String generatePDFForForm(String formId, String submissionId, String fileName) throws Exception {
