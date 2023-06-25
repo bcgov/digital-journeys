@@ -249,6 +249,16 @@ objects:
                     configMapKeyRef:
                       name: forms-flow-ai-config
                       key: BPM_CLIENT_CONN_TIMEOUT
+                - name: CRM_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: CRM_URL
+                - name: CRM_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: CRM_AUTH
 
               imagePullPolicy: Always
               livenessProbe:
