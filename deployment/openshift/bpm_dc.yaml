@@ -254,11 +254,11 @@ objects:
                     secretKeyRef:
                       name: forms-flow-ai-config
                       key: CRM_URL
-                - name: CRM_AUTH
+                - name: CRM_AUTH_TOKEN
                   valueFrom:
                     secretKeyRef:
                       name: forms-flow-ai-config
-                      key: CRM_AUTH
+                      key: CRM_AUTH_TOKEN
 
               imagePullPolicy: Always
               livenessProbe:
