@@ -1,6 +1,6 @@
 import React from "react";
 import { render as rtlRender, screen } from "@testing-library/react";
-import BaseRouting from "../../../src/components/BaseRouting";
+import BaseRouting from "../../components/BaseRouting";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import { Router, Route } from "react-router";
