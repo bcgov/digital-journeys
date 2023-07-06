@@ -129,6 +129,12 @@ def test_draft_submission_resource(app, client, session, jwt):
     assert response.json.get("formId") == payload["formId"]
     assert response.json.get("submissionId") == payload["submissionId"]
 
+    # Commented in Digital journey.
+    # draft = Draft().query.get(draft_id)
+    # assert draft.status == "0"
+    # assert draft.data == {}
+    # assert draft.application_id == response.json.get("id")
+
 
 def test_draft_tenant_authorization(app, client, session, jwt):
     """Tests if the draft detail is tenant authorized."""
