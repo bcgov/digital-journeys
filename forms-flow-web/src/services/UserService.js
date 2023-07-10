@@ -154,9 +154,9 @@ const UserService = {
   initKeycloak,
   userLogout,
   getToken,
-  getUserInfo,
   getFormioToken,
   setKeycloakJson,
+  getUserInfo,
 };
 
 export default UserService;
