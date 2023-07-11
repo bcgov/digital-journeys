@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 
 @Named("SendSubmissionToODSDelegate")
@@ -46,6 +48,7 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
         String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
         String objectKeycase = String.valueOf(execution.getVariableLocal("objectKeycase"));
+        String replaceText = String.valueOf(execution.getVariableLocal("replaceText"));
         // List of object keys that should not be flatten on send to ODS
         List<String> flatObjectExclusionList = (List) execution.getVariableLocal("flatObjectExclusionList");
         // If exceptions not defined, set an empty list
@@ -87,11 +90,15 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";
         if (objectKeycase.equals("snake_case")) {
-            json = objectMapper.writeValueAsString(convertToSnake(values));
-        } else {
-            json = objectMapper.writeValueAsString(values);
+            values = convertToSnake(values);
         }
-        System.out.println(json);
+        if (replaceText != null) {
+            String[][] replaceArray = parseStringToArray(replaceText.split("\\s*,\\s*"));
+            if (replaceArray.length > 0) {
+                values = replaceTextAll(values, replaceArray);
+            }
+        }
+        json = objectMapper.writeValueAsString(values);
 
         boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
 
@@ -128,5 +135,40 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
             map.put(camelToSnake(entry.getKey()), entry.getValue());
         }
         return map;
+    }
+
+    public Map<String, Object> replaceTextAll(Map<String, Object> values, String[][] replaceArray) {
+        Map<String, Object> map = new HashMap<>();
+        for (var entry : values.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                String temp = entry.getValue().toString();
+                for (int i = 0; i < replaceArray.length; i++) {
+                    if (replaceArray[i].length > 1) {
+                        temp = temp.replaceAll(
+                            Pattern.quote(replaceArray[i][0]), 
+                            Matcher.quoteReplacement(replaceArray[i][1]));
+                    }
+                }
+                map.put(entry.getKey(), temp);
+            } else {
+                map.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return map;
+    }
+
+    public static String[][] parseStringToArray(String[] input) {
+        // It covert string array from[','',@,#] to [[',''],[@,#]].
+        int replaceArraylength = input.length/2;
+        String[][] nestedArray = new String[replaceArraylength][2];
+        int init = 0;
+        for (int i = 0; i < input.length; i += 2) {
+            if (i+1 <= input.length && init < replaceArraylength) {
+                nestedArray[init][0] = input[i];
+                nestedArray[init][1] = input[i+1];
+                init++;
+            }
+        }
+        return nestedArray;
     }
 }
