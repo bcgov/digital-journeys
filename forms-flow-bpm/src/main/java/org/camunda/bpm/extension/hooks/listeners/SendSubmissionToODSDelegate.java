@@ -48,7 +48,7 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
         String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
         String objectKeycase = String.valueOf(execution.getVariableLocal("objectKeycase"));
-        String replaceText = String.valueOf(execution.getVariableLocal("replaceText"));
+        List<String> replaceTextList = (List) execution.getVariableLocal("replaceTextList");
         // List of object keys that should not be flatten on send to ODS
         List<String> flatObjectExclusionList = (List) execution.getVariableLocal("flatObjectExclusionList");
         // If exceptions not defined, set an empty list
@@ -92,11 +92,8 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         if (objectKeycase.equals("snake_case")) {
             values = convertToSnake(values);
         }
-        if (replaceText != null) {
-            String[][] replaceArray = parseStringToArray(replaceText.split("\\s*,\\s*"));
-            if (replaceArray.length > 0) {
-                values = replaceTextAll(values, replaceArray);
-            }
+        if (replaceTextList != null) {
+            values = replaceTextAll(values, replaceTextList);
         }
         json = objectMapper.writeValueAsString(values);
 
@@ -137,16 +134,17 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         return map;
     }
 
-    public Map<String, Object> replaceTextAll(Map<String, Object> values, String[][] replaceArray) {
+    public Map<String, Object> replaceTextAll(Map<String, Object> values, List<String> replaceTextList) {
         Map<String, Object> map = new HashMap<>();
         for (var entry : values.entrySet()) {
             if (entry.getValue() instanceof String) {
                 String temp = entry.getValue().toString();
-                for (int i = 0; i < replaceArray.length; i++) {
-                    if (replaceArray[i].length > 1) {
+                for (String str : replaceTextList) {
+                    String[] replaceArray = str.split(",");
+                    if (replaceArray.length > 1) {
                         temp = temp.replaceAll(
-                            Pattern.quote(replaceArray[i][0]), 
-                            Matcher.quoteReplacement(replaceArray[i][1]));
+                            Pattern.quote(replaceArray[0]), 
+                            Matcher.quoteReplacement(replaceArray[1]));
                     }
                 }
                 map.put(entry.getKey(), temp);
@@ -155,20 +153,5 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
             }
         }
         return map;
-    }
-
-    public static String[][] parseStringToArray(String[] input) {
-        // It covert string array from[','',@,#] to [[',''],[@,#]].
-        int replaceArraylength = input.length/2;
-        String[][] nestedArray = new String[replaceArraylength][2];
-        int init = 0;
-        for (int i = 0; i < input.length; i += 2) {
-            if (i+1 <= input.length && init < replaceArraylength) {
-                nestedArray[init][0] = input[i];
-                nestedArray[init][1] = input[i+1];
-                init++;
-            }
-        }
-        return nestedArray;
     }
 }
