@@ -319,9 +319,9 @@ export const mockstate = {
     processActivityLoadError: false,
     isProcessDiagramLoading: true,
   },
-  employeeData: {
-    data: {},
-    error: null,
-    loading: true
-  },
+  // employeeData: {
+  //   data: {},
+  //   error: null,
+  //   loading: true
+  // },
 };
