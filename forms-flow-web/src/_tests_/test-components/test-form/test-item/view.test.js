@@ -64,6 +64,7 @@ it("should render the View component without breaking", async () => {
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
       draft: { draftSubmission: {}, lastUpdated: {} },
+      employeeData: { data: {}, error: null, loading: true },
     })
   );
 
