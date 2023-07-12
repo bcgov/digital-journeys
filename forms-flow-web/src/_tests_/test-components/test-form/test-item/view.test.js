@@ -51,7 +51,7 @@ function renderWithRouterMatch(
   };
 }
 
-it.skip("should render the View component without breaking", async () => {
+it("should render the View component without breaking", async () => {
   const spy = jest.spyOn(redux, "useSelector");
   const setState = jest.fn();
   const useStateSpy = jest.spyOn(React, "useState");
