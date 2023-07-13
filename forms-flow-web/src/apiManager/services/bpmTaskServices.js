@@ -27,7 +27,7 @@ import {
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
-import { REVIEWER_GROUP } from "../../constants/userContants";
+import { REVIEWER_GROUP, MANAGER_ROLE } from "../../constants/userContants";
 import { MAX_RESULTS, HIDEFROMTASKLIST } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (
@@ -43,6 +43,20 @@ export const fetchServiceTaskList = (
   if (reqData.descriptionLike === undefined && reqData.description === undefined) {
     reqData = {...reqData, description: HIDEFROMTASKLIST};
   }
+
+  // Apply filter to hide tasks that are not assigned to manager
+  // issue: https://github.com/bcgov/digital-journeys/issues/1198
+  if (reqData.assigneeLike === undefined && reqData.assignee === undefined) {
+    const userInfo = UserService.getUserInfo();
+    if (userInfo) {
+      if(userInfo?.role !== undefined && userInfo?.username !== undefined) {
+        if (userInfo.role.includes(MANAGER_ROLE)) {
+          reqData = {...reqData, assignee: userInfo.username};
+        }
+      }
+    }
+  }
+
   let apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
     "<filter_id>",

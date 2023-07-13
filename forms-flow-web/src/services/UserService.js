@@ -150,6 +150,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
 // const doLogin = KeycloakData.login;
 // const doLogout = KeycloakData.logout;
 const getToken = () => KeycloakData?.token;
+const getUserInfo = () => KeycloakData?.userInfo;
 
 const UserService = {
   initKeycloak,
@@ -157,6 +158,7 @@ const UserService = {
   getToken,
   getFormioToken,
   setKeycloakJson,
+  getUserInfo,
 };
 
 export default UserService;

@@ -153,13 +153,15 @@ export const taskFilters = [
     type: Filter_Search_Types.STRING,
     value: "",
   },
-  {
-    label: <Translation>{(t) => t("Assignee")}</Translation>,
-    key: "assignee",
-    operator: FILTER_OPERATOR_TYPES.LIKE,
-    type: Filter_Search_Types.STRING,
-    value: "",
-  },
+  // Assignee is irrelavent if task are only visible if assigned.
+  // issue: https://github.com/bcgov/digital-journeys/issues/1198
+  // {
+  //   label: <Translation>{(t) => t("Assignee")}</Translation>,
+  //   key: "assignee",
+  //   operator: FILTER_OPERATOR_TYPES.LIKE,
+  //   type: Filter_Search_Types.STRING,
+  //   value: "",
+  // },
   {
     label: <Translation>{(t) => t("Candidate Group")}</Translation>,
     key: "candidateGroup",
