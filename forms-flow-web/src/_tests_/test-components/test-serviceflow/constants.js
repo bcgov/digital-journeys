@@ -160,4 +160,13 @@ export const initialstate = {
       properties: {},
     },
   },
+  submission: {
+    formId: "",
+    id: "",
+    isActive: false,
+    lastUpdated: 0,
+    submission: {},
+    url: "",
+    error: ""
+  }
 };
