@@ -26,7 +26,7 @@ const CUSTOM_SUBMISSION_ENABLED_VARIABLE =
   "";
 export const CUSTOM_SUBMISSION_ENABLE =
   CUSTOM_SUBMISSION_ENABLED_VARIABLE === "true" ||
-  CUSTOM_SUBMISSION_ENABLED_VARIABLE === true
+    CUSTOM_SUBMISSION_ENABLED_VARIABLE === true
     ? true
     : false;
 //keycloak
@@ -39,10 +39,15 @@ const MULTITENANCY_ENABLED_VARIABLE =
   (window._env_ && window._env_.REACT_APP_MULTI_TENANCY_ENABLED) ||
   process.env.REACT_APP_MULTI_TENANCY_ENABLED ||
   false;
+export const PUBLIC_WORKFLOW_ENABLED =
+  (window._env_ && window._env_.REACT_APP_PUBLIC_WORKFLOW_ENABLED) === "true" ||
+    process.env.REACT_APP_PUBLIC_WORKFLOW_ENABLED === "true"
+    ? true
+    : false;
 
 export const MULTITENANCY_ENABLED =
   MULTITENANCY_ENABLED_VARIABLE === "true" ||
-  MULTITENANCY_ENABLED_VARIABLE === true
+    MULTITENANCY_ENABLED_VARIABLE === true
     ? true
     : false;
 
@@ -67,51 +72,6 @@ export const ANONYMOUS_USER = "anonymous";
 export const MANAGER_GROUP = 'manager';
 export const COLD_FLU_ADMIN_GROUP = 'cold-flu-admin';
 
-export const FORMIO_JWT_SECRET =
-  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
-
-export const USER_RESOURCE_FORM_ID =
-  (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||
-  process.env.REACT_APP_USER_RESOURCE_FORM_ID;
-
-export const FORMIO_FILE_URL =
-  (window._env_ && window._env_.REACT_APP_FORMIO_FILE_URL) ||
-  process.env.REACT_APP_FORMIO_FILE_URL;
-
-const CLIENT_ID =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ID) || process.env.REACT_APP_CLIENT_ID;
-const STAFF_REVIEWER_ID =
-  (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ID) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ID;
-const STAFF_DESIGNER_ID =
-  (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ID) ||
-  process.env.REACT_APP_STAFF_DESIGNER_ID;
-export const ANONYMOUS_ID =
-  (window._env_ && window._env_.REACT_APP_ANONYMOUS_ID) || process.env.REACT_APP_ANONYMOUS_ID;
-
-export const ROLES = [
-  {
-    id: CLIENT_ID,
-    title: CLIENT,
-  },
-  {
-    id: STAFF_REVIEWER_ID,
-    title: STAFF_REVIEWER,
-  },
-  {
-    id: STAFF_DESIGNER_ID,
-    title: STAFF_DESIGNER,
-  },
-];
-
-
-export const FORM_ACCESS = [{
-  type: "read_all",
-  roles:  [CLIENT_ID,
-    STAFF_REVIEWER_ID,
-    STAFF_DESIGNER_ID
-      ]
-  }];
 
 export const OPERATIONS = {
   insert: {
@@ -222,3 +182,49 @@ export const EDIT_SUBMISSION_PAGE = {
   isReviewSubmission: "isReviewSubmission",
   isEditSubmission: "isEditSubmission",
 };
+
+export const FORMIO_JWT_SECRET =
+  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
+
+export const USER_RESOURCE_FORM_ID =
+  (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||
+  process.env.REACT_APP_USER_RESOURCE_FORM_ID;
+
+export const FORMIO_FILE_URL =
+  (window._env_ && window._env_.REACT_APP_FORMIO_FILE_URL) ||
+  process.env.REACT_APP_FORMIO_FILE_URL;
+
+const CLIENT_ID =
+  (window._env_ && window._env_.REACT_APP_CLIENT_ID) || process.env.REACT_APP_CLIENT_ID;
+const STAFF_REVIEWER_ID =
+  (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ID) ||
+  process.env.REACT_APP_STAFF_REVIEWER_ID;
+const STAFF_DESIGNER_ID =
+  (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ID) ||
+  process.env.REACT_APP_STAFF_DESIGNER_ID;
+export const ANONYMOUS_ID =
+  (window._env_ && window._env_.REACT_APP_ANONYMOUS_ID) || process.env.REACT_APP_ANONYMOUS_ID;
+
+export const ROLES = [
+  {
+    id: CLIENT_ID,
+    title: CLIENT,
+  },
+  {
+    id: STAFF_REVIEWER_ID,
+    title: STAFF_REVIEWER,
+  },
+  {
+    id: STAFF_DESIGNER_ID,
+    title: STAFF_DESIGNER,
+  },
+];
+
+
+export const FORM_ACCESS = [{
+  type: "read_all",
+  roles:  [CLIENT_ID,
+    STAFF_REVIEWER_ID,
+    STAFF_DESIGNER_ID
+      ]
+  }];

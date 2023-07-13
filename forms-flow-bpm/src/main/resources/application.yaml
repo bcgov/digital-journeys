@@ -19,8 +19,8 @@ server:
     session:
       cookie:
         secure: true
-        http-only: true
         max-age: 1800
+        http-only: true
 
 formsflow.ai:
   forms:
@@ -70,7 +70,7 @@ camunda.bpm:
   webapp:
     application-path: /
     csrf:
-      enable-secure-cookie: true
+      enable-secure-cookie: ${SESSION_COOKIE_SECURE:true}
     header-security:
       content-security-policy-disabled: false
       content-security-policy-value:  base-uri 'self';
@@ -169,7 +169,16 @@ websocket:
     secretKey: ${WEBSOCKET_ENCRYPT_KEY}
   messageType: ${WEBSOCKET_MESSAGE_TYPE}
   messageEvents: ${WEBSOCKET_MESSAGE_EVENTS:DEFAULT}
+  messageBroker:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    passcode: ${REDIS_PASSCODE}
+  enableRedis: ${REDIS_ENABLED:false}
 
+# disable redis
+spring.data.redis.repositories.enabled: false
+spring.autoconfigure.exclude:
+  - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 
 management:
   health:

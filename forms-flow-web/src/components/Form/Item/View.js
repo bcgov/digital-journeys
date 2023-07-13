@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link , useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { push } from "connected-react-router";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -35,7 +35,6 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import { setFormSubmitted } from "../../../actions/formActions";
-import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
@@ -56,11 +55,12 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
+import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../../Loading/SavingLoading";
 
+import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs, 
@@ -127,18 +127,22 @@ const View = React.memo((props) => {
 
   const {
     isAuthenticated,
+    // submission,
     hideComponents,
     onSubmit,
     onCustomEvent,
     errors,
     options,
-    form: { form, isActive, url },
+    form: { form, isActive, url, error },
     getEmployeeData,
     employeeData,
     user,
-    authToken
+    authToken,
   } = props;
   const formRef = useRef(null);
+
+  const [isValidResource, setIsValidResource] = useState(false);
+
   const dispatch = useDispatch();
   /*
   Selecting which endpoint to use based on authentication status,
@@ -200,18 +204,19 @@ const View = React.memo((props) => {
    * Draft is updated only if the form is updated from the last saved form data.
    */
   const saveDraft = (payload, exitType = exitType) => {
+    if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     // check if draftsave is disebled in form or not
     if (payload.data?.isSaveDraftEnabled !== undefined &&
-        payload.data?.isSaveDraftEnabled === false) {
-      return;
-    }
+      payload.data?.isSaveDraftEnabled === false) {
+    return;
+  }
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         setDraftSaved(false);
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
-            if (exitType === "UNMOUNT" && !err) {
+            if (exitType === "UNMOUNT" && !err && isAuthenticated) {
               toast.success(t("Submission saved to draft."));
               /* issue/722
               before this requirement, it creates new draft on form load.
@@ -244,6 +249,11 @@ const View = React.memo((props) => {
   };
 
   useEffect(() => {
+    if (form._id && !error) setIsValidResource(true);
+    return () => setIsValidResource(false);
+  }, [error, form._id]);
+
+  useEffect(() => {
     setTimeout(() => {
       setNotified(true);
     }, 5000);
@@ -264,13 +274,14 @@ const View = React.memo((props) => {
   //   if (
   //     validFormId &&
   //     DRAFT_ENABLED &&
+  //     isValidResource &&
   //     ((isAuthenticated && formStatus === "active") ||
   //       (!isAuthenticated && publicFormStatus?.status == "active"))
   //   ) {
   //     let payload = getDraftReqFormat(validFormId, draftData?.data);
   //     dispatch(draftCreateMethod(payload, setIsDraftCreated));
   //   }
-  // }, [validFormId, formStatus, publicFormStatus]);
+  // }, [validFormId, formStatus, publicFormStatus, isValidResource]);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -301,6 +312,7 @@ const View = React.memo((props) => {
       dispatch(
         getFormProcesses(formId, (err, data) => {
           if (!err) {
+            dispatch(getApplicationCount(data.id));
             setFormStatus(data.status);
             dispatch(setFormStatusLoading(false));
           }
@@ -476,9 +488,10 @@ const View = React.memo((props) => {
 
 
   return (
-    <div className="container overflow-y-auto">
+    <div className="container overflow-y-auto form-view-wrapper">
       {/* {DRAFT_ENABLED &&
         isAuthenticated &&
+        isValidResource && 
         (formStatus === "active" ||
           (publicFormStatus?.anonymous === true &&
             publicFormStatus?.status === "active")) && (
@@ -487,13 +500,19 @@ const View = React.memo((props) => {
               {!notified && (
                 <span className="text-primary">
                   <i className="fa fa-info-circle mr-2" aria-hidden="true"></i>
-                  {t("Unfinished applications will be saved to drafts.")}
+                  {t(
+                    "Unfinished applications will be saved to Applications/Drafts."
+                  )}
                 </span>
               )}
 
               {notified && poll && (
                 <SavingLoading
-                  text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                  text={
+                    draftSaved
+                      ? t("Saved to Applications/Drafts")
+                      : t("Saving...")
+                  }
                   saved={draftSaved}
                 />
               )}
@@ -502,7 +521,7 @@ const View = React.memo((props) => {
         )} */}
       <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
-          <MessageModal
+        <MessageModal
             modalOpen={!hasFormAccess}
             title="Form Access Error"
             message={"You do not have access to this form!"}
@@ -573,6 +592,7 @@ const View = React.memo((props) => {
           {isPublic || formStatus === "active" ? (
             <Form
               form={form}
+              // submission={submission}
               submission={defaultVals}
               url={url}
               options={{
@@ -590,6 +610,7 @@ const View = React.memo((props) => {
                 exitType.current = "SUBMIT";
                 onSubmit(data, form._id, isPublic);
               }}
+              // onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
               onCustomEvent={(evt) => {
                 onCustomEvent(evt, redirectUrl);
                 handleCustomEvent(evt);
@@ -645,13 +666,13 @@ const doProcessActions = (submission, ownProps) => {
       applicationCreateAPI(data, draft_id ? draft_id : null, (err, res) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
-          // toast.success(
-          //   <Translation>{(t) => t("Submission Saved")}</Translation>
-          // );
+          /* toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          ); */
           dispatch(setFormSubmitted(true));
           if (isAuth) {
             dispatch(setMaintainBPMFormPagination(true));
-
+            // dispatch(push(`${redirectUrl}form`));
             dispatch(setDraftSubmission({})); // check "saveDraft" for more detail
             redirectToFormSuccessPage(dispatch, push, form?.path, submission);
           }
@@ -668,7 +689,6 @@ const doProcessActions = (submission, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
-    authToken: state.user.bearerToken,
     tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,
@@ -682,6 +702,7 @@ const mapStateToProps = (state) => {
       },
     },
     submissionError: selectRoot("formDelete", state).formSubmissionError,
+    authToken: state.user.bearerToken,
     employeeData: state.employeeData,
   };
 };
@@ -719,14 +740,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
+          // toast.success("Submission Saved.");
           toast.success(
             "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
           );
           dispatch(push(`${redirectUrl}form`));
           break;
-        // case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
-        //   dispatch(push(`${redirectUrl}form`));
-        //   break;
+        /* case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
+          dispatch(push(`${redirectUrl}form`));
+          break; */
         default:
           return;
       }

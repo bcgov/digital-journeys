@@ -116,6 +116,7 @@ const Item = React.memo(() => {
         {editAllowed ? (
           <Route
             path={`${BASE_ROUTE}form/:formId/submission/:submissionId/edit`}
+            // component={Edit}
             render={(props) => 
               <Edit {...props} 
                 editSubmissionPage={EDIT_SUBMISSION_PAGE.isEditSubmission} 

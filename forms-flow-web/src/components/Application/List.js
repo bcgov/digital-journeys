@@ -9,13 +9,13 @@ import {
   setApplicationListActivePage,
   setCountPerpage,
   setApplicationListLoader,
-  setSelectedApplicationForDelete
+  setSelectedApplicationForDelete,
 } from "../../actions/applicationActions";
 import {
   getAllApplications,
   FilterApplications,
   getAllApplicationStatus,
-  deleteApplicationById
+  deleteApplicationById,
 } from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
@@ -24,6 +24,7 @@ import { columns, getoptions, defaultSortedBy } from "./table";
 import { getUserRolePermission } from "../../helper/user";
 import {
   CLIENT,
+  // DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
 } from "../../constants/constants";
@@ -35,6 +36,7 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
+import isValiResourceId from "../../helper/regExp/validResourceId";
 
 import Confirm from "../../containers/Confirm";
 import { toast } from "react-toastify";
@@ -66,7 +68,8 @@ export const ApplicationList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  
+  const [invalidFilters, setInvalidFilters] = React.useState({});
+
   const selectedApplicationForDelete = useSelector(
     (state) => state.applications.selectedApplicationForDelete
   );
@@ -128,8 +131,19 @@ export const ApplicationList = React.memo(() => {
       </div>
     );
   };
+  const validateFilters = (newState) => {
+    if (
+      newState.filters?.id?.filterVal &&
+      !isValiResourceId(newState.filters?.id?.filterVal)
+    ) {
+      return setInvalidFilters({ ...invalidFilters, APPLICATION_ID: true });
+    } else {
+      return setInvalidFilters({ ...invalidFilters, APPLICATION_ID: false });
+    }
+  };
 
   const handlePageChange = (type, newState) => {
+    validateFilters(newState);
     if (type === "filter") {
       setfiltermode(true);
     } else if (type === "pagination") {
@@ -153,17 +167,29 @@ export const ApplicationList = React.memo(() => {
   };
 
   const headerList = () => {
-    return [{
+    return [
+      {
         name: "Applications",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
         icon: "list",
         title: "Submitted Forms",
         description: "All forms that have been submitted",
-      }];
+      },
+      // {
+      //   name: "Drafts",
+      //   count: draftCount,
+      //   onClick: () => dispatch(push(`${redirectUrl}draft`)),
+      //   icon: "edit",
+      // },
+    ];
   };
 
   let headOptions = headerList();
+
+  // if (!DRAFT_ENABLED) {
+  //   headOptions.pop();
+  // }
 
   return (
     <ToolkitProvider
@@ -175,13 +201,14 @@ export const ApplicationList = React.memo(() => {
         lastModified,
         setLastModified,
         t,
-        redirectUrl
+        redirectUrl,
+        invalidFilters
       )}
       search
     >
       {(props) => (
         <div className="container" role="definition">
-          <LoadingOverlay
+        <LoadingOverlay
             active={isDeletingApplication}
             spinner
             text="Deleting..."

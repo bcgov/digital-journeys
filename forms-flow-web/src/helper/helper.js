@@ -69,10 +69,4 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   return submitterName ? submitterName.trim() : "";
 };
 
-export {
-  replaceUrl,
-  addTenankey,
-  removeTenantKey,
-  checkAndAddTenantKey,
-  getEmployeeNameFromSubmission,
-};
+export { replaceUrl, addTenankey, removeTenantKey, checkAndAddTenantKey, getEmployeeNameFromSubmission };

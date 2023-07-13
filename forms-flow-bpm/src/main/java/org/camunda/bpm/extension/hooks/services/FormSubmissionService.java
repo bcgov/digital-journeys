@@ -80,23 +80,120 @@ public class FormSubmissionService {
             String submissionId = jsonNode.get("_id").asText();
             return submissionId;
         } else {
-            throw new FormioServiceException("Unable to create submission for: " + formUrl + ". Message Body: " +
+            throw new FormioServiceException("Unable to create submission for: "+ formUrl+ ". Message Body: " +
                     response.getBody());
         }
     }
 
-    public void deleteSubmission(String submissionUrl) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ResponseEntity<String> response = httpServiceInvoker.execute(submissionUrl, HttpMethod.DELETE, null);
-        if (response.getStatusCode().value() == HttpStatus.OK.value()) {
-            System.out.println("Submission was deleted successfully: " +  submissionUrl);
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
-        } else if (response.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
-            System.out.println("Submission was not found for deletion! " +  submissionUrl);
+    public String getFormIdByName(String formUrl) throws IOException {
+        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
+        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
+            String formId = jsonNode.get("_id").asText();
+            return formId;
         } else {
-            throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
+            throw new FormioServiceException("Unable to get name for: "+ formUrl+ ". Message Body: " +
                     response.getBody());
         }
+    }
+
+    private String getSubmissionUrl(String formUrl){
+        if(StringUtils.endsWith(formUrl,"submission")) {
+            return formUrl;
+        }
+        return StringUtils.substringBeforeLast(formUrl,"/");
+    }
+
+    public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
+        return this.retrieveFormValues(formUrl, true, false, new ArrayList<String>());
+    }
+
+    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo, boolean hasNestedObjects, List<String> flatObjectExclusionList) throws IOException {
+        Map<String,Object> fieldValues = new HashMap();
+        String submission = readSubmission(formUrl);
+        if(StringUtils.isNotEmpty(submission)) {
+            JsonNode dataNode = bpmObjectMapper.readTree(submission);
+            Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
+            while (dataElements.hasNext()) {
+                Map.Entry<String, JsonNode> entry = dataElements.next();
+                if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
+                    List<String> fileNames = new ArrayList();
+                    if(entry.getValue().isArray()) {
+                        for (JsonNode fileNode : entry.getValue()) {
+                            byte[] bytes = Base64.getDecoder().decode(StringUtils.substringAfterLast(fileNode.get("url").asText(), "base64,"));
+                            FileValue fileValue = Variables.fileValue(fileNode.get("originalName").asText())
+                                    .file(bytes)
+                                    .mimeType(fileNode.get("type").asText())
+                                    .create();
+                            fileNames.add(fileNode.get("originalName").asText());
+                            fieldValues.put(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey(), fileValue);
+                            if(fileNames.size() > 0) {
+                                fieldValues.put(entry.getKey()+"_uploadname", StringUtils.join(fileNames, ","));
+                            }
+                        }
+                    }
+                } else{
+                    if (hasNestedObjects && entry.getValue().isObject() && !flatObjectExclusionList.contains(entry.getKey())) {
+                        ObjectNode objectNode = (ObjectNode) entry.getValue();
+                        Iterator<Map.Entry<String, JsonNode>> objectElements = objectNode.fields();
+
+                        // Stores the object if is empty
+                        if (!objectElements.hasNext()) {
+                            fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
+                        }
+
+                        // Stores the nested objects
+                        while (objectElements.hasNext()) {
+                            Map.Entry<String, JsonNode> objEntry = objectElements.next();
+                            fieldValues.put(objEntry.getKey(), convertToOriginType(objEntry.getValue()));
+                        }
+                    } else{
+                        fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
+                    }
+                }
+            }
+        }
+        return fieldValues;
+    }
+
+    private Object convertToOriginType(JsonNode value) throws IOException {
+        Object fieldValue;
+        if(value.isNull()){
+            fieldValue = null;
+        } else if(value.isBoolean()){
+            fieldValue = value.booleanValue();
+        } else if(value.isInt()){
+            fieldValue = value.intValue();
+        } else if(value.isBinary()){
+            fieldValue = value.binaryValue();
+        } else if(value.isLong()){
+            fieldValue = value.asLong();
+        } else if(value.isDouble()){
+            fieldValue = value.asDouble();
+        } else if(value.isBigDecimal()){
+            fieldValue = value.decimalValue();
+        } else if(value.isTextual()){
+            fieldValue = value.asText();
+        } else{
+            fieldValue = value.toString();
+        }
+
+        if(Objects.equals(fieldValue, "")) {
+            fieldValue = null;
+        }
+
+        return fieldValue;
+    }
+
+    public String createFormSubmissionData(Map<String,Object> bpmVariables) throws IOException {
+        Map<String, Map<String,Object>> data = new HashMap<>();
+        data.put("data",bpmVariables);
+        return bpmObjectMapper.writeValueAsString(data);
+    }
+
+    @Deprecated
+    public String getAccessToken() {
+        return formioTokenServiceProvider.getAccessToken();
     }
 
     public String grantSubmissionAccess(String formUrl, String user, List<String> permissions) throws IOException {
@@ -157,79 +254,7 @@ public class FormSubmissionService {
                     response.getBody());
         }
     }
-
-    public String getFormIdByName(String formUrl) throws IOException {
-        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
-        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
-            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
-            String formId = jsonNode.get("_id").asText();
-            return formId;
-        } else {
-            throw new FormioServiceException("Unable to get name for: "+ formUrl+ ". Message Body: " +
-                    response.getBody());
-        }
-    }
-
-    private String getSubmissionUrl(String formUrl){
-        if(StringUtils.endsWith(formUrl,"submission")) {
-            return formUrl;
-        }
-        return StringUtils.substringBeforeLast(formUrl,"/");
-    }
-
-    public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
-        return this.retrieveFormValues(formUrl, true, false, new ArrayList<String>());
-    }
-
-    public Map<String,Object> retrieveFormValues(String formUrl, boolean withFileInfo, boolean hasNestedObjects, List<String> flatObjectExclusionList) throws IOException {
-        Map<String,Object> fieldValues = new HashMap();
-        String submission = readSubmission(formUrl);
-        if(StringUtils.isNotEmpty(submission)) {
-            JsonNode dataNode = bpmObjectMapper.readTree(submission);
-            Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
-            while (dataElements.hasNext()) {
-                Map.Entry<String, JsonNode> entry = dataElements.next();
-                if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
-                    List<String> fileNames = new ArrayList();
-                    if(entry.getValue().isArray()) {
-                        for (JsonNode fileNode : entry.getValue()) {
-                            byte[] bytes = Base64.getDecoder().decode(StringUtils.substringAfterLast(fileNode.get("url").asText(), "base64,"));
-                            FileValue fileValue = Variables.fileValue(fileNode.get("originalName").asText())
-                                    .file(bytes)
-                                    .mimeType(fileNode.get("type").asText())
-                                    .create();
-                            fileNames.add(fileNode.get("originalName").asText());
-                            fieldValues.put(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey(), fileValue);
-                            if(fileNames.size() > 0) {
-                                fieldValues.put(entry.getKey()+"_uploadname", StringUtils.join(fileNames, ","));
-                            }
-                        }
-                    }
-                } else {
-                    if (hasNestedObjects && entry.getValue().isObject() && !flatObjectExclusionList.contains(entry.getKey())) {
-                        ObjectNode objectNode = (ObjectNode) entry.getValue();
-                        Iterator<Map.Entry<String, JsonNode>> objectElements = objectNode.fields();
-
-                        // Stores the object if is empty
-                        if (!objectElements.hasNext()) {
-                            fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
-                        }
-
-                        // Stores the nested objects
-                        while (objectElements.hasNext()) {
-                            Map.Entry<String, JsonNode> objEntry = objectElements.next();
-                            fieldValues.put(objEntry.getKey(), convertToOriginType(objEntry.getValue()));
-                        }
-
-                    } else {
-                        fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
-                    }
-                }
-            }
-        }
-        return fieldValues;
-    }
-
+    
     public JSONObject retrieveFormJson(String formUrl) throws IOException {
         Map<String, Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
@@ -240,45 +265,17 @@ public class FormSubmissionService {
         return json;
     }
 
-
-    private Object convertToOriginType(JsonNode value) throws IOException {
-        Object fieldValue;
-        if(value.isNull()){
-            fieldValue = null;
-        } else if(value.isBoolean()){
-            fieldValue = value.booleanValue();
-        } else if(value.isInt()){
-            fieldValue = value.intValue();
-        } else if(value.isBinary()){
-            fieldValue = value.binaryValue();
-        } else if(value.isLong()){
-            fieldValue = value.asLong();
-        } else if(value.isDouble()){
-            fieldValue = value.asDouble();
-        } else if(value.isBigDecimal()){
-            fieldValue = value.decimalValue();
-        } else if(value.isTextual()){
-            fieldValue = value.asText();
-        } else{
-            fieldValue = value.toString();
+    public void deleteSubmission(String submissionUrl) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseEntity<String> response = httpServiceInvoker.execute(submissionUrl, HttpMethod.DELETE, null);
+        if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+            System.out.println("Submission was deleted successfully: " +  submissionUrl);
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        } else if (response.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+            System.out.println("Submission was not found for deletion! " +  submissionUrl);
+        } else {
+            throw new FormioServiceException("Unable to delete submission for: " + submissionUrl + ". Message Body: " +
+                    response.getBody());
         }
-
-        if(Objects.equals(fieldValue, "")) {
-            fieldValue = null;
-        }
-
-        return fieldValue;
     }
-
-    public String createFormSubmissionData(Map<String,Object> bpmVariables) throws IOException {
-        Map<String, Map<String,Object>> data = new HashMap<>();
-        data.put("data",bpmVariables);
-        return bpmObjectMapper.writeValueAsString(data);
-    }
-
-    @Deprecated
-    public String getAccessToken() {
-        return formioTokenServiceProvider.getAccessToken();
-    }
-
 }

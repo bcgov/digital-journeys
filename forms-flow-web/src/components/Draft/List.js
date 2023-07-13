@@ -18,25 +18,25 @@ import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import {
   fetchDrafts,
   FilterDrafts,
-  deleteDraftById
 } from "../../apiManager/services/draftService";
+import Confirm from "../../containers/Confirm";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
 import {
   setDraftListLoader,
   setDraftListActivePage,
   setCountPerpage,
-  setSelectedDraftForDelete,
+  setDraftDelete,
 } from "../../actions/draftActions";
-
-import Confirm from "../../containers/Confirm";
+import { deleteDraftbyId } from "../../apiManager/services/draftService";
+import isValiResourceId from "../../helper/regExp/validResourceId";
 import { toast } from "react-toastify";
-import LoadingOverlay from "react-loading-overlay";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
   const drafts = useSelector((state) => state.draft.draftList);
   const countPerPage = useSelector((state) => state.draft.countPerPage);
+  const draftDelete = useSelector((state) => state.draft?.draftDelete);
 
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
@@ -61,8 +61,7 @@ export const DraftList = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const [isDeletingDraft, setIsDeletingDraft] = React.useState(false);
+  const [invalidFilters, setInvalidFilters] = React.useState({});
 
   useEffect(() => {
     setIsLoading(false);
@@ -80,8 +79,37 @@ export const DraftList = React.memo(() => {
 
   useEffect(() => {
     dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
-  }, [dispatch, currentPage, countPerPageRef, isDeletingDraft]);
+  }, [dispatch, currentPage, countPerPageRef]);
 
+  const onYes = () => {
+    deleteDraftbyId(draftDelete.draftId)
+      .then(() => {
+        toast.success(t("Draft Deleted Successfully"));
+        dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        dispatch(
+          setDraftDelete({
+            modalOpen: false,
+            draftId: null,
+            draftName: "",
+          })
+        );
+      });
+  };
+
+  const onNo = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: false,
+        draftId: null,
+        draftName: "",
+      })
+    );
+  };
   if (isDraftListLoading) {
     return <Loading />;
   }
@@ -106,8 +134,18 @@ export const DraftList = React.memo(() => {
       </div>
     );
   };
-
+  const validateFilters = (newState) => {
+    if (
+      newState.filters?.id?.filterVal &&
+      !isValiResourceId(newState.filters?.id?.filterVal)
+    ) {
+      return setInvalidFilters({ ...invalidFilters, DRAFT_ID: true });
+    } else {
+      return setInvalidFilters({ ...invalidFilters, DRAFT_ID: false });
+    }
+  };
   const handlePageChange = (type, newState) => {
+    validateFilters(newState);
     if (type === "filter") {
       setfiltermode(true);
     } else if (type === "pagination") {
@@ -123,6 +161,12 @@ export const DraftList = React.memo(() => {
   };
   const headerList = () => {
     return [
+      // {
+      //   name: "Applications",
+      //   count: applicationCount,
+      //   onClick: () => dispatch(push(`${redirectUrl}application`)),
+      //   icon: "list",
+      // },
       {
         name: "Drafts",
         count: draftCount,
@@ -130,7 +174,7 @@ export const DraftList = React.memo(() => {
         icon: "edit",
         title: "Draft Forms",
         description: "All forms that have been started but not yet submitted",
-      }
+      },
     ];
   };
 
@@ -147,90 +191,62 @@ export const DraftList = React.memo(() => {
       bootstrap4
       keyField="id"
       data={drafts}
-      columns={columns(lastModified, setLastModified, t, redirectUrl)}
+      columns={columns(
+        lastModified,
+        setLastModified,
+        t,
+        redirectUrl,
+        invalidFilters
+      )}
       search
     >
       {(props) => (
-        <div className="container" role="definition">
-          <LoadingOverlay
-            active={isDeletingDraft}
-            spinner
-            text="Deleting..."
-            className="col-12"
-          >
-            <Confirm
-              modalOpen={selectedDraftForDelete.modalOpen}
-              message={
-                "Are you sure you want to delete this draft? Deleting this draft will eliminate the form and all existing information on it from the database."
-              }
-              onNo={() => {
-                dispatch(
-                  setSelectedDraftForDelete({
-                    modalOpen: false,
-                    draftId: "",
-                    draftName: "",
-                  })
-                );
-              }}
-              onYes={() => {
-                setIsDeletingDraft(true);
-                dispatch(
-                  setSelectedDraftForDelete({
-                    modalOpen: false,
-                    draftId: "",
-                    draftName: "",
-                  })
-                );
-                dispatch(
-                  deleteDraftById(selectedDraftForDelete.draftId, (error) => {
-                    if (error) {
-                      toast.error("There was an error deleting the draft!");
-                    } else {
-                      toast.success("Draft deleted successfully");
-                    }
-                    setIsDeletingDraft(false);
-                  })
-                );
-              }}
-            />
-            <Head items={headerList()} page="Drafts" />
-            <br />
-            <div>
-              {drafts?.length > 0 || filtermode ? (
-                <BootstrapTable
-                  remote={{ pagination: true, filter: true, sort: true }}
-                  loading={isLoading}
-                  filter={filterFactory()}
-                  pagination={paginationFactory(
-                    getoptions(draftCount, page, countPerPage)
-                  )}
-                  onTableChange={handlePageChange}
-                  filterPosition={"top"}
-                  {...props.baseProps}
-                  noDataIndication={() =>
-                    !isLoading && getNoDataIndicationContent()
-                  }
-                  overlay={overlayFactory({
-                    spinner: <SpinnerSVG />,
-                    styles: {
-                      overlay: (base) => ({
-                        ...base,
-                        background: "rgba(255, 255, 255)",
-                        height: `${
-                          countPerPage > 5
-                            ? "100% !important"
-                            : "350px !important"
-                        }`,
-                        top: "65px",
-                      }),
-                    },
-                  })}
-                />
-              ) : (
-                getNoData()
-              )}
-            </div>
-          </LoadingOverlay>
+        <div className="container" id="main" role="definition">
+          <Confirm
+            modalOpen={draftDelete.modalOpen}
+            message={
+              "Are you sure you want to delete this draft? Deleting this draft will eliminate the form and all existing information on it from the database."
+            }
+            onNo={() => onNo()}
+            onYes={() => onYes()}
+          />
+          <Head items={headerList()} page="Drafts" />
+          <br />
+          <div>
+            {drafts?.length > 0 || filtermode ? (
+              <BootstrapTable
+                remote={{ pagination: true, filter: true, sort: true }}
+                loading={isLoading}
+                filter={filterFactory()}
+                pagination={paginationFactory(
+                  getoptions(draftCount, page, countPerPage)
+                )}
+                onTableChange={handlePageChange}
+                filterPosition={"top"}
+                {...props.baseProps}
+                noDataIndication={() =>
+                  !isLoading && getNoDataIndicationContent()
+                }
+                overlay={overlayFactory({
+                  spinner: <SpinnerSVG />,
+                  styles: {
+                    overlay: (base) => ({
+                      ...base,
+                      background: "rgba(255, 255, 255)",
+                      height: `${
+                        countPerPage > 5
+                          ? "100% !important"
+                          : "350px !important"
+                      }`,
+                      top: "65px",
+                    }),
+                  },
+                })}
+              />
+            ) : (
+              getNoData()
+            )}
+          </div>
         </div>
       )}
     </ToolkitProvider>

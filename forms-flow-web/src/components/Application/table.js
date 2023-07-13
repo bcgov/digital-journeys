@@ -1,20 +1,23 @@
 import React from "react";
 // import { Link } from "react-router-dom";
+import startCase from "lodash/startCase";
 import {
   textFilter,
+  // selectFilter,
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
 import { getLocalDateTime } from "../../apiManager/services/formatterService";
 import { AWAITING_ACKNOWLEDGEMENT } from "../../constants/applicationConstants";
 import { Translation } from "react-i18next";
-import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 
 import { setSelectedApplicationForDelete } from "../../actions/applicationActions";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import {
   SL_REVIEW_PROCESS_KEY,
   INFLUENZA_WORKSITE_PROCESS_KEY,
@@ -42,17 +45,17 @@ export const defaultSortedBy = [
     https://github.com/bcgov/digital-journeys/issues/604 */
 // const linkApplication = (cell, row, redirectUrl) => {
 //   return (
-//     <Link className="custom_primary_color" to={`${redirectUrl}application/${row.id}`} title={cell}>
+//     <Link
+//       className="custom_primary_color"
+//       to={`${redirectUrl}application/${row.id}`}
+//       title={cell}
+//     >
 //       {cell}
 //     </Link>
 //   );
 // };
 
-/* commented below code, for more detail visit below link
-   https://github.com/bcgov/digital-journeys/issues/609 */
-// const linkSubmission = (cell, row, redirectUrl) => {
-// eslint-disable-next-line
-const LinkSubmission = React.memo(({ cell, row, redirectUrl }) => {
+const linkSubmission = (cell, row, redirectUrl) => {
   const dispatch = useDispatch();
   const url = row.isClientEdit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
@@ -66,8 +69,8 @@ const LinkSubmission = React.memo(({ cell, row, redirectUrl }) => {
   ) : (
     <Translation>{(t) => t("View")}</Translation>
   );
-  const deleteButtonText = <Translation>{(t) => t("Delete")}</Translation>;
   const icon = row.isClientEdit ? "fa fa-edit" : "fa fa-eye";
+  const deleteButtonText = <Translation>{(t) => t("Delete")}</Translation>;
   const deleteIcon = "fa fa-trash";
 
   const handleDeleteApplication = (application) => {
@@ -85,7 +88,7 @@ const LinkSubmission = React.memo(({ cell, row, redirectUrl }) => {
     SL_REVIEW_PROCESS_KEY,
     INFLUENZA_WORKSITE_PROCESS_KEY,
   ];
-
+  
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <div
@@ -134,7 +137,11 @@ const nameFormatter = (cell, row) => {
     </label>
   );
 };
+
 const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+
+const styleForValidationFail = { border: "1px solid red" };
+
 export const columns_history = [
   {
     dataField: "applicationname",
@@ -148,13 +155,27 @@ export const columns_history = [
   },
 ];
 
+let applicationNotified = false;
+const notifyValidationError = () => {
+  if (!applicationNotified) {
+    toast.error("Invalid application id");
+    applicationNotified = true;
+  }
+};
+
 export const columns = (
   applicationStatus,
   lastModified,
   callback,
   t,
-  redirectUrl
+  redirectUrl,
+  invalidFilters
 ) => {
+  if (invalidFilters.APPLICATION_ID) {
+    notifyValidationError();
+  } else {
+    applicationNotified = false;
+  }
   return [
     /*commented below code, for more detail visit below link
       https://github.com/bcgov/digital-journeys/issues/604 */
@@ -169,7 +190,9 @@ export const columns = (
     //     placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
     //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
     //     className: "icon-search",
-    //     style: customStyle,
+    //     style: invalidFilters.APPLICATION_ID
+    //       ? styleForValidationFail
+    //       : customStyle,
     //     getFilter: (filter) => {
     //       idFilter = filter;
     //     },
@@ -242,6 +265,7 @@ export const columns = (
             }}
             value={lastModified}
             maxDate={new Date()}
+            minDate={new Date("January 1, 0999 01:01:00")}
             dayPlaceholder="dd"
             monthPlaceholder="mm"
             yearPlaceholder="yyyy"

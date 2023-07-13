@@ -10,9 +10,10 @@ import { BASE_ROUTE } from "../constants/constants";
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 import { ToastContainer } from "react-toastify";
-import { Container } from "react-bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./NotFound";
+
+import { Container } from "react-bootstrap";
 import ReleaseNoteModal from "./ReleaseNote/ReleaseNoteModal";
 
 const BaseRouting = React.memo(({ store }) => {

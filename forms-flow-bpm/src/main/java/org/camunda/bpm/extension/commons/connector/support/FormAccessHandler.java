@@ -37,22 +37,6 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
     @Autowired
     private FormioTokenServiceProvider formioTokenServiceProvider;
 
-    public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
-        String accessToken = formioTokenServiceProvider.getAccessToken();
-
-        payload = (payload == null) ? new JsonObject().toString() : payload;
-
-        return unauthenticatedWebClient.method(method)
-                .uri(url )
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header("x-jwt-token", accessToken)
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError,
-                    response -> Mono.error(new FormioServiceException(response.toString())))
-                .bodyToMono(byte[].class);
-    }
-
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         String accessToken = formioTokenServiceProvider.getAccessToken();
         if(StringUtils.isBlank(accessToken)) {
@@ -112,33 +96,19 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
         }
     }
 
-    // private String getToken() {
-    //     ProcessDefinition processDefinition = ProcessEngines.getDefaultProcessEngine().getRepositoryService().createProcessDefinitionQuery()
-    //             .latestVersion()
-    //             .processDefinitionKey(TOKEN_PROCESS_NAME)
-    //             .singleResult();
-    //     String accessToken = processDefinition != null ? getTokenFromDBStore(processDefinition.getId()) : null;
-    //     if(StringUtils.isBlank(accessToken)) {
-    //         logger.info("Unable to extract token from variable context. Generating new JWT token.");
-    //         return accessToken != null ? accessToken : getAccessToken();
-    //     }
-    //     return accessToken;
-    // }
+    public Mono<byte[]> exchangeForFile(String url, HttpMethod method, String payload) {
+        String accessToken = formioTokenServiceProvider.getAccessToken();
 
-    // private String getTokenFromDBStore(String processDefinitionId) {
-    //     String query = "select arv.text_ from act_ru_variable arv, act_ru_job rjb " +
-    //             "where arv.proc_def_id_ = rjb.process_def_id_ and arv.proc_inst_id_  " +
-    //             "= rjb.process_instance_id_ and rjb.process_def_key_=:tokenProcessName " +
-    //             "and rjb.type_='timer' and arv.name_ = :tokenName " +
-    //             "and rjb.process_def_id_ =:processDefinitionId order by rjb.create_time_ desc LIMIT 1";
-    //     MapSqlParameterSource parameters = new MapSqlParameterSource();
-    //     parameters.addValue("tokenProcessName", TOKEN_PROCESS_NAME);
-    //     parameters.addValue("tokenName", TOKEN_NAME);
-    //     parameters.addValue("processDefinitionId", processDefinitionId);
-    //     return bpmJdbcTemplate.queryForObject(query,parameters, String.class);
-    // }
+        payload = (payload == null) ? new JsonObject().toString() : payload;
 
-    protected Integer getExpiryCode() {
-        return TOKEN_EXPIRY_CODE;
+        return unauthenticatedWebClient.method(method)
+                .uri(url )
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("x-jwt-token", accessToken)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError,
+                    response -> Mono.error(new FormioServiceException(response.toString())))
+                .bodyToMono(byte[].class);
     }
 }

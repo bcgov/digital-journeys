@@ -4,4 +4,4 @@ cache = Cache()
 
 from formsflow_api.app import create_app
 
-__version__ = "4.0.5"
+__version__ = "5.0.1"

@@ -9,9 +9,10 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "./styles.scss";
 import "./resourceBundles/i18n.js";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { featureFlags } from "./featureToogle";
-import { FlagsProvider } from "flagged";
+import { FlagsProvider } from 'flagged';
+import FormioCustomEx from "formsflow-formio-custom-elements/dist/customformio-ex";
 
 import DGJFileUpload from "./formComponents/FileUpload";
 import RemoteSelect from "./formComponents/RemoteSelect";
@@ -38,14 +39,8 @@ const history = StoreService.history;
 
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
-
-
+Components.setComponents(FormioCustomEx.components);
 // Set custom formio elements - Code splitted
-import("formsflow-formio-custom-elements/dist/customformio-ex").then(
-  (FormioCustomEx) => {
-    Components.setComponents(FormioCustomEx.components);
-  }
-);
 
 // Add custom file upload provider
 Formio.Providers.addProvider("storage", "digital-journeys", UploadProvider);
@@ -63,25 +58,26 @@ Components.setComponent("currency", DGJCurrencyComponent);
 Components.addComponent("remoteSelect", RemoteSelect);
 Components.addComponent("ministrySelect", MinistrySelect);
 
+
 ReactDOM.render(
   <FlagsProvider features={featureFlags}>
-    <App {...{ store, history }} />
+     <App {...{ store, history }} />
   </FlagsProvider>,
   document.getElementById("app")
 );
 
 // Register service worker and if new changes skip waiting and activate new service worker
 serviceWorkerRegistration.register({
-  onUpdate: (registration) => {
+  onUpdate: registration => {
     const waitingServiceWorker = registration.waiting;
 
     if (waitingServiceWorker) {
-      waitingServiceWorker.addEventListener("statechange", (event) => {
+      waitingServiceWorker.addEventListener("statechange", event => {
         if (event.target.state === "activated") {
           window.location.reload();
         }
       });
       waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
     }
-  },
+  }
 });

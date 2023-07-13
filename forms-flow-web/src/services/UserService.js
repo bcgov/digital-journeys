@@ -4,12 +4,12 @@ import {
   setUserToken,
   setUserDetails,
 } from "../actions/bpmActions";
-import { BPM_BASE_URL_EXT } from "../apiManager/endpoints/config";
+import { BPM_API_URL_WITH_VERSION } from "../apiManager/endpoints/config";
 import { AppConfig } from "../config";
 import {
   WEB_BASE_URL,
   WEB_BASE_CUSTOM_URL,
-  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_URL
 } from "../apiManager/endpoints/config";
 
 // import {_kc} from "../constants/tenantConstant";
@@ -127,7 +127,7 @@ const userLogout = () => {
 };
 
 const setApiBaseUrlToLocalStorage = () => {
-  localStorage.setItem("bpmApiUrl", BPM_BASE_URL_EXT);
+  localStorage.setItem("bpmApiUrl", BPM_API_URL_WITH_VERSION);
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
   localStorage.setItem("formsflow.ai.url", window.location.origin);
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
@@ -142,6 +142,8 @@ const getFormioToken = () => localStorage.getItem("formioToken");
 /*const updateToken = (successCallback) => {
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
+
+ 
 
 // const KeycloakData= _kc;
 

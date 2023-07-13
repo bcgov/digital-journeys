@@ -102,8 +102,8 @@ def translate(to_lang: str, data: dict) -> dict:
 
 def get_role_ids_from_user_groups(role_ids, user_role):
     """Filters out formio role ids specific to user groups."""
-    if user_role is None or user_role is None:
-        raise ValueError("Inavlid arguments passed")
+    if role_ids is None or user_role is None:
+        return None
 
     if DESIGNER_GROUP in user_role:
         return role_ids
@@ -120,6 +120,13 @@ def filter_list_by_user_role(formio_role, role_ids):
     """Iterate over role_ids and return entries with matching formio role."""
     return list(filter(lambda item: item["type"] == formio_role, role_ids))
 
+
+def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
+    """Retrieves the formid and submission id from the url parameters."""
+    form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
+    submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
+    return (form_id, submission_id)
+
 def find_matching_roles(user_role, role_ids):
     matching_roles = []
 
@@ -128,9 +135,3 @@ def find_matching_roles(user_role, role_ids):
             matching_roles.append(role)
 
     return matching_roles
-
-def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
-    """Retrieves the formid and submission id from the url parameters."""
-    form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
-    submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
-    return (form_id, submission_id)

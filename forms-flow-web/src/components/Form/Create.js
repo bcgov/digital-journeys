@@ -4,7 +4,9 @@ import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import {
+  MULTITENANCY_ENABLED,
+} from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +20,8 @@ import {
 } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
+import { Checkbox, FormControlLabel } from "@material-ui/core";
+
 import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 // reducer from react-formio code
@@ -55,13 +59,11 @@ const Create = React.memo(() => {
   const errors = useSelector((state) => state.form.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formAccess = useSelector((state) => state.user?.formAccess || []);
-  const roleIds = useSelector((state) => state.user?.roleIds || {});
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const formAccess = useSelector((state) => state.user?.formAccess || []) ;
+  const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
+  const [formSubmitted , setFormSubmitted] = useState(false);
 
-  const submissionAccess = useSelector(
-    (state) => state.user?.submissionAccess || []
-  );
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const { t } = useTranslation();
@@ -105,14 +107,14 @@ const Create = React.memo(() => {
           <i
             className="fa fa-info-circle text-primary cursor-pointer"
             data-toggle="tooltip"
-            title={`${t(
-              "By default, the tenant key would be prefixed to form"
-            )}${type}`}
+            title={`${t("By default, the tenant key would be prefixed to form")}${type}`}
           ></i>
         </span>
       );
     }
   };
+ 
+
 
   // setting the form data
   useEffect(() => {
@@ -135,7 +137,9 @@ const Create = React.memo(() => {
       tags: ["common"],
       supportedIdp: idp,
     };
+    
     newForm.submissionAccess = submissionAccess;
+    newForm.componentChanged = true;
     newForm.access = formAccess;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
@@ -146,34 +150,45 @@ const Create = React.memo(() => {
         newForm.name = addTenankey(newForm.name, tenantKey);
       }
     }
-    formCreate(newForm, (err, form) => {
-      if (!err) {
-        // ownProps.setPreviewMode(true);
-        const data = {
-          formId: form._id,
-          formName: form.title,
-          formRevisionNumber: "V1", // to do
-          anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
-          supportedIdp: newForm.supportedIdp
-        };
-        dispatch(setFormSuccessData("form", form));
-        Formio.cache = {}; //removing formio cache
-        dispatch(
-          // eslint-disable-next-line no-unused-vars
-          saveFormProcessMapperPost(data, (err, res) => {
-            if (!err) {
-              toast.success(t("Form Saved"));
-              dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
-            } else {
-              setFormSubmitted(false);
-              toast.error(t("Error in creating form process mapper"));
-            }
-          })
-        );
+    formCreate(newForm).then((res)=>{
+      const form = res.data;
+      const data = {
+        formId: form._id,
+        formName: form.title,
+        formType: form.type,
+        formTypeChanged:true, 
+        anonymousChanged:true,
+        parentFormId: form._id,
+        titleChanged: true,
+        formRevisionNumber: "V1", // to do
+        anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
+        supportedIdp: newForm.supportedIdp
+      };
+      dispatch(setFormSuccessData("form", form));
+      dispatch(
+        // eslint-disable-next-line no-unused-vars
+        saveFormProcessMapperPost(data, (err, res) => {
+          if (!err) {
+            toast.success(t("Form Saved"));
+            dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
+          } else {
+            setFormSubmitted(false);
+            toast.error(t("Error in creating form process mapper"));
+          }
+        })
+      );
+ 
+    }).catch((err)=>{
+      let error ;
+      if (err.response?.data) {
+        error = err.response.data;
       } else {
-        dispatch(setFormFailureErrorData("form", err));
-        setFormSubmitted(false);
+        error = err.message;
       }
+      dispatch(setFormFailureErrorData("form", error));
+     
+    }).finally(()=>{
+      setFormSubmitted(false);
     });
   };
 
@@ -189,25 +204,20 @@ const Create = React.memo(() => {
 
   return (
     <div>
+      <div className="d-flex align-items-center flex-wrap justify-content-between my-4 bg-light p-3">
+
       <h2>
         <Translation>{(t) => t("Create Form")}</Translation>
       </h2>
-      <hr />
+      <button className="btn btn-primary" disabled={formSubmitted} onClick={() => saveFormData()}>
+        {saveText}
+       </button>
+      </div>
+    
       <Errors errors={errors} />
-      <div>
-        <div className="row justify-content-end w-100">
-          <div id="save-buttons" className=" save-buttons pull-right">
-            <div className="form-group pull-right">
-              <button
-                className="btn btn-primary"
-                disabled={formSubmitted}
-                onClick={() => saveFormData()}
-              >
-                {saveText}
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="p-4"
+        style={{ border: "1px solid #c2c0be", borderRadius: "5px" }}>
+         
         <div className="row align-item-center">
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
@@ -232,18 +242,16 @@ const Create = React.memo(() => {
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
-                {MULTITENANCY_ENABLED && tenantKey ? (
-                  <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
-                    </div>
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
                   </div>
-                ) : (
-                  ""
-                )}
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"
@@ -308,18 +316,16 @@ const Create = React.memo(() => {
                 {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group mb-2">
-                {MULTITENANCY_ENABLED && tenantKey ? (
-                  <div className="input-group-prepend">
-                    <div
-                      className="input-group-text"
-                      style={{ maxWidth: "150px" }}
-                    >
-                      <span className="text-truncate">{tenantKey}</span>
-                    </div>
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
                   </div>
-                ) : (
-                  ""
-                )}
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"
@@ -363,35 +369,26 @@ const Create = React.memo(() => {
               </div>
             </div>
           </div>
-          <div 
-            className="col-lg-4 col-md-4 col-sm-4" 
+          <div className="col-lg-4 col-md-4 col-sm-4" 
             style={{disaplay: "none"}}>
-            <div
-              id="form-group-anonymous"
-              className="form-group"
-              style={{ marginTop: "30px" }}
-            >
-              <div className="input-group align-items-center">
-                <input
-                  className="m-0"
-                  style={{ height: "20px", width: "20px" }}
-                  type="checkbox"
-                  id="anonymous"
-                  title="Make this form public"
-                  data-testid="anonymous"
-                  checked={anonymous}
-                  onChange={() => {
-                    setAnonymous(!anonymous);
-                  }}
+            <div id="form-group-path" className="form-group">
+              <label htmlFor="path" className="control-label "></label>
+              <div className="input-group">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={anonymous}
+                      id="anonymous"
+                      color="primary"
+                      aria-label="Publish"
+                      onChange={() => {
+                        setAnonymous(!anonymous);
+                      }}
+                    />
+                  }
+                  label={t("Make this form public ?")}
+                  labelPlacement="start"
                 />
-                <label
-                  htmlFor="anonymousLabel"
-                  className="form-control border-0"
-                >
-                  <Translation>
-                    {(t) => t("Make this form public ?")}
-                  </Translation>
-                </label>
               </div>
             </div>
           </div>

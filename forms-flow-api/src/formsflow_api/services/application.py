@@ -21,9 +21,9 @@ from formsflow_api.schemas import (
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
-from formsflow_api_utils.services.external import FormioService
 
 from .form_process_mapper import FormProcessMapperService
+from formsflow_api_utils.services.external import FormioService
 
 import requests
 
@@ -86,7 +86,10 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 )
             else:
                 camunda_start_task = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
+                    process_key=mapper.process_key,
+                    payload=payload,
+                    token=token,
+                    tenant_key=mapper.tenant,
                 )
             application.update({"process_instance_id": camunda_start_task["id"]})
         except TypeError as camunda_error:
@@ -95,7 +98,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "error": camunda_error,
             }
             current_app.logger.critical(response)
-
+    
     @staticmethod
     @user_context
     def create_application(data, token, **kwargs):
@@ -103,7 +106,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
-        if token is not None:
+        if user_id is not None:
             # for anonymous form submission
             data["created_by"] = user_id
         data["application_status"] = NEW_APPLICATION_STATUS
@@ -123,7 +126,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         # In normal cases, it's through this else case task is being created
         else:
             form_url = data["form_url"]
-            web_form_url = data["web_form_url"]
+            web_form_url = data.get("web_form_url", "")
             payload = ApplicationService.get_start_task_payload(
                 application, mapper, form_url, web_form_url, token
             )
@@ -214,55 +217,6 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             draft_count,
         )
     
-    @staticmethod
-    @user_context
-    def get_all_applications_by_user_by_process_keys_and_count(  # pylint: disable=too-many-arguments,too-many-locals
-        page_no: int,
-        limit: int,
-        order_by: str,
-        created_from: datetime,
-        created_to: datetime,
-        modified_from: datetime,
-        modified_to: datetime,
-        application_id: int,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        sort_order: str,
-        token: str,
-        process_keys: list,
-        **kwargs
-    ):
-        """Get applications by user by process keys."""
-        user: UserContext = kwargs["user"]
-        user_id: str = user.user_name
-        
-        (
-            applications,
-            get_all_applications_count,
-        ) = Application.find_applications_by_process_key(
-            application_id=application_id,
-            application_name=application_name,
-            application_status=application_status,
-            created_by=created_by,
-            page_no=page_no,
-            limit=limit,
-            order_by=order_by,
-            modified_from=modified_from,
-            modified_to=modified_to,
-            sort_order=sort_order,
-            created_from=created_from,
-            created_to=created_to,
-            process_key=process_keys,
-            user_id=user_id,
-        )
-        draft_count = Draft.get_draft_count()
-        return (
-            application_schema.dump(applications, many=True),
-            get_all_applications_count,
-            draft_count,
-        )
-
     @staticmethod
     @user_context
     def get_auth_by_application_id(application_id: int, token: str, **kwargs):
@@ -619,3 +573,52 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
         if len(applications) != len(application_list):
             applications = application_list
         return applications
+
+    @staticmethod
+    @user_context
+    def get_all_applications_by_user_by_process_keys_and_count(  # pylint: disable=too-many-arguments,too-many-locals
+        page_no: int,
+        limit: int,
+        order_by: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
+        application_id: int,
+        application_name: str,
+        application_status: str,
+        created_by: str,
+        sort_order: str,
+        token: str,
+        process_keys: list,
+        **kwargs
+    ):
+        """Get applications by user by process keys."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        
+        (
+            applications,
+            get_all_applications_count,
+        ) = Application.find_applications_by_process_key(
+            application_id=application_id,
+            application_name=application_name,
+            application_status=application_status,
+            created_by=created_by,
+            page_no=page_no,
+            limit=limit,
+            order_by=order_by,
+            modified_from=modified_from,
+            modified_to=modified_to,
+            sort_order=sort_order,
+            created_from=created_from,
+            created_to=created_to,
+            process_key=process_keys,
+            user_id=user_id,
+        )
+        draft_count = Draft.get_draft_count()
+        return (
+            application_schema.dump(applications, many=True),
+            get_all_applications_count,
+            draft_count,
+        )

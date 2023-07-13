@@ -1,19 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import startCase from "lodash/startCase";
 import {
   textFilter,
   customFilter,
   FILTER_TYPES,
 } from "react-bootstrap-table2-filter";
 import { getLocalDateTime } from "../../apiManager/services/formatterService";
-import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import { Translation } from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
+import DraftOperations from "./DraftOperations";
 
-import { setSelectedDraftForDelete } from "../../actions/draftActions";
-import { useDispatch } from "react-redux";
+import { getEmployeeNameFromSubmission } from "../../helper/helper";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
 
@@ -38,54 +39,7 @@ https://github.com/bcgov/digital-journeys/issues/598 */
 //   );
 // };
 
-// const linkDraft = (cell, row, redirectUrl) => {
-// eslint-disable-next-line
-const LinkDraft = React.memo(({ cell, row, redirectUrl }) => {
-  const dispatch = useDispatch();
-  const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
-  const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
-  const deleteButtonText = <Translation>{(t) => t("Delete")}</Translation>;
-  const icon = "fa fa-edit";
-  const deleteIcon = "fa fa-trash";
 
-  const handleDeleteDraft = (draft) => {
-    dispatch(
-      setSelectedDraftForDelete({
-        modalOpen: true,
-        draftId: draft.id,
-        draftName: draft.DraftName,
-      })
-    );
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <Link to={url} style={{ textDecoration: "none" }}>
-        <div>
-          <span style={{ color: "blue", cursor: "pointer" }}>
-            <span>
-              <i className={icon} />
-              &nbsp;
-            </span>
-            {buttonText}
-          </span>
-        </div>
-      </Link>
-      <div
-        style={{ textDecoration: "none", marginLeft: "16px" }}
-        onClick={() => handleDeleteDraft(row)}
-      >
-        <span style={{ color: "red", cursor: "pointer" }}>
-          <span>
-            <i className={deleteIcon} />
-            &nbsp;
-          </span>
-          {deleteButtonText}
-        </span>
-      </div>
-    </div>
-  );
-});
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);
@@ -102,8 +56,27 @@ const nameFormatter = (cell, row) => {
   );
 };
 const customStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+const styleForValidationFail = { border: "1px solid red" };
 
-export const columns = (lastModified, callback, t, redirectUrl) => {
+let draftNotified = false;
+const notifyValidationError = () => {
+  if (!draftNotified) {
+    toast.error("Invalid draft id");
+    draftNotified = true;
+  }
+};
+export const columns = (
+  lastModified,
+  callback,
+  t,
+  redirectUrl,
+  invalidFilters
+) => {
+  if (invalidFilters.DRAFT_ID) {
+    notifyValidationError();
+  } else {
+    draftNotified = false;
+  }
   return [
     /* commented below code, for more detail visit below link
     https://github.com/bcgov/digital-journeys/issues/598 */
@@ -118,7 +91,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
     //     placeholder: `\uf002 ${t("Draft Id")}`, // custom the input placeholder
     //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
     //     className: "icon-search",
-    //     style: customStyle,
+    //     style: invalidFilters.DRAFT_ID ? styleForValidationFail : customStyle,
     //     getFilter: (filter) => {
     //       idFilter = filter;
     //     },
@@ -129,6 +102,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
       text: <Translation>{(t) => t("Draft Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",
+      // formatter: nameFormatter,
       formatter: (cell, row) => nameFormatter(cell, row),
       filter: textFilter({
         delay: 800,
@@ -147,10 +121,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
     {
       dataField: "formUrl",
       text: <Translation>{(t) => t("Action")}</Translation>,
-      // formatter: (cell, row) => linkDraft(cell, row, redirectUrl),
-      formatter: (cell, row) => {
-        return <LinkDraft cell={cell} row={row} redirectUrl={redirectUrl} />;
-      },
+      formatter: (cell,row) => <DraftOperations cell={cell} row={row}/>,
       headerStyle: () => {
         return { width: "20%" };
       },
