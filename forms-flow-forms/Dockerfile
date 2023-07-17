@@ -26,11 +26,14 @@ ENV NPM_PACKAGES=/.npm-packages \
 RUN echo "prefix = $NPM_PACKAGES" >> ~/.npmrc
 # Include details of the required dependencies
 COPY ./package.json $NPM_PACKAGES/
-COPY ./package-lock.json $NPM_PACKAGES/
+# Not including package-lock.json because it causes issue while installing the dependencies
+# COPY ./package-lock.json $NPM_PACKAGES/
 COPY ./lsyncd.conf ./lsyncd.conf
 
 # Use "Continuous Integration" to install as-is from package-lock.json
-RUN npm ci --prefix=$NPM_PACKAGES
+# commenting out npm ci next line due to the issue with defaultpackage-lock.json instead use npm i
+# RUN npm ci --prefix=$NPM_PACKAGES
+RUN npm i --prefix=$NPM_PACKAGES
 # Link in the global install because `require()` only looks for ./node_modules
 # WARNING: This is overwritten by volume-mount at runtime!
 #          See docker-compose.yml for instructions
@@ -40,11 +43,15 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:*
 ENV DEBUG=""
 
-COPY . /digital-journeys
-RUN cp -r /aot-formio/ /forms-flow-forms/app
+# Copy AOT formio first and then copy DGJ formio on top of it to add/overwrite the files with customizations
+RUN cp -r /aot-formio/* /forms-flow-forms/app
+COPY . /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/
+
+# Copy DGJ formio folder into a folder in the container so that it can be updated and mounted to /forms-flow-forms/app at runtime using lsyncd and docker volume that is defined in the docker-compose.yml
+COPY . /digital-journeys
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)
