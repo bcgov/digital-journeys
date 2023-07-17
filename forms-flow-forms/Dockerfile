@@ -16,7 +16,7 @@ RUN apt-get update && \
 ARG FORMIO_SOURCE_REPO_BRANCH
 ARG FORMIO_SOURCE_REPO_URL
 # Clone code
-RUN git clone --depth 1 -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /forms/
+RUN git clone --depth 1 -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /aot-formio
 # Using an alternative package install location
 # to allow overwriting the /app folder at runtime
 # stackoverflow.com/a/13021677
@@ -41,7 +41,7 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 ENV DEBUG=""
 
 COPY . /digital-journeys
-RUN cp -r /forms/formio/* /forms-flow-forms/app
+RUN cp -r /aot-formio/ /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/

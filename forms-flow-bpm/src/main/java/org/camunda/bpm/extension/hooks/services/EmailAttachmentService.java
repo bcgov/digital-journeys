@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Mono;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

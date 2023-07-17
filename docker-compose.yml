@@ -22,9 +22,8 @@ services:
     build:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile
-
     restart: always
-    links:
+    depends_on:
       - forms-flow-bpm-db
     ports:
       - "8000:8080"
@@ -73,9 +72,16 @@ services:
       - CUSTOM_SUBMISSION_URL=${CUSTOM_SUBMISSION_URL}
       - CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED:-false}
       - MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+      # - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      # - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       - FORMSFLOW_ADMIN_URL=${FORMSFLOW_ADMIN_URL:-}
       - FORMSFLOW_DOC_API_URL=${FORMSFLOW_DOC_API_URL}
       - BPM_CLIENT_CONN_TIMEOUT:${BPM_CLIENT_CONN_TIMEOUT}
+      - REDIS_ENABLED=${REDIS_ENABLED:-false}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSCODE=${REDIS_PASSCODE:-changeme}
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-false}
 
     networks:
       - forms-flow-network
@@ -109,18 +115,18 @@ services:
       context: ./forms-flow-forms/
       dockerfile: Dockerfile
       args:
-        - FORMIO_SOURCE_REPO_URL=${FORMIO_SOURCE_REPO_URL:https://github.com/AOT-Technologies/formio}
-        - FORMIO_SOURCE_REPO_BRANCH=${FORMIO_SOURCE_REPO_BRANCH:fv5.1.1}
+        FORMIO_SOURCE_REPO_URL: ${FORMIO_SOURCE_REPO_URL:-https://github.com/AOT-Technologies/formio}
+        FORMIO_SOURCE_REPO_BRANCH: ${FORMIO_SOURCE_REPO_BRANCH:-fv5.1.1}
 
     # The app will restart until Mongo is listening
     restart: always
-    links:
+    depends_on:
       - forms-flow-forms-db
     ports:
       - "3001:3001"
     # The application wants to download things to the local directory
-    volumes:
-      - ./forms-flow-forms/:/digital-journeys:rw
+    # volumes:
+    #   - ./forms-flow-forms/:/digital-journeys:rw
     environment:
       DEBUG: formio:*
       NODE_CONFIG: '{"mongo":"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin"}'
@@ -128,6 +134,8 @@ services:
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      FORMIO_CLIENT_UI: ${FORMIO_CLIENT_UI:-false}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
 
     stdin_open: true # -i
     tty: true # -t
@@ -254,7 +262,7 @@ services:
       dockerfile: Dockerfile
 
     restart: always
-    links:
+    depends_on:
       - forms-flow-webapi-db
     ports:
       - "5001:5000"
@@ -314,6 +322,7 @@ services:
       - forms-flow-network
 
   forms-flow-documents-api:
+    container_name: forms-flow-documents-api
     build:
       context: ./forms-flow-documents/
       dockerfile: Dockerfile

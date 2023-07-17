@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.commons.connector.FormioTokenServiceProvider;
 import org.camunda.bpm.extension.commons.connector.support.FormAccessHandler;

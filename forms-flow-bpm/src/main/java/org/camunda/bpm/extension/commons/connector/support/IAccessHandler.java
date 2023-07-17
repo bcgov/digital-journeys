@@ -2,9 +2,9 @@ package org.camunda.bpm.extension.commons.connector.support;
 
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
 import org.camunda.bpm.extension.commons.ro.res.IResponse;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 
