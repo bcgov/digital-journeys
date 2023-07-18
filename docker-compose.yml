@@ -225,6 +225,61 @@ services:
       - ./postgres/webapi:/var/lib/postgresql/data:cached
     networks:
       - forms-flow-network
+  
+  forms-flow-webapi:
+    container_name: forms-flow-webapi
+    build:
+      context: ./forms-flow-api/
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - forms-flow-webapi-db
+      - forms-flow-forms
+    # entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./forms-flow-api:/digital-journeys:cached,rw
+    environment:
+      INSIGHT_API_KEY: ${INSIGHT_API_KEY}
+      INSIGHT_API_URL: ${INSIGHT_API_URL}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
+      BPM_API_BASE: ${CAMUNDA_API_URL}
+      BPM_API_URL: ${BPM_API_URL}
+      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_ALGORITHMS: "RS256"
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_CACHING_ENABLED: "True"
+      JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
+      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
+      FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:-f6a69a42-7f8a-11ed-a1eb-0242ac120002}
+      # DGJ-specific environment variables
+      EMPLOYEE_DATA_API_URL: ${EMPLOYEE_DATA_API_URL}
+      EMPLOYEE_SEARCH_API_URL: ${EMPLOYEE_SEARCH_API_URL}
+      ODS_AUTH_TOKEN: ${ODS_AUTH_TOKEN}
+      MINISTRY_NAMES_API_URL: ${MINISTRY_NAMES_API_URL}
+      SL_REVIEW_ENDPOINT: ${SL_REVIEW_ENDPOINT}
+      ODS_URL: ${ODS_URL}
+      SL_REVIEW_PROCESS_KEY: ${SL_REVIEW_PROCESS_KEY}
+      INFLUENZA_WORKSITE_PROCESS_KEY: ${INFLUENZA_WORKSITE_PROCESS_KEY}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-network
 
   forms-flow-file-upload:
     container_name: forms-flow-file-upload
@@ -253,61 +308,6 @@ services:
     build:
       context: ./formio-upload/
       dockerfile: Dockerfile
-
-
-  forms-flow-webapi:
-    container_name: forms-flow-webapi
-    build:
-      context: ./forms-flow-api/
-      dockerfile: Dockerfile
-
-    restart: always
-    depends_on:
-      - forms-flow-webapi-db
-    ports:
-      - "5001:5000"
-    volumes:
-      - ./forms-flow-api:/digital-journeys:cached,rw
-    environment:
-      INSIGHT_API_KEY: ${INSIGHT_API_KEY}
-      INSIGHT_API_URL: ${INSIGHT_API_URL}
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
-      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
-      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
-      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
-      BPM_API_BASE: ${CAMUNDA_API_URL}
-      BPM_API_URL: ${BPM_API_URL}
-      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
-      JWT_OIDC_ALGORITHMS: "RS256"
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
-      JWT_OIDC_CACHING_ENABLED: "True"
-      JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
-      KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      KEYCLOAK_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
-      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
-      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
-      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
-      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
-      MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
-      KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
-      EMPLOYEE_DATA_API_URL: ${EMPLOYEE_DATA_API_URL}
-      EMPLOYEE_SEARCH_API_URL: ${EMPLOYEE_SEARCH_API_URL}
-      ODS_AUTH_TOKEN: ${ODS_AUTH_TOKEN}
-      MINISTRY_NAMES_API_URL: ${MINISTRY_NAMES_API_URL}
-      SL_REVIEW_ENDPOINT: ${SL_REVIEW_ENDPOINT}
-      ODS_URL: ${ODS_URL}
-      SL_REVIEW_PROCESS_KEY: ${SL_REVIEW_PROCESS_KEY}
-      INFLUENZA_WORKSITE_PROCESS_KEY: ${INFLUENZA_WORKSITE_PROCESS_KEY}
-    stdin_open: true # -i
-    tty: true # -t
-    networks:
-      - forms-flow-network
 
   docs:
     build:
