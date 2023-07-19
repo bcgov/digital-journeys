@@ -121,7 +121,7 @@ const linkSubmission = (cell, row, redirectUrl) => {
       )}
     </div>
   );
-});
+};
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);

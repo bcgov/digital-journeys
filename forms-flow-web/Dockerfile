@@ -11,10 +11,11 @@ RUN apk update && apk upgrade && \
 
 # install and cache app dependencies
 
-# COPY package-lock.json /app/package-lock.json
+COPY package-lock.json /app/package-lock.json
 COPY package.json /app/package.json
 
 RUN npm install
+COPY . /app/
 
 COPY ./lsyncd.conf lsyncd.conf
 

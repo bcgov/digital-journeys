@@ -2,8 +2,8 @@ import React, {useEffect, useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
-  getProcessDataFromList,
-  getFormattedDateAndTime
+  getFormattedDateAndTime,
+  getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";

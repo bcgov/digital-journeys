@@ -162,6 +162,9 @@ services:
 
   forms-flow-web:
     container_name: forms-flow-web
+    restart: always
+    depends_on :
+      - forms-flow-webapi
     build:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
@@ -177,6 +180,7 @@ services:
       - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
       - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
       - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-Digital Journeys}
+      - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
       - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
       - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
       - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
@@ -186,8 +190,10 @@ services:
       - REACT_APP_DRAFT_ENABLED=${DRAFT_ENABLED:-false}
       - REACT_APP_DRAFT_POLLING_RATE=${DRAFT_POLLING_RATE:-15000}
       - REACT_APP_EXPORT_PDF_ENABLED=${EXPORT_PDF_ENABLED:-false}
+      - REACT_APP_PUBLIC_WORKFLOW_ENABLED=${PUBLIC_WORKFLOW_ENABLED:-false}
       - REACT_APP_DOCUMENT_SERVICE_URL=${DOCUMENT_SERVICE_URL}
-      - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
+      - REACT_APP_OPENTELEMETRY_SERVICE=${OPENTELEMETRY_SERVICE:-false}
+      # DGJ-specific environment variables
       - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
       - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
       - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
@@ -201,8 +207,6 @@ services:
       - REACT_APP_FORMIO_FILE_URL=${FORMIO_FILE_URL_ATTACHMENTS}
       - REACT_APP_SL_REVIEW_PROCESS_KEY=${SL_REVIEW_PROCESS_KEY}
       - REACT_APP_INFLUENZA_WORKSITE_PROCESS_KEY=${INFLUENZA_WORKSITE_PROCESS_KEY}
-      
-      
     volumes:
       - ".:/forms-flow"
       - "/forms-flow/node_modules"
