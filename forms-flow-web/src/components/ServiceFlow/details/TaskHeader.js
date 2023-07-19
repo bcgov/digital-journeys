@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React, {useEffect, useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
@@ -13,7 +14,7 @@ import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
-  fetchServiceTaskList,
+  // fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask, updateAssigneeBPMTask,
   updateBPMTask
@@ -22,12 +23,15 @@ import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
+import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
   // const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
-  // const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  /* const username = useSelector(
+    (state) => state.user?.userDetail?.preferred_username || ""
+  ); */
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   // const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   // const reqData = useSelector(state => state.bpmTasks.listReqParams);
@@ -37,122 +41,175 @@ const TaskHeader = React.memo(() => {
   const [showModal, setModal] = useState(false);
   // const [isEditAssignee, setIsEditAssignee]=useState(false);
   // const dispatch= useDispatch();
-
-  /* useEffect(()=>{
-    const followUp= task?.followUp ? new Date(task?.followUp):null;
+  const { t } = useTranslation();
+  /* useEffect(() => {
+    const followUp = task?.followUp ? new Date(task?.followUp) : null;
     setFollowUpDate(followUp);
-  },[task?.followUp]) */
+  }, [task?.followUp]); */
 
-  /* useEffect(()=>{
-    const due= task?.due ? new Date(task?.due): null;
+  /* useEffect(() => {
+    const due = task?.due ? new Date(task?.due) : null;
     setDueDate(due);
-  },[task?.due]); */
+  }, [task?.due]); */
 
   /* const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(claimBPMTask(taskId,username,(err,response)=>{
-      if(!err){
-        if(!SocketIOService.isConnected()){
-          if(selectedFilter){
-            dispatch(getBPMTaskDetail(taskId));
-            dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
-          }else{
-            dispatch(setBPMTaskDetailUpdating(false));
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      claimBPMTask(taskId, username, (err, response) => {
+        if (!err) {
+          if (!SocketIOService.isConnected()) {
+            if (selectedFilter) {
+              dispatch(getBPMTaskDetail(taskId));
+              dispatch(
+                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              );
+            } else {
+              dispatch(setBPMTaskDetailUpdating(false));
+            }
           }
+          if(selectedFilter){
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+           
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
         }
-      }else{
-        dispatch(setBPMTaskDetailUpdating(false));
-      }
-    }));
-  } */
+      })
+    );
+  }; */
   /* const onChangeClaim = (userId) => {
     setIsEditAssignee(false);
-   if(userId && userId!==task.assignee){
-     dispatch(setBPMTaskDetailUpdating(true));
-     dispatch(updateAssigneeBPMTask(taskId,userId,(err,response)=>{
-       if(!err){
-         if(!SocketIOService.isConnected()){
-         if(selectedFilter){
-           dispatch(getBPMTaskDetail(taskId));
-           dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
-         }
-         }
-       }else{
-         dispatch(setBPMTaskDetailUpdating(false));
-       }
-     }));
-   }
-  } */
+    if (userId && userId !== task.assignee) {
+      dispatch(setBPMTaskDetailUpdating(true));
+      dispatch(
+        // eslint-disable-next-line no-unused-vars
+        updateAssigneeBPMTask(taskId, userId, (err, response) => {
+          if (!err) {
+            if (!SocketIOService.isConnected()) {
+              if (selectedFilter) {
+                dispatch(getBPMTaskDetail(taskId));
+              }
+            }
+            if(selectedFilter){
+              dispatch(
+                fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+              );
+            }
+           
+          } else {
+            dispatch(setBPMTaskDetailUpdating(false));
+          }
+        })
+      );
+    }
+  }; */
 
-  /* const onUnClaimTask = () =>{
+  /* const onUnClaimTask = () => {
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(unClaimBPMTask(taskId,(err,response)=>{
-      if(!err){
-        if(!SocketIOService.isConnected()){
-        if(selectedFilter){
-          dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      unClaimBPMTask(taskId, (err, response) => {
+        if (!err) {
+          if (!SocketIOService.isConnected()) {
+            if (selectedFilter) {
+              dispatch(getBPMTaskDetail(taskId));
+            }
+          }
+          if(selectedFilter){
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+          
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
         }
-        }
-      }else{
-        dispatch(setBPMTaskDetailUpdating(false));
-      }
-    }));
-  } */
+      })
+    );
+  }; */
 
-  /* const onFollowUpDateUpdate = (followUpDate)=>{
+  /* const onFollowUpDateUpdate = (followUpDate) => {
     setFollowUpDate(followUpDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{followUp:followUpDate?getISODateTime(followUpDate):null}};
-    dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
-      if(!err){
-        if(!SocketIOService.isConnected()) {
-          dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
+    const updatedTask = {
+      ...task,
+      ...{ followUp: followUpDate ? getISODateTime(followUpDate) : null },
+    };
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      updateBPMTask(taskId, updatedTask, (err, response) => {
+        if (!err) {
+          if (!SocketIOService.isConnected()) {
+            dispatch(getBPMTaskDetail(taskId));
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
         }
-      }else{
-        dispatch(setBPMTaskDetailUpdating(false));
-      }
-    }))
+      })
+    );
   }; */
 
-  /* const onDueDateUpdate = (dueDate)=>{
+  /* const onDueDateUpdate = (dueDate) => {
     setDueDate(dueDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{due:dueDate?getISODateTime(dueDate):null}};
-    dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
-      if(!err){
-        if(!SocketIOService.isConnected()) {
-          dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
+    const updatedTask = {
+      ...task,
+      ...{ due: dueDate ? getISODateTime(dueDate) : null },
+    };
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      updateBPMTask(taskId, updatedTask, (err, response) => {
+        if (!err) {
+          if (!SocketIOService.isConnected()) {
+            dispatch(getBPMTaskDetail(taskId));
+            dispatch(
+              fetchServiceTaskList(selectedFilter.id, firstResult, reqData)
+            );
+          }
+        } else {
+          dispatch(setBPMTaskDetailUpdating(false));
         }
-      }else{
-        dispatch(setBPMTaskDetailUpdating(false));
-      }
-    }))
+      })
+    );
   }; */
-
-  /* const FollowUpDateInput= React.forwardRef(({ value, onClick }, ref) =>{
-   return    <div onClick={onClick} ref={ref}>
-      <i className="fa fa-calendar mr-1"/>{" "}
-      {followUpDate
-        ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
-        : "Set follow-up Date"}
-    </div>
+  
+  // eslint-disable-next-line no-unused-vars
+  /* const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
+    return (
+      <div onClick={onClick} ref={ref}>
+        <i className="fa fa-calendar mr-1" />{" "}
+        {followUpDate ? (
+          <span className="mr-4">{moment(followUpDate).fromNow()}</span>
+        ) : (
+          t("Set follow-up Date")
+        )}
+      </div>
+    );
   }); */
 
-
-
-  /* const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
-    return    <div onClick={onClick} ref={ref}>
-     <i className="fa fa-bell mr-1"/>{" "}
-      {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : "Set Due date"}
-    </div>
+  // eslint-disable-next-line no-unused-vars
+  /* const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
+    return (
+      <div onClick={onClick} ref={ref}>
+        <i className="fa fa-bell mr-1" />{" "}
+        {dueDate ? (
+          <span className="mr-4">{moment(dueDate).fromNow()}</span>
+        ) : (
+          t("Set Due date")
+        )}
+      </div>
+    );
   }); */
 
-  /* const getGroups = (groups)=>{
-    return groups?.map(group=>group.groupId).join(", ");
-  } */
+  /* const getGroups = (groups) => {
+    return groups?.map((group) => group.groupId).join(", ");
+  }; */
 
   return (
     <>
@@ -162,8 +219,14 @@ const TaskHeader = React.memo(() => {
         groups={taskGroups}
       />
       <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name" >
-      <span className="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <Row className="ml-0 task-name">
+        <span className="application-id" data-title={t("Process Name")}>
+          {" "}
+          {
+            getProcessDataObjectFromList(processList, task?.processDefinitionId)
+              ?.name
+          }
+        </span>
       </Row>
       <Row className="ml-0">
         <span data-title={t("Application ID")} className="application-id">

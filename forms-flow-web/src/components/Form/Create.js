@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React, { useState, useEffect, useReducer } from "react";
 import { FormBuilder, Errors, Formio } from "react-formio";
 import _set from "lodash/set";

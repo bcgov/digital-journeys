@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React, { useEffect, useMemo, useState } from "react";
 import { Navbar, Container, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
@@ -44,6 +45,8 @@ const NavBar = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   // const formTenant = useSelector((state)=>state.form?.form?.tenantKey);
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const showForms = true;
 
   /**
    * For anonymous forms the only way to identify the tenant is through the

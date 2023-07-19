@@ -36,7 +36,7 @@ const initialState = {
   activePage:1,
   firstResult:0,
   bpmTasks: [],
-}
+};
 
 const bpmTasks = (state = initialState, action) => {
   switch (action.type) {
@@ -125,7 +125,8 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.RELOAD_TASK_FORM_SUBMISSION:
       return { ...state, taskFormSubmissionReload: action.payload };
     case ACTION_CONSTANTS.BPM_TASK_LIST_ACTIVE_PAGE:
-      return {...state, activePage:action.payload, firstResult: getFirstResultIndex(action.payload)}
+      return {...state, activePage:action.payload, 
+        firstResult: getFirstResultIndex(action.payload)};
       case ACTION_CONSTANTS.BPM_TASKS:
         return { ...state, bpmTasks: action.payload };
       case ACTION_CONSTANTS.BPM_TASKS_ERROR:

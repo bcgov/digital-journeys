@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { push } from "connected-react-router";

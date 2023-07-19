@@ -29,6 +29,8 @@ import { push } from "connected-react-router";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import TaskHead from "../../containers/TaskHead";
 
+import { Translation } from "react-i18next";
+
 export default React.memo(() => {
   const dispatch = useDispatch();
   const filterList = useSelector((state) => state.bpmTasks.filterList);

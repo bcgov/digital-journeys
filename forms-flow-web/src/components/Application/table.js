@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React from "react";
 // import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
@@ -55,7 +56,7 @@ export const defaultSortedBy = [
 //   );
 // };
 
-const linkSubmission = (cell, row, redirectUrl) => {
+const LinkSubmission = (cell, row, redirectUrl) => {
   const dispatch = useDispatch();
   const url = row.isClientEdit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
