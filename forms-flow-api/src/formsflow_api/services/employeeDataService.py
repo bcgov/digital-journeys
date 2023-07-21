@@ -32,7 +32,7 @@ class EmployeeDataService:
 
         if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
           emp_data = EmployeeData(employee_data_res["value"][0])
-          cache.set(guid, emp_data, timeout=3600)
+          cache.set(guid, emp_data, timeout=14400)
           return emp_data.__dict__
       else:
         return emp_data.__dict__

@@ -41,7 +41,7 @@ class InfluenzaMinistry(Resource):
 
     @staticmethod
     @profiletime
-    @cache.cached(timeout=3600, key_prefix='get-influenza-ministry-list')
+    @cache.cached(timeout=14400, key_prefix='get-influenza-ministry-list')
     @auth.require
     def get():
         """get ministries list for Influenza"""
