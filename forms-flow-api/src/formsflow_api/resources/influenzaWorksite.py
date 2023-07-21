@@ -7,6 +7,7 @@ from formsflow_api_utils.utils import (
     auth,
     cors_preflight,
     profiletime,
+    cache
 )
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.services import InfluenzaService
@@ -40,6 +41,7 @@ class InfluenzaMinistry(Resource):
 
     @staticmethod
     @profiletime
+    @cache.cached(timeout=3600, key_prefix='get-influenza-ministry-list')
     @auth.require
     def get():
         """get ministries list for Influenza"""

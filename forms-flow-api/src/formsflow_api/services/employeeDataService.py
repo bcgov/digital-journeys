@@ -4,6 +4,7 @@ from urllib.parse import unquote
 from http import HTTPStatus
 from flask import current_app, g
 from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils import (cache)
 from formsflow_api.models.employee_data import EmployeeData
 from formsflow_api.models.employee_data_bceid import EmployeeDataFromKeycloak
 
@@ -16,20 +17,24 @@ class EmployeeDataService:
       employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
       test_auth_token = current_app.config.get(
           "ODS_AUTH_TOKEN")
+      emp_data = cache.get(guid)
+      if emp_data is None:
+        try:
+          response_from_BCGov = requests.get("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid),
+                        headers={"Authorization": test_auth_token})
+        except:
+          raise BusinessException(
+            {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+          )
+        
+        #TODO: check response for data and return accordingly. No all users have data
+        employee_data_res = response_from_BCGov.json()
 
-      try:
-        response_from_BCGov = requests.get("{}?$filter=GUID eq '{}'".format(employee_data_api_url, guid),
-                       headers={"Authorization": test_auth_token})
-      except:
-        raise BusinessException(
-          {"message": "Failed to look up user in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
-        )
-      
-      #TODO: check response for data and return accordingly. No all users have data
-      employee_data_res = response_from_BCGov.json()
-
-      if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
-        emp_data = EmployeeData(employee_data_res["value"][0])
+        if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
+          emp_data = EmployeeData(employee_data_res["value"][0])
+          cache.set(guid, emp_data, timeout=3600)
+          return emp_data.__dict__
+      else:
         return emp_data.__dict__
       raise BusinessException(
           {"message": "No user data found"}, HTTPStatus.NOT_FOUND
