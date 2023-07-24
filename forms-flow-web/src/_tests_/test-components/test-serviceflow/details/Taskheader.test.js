@@ -56,10 +56,11 @@ it("Should render the Taskheader component without breaking", () => {
   );
   expect(screen.getByText("Review Submission")).toBeInTheDocument();
   expect(screen.getByText("Application ID# 35")).toBeInTheDocument();
-  expect(screen.getByText("Set follow-up Date")).toBeInTheDocument();
-  expect(screen.getByText("Add groups")).toBeInTheDocument();
-  expect(screen.getByText("Claim")).toBeInTheDocument();
-  const claimbtn = screen.getByTestId("clam-btn");
-  fireEvent.click(claimbtn);
-  expect(store.dispatch.mock.calls).toHaveLength(2);
+  /** Comment out code for DIgital jouney requirements, these componet are hidden */
+  // expect(screen.getByText("Set follow-up Date")).toBeInTheDocument();
+  // expect(screen.getByText("Add groups")).toBeInTheDocument();
+  // expect(screen.getByText("Claim")).toBeInTheDocument();
+  // const claimbtn = screen.getByTestId("clam-btn");
+  // fireEvent.click(claimbtn);
+  // expect(store.dispatch.mock.calls).toHaveLength(2);
 });

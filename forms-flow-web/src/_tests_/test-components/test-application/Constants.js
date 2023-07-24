@@ -85,6 +85,11 @@ export const AfterLoadingWithresult = {
   activePage: 1,
   countPerPage: 5,
   applicationStatus: applicationStatus,
+  selectedApplicationForDelete: {
+    modalOpen: false,
+    applicationId: "",
+    applicationName: "",
+  },
 };
 export const AfterLoadingWithoutresult = {
   applicationsList: [],
@@ -99,6 +104,11 @@ export const AfterLoadingWithoutresult = {
   activePage: 1,
   countPerPage: 5,
   applicationStatus: [],
+  selectedApplicationForDelete: {
+    modalOpen: false,
+    applicationId: "",
+    applicationName: "",
+  },
 };
 
 const applicationDetails = {
@@ -153,4 +163,10 @@ export const initialState = {
   applicationStatus: [],
   iserror: false,
   error: "",
+  isPublicStatusLoading: false,
+  selectedApplicationForDelete: {
+    modalOpen: false,
+    applicationId: "",
+    applicationName: "",
+  },
 };
