@@ -53,6 +53,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String INCIDENTS = "incidents";
     private static final String CONTACTS = "contacts";
     private static final String ATTACHMENT_FILE_NAME = "attachment.pdf";
+    private static final String IDIR_POSTFIX = "@idir";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -156,7 +157,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private Integer getContactId(String contactIdir) {
-        String idirQueryParam = "?q=login=" + "'"+ contactIdir.toLowerCase() + "'";
+        String idirQueryParam = "?q=login=" + "'"+ contactIdir + "'";
         String queryParam = CONTACTS + idirQueryParam;
         String url = getEndpointUrl(queryParam);
         ResponseEntity<String> response = this.httpServiceInvoker.execute(url, HttpMethod.GET, null);
@@ -218,7 +219,10 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
             Jwt jwt = (Jwt) authentication.getPrincipal();
-            String idir = jwt.getClaimAsString("idir");
+            String idir = jwt.getClaimAsString("idir").toLowerCase();
+            if (idir.endsWith(IDIR_POSTFIX)) {
+                idir = idir.substring(0, idir.length() - IDIR_POSTFIX.length());
+            }
             return idir;
         }
         else {
