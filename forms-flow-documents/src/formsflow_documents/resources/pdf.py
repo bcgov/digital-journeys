@@ -90,11 +90,13 @@ class FormResourceExportPdf(Resource):
         try:
 
             timezone = request.args.get("timezone")
-            request_json = request.get_json()
-            template = request_json.get("template")
-            template_variables = request_json.get("templateVars")
+            # request_json = request.get_json()
+            # print("json data", request_json)
+            # template = request_json.get("template")
+            # template_variables = request_json.get("templateVars")
             token = request.headers.get("Authorization")
-            use_template = bool(template)
+            # use_template = bool(template)
+            use_template = False
 
             pdf_service = PDFService(form_id=form_id, submission_id=submission_id)
 
