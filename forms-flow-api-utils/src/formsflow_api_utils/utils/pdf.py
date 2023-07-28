@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
+from selenium.webdriver.chrome.service import Service
 
 
 def send_devtools(driver, cmd, params=None):
@@ -48,8 +49,12 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
     sel_options = {"request_storage_base_dir": "/tmp"}
 
     # pylint: disable=E1123
+    # service = Service(executable_path="/usr/local/bin/chromedriver")
+    service = Service(executable_path=chromedriver)
+    print("chromedriver")
+    print(chromedriver)
     driver = webdriver.Chrome(
-        chromedriver, options=options, seleniumwire_options=sel_options
+        service=service, options=options, seleniumwire_options=sel_options
     )
     driver.set_window_size(1920, 1080)
 
