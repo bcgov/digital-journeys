@@ -54,6 +54,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CONTACTS = "contacts";
     private static final String ATTACHMENT_FILE_NAME = "attachment.pdf";
     private static final String IDIR_POSTFIX = "@idir";
+    private static final String CRM_ID = "crmId";
+    private static final String CRM_LOOKUP_NAME = "crmLookupName";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -70,7 +72,14 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private void crmOperation(DelegateExecution execution) {
-        System.out.println("Starting CRM operation");
+        System.out.println("Starting CRM operation");        
+        
+        // If the crmId is already present, then skip the CRM operation 
+        // @TODO: This needs to be improved once UPDATE CRM is implemented
+        String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
+        if (execution.getVariables().get(CRM_ID) == null || crmId.isEmpty() || crmId == "null") {
+            return;
+        }
 
         // Get the formId and submissionId from the formUrl
         String formUrl = String.valueOf(execution.getVariables().get(FORM_URL));
@@ -110,8 +119,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             throw new ApplicationServiceException("createCrmIncident failed.");
         }
         // Saving the CRM incident id and lookupName in form
-        execution.setVariable("crmId", crmPostResponse.getId());
-        execution.setVariable("crmLookupName", crmPostResponse.getLookupName());
+        execution.setVariable(CRM_ID, crmPostResponse.getId());
+        execution.setVariable(CRM_LOOKUP_NAME, crmPostResponse.getLookupName());
 
         // Generate a PDF of the form submission
         try {
