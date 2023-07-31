@@ -17,9 +17,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmFileAttachmentPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmPostResponse;
-import main.java.org.camunda.bpm.extension.hooks.model.EntryType;
-import main.java.org.camunda.bpm.extension.hooks.model.PrimaryContact;
-import main.java.org.camunda.bpm.extension.hooks.model.Thread;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmEntryType;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmPrimaryContact;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmThread;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmCategory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,6 +58,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String IDIR_POSTFIX = "@idir";
     private static final String CRM_ID = "crmId";
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
+    private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME = "Leave & Time off";
+    private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME = "Maternity, Parental and Adoption Leave";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -136,12 +140,14 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
 
     private CrmPostResponse createCrmIncident(int contactId) {
         String incidentSubject = "Test incident from Camunda";
-        PrimaryContact primaryContact = new PrimaryContact(contactId);
-        EntryType entryType = new EntryType(1);
-        Thread thread1 = new Thread("thread text test 1", entryType); //Todo - later will be extracted from the form submission fields
-        ArrayList<Thread> threads = new ArrayList<Thread>();
-        threads.add(thread1);
-        CrmPostRequest crmPostRequest = new CrmPostRequest(primaryContact, incidentSubject, threads);
+        CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(contactId);
+        CrmEntryType crmEntryType = new CrmEntryType(1);
+        CrmThread crmThread1 = new CrmThread("thread text test 1", crmEntryType); //Todo - later will be extracted from the form submission fields
+        ArrayList<CrmThread> crmThreads = new ArrayList<CrmThread>();
+        crmThreads.add(crmThread1);
+        CrmProduct crmProduct = new CrmProduct(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME);
+        CrmCategory crmCategory = new CrmCategory(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME);
+        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, incidentSubject, crmThreads, crmProduct, crmCategory);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
