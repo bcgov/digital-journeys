@@ -22,11 +22,11 @@ public class CrmPostRequest {
     this.crmProduct = crmProduct;
   }
 
-  public CrmPrimaryContact getCrmPrimaryContact() {
+  public CrmPrimaryContact getPrimaryContact() {
     return crmPrimaryContact;
   }
 
-  public void setCrmPrimaryContact(CrmPrimaryContact crmPrimaryContact) {
+  public void setPrimaryContact(CrmPrimaryContact crmPrimaryContact) {
     this.crmPrimaryContact = crmPrimaryContact;
   }
 
@@ -38,27 +38,27 @@ public class CrmPostRequest {
     this.subject = subject;
   }
 
-  public ArrayList<CrmThread> getCrmThreads() {
+  public ArrayList<CrmThread> getThreads() {
     return crmThreads;
   }
 
-  public void setCrmThreads(ArrayList<CrmThread> crmThreads) {
+  public void setThreads(ArrayList<CrmThread> crmThreads) {
     this.crmThreads = crmThreads;
   }
 
-  public CrmProduct getCrmProduct() {
+  public CrmProduct getProduct() {
     return crmProduct;
   }
 
-  public void setCrmProduct(CrmProduct crmProduct) {
+  public void setProduct(CrmProduct crmProduct) {
     this.crmProduct = crmProduct;
   }
 
-  public CrmCategory getCrmCategory() {
+  public CrmCategory getCategory() {
     return crmCategory;
   }
 
-  public void setCrmCategory(CrmCategory crmCategory) {
+  public void setCategory(CrmCategory crmCategory) {
     this.crmCategory = crmCategory;
   }
 }

@@ -14,10 +14,10 @@ public class CrmThread {
   public void setText(String text) {
     this.text = text;
   }
-  public CrmEntryType getCrmEntryType() {
+  public CrmEntryType getEntryType() {
     return crmEntryType;
   }
-  public void setCrmEntryType(CrmEntryType crmEntryType) {
+  public void setEntryType(CrmEntryType crmEntryType) {
     this.crmEntryType = crmEntryType;
   }
 }
