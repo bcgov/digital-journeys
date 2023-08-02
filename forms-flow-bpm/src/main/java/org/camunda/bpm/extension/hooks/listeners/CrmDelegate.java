@@ -81,7 +81,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         // If the crmId is already present, then skip the CRM operation 
         // @TODO: This needs to be improved once UPDATE CRM is implemented
         String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
-        if (execution.getVariables().get(CRM_ID) == null || crmId.isEmpty() || crmId == "null") {
+        if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
             return;
         }
 
