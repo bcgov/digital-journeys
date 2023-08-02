@@ -1,17 +1,18 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
-public class PrimaryContact{
+public class CrmEntryType {
     private int id;
 
-    public PrimaryContact(int id) {
-        this.id = id;
+    public CrmEntryType(int id) {
+      this.id = id;
     }
 
     public int getId() {
-        return id;
+      return id;
     }
 
     public void setId(int id) {
-        this.id = id;
+      this.id = id;
     }
+    
 }
