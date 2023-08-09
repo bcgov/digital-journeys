@@ -12,7 +12,7 @@ on:
         - dev
         - test
         - production
-        - DGJ_1236-update-to-the-new-helm-chart-deployment
+        - helm
   push:
     branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
     paths:
