@@ -120,22 +120,22 @@ jobs:
           username: ${{ env.OPENSHIFT_USERNAME }}
           password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
 
-  #     - name: Cache Docker layers
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: /tmp/.buildx-cache
-  #         key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-buildx-${{ env.APP_NAME }}
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ env.APP_NAME }}
       
-  #     - name: Build and push Docker image
-  #       uses: docker/build-push-action@v3
-  #       with:
-  #         context: ${{ env.APP_DIR_NAME }}
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         file: ${{ env.APP_DIR_NAME }}/${{ env.DOCKER_FILE_NAME }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ env.APP_DIR_NAME }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ env.APP_DIR_NAME }}/${{ env.DOCKER_FILE_NAME }}
   
   # # ##################################### Deployment #####################################
   # apply-deploymentConfigs:
