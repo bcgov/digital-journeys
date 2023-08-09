@@ -14,7 +14,7 @@ on:
         - production
         - DGJ_1236-update-to-the-new-helm-chart-deployment
   push:
-    branches: [ main ]
+    branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
     paths:
       - "forms-flow-api/**"
       - "forms-flow-api-utils/**"
