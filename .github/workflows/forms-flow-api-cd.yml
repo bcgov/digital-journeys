@@ -137,52 +137,52 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ env.APP_DIR_NAME }}/${{ env.DOCKER_FILE_NAME }}
   
-  # # ##################################### Deployment #####################################
-  # apply-deploymentConfigs:
-  #   name: Apply deploymentConfigs
-  #   if: github.repository == 'bcgov/digital-journeys'
-  #   environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
-  #   runs-on: ubuntu-latest
+  # ##################################### Deployment #####################################
+  apply-deploymentConfigs:
+    name: Apply deploymentConfigs
+    if: github.repository == 'bcgov/digital-journeys'
+    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    runs-on: ubuntu-latest
     
-  #   needs:
-  #     - apply-openshift-buildConfigs
-  #     - build-and-push-image
+    needs:
+      - apply-openshift-buildConfigs
+      - build-and-push-image
     
-  #   steps:
-  #     - name: Checkout Target Branch
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout Target Branch
+        uses: actions/checkout@v3
 
-  #     - name: Log in to OpenShift
-  #       run: |
-  #         oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
   
-  #     - name: apply deploymentConfig
-  #       working-directory: ./deployment/openshift
-  #       run: |
-  #         oc -n ${NAMESPACE} project
-  #         oc -n ${NAMESPACE} process -f webapi_dc.yaml \
-  #               -p NAME=${APP_NAME} \
-  #               -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-  #               -p TAG_NAME=${ENVIRONMENT} \
-  #               -p WEB_API_URL=${APP_URL} \
-  #               -p CPU_REQUEST=100m \
-  #               -p CPU_LIMIT=200m \
-  #               -p MEMORY_REQUEST=100Mi \
-  #               -p MEMORY_LIMIT=2Gi | \
-  #         oc -n ${NAMESPACE} apply -f -
+      - name: apply deploymentConfig
+        working-directory: ./deployment/openshift
+        run: |
+          oc -n ${NAMESPACE} project
+          oc -n ${NAMESPACE} process -f webapi_dc.yaml \
+                -p NAME=${APP_NAME} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=${ENVIRONMENT} \
+                -p WEB_API_URL=${APP_URL} \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
       
-  #     - name: verify deploymentConfig
-  #       run: |
-  #         # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-  #         ATTEMPTS=0
-  #         ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-  #         until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-  #           $ROLLOUT_STATUS_CMD
-  #           ATTEMPTS=$((attempts + 1))
-  #           sleep 10
-  #         done
-  #         oc project ${NAMESPACE}     
-  #         echo "Listing pods.."
-  #         oc get pods|grep "${APP_NAME}"
-  #         export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-  #         echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
+      - name: verify deploymentConfig
+        run: |
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP_NAME}"
+          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+          echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
