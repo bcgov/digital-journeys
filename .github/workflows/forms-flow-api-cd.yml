@@ -1,18 +1,18 @@
 name: forms-flow-webapi-deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - test
-        - production
-        - helm
+  # workflow_dispatch:
+  #   inputs:
+  #     environment:
+  #       description: 'Environment'
+  #       required: true
+  #       default: 'dev'
+  #       type: choice
+  #       options:
+  #       - dev
+  #       - test
+  #       - production
+  #       - helm
   push:
     branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
     paths:
