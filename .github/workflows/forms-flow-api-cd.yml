@@ -20,6 +20,7 @@ on:
       - "forms-flow-api-utils/**"
       - "deployment/openshift/webapi_bc.yaml"
       - "deployment/openshift/webapi_dc.yaml"
+      - "./github/workflows/**"
 
 defaults:
   run:
