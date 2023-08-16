@@ -34,7 +34,7 @@ env:
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-webapi
   APP_DIR_NAME: forms-flow-api
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+  ENVIRONMENT: ${{ !github.event.inputs.environment && 'helm' ||  github.event.inputs.environment }}
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
@@ -141,7 +141,7 @@ jobs:
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
-    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    #environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     
     needs:
