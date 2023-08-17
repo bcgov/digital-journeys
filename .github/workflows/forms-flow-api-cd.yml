@@ -35,7 +35,7 @@ env:
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-webapi
   APP_DIR_NAME: forms-flow-api
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'helm' ||  github.event.inputs.environment }}
+  ENVIRONMENT: helm
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
