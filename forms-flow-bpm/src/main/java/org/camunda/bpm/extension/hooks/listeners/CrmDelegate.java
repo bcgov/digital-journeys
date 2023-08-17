@@ -93,7 +93,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         Map<String, String> ids = extractIds(formUrl);
         String formId = ids.get(FORM_ID);
         String submissionId = ids.get(SUBMISSION_ID);
-        String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT));
         
         if (formId == null || submissionId == null) {
             System.out.println("formId or submissionId is null. formUrl: " + formUrl + " formId: " + formId + " submissionId" + submissionId);
@@ -121,7 +120,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
 
         // Create a new incident in CRM
-        CrmPostResponse crmPostResponse = createCrmIncident(contactId, threadText);
+        CrmPostResponse crmPostResponse = createCrmIncident(contactId, execution);
         if (crmPostResponse == null) {
             System.out.println("crmPostResponse is null: " + crmPostResponse);
             throw new ApplicationServiceException("createCrmIncident failed.");
@@ -142,9 +141,10 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createCrmIncident(int contactId, String threadText) {
+    private CrmPostResponse createCrmIncident(int contactId, DelegateExecution execution) {
         String incidentSubject = "Test incident from Camunda";
         CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(contactId);
+        String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT));
         if (threadText == null) {
             threadText = "";
         }
