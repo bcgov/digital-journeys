@@ -18,6 +18,8 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmFileAttachmentPostRequ
 import main.java.org.camunda.bpm.extension.hooks.model.CrmPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmPostResponse;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmEntryType;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmChannel;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmContentType;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmPrimaryContact;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmThread;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
@@ -60,6 +62,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
     private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME = "Leave & Time off";
     private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME = "Maternity, Parental and Adoption Leave";
+    private static final String CRM_THREAD_TEXT = "threadText";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -117,7 +120,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
 
         // Create a new incident in CRM
-        CrmPostResponse crmPostResponse = createCrmIncident(contactId);
+        CrmPostResponse crmPostResponse = createCrmIncident(contactId, execution);
         if (crmPostResponse == null) {
             System.out.println("crmPostResponse is null: " + crmPostResponse);
             throw new ApplicationServiceException("createCrmIncident failed.");
@@ -138,11 +141,17 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createCrmIncident(int contactId) {
+    private CrmPostResponse createCrmIncident(int contactId, DelegateExecution execution) {
         String incidentSubject = "Test incident from Camunda";
         CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(contactId);
-        CrmEntryType crmEntryType = new CrmEntryType(1);
-        CrmThread crmThread1 = new CrmThread("thread text test 1", crmEntryType); //Todo - later will be extracted from the form submission fields
+        String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT));
+        if (threadText == null) {
+            threadText = "";
+        }
+        CrmEntryType crmEntryType = new CrmEntryType(4); // lookupName": "Customer Proxy"
+        CrmChannel crmChannel = new CrmChannel(6); // "lookupName": "CSS Web"
+        CrmContentType crmContentType = new CrmContentType(2); // "lookupName": "text/html", 1 for "text/plain"
+        CrmThread crmThread1 = new CrmThread(threadText, crmEntryType, crmChannel, crmContentType);
         ArrayList<CrmThread> crmThreads = new ArrayList<CrmThread>();
         crmThreads.add(crmThread1);
         CrmProduct crmProduct = new CrmProduct(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME);
