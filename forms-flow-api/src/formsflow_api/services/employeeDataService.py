@@ -103,7 +103,7 @@ class EmployeeDataService:
         skip = f"&$skip={offset}"
 
         fields = ["name","first_name","last_name","middle_name","Organization","level1_program",
-        "EMPLID","position_title","office_city","city","level2_division","level3_branch",
+        "EMPLID","position_title","office_city","city","level2_division","level3_branch","DEPTID",
         "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name"]
         select_fields = ",".join(fields)
 
