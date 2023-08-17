@@ -22,6 +22,8 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmPrimaryContact;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmThread;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmCategory;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmStaffGroup;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmAssignedTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,6 +62,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
     private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME = "Leave & Time off";
     private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME = "Maternity, Parental and Adoption Leave";
+    private static final String CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME = "TES HR Admin Technicians";
+    private static final String CRM_MAT_PAT_SUBJECT = "Maternity and parental leave form";
+    private static final String CRM_MAT_PAT_SUBMITTER_NAME_FIELD = "submissionDisplayName";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -117,7 +122,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
 
         // Create a new incident in CRM
-        CrmPostResponse crmPostResponse = createCrmIncident(contactId);
+        CrmPostResponse crmPostResponse = createCrmIncident(contactId, execution);
         if (crmPostResponse == null) {
             System.out.println("crmPostResponse is null: " + crmPostResponse);
             throw new ApplicationServiceException("createCrmIncident failed.");
@@ -138,8 +143,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createCrmIncident(int contactId) {
-        String incidentSubject = "Test incident from Camunda";
+    private CrmPostResponse createCrmIncident(int contactId, DelegateExecution execution) {
+        String submitterDisplayName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBMITTER_NAME_FIELD));
+        String crmIncidentSubject = CRM_MAT_PAT_SUBJECT + " for " + submitterDisplayName;
         CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(contactId);
         CrmEntryType crmEntryType = new CrmEntryType(1);
         CrmThread crmThread1 = new CrmThread("thread text test 1", crmEntryType); //Todo - later will be extracted from the form submission fields
@@ -147,7 +153,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         crmThreads.add(crmThread1);
         CrmProduct crmProduct = new CrmProduct(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME);
         CrmCategory crmCategory = new CrmCategory(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME);
-        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, incidentSubject, crmThreads, crmProduct, crmCategory);
+        CrmStaffGroup crmStaffGroup = new CrmStaffGroup(CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME);
+        CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
+        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
