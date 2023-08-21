@@ -8,18 +8,20 @@ public class CrmPostRequest {
   private ArrayList<CrmThread> crmThreads;
   private CrmProduct crmProduct;
   private CrmCategory crmCategory;
+  private CrmAssignedTo crmAssignedTo;
   
   public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.subject = subject;
   }
 
-  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, CrmProduct crmProduct, CrmCategory crmCategory) {
+  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.subject = subject;
     this.crmThreads = crmThreads;
     this.crmCategory = crmCategory;
     this.crmProduct = crmProduct;
+    this.crmAssignedTo = crmAssignedTo;
   }
 
   public CrmPrimaryContact getPrimaryContact() {
@@ -60,5 +62,13 @@ public class CrmPostRequest {
 
   public void setCategory(CrmCategory crmCategory) {
     this.crmCategory = crmCategory;
+  }
+
+  public CrmAssignedTo getAssignedTo() {
+    return crmAssignedTo;
+  }
+
+  public void setAssignedTo(CrmAssignedTo crmAssignedTo) {
+    this.crmAssignedTo = crmAssignedTo;
   }
 }
