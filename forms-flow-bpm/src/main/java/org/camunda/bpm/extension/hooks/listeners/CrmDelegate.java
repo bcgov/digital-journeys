@@ -24,6 +24,8 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmPrimaryContact;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmThread;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmCategory;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmStaffGroup;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmAssignedTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,9 +62,12 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String IDIR_POSTFIX = "@idir";
     private static final String CRM_ID = "crmId";
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
-    private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME = "Leave & Time off";
-    private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME = "Maternity, Parental and Adoption Leave";
-    private static final String CRM_THREAD_TEXT = "threadText";
+    private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD = "crmProductLookupName";
+    private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD = "crmCategoryLookupName";
+    private static final String CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD = "crmStaffGroupLookupName";
+    private static final String CRM_MAT_PAT_SUBJECT_FIELD = "crmSubject";
+    private static final String CRM_MAT_PAT_SUBMITTER_NAME_FIELD = "submissionDisplayName";
+    private static final String CRM_THREAD_TEXT_FIELD = "crmThreadText";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -142,9 +147,16 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private CrmPostResponse createCrmIncident(int contactId, DelegateExecution execution) {
-        String incidentSubject = "Test incident from Camunda";
+        // Loading the CRM fields from the form
+        String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
+        String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
+        String crmStaffGroupLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD));
+        String crmSubject = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBJECT_FIELD));
+        String submitterDisplayName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBMITTER_NAME_FIELD));
+        String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT_FIELD));
+        
+        String crmIncidentSubject = crmSubject + " for " + submitterDisplayName;
         CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(contactId);
-        String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT));
         if (threadText == null) {
             threadText = "";
         }
@@ -154,9 +166,11 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         CrmThread crmThread1 = new CrmThread(threadText, crmEntryType, crmChannel, crmContentType);
         ArrayList<CrmThread> crmThreads = new ArrayList<CrmThread>();
         crmThreads.add(crmThread1);
-        CrmProduct crmProduct = new CrmProduct(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME);
-        CrmCategory crmCategory = new CrmCategory(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME);
-        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, incidentSubject, crmThreads, crmProduct, crmCategory);
+        CrmProduct crmProduct = new CrmProduct(crmProductLookupName);
+        CrmCategory crmCategory = new CrmCategory(crmCategoryLookupName);
+        CrmStaffGroup crmStaffGroup = new CrmStaffGroup(crmStaffGroupLookupName);
+        CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
+        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {

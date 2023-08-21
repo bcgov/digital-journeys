@@ -209,7 +209,7 @@ const TaskHeader = React.memo(() => {
       />
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name">
-        <span className="application-id" dat-title={t("Process Name")}>
+        <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
             getProcessDataObjectFromList(processList, task?.processDefinitionId)
