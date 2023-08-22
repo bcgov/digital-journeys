@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class CrmPostRequest {
   private CrmPrimaryContact crmPrimaryContact;
+  private ArrayList<CrmOtherContact> crmOtherContacts;
   private String subject;
   private ArrayList<CrmThread> crmThreads;
   private CrmProduct crmProduct;
@@ -15,8 +16,9 @@ public class CrmPostRequest {
     this.subject = subject;
   }
 
-  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo) {
+  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, ArrayList<CrmOtherContact> crmOtherContacts, String subject, ArrayList<CrmThread> crmThreads, CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo) {
     this.crmPrimaryContact = crmPrimaryContact;
+    this.crmOtherContacts = crmOtherContacts;
     this.subject = subject;
     this.crmThreads = crmThreads;
     this.crmCategory = crmCategory;
@@ -30,6 +32,14 @@ public class CrmPostRequest {
 
   public void setPrimaryContact(CrmPrimaryContact crmPrimaryContact) {
     this.crmPrimaryContact = crmPrimaryContact;
+  }
+
+  public ArrayList<CrmOtherContact> getOtherContacts() {
+    return crmOtherContacts;
+  }
+
+  public void setOtherContacts(ArrayList<CrmOtherContact> crmOtherContacts) {
+    this.crmOtherContacts = crmOtherContacts;
   }
 
   public String getSubject() {
