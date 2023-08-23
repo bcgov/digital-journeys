@@ -16,6 +16,7 @@ from .constants import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
     COLD_FLU_ADMIN_GROUP,
+    SL_REVIEW_ADMIN_GROUP
 )
 from .enums import (
     ApplicationSortingParameters,
@@ -111,6 +112,8 @@ def get_role_ids_from_user_groups(role_ids, user_role):
         return filter_list_by_user_role(FormioRoles.REVIEWER.name, role_ids)
     if COLD_FLU_ADMIN_GROUP in user_role:
         return find_matching_roles([FormioRoles.COLD_FLU_ADMIN.name, FormioRoles.CLIENT.name], role_ids)
+    if SL_REVIEW_ADMIN_GROUP in user_role:
+        return find_matching_roles([FormioRoles.SL_REVIEW_ADMIN.name, FormioRoles.CLIENT.name], role_ids)
     if CLIENT_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
     return None
