@@ -128,10 +128,13 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         
         // Find the employee's contact details in CRM
         String employeeId = String.valueOf(execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD));
-        Integer employeeContactId = getContactIdByEmployeeId(employeeId);
-        if (employeeContactId == null) {
-            System.out.println("employeeContactId is null: " + employeeContactId);
-            throw new ApplicationServiceException("employeeContactId is null");
+        Integer employeeContactId = null;
+        if (execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD) != null && !employeeId.equals("null")) {
+            employeeContactId = getContactIdByEmployeeId(employeeId);
+            if (employeeContactId == null) {
+                System.out.println("employeeContactId is null: " + employeeContactId);
+                throw new ApplicationServiceException("employeeContactId is null");
+            }
         }
 
         // Create a new incident in CRM
@@ -156,7 +159,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createCrmIncident(int managerContactId, int employeeContactId, DelegateExecution execution) {
+    private CrmPostResponse createCrmIncident(Integer managerContactId, Integer employeeContactId, DelegateExecution execution) {
         // Loading the CRM fields from the form
         String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
         String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
@@ -170,9 +173,12 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         
         String crmIncidentSubject = crmSubject + " for " + submitterDisplayName;
         CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(managerContactId);
-        CrmOtherContact crmOtherContact = new CrmOtherContact(employeeContactId);
-        ArrayList<CrmOtherContact> crmOtherContacts = new ArrayList<CrmOtherContact>();
-        crmOtherContacts.add(crmOtherContact);
+        ArrayList<CrmOtherContact> crmOtherContacts = null;
+        if (employeeContactId != null) {
+            CrmOtherContact crmOtherContact = new CrmOtherContact(employeeContactId);
+            crmOtherContacts = new ArrayList<CrmOtherContact>();
+            crmOtherContacts.add(crmOtherContact);
+        }
         // If the manager and employee are same, then set crmOtherContacts to null.
         // @TODO: Revisit this logic before going to production
         if (managerContactId == employeeContactId) {
