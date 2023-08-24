@@ -22,7 +22,6 @@ from .constants import (
     COLD_FLU_ADMIN_GROUP,
     SL_REVIEW_ADMIN_GROUP,
     SL_REVIEW_GROUP,
-    SRG,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
