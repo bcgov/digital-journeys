@@ -105,7 +105,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
     """Filters out formio role ids specific to user groups."""
     if user_role is None or user_role is None:
         raise ValueError("Inavlid arguments passed")
-
+    print(user_role)
     if DESIGNER_GROUP in user_role:
         return role_ids
     if REVIEWER_GROUP in user_role:
@@ -113,6 +113,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
     if COLD_FLU_ADMIN_GROUP in user_role:
         return find_matching_roles([FormioRoles.COLD_FLU_ADMIN.name, FormioRoles.CLIENT.name], role_ids)
     if SL_REVIEW_ADMIN_GROUP in user_role:
+        print(find_matching_roles([FormioRoles.SL_REVIEW_ADMIN.name, FormioRoles.CLIENT.name], role_ids))
         return find_matching_roles([FormioRoles.SL_REVIEW_ADMIN.name, FormioRoles.CLIENT.name], role_ids)
     if CLIENT_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.CLIENT.name, role_ids)
