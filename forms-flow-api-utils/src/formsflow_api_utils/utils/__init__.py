@@ -20,7 +20,7 @@ from .constants import (
     REVIEWER_GROUP,
     HTTP_TIMEOUT,
     COLD_FLU_ADMIN_GROUP,
-    SL_REVIEW_ADMIN_GROUP
+    SL_REVIEW_ADMIN_GROUP,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
