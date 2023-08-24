@@ -66,6 +66,8 @@ class ApplicationsResource(Resource):
             modified_from_date = dict_data.get("modified_from_date")
             modified_to_date = dict_data.get("modified_to_date")
             sort_order = dict_data.get("sort_order", "desc")
+            print(auth.has_role([SL_REVIEW_ADMIN_GROUP]))
+            print(current_app.config.get("SL_REVIEW_PROCESS_KEY"))
             if auth.has_role([REVIEWER_GROUP]):
                 (
                     application_schema_dump,
@@ -92,6 +94,8 @@ class ApplicationsResource(Resource):
                     COLD_FLU_ADMIN_GROUP: current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY"),
                     SL_REVIEW_ADMIN_GROUP: current_app.config.get("SL_REVIEW_PROCESS_KEY")
                 }
+                print("role_process_keys")
+                print(role_process_keys)
                 process_keys_filter = []
                 for key, value in role_process_keys.items():
                     if auth.has_role([key]):
