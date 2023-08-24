@@ -39,6 +39,12 @@
       "description": "A person who can view all cold-flu form submissions.",
       "admin": false,
       "default": false
+    },
+    "sl-review-admin": {
+      "title": "sl-review-admin",
+      "description": "A person who can view all SL review form submissions.",
+      "admin": false,
+      "default": false
     }
   },
   "forms": {

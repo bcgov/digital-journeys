@@ -66,6 +66,7 @@ export const ANONYMOUS_USER = "anonymous";
 
 export const MANAGER_GROUP = 'manager';
 export const COLD_FLU_ADMIN_GROUP = 'cold-flu-admin';
+export const SL_REVIEW_ADMIN_GROUP = 'sl-review-admin';
 
 export const FORMIO_JWT_SECRET =
   (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
