@@ -23,7 +23,7 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
 
     @Override
     public void notify(DelegateExecution execution) {
-       LOGGER.info("EmailAttributesListener input : "+execution.getVariables());
+    //    LOGGER.info("EmailAttributesListener input : "+execution.getVariables());
        Map<String,Object> dmnMap = getDMNTemplate(execution);
        String emailto = getAddressValue(execution,dmnMap,"to");
        String groupName = String.valueOf(execution.getVariable(GROUP_NAME));

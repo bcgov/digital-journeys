@@ -210,7 +210,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            System.out.println("crmPostRequest: " + objectMapper.writeValueAsString(crmPostRequest));
             ResponseEntity<String> response = httpServiceInvoker.execute(
                 url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest));
             String responseBody = response.getBody();
