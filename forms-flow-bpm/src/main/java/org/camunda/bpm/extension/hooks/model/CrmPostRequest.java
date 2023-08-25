@@ -10,13 +10,15 @@ public class CrmPostRequest {
   private CrmProduct crmProduct;
   private CrmCategory crmCategory;
   private CrmAssignedTo crmAssignedTo;
+  private CrmCustomFields crmCustomFields;
   
   public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.subject = subject;
   }
 
-  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, ArrayList<CrmOtherContact> crmOtherContacts, String subject, ArrayList<CrmThread> crmThreads, CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo) {
+  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, ArrayList<CrmOtherContact> crmOtherContacts, String subject, ArrayList<CrmThread> crmThreads, 
+    CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo, CrmCustomFields crmCustomFields) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.crmOtherContacts = crmOtherContacts;
     this.subject = subject;
@@ -24,6 +26,7 @@ public class CrmPostRequest {
     this.crmCategory = crmCategory;
     this.crmProduct = crmProduct;
     this.crmAssignedTo = crmAssignedTo;
+    this.crmCustomFields = crmCustomFields;
   }
 
   public CrmPrimaryContact getPrimaryContact() {
@@ -80,5 +83,13 @@ public class CrmPostRequest {
 
   public void setAssignedTo(CrmAssignedTo crmAssignedTo) {
     this.crmAssignedTo = crmAssignedTo;
+  }
+
+  public CrmCustomFields getCustomFields() {
+    return crmCustomFields;
+  }
+
+  public void setCustomFields(CrmCustomFields crmCustomFields) {
+    this.crmCustomFields = crmCustomFields;
   }
 }
