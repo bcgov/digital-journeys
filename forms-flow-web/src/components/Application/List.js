@@ -58,6 +58,7 @@ export const ApplicationList = React.memo(() => {
   // const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
+  const userObj = useSelector((state) => state.user.userDetail);
   const page = useSelector((state) => state.applications.activePage);
   const iserror = useSelector((state) => state.applications.iserror);
   const error = useSelector((state) => state.applications.error);
@@ -147,6 +148,8 @@ export const ApplicationList = React.memo(() => {
   const listApplications = (applications) => {
     let totalApplications = applications.map((application) => {
       application.isClientEdit = isClientEdit(application.applicationStatus);
+      application.loggedInUserObj = userObj;
+      application.userRoles = userRoles;
       return application;
     });
     return totalApplications;

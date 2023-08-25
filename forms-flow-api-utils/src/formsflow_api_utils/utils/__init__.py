@@ -21,6 +21,7 @@ from .constants import (
     HTTP_TIMEOUT,
     COLD_FLU_ADMIN_GROUP,
     SL_REVIEW_ADMIN_GROUP,
+    SL_REVIEW_GROUP,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter

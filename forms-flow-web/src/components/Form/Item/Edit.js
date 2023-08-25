@@ -178,13 +178,25 @@ const Edit = React.memo(() => {
     const COLD_FLU_ADMIN_ROLE_ID = roleIdsFromLocalStorage?.find(
       (el) => el.type === "COLD_FLU_ADMIN"
     )?.roleId;
+    const SL_REVIEW_ADMIN_ROLE_ID = roleIdsFromLocalStorage?.find(
+      (el) => el.type === "SL_REVIEW_ADMIN"
+    )?.roleId;
     const prevFormDataSubmissionAccess = _cloneDeep(formData).submissionAccess;
-    // Keep cold-flu-admin role if exists
-    if (COLD_FLU_ADMIN_ROLE_ID &&
-      prevFormDataSubmissionAccess
-        .map((el) => el.roles)
-        .flat()
-        .some((el) => el === COLD_FLU_ADMIN_ROLE_ID)
+    // Keep cold-flu-admin or sl-review-admin role if exists
+    if ((
+        COLD_FLU_ADMIN_ROLE_ID &&
+        prevFormDataSubmissionAccess
+          .map((el) => el.roles)
+          .flat()
+          .some((el) => el === COLD_FLU_ADMIN_ROLE_ID)
+        ) ||
+        (
+          SL_REVIEW_ADMIN_ROLE_ID &&
+          prevFormDataSubmissionAccess
+            .map((el) => el.roles)
+            .flat()
+            .some((el) => el === SL_REVIEW_ADMIN_ROLE_ID)
+        )
     ) {
       const mergedSubmissionAccess = mergeFormioAccessRoles(
         prevFormDataSubmissionAccess,
