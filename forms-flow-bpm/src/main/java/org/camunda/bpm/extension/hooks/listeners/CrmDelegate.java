@@ -27,6 +27,8 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmCategory;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmStaffGroup;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmAssignedTo;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmCustomFields;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmC;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,6 +72,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_MAT_PAT_SUBMITTER_NAME_FIELD = "submissionDisplayName";
     private static final String CRM_THREAD_TEXT_FIELD = "crmThreadText";
     private static final String CRM_EMPLOYEE_ID_FIELD = "empId";
+    private static final String CRM_PRIORITY_DUEDATE_FIELD = "crmPriorityDuedate";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -166,6 +169,11 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String crmStaffGroupLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD));
         String crmSubject = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBJECT_FIELD));
         String submitterDisplayName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBMITTER_NAME_FIELD));
+        String crmPriorityDuedate = null;
+        if (execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD) != null && 
+            !String.valueOf(execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD)).equals("null")) {
+            crmPriorityDuedate = String.valueOf(execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD));
+        }
         String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT_FIELD));
         if (threadText == null) {
             threadText = "";
@@ -196,7 +204,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         CrmCategory crmCategory = new CrmCategory(crmCategoryLookupName);
         CrmStaffGroup crmStaffGroup = new CrmStaffGroup(crmStaffGroupLookupName);
         CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
-        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, crmOtherContacts, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo);
+        CrmC crmC = new CrmC(crmPriorityDuedate);
+        CrmCustomFields crmCustomFields = new CrmCustomFields(crmC);
+        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, crmOtherContacts, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
