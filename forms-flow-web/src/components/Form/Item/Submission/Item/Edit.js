@@ -222,6 +222,8 @@ const Edit = React.memo((props) => {
   };
 
   const onApplicationFormSubmitCustomEvent = (customEvent) => {
+    console.log("Trigger custom EVENET");
+    console.log(customEvent);
     switch (customEvent.type) {
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
         onApplicationFormSubmit(

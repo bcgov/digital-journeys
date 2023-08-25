@@ -22,6 +22,7 @@ export const exportToPdf = ({formId, formName, pdfName}) => {
 };
 
 export const printToPDF = ({ pdfName, formName }) => {
+  console.log("start print PDF");
   let maxWidth = '1440px';
   if (window.location.href.includes('/task/')) {
     maxWidth = '1920px';
@@ -32,6 +33,7 @@ export const printToPDF = ({ pdfName, formName }) => {
     appContainer[0].style.maxWidth = maxWidth;
     appContainer[0].style.minWidth = maxWidth;
   }
+  console.log("start print PDF progress");
   //hide textarea at the time of print ticket#1291
   const textAreas = document.querySelectorAll('textarea.form-control');
   let changeTextAreasElm = [];
@@ -45,6 +47,7 @@ export const printToPDF = ({ pdfName, formName }) => {
       changeTextAreasElm.push(elm);
     }
   });
+  console.log("start print PDF continue");
   // hide block with class .hidden-in-print
   const hiddenInPrint = document.querySelectorAll(".hidden-in-print");
   let changeElm = [];
@@ -57,6 +60,7 @@ export const printToPDF = ({ pdfName, formName }) => {
   /** .show-in-print-only has property display:none 
   * so no need to check for style.display none or block.
   */
+  console.log("start print PDF ready");
   const showInPrint = document.querySelectorAll(".show-in-print-only");
   let changeHiddenElm = [];
   showInPrint.forEach((elm) => {
@@ -69,6 +73,7 @@ export const printToPDF = ({ pdfName, formName }) => {
   floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "hidden"));
   toast.success("Downloading...");
   exportToPdf({ formId: "formview", pdfName, formName });
+  console.log("done print PDF");
   setTimeout(() => {
     checkedRadio.forEach((ele) => ele.checked = true);
     floatingButtons.forEach((btmElm) => (btmElm.style.visibility = "visible"));
