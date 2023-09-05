@@ -5,12 +5,12 @@ import json
 
 from flask import current_app, make_response
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver
+from selenium import webdriver
 
 
 def send_devtools(driver, cmd, params=None):
@@ -38,7 +38,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
     if args is None:
         args = {}
 
-    options = Options()
+    options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
