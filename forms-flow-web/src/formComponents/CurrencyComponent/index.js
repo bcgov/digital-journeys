@@ -11,7 +11,7 @@ const CurrencyComponent = Components.components.currency;
 export default class DGJCurrencyComponent extends CurrencyComponent {
     attach(element) {
         const webForm = this;
-        const tooltipInfoButton = element?.children[0]?.children[0];
+        const tooltipInfoButton = element?.children[0]?.children[1];
         const tooltipHtmlText = webForm.component.tooltip;
         // By contract, form designer should add the following
         // popup html comment in the tooltip text to force it to be opened as a popup
