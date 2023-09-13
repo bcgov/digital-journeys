@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.listeners.data.FilterInfo;
 import org.camunda.bpm.extension.hooks.listeners.data.FormProcessMappingData;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
@@ -82,7 +83,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
-        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
+        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any(IResponse.class)))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
         String actualFormUrl = "http://localhost:3001/form/id1";
@@ -116,7 +117,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
-        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
+        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any(IResponse.class)))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
         String actualFormUrl = "http://localhost:3001/form/id1";
@@ -154,7 +155,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"value\" : \"john\", \"label\" : \"Business Owner\"}]");
-        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
+        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any(IResponse.class)))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
         formBPMFilteredDataPipelineListener.notify(delegateTask);
     }
