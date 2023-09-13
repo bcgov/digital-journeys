@@ -89,15 +89,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private void crmOperation(DelegateExecution execution) {
-        System.out.println("Starting CRM operation");        
-        
-        // If the crmId is already present, then skip the CRM operation 
-        // @TODO: This needs to be improved once UPDATE CRM is implemented
-        String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
-        if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
-            return;
-        }
-
+        System.out.println("Starting CRM operation");
         // Get the formId and submissionId from the formUrl
         String formUrl = String.valueOf(execution.getVariables().get(FORM_URL));
         Map<String, String> ids = extractIds(formUrl);
@@ -140,11 +132,11 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             }
         }
 
-        // Create a new incident in CRM
-        CrmPostResponse crmPostResponse = createCrmIncident(managerContactId, employeeContactId, execution);
+        // Create/Update incident in CRM
+        CrmPostResponse crmPostResponse = createUpdateCrmIncident(managerContactId, employeeContactId, execution);
         if (crmPostResponse == null) {
             System.out.println("crmPostResponse is null: " + crmPostResponse);
-            throw new ApplicationServiceException("createCrmIncident failed.");
+            throw new ApplicationServiceException("createUpdateCrmIncident failed.");
         }
         // Saving the CRM incident id and lookupName in form
         execution.setVariable(CRM_ID, crmPostResponse.getId());
@@ -152,7 +144,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
 
         // Generate a PDF of the form submission
         try {
-            String pdfName = "test.pdf"; //Todo - change to a more meaningful name
             generateAndAddPDFForForm(formId, submissionId, crmPostResponse.getId());
         } catch (Exception e) {
             System.out.println("generatePDFForForm failed. Exception: " + e);
@@ -162,7 +153,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createCrmIncident(Integer managerContactId, Integer employeeContactId, DelegateExecution execution) {
+    private CrmPostResponse createUpdateCrmIncident(Integer managerContactId, Integer employeeContactId, DelegateExecution execution) {
         // Loading the CRM fields from the form
         String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
         String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
@@ -193,7 +184,12 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             System.out.println("managerContactId and employeeContactId are same. managerContactId: " + managerContactId + " employeeContactId: " + employeeContactId);
             crmOtherContacts = null;
         }
-        
+        String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
+        Boolean isUpdate = false;
+        if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
+            System.out.println("CRM update conditions met");
+            isUpdate = true;
+        }
         CrmEntryType crmEntryType = new CrmEntryType(4); // lookupName": "Customer Proxy"
         CrmChannel crmChannel = new CrmChannel(6); // "lookupName": "CSS Web"
         CrmContentType crmContentType = new CrmContentType(2); // "lookupName": "text/html", 1 for "text/plain"
@@ -210,20 +206,30 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ResponseEntity<String> response = httpServiceInvoker.execute(
-                url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest));
-            String responseBody = response.getBody();
-            HttpStatus responseStatus = response.getStatusCode();
-            ObjectMapper objectMapper2 = new ObjectMapper();
-            JsonNode jsonNode = objectMapper2.readTree(response.getBody());
-            Integer incidentId = jsonNode.path("id").asInt();
-            String incidentLookupName = jsonNode.path("lookupName").asText();
-            if (incidentId == 0 || incidentLookupName.isEmpty()) {
-                System.out.println("incidentId or incidentLookupName is not found. incidentId: " + incidentId + " incidentLookupName: " + incidentLookupName);
-                return null;
+            ResponseEntity<String> response = null;
+            if (isUpdate) {
+                url = getEndpointUrl(INCIDENTS +"/"+ crmId);
+                System.out.println("Update CRM incident with ID :" + crmId);
+                response = httpServiceInvoker.execute(
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest), true);
+                CrmPostResponse crmPostResponse = new CrmPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
+                return crmPostResponse;
+            } else {
+                response = httpServiceInvoker.execute(
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest));
+                String responseBody = response.getBody();
+                HttpStatus responseStatus = response.getStatusCode();
+                ObjectMapper objectMapper2 = new ObjectMapper();
+                JsonNode jsonNode = objectMapper2.readTree(response.getBody());
+                Integer incidentId = jsonNode.path("id").asInt();
+                String incidentLookupName = jsonNode.path("lookupName").asText();
+                if (incidentId == 0 || incidentLookupName.isEmpty()) {
+                    System.out.println("incidentId or incidentLookupName is not found. incidentId: " + incidentId + " incidentLookupName: " + incidentLookupName);
+                    return null;
+                }
+                CrmPostResponse crmPostResponse = new CrmPostResponse(incidentId, incidentLookupName);
+                return crmPostResponse;
             }
-            CrmPostResponse crmPostResponse = new CrmPostResponse(incidentId, incidentLookupName);
-            return crmPostResponse;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;

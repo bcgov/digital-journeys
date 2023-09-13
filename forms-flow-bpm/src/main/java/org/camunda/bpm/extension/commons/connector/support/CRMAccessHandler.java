@@ -45,4 +45,21 @@ public class CRMAccessHandler extends AbstractAccessHandler {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
+    public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, Boolean isUpdate) {
+        // Note: to handle isUpdate as ENUM for DELETE and other method override for CRM.
+        System.out.println("CRM request update headers");
+        payload = (payload == null) ? new JsonObject().toString() : payload;
+        Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.method(method).uri(url)
+                .header("Authorization", crmAuthHeader)
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header("osvc-crest-application-context","Update Incident")
+                .header("X-HTTP-Method-Override","PATCH")
+                .body(Mono.just(payload), String.class)
+                .retrieve()
+                .toEntity(String.class);
+
+        ResponseEntity<String> response = entityMono.block();
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
 }
