@@ -59,9 +59,9 @@ public class HTTPServiceInvoker {
         return execute(url, method, dataJson);
     }
 
-    public ResponseEntity<String> execute(String url, HttpMethod method, String payload, Integer isUpdate) {
-        if (isUpdate == 1) {
-            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, true);
+    public ResponseEntity<String> execute(String url, HttpMethod method, String payload, Boolean isUpdate, String type) {
+        if (isUpdate) {
+            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, isUpdate);
         } else {
             return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
         }
