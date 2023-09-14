@@ -211,7 +211,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 url = getEndpointUrl(INCIDENTS +"/"+ crmId);
                 System.out.println("Update CRM incident with ID :" + crmId);
                 response = httpServiceInvoker.execute(
-                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest), true);
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest), isUpdate, "CRM");
                 CrmPostResponse crmPostResponse = new CrmPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
                 return crmPostResponse;
             } else {
