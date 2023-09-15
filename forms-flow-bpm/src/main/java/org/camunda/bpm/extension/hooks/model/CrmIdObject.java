@@ -1,18 +1,17 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
-public class CrmChannel {
+public class CrmIdObject {
     private int id;
 
-    public CrmChannel(int id) {
-      this.id = id;
+    public CrmIdObject(int id) {
+        this.id = id;
     }
 
     public int getId() {
-      return id;
+        return id;
     }
 
     public void setId(int id) {
-      this.id = id;
+        this.id = id;
     }
-    
 }

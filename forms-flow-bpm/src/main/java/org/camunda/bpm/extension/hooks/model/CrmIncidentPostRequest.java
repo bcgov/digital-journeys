@@ -2,25 +2,23 @@ package main.java.org.camunda.bpm.extension.hooks.model;
 
 import java.util.ArrayList;
 
-public class CrmPostRequest {
-  private CrmPrimaryContact crmPrimaryContact;
-  private ArrayList<CrmOtherContact> crmOtherContacts;
+public class CrmIncidentPostRequest {
+  private CrmIdObject crmPrimaryContact;
   private String subject;
   private ArrayList<CrmThread> crmThreads;
-  private CrmProduct crmProduct;
-  private CrmCategory crmCategory;
+  private CrmLookupNameObject crmProduct;
+  private CrmLookupNameObject crmCategory;
   private CrmAssignedTo crmAssignedTo;
   private CrmCustomFields crmCustomFields;
   
-  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, String subject) {
+  public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.subject = subject;
   }
 
-  public CrmPostRequest(CrmPrimaryContact crmPrimaryContact, ArrayList<CrmOtherContact> crmOtherContacts, String subject, ArrayList<CrmThread> crmThreads, 
-    CrmProduct crmProduct, CrmCategory crmCategory, CrmAssignedTo crmAssignedTo, CrmCustomFields crmCustomFields) {
+  public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, 
+    CrmLookupNameObject crmProduct, CrmLookupNameObject crmCategory, CrmAssignedTo crmAssignedTo, CrmCustomFields crmCustomFields) {
     this.crmPrimaryContact = crmPrimaryContact;
-    this.crmOtherContacts = crmOtherContacts;
     this.subject = subject;
     this.crmThreads = crmThreads;
     this.crmCategory = crmCategory;
@@ -29,20 +27,12 @@ public class CrmPostRequest {
     this.crmCustomFields = crmCustomFields;
   }
 
-  public CrmPrimaryContact getPrimaryContact() {
+  public CrmIdObject getPrimaryContact() {
     return crmPrimaryContact;
   }
 
-  public void setPrimaryContact(CrmPrimaryContact crmPrimaryContact) {
+  public void setPrimaryContact(CrmIdObject crmPrimaryContact) {
     this.crmPrimaryContact = crmPrimaryContact;
-  }
-
-  public ArrayList<CrmOtherContact> getOtherContacts() {
-    return crmOtherContacts;
-  }
-
-  public void setOtherContacts(ArrayList<CrmOtherContact> crmOtherContacts) {
-    this.crmOtherContacts = crmOtherContacts;
   }
 
   public String getSubject() {
@@ -61,19 +51,19 @@ public class CrmPostRequest {
     this.crmThreads = crmThreads;
   }
 
-  public CrmProduct getProduct() {
+  public CrmLookupNameObject getProduct() {
     return crmProduct;
   }
 
-  public void setProduct(CrmProduct crmProduct) {
+  public void setProduct(CrmLookupNameObject crmProduct) {
     this.crmProduct = crmProduct;
   }
 
-  public CrmCategory getCategory() {
+  public CrmLookupNameObject getCategory() {
     return crmCategory;
   }
 
-  public void setCategory(CrmCategory crmCategory) {
+  public void setCategory(CrmLookupNameObject crmCategory) {
     this.crmCategory = crmCategory;
   }
 

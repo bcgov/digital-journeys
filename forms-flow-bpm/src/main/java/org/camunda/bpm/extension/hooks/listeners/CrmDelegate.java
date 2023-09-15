@@ -15,20 +15,15 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import main.java.org.camunda.bpm.extension.hooks.model.CrmFileAttachmentPostRequest;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmOtherContact;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmPostRequest;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmPostResponse;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmEntryType;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmChannel;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmContentType;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmPrimaryContact;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmIdObject;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmIncidentPostRequest;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmIncidentPostResponse;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmThread;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmProduct;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmCategory;
-import main.java.org.camunda.bpm.extension.hooks.model.CrmStaffGroup;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmLookupNameObject;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmAssignedTo;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmCustomFields;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmC;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmReferenceContactPostRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,6 +56,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String FORM_URL = "formUrl";
     private static final String INCIDENTS = "incidents";
     private static final String CONTACTS = "contacts";
+    private static final String REFERENCE_CONTACT = "CO.reference_contact";
     private static final String ATTACHMENT_FILE_NAME = "attachment.pdf";
     private static final String IDIR_POSTFIX = "@idir";
     private static final String CRM_ID = "crmId";
@@ -133,18 +129,36 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
 
         // Create/Update incident in CRM
-        CrmPostResponse crmPostResponse = createUpdateCrmIncident(managerContactId, employeeContactId, execution);
-        if (crmPostResponse == null) {
-            System.out.println("crmPostResponse is null: " + crmPostResponse);
+        CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution);
+        if (crmIncidentPostResponse == null) {
+            System.out.println("crmIncidentPostResponse is null: " + crmIncidentPostResponse);
             throw new ApplicationServiceException("createUpdateCrmIncident failed.");
         }
+        Integer crmIncidentId = crmIncidentPostResponse.getId();
         // Saving the CRM incident id and lookupName in form
-        execution.setVariable(CRM_ID, crmPostResponse.getId());
-        execution.setVariable(CRM_LOOKUP_NAME, crmPostResponse.getLookupName());
+        execution.setVariable(CRM_ID, crmIncidentId);
+        execution.setVariable(CRM_LOOKUP_NAME, crmIncidentPostResponse.getLookupName());
+
+        if (crmIncidentId == null) {
+            System.out.println("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
+            throw new ApplicationServiceException("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
+        }
+
+        // Add the employee as a contact reference to the incident
+        if (employeeContactId == null) {
+            System.out.println("employeeContactId is null. Skipping addCrmContactReference");
+        } else {
+            try {
+                addCrmContactReference(employeeContactId, crmIncidentId);
+            } catch(Exception e) {
+                System.out.println("addCrmContactReference failed. Exception: " + e);
+                e.printStackTrace();
+            }
+        }
 
         // Generate a PDF of the form submission
         try {
-            generateAndAddPDFForForm(formId, submissionId, crmPostResponse.getId());
+            generateAndAddPDFForForm(formId, submissionId, crmIncidentId);
         } catch (Exception e) {
             System.out.println("generatePDFForForm failed. Exception: " + e);
             e.printStackTrace();
@@ -153,7 +167,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmPostResponse createUpdateCrmIncident(Integer managerContactId, Integer employeeContactId, DelegateExecution execution) {
+    private CrmIncidentPostResponse createUpdateCrmIncident(Integer managerContactId, DelegateExecution execution) {
         // Loading the CRM fields from the form
         String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
         String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
@@ -171,38 +185,27 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
         
         String crmIncidentSubject = crmSubject + " for " + submitterDisplayName;
-        CrmPrimaryContact crmPrimaryContact = new CrmPrimaryContact(managerContactId);
-        ArrayList<CrmOtherContact> crmOtherContacts = null;
-        if (employeeContactId != null) {
-            CrmOtherContact crmOtherContact = new CrmOtherContact(employeeContactId);
-            crmOtherContacts = new ArrayList<CrmOtherContact>();
-            crmOtherContacts.add(crmOtherContact);
-        }
-        // If the manager and employee are same, then set crmOtherContacts to null.
-        // @TODO: Revisit this logic before going to production
-        if (managerContactId == employeeContactId) {
-            System.out.println("managerContactId and employeeContactId are same. managerContactId: " + managerContactId + " employeeContactId: " + employeeContactId);
-            crmOtherContacts = null;
-        }
+        CrmIdObject crmPrimaryContact = new CrmIdObject(managerContactId);
+        
         String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
         Boolean isUpdate = false;
         if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
             System.out.println("CRM update conditions met");
             isUpdate = true;
         }
-        CrmEntryType crmEntryType = new CrmEntryType(4); // lookupName": "Customer Proxy"
-        CrmChannel crmChannel = new CrmChannel(6); // "lookupName": "CSS Web"
-        CrmContentType crmContentType = new CrmContentType(2); // "lookupName": "text/html", 1 for "text/plain"
+        CrmIdObject crmEntryType = new CrmIdObject(4); // lookupName": "Customer Proxy"
+        CrmIdObject crmChannel = new CrmIdObject(6); // "lookupName": "CSS Web"
+        CrmIdObject crmContentType = new CrmIdObject(2); // "lookupName": "text/html", 1 for "text/plain"
         CrmThread crmThread1 = new CrmThread(threadText, crmEntryType, crmChannel, crmContentType);
         ArrayList<CrmThread> crmThreads = new ArrayList<CrmThread>();
         crmThreads.add(crmThread1);
-        CrmProduct crmProduct = new CrmProduct(crmProductLookupName);
-        CrmCategory crmCategory = new CrmCategory(crmCategoryLookupName);
-        CrmStaffGroup crmStaffGroup = new CrmStaffGroup(crmStaffGroupLookupName);
+        CrmLookupNameObject crmProduct = new CrmLookupNameObject(crmProductLookupName);
+        CrmLookupNameObject crmCategory = new CrmLookupNameObject(crmCategoryLookupName);
+        CrmLookupNameObject crmStaffGroup = new CrmLookupNameObject(crmStaffGroupLookupName);
         CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
         CrmC crmC = new CrmC(crmPriorityDuedate);
         CrmCustomFields crmCustomFields = new CrmCustomFields(crmC);
-        CrmPostRequest crmPostRequest = new CrmPostRequest(crmPrimaryContact, crmOtherContacts, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields);
+        CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -211,12 +214,12 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 url = getEndpointUrl(INCIDENTS +"/"+ crmId);
                 System.out.println("Update CRM incident with ID :" + crmId);
                 response = httpServiceInvoker.execute(
-                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest), isUpdate, "CRM");
-                CrmPostResponse crmPostResponse = new CrmPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
-                return crmPostResponse;
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmIncidentPostRequest), isUpdate, "CRM");
+                    CrmIncidentPostResponse crmIncidentPostResponse = new CrmIncidentPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
+                return crmIncidentPostResponse;
             } else {
                 response = httpServiceInvoker.execute(
-                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmPostRequest));
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmIncidentPostRequest));
                 String responseBody = response.getBody();
                 HttpStatus responseStatus = response.getStatusCode();
                 ObjectMapper objectMapper2 = new ObjectMapper();
@@ -227,8 +230,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                     System.out.println("incidentId or incidentLookupName is not found. incidentId: " + incidentId + " incidentLookupName: " + incidentLookupName);
                     return null;
                 }
-                CrmPostResponse crmPostResponse = new CrmPostResponse(incidentId, incidentLookupName);
-                return crmPostResponse;
+                CrmIncidentPostResponse crmIncidentPostResponse = new CrmIncidentPostResponse(incidentId, incidentLookupName);
+                return crmIncidentPostResponse;
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -318,6 +321,17 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    private void addCrmContactReference(Integer employeeContactId, Integer crmIncidentId) throws Exception {  
+        System.out.println("Adding CRM contact reference started");
+        String url = getEndpointUrl(REFERENCE_CONTACT);
+        CrmIdObject crmIncidentIdObject = new CrmIdObject(crmIncidentId);
+        CrmIdObject crmContactIdObject = new CrmIdObject(employeeContactId);
+        CrmReferenceContactPostRequest crmReferenceContactPostRequest = new CrmReferenceContactPostRequest(crmContactIdObject, crmIncidentIdObject);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ResponseEntity<String> response = httpServiceInvoker.execute(
+            url, HttpMethod.POST, objectMapper.writeValueAsString(crmReferenceContactPostRequest));
     }
 
     private String getCurrentUserIdir(DelegateExecution execution) throws IOException {
