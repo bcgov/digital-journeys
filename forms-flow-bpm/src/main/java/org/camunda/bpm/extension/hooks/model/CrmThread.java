@@ -2,11 +2,11 @@ package main.java.org.camunda.bpm.extension.hooks.model;
 
 public class CrmThread {
   private String text;
-  private CrmEntryType crmEntryType;
-  private CrmChannel crmChannel;
-  private CrmContentType crmContentType;
+  private CrmIdObject crmEntryType;
+  private CrmIdObject crmChannel;
+  private CrmIdObject crmContentType;
 
-  public CrmThread(String text, CrmEntryType crmEntryType, CrmChannel crmChannel, CrmContentType crmContentType) {
+  public CrmThread(String text, CrmIdObject crmEntryType, CrmIdObject crmChannel, CrmIdObject crmContentType) {
     this.text = text;
     this.crmEntryType = crmEntryType;
     this.crmChannel = crmChannel;
@@ -18,24 +18,24 @@ public class CrmThread {
   public void setText(String text) {
     this.text = text;
   }
-  public CrmEntryType getEntryType() {
+  public CrmIdObject getEntryType() {
     return crmEntryType;
   }
-  public void setEntryType(CrmEntryType crmEntryType) {
+  public void setEntryType(CrmIdObject crmEntryType) {
     this.crmEntryType = crmEntryType;
   }
 
-  public CrmContentType getContentType() {
+  public CrmIdObject getContentType() {
     return crmContentType;
   }
-  public void setContentType(CrmContentType crmContentType) {
+  public void setContentType(CrmIdObject crmContentType) {
     this.crmContentType = crmContentType;
   }
 
-  public CrmChannel getChannel() {
+  public CrmIdObject getChannel() {
     return crmChannel;
   }
-  public void setChannel(CrmChannel crmChannel) {
+  public void setChannel(CrmIdObject crmChannel) {
     this.crmChannel = crmChannel;
   }
 }

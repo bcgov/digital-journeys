@@ -1,10 +1,10 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
-public class CrmPostResponse {
+public class CrmIncidentPostResponse {
     private int id;
     private String lookupName;
     
-    public CrmPostResponse(int id, String lookupName) {
+    public CrmIncidentPostResponse(int id, String lookupName) {
       this.id = id;
       this.lookupName = lookupName;
     }

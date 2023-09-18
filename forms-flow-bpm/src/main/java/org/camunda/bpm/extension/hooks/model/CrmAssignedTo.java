@@ -1,17 +1,17 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
 public class CrmAssignedTo {
-    private CrmStaffGroup crmStaffGroup;
+    private CrmLookupNameObject crmStaffGroup;
     
-    public CrmAssignedTo(CrmStaffGroup crmStaffGroup) {
+    public CrmAssignedTo(CrmLookupNameObject crmStaffGroup) {
         this.crmStaffGroup = crmStaffGroup;
     }
     
-    public CrmStaffGroup getStaffGroup() {
+    public CrmLookupNameObject getStaffGroup() {
         return crmStaffGroup;
     }
 
-    public void setStaffGroup(CrmStaffGroup crmStaffGroup) {
+    public void setStaffGroup(CrmLookupNameObject crmStaffGroup) {
         this.crmStaffGroup = crmStaffGroup;
     }
 }
