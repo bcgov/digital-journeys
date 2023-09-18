@@ -128,8 +128,15 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             }
         }
 
+        String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
+        Boolean isUpdate = false;
+        if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
+            System.out.println("CRM update conditions met");
+            isUpdate = true;
+        }
+
         // Create/Update incident in CRM
-        CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution);
+        CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution, isUpdate);
         if (crmIncidentPostResponse == null) {
             System.out.println("crmIncidentPostResponse is null: " + crmIncidentPostResponse);
             throw new ApplicationServiceException("createUpdateCrmIncident failed.");
@@ -147,6 +154,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         // Add the employee as a contact reference to the incident
         if (employeeContactId == null) {
             System.out.println("employeeContactId is null. Skipping addCrmContactReference");
+        } else if (isUpdate) {
+            System.out.println("This is a CrmUpdate. Skipping addCrmContactReference");
         } else {
             try {
                 addCrmContactReference(employeeContactId, crmIncidentId);
@@ -167,7 +176,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Finished CRM operation");
     }
 
-    private CrmIncidentPostResponse createUpdateCrmIncident(Integer managerContactId, DelegateExecution execution) {
+    private CrmIncidentPostResponse createUpdateCrmIncident(Integer managerContactId, DelegateExecution execution, Boolean isUpdate) {
         // Loading the CRM fields from the form
         String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
         String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
@@ -187,12 +196,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String crmIncidentSubject = crmSubject + " for " + submitterDisplayName;
         CrmIdObject crmPrimaryContact = new CrmIdObject(managerContactId);
         
-        String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
-        Boolean isUpdate = false;
-        if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
-            System.out.println("CRM update conditions met");
-            isUpdate = true;
-        }
         CrmIdObject crmEntryType = new CrmIdObject(4); // lookupName": "Customer Proxy"
         CrmIdObject crmChannel = new CrmIdObject(6); // "lookupName": "CSS Web"
         CrmIdObject crmContentType = new CrmIdObject(2); // "lookupName": "text/html", 1 for "text/plain"
@@ -211,6 +214,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         try {
             ResponseEntity<String> response = null;
             if (isUpdate) {
+                String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
                 url = getEndpointUrl(INCIDENTS +"/"+ crmId);
                 System.out.println("Update CRM incident with ID :" + crmId);
                 response = httpServiceInvoker.execute(
