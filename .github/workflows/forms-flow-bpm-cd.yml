@@ -168,13 +168,13 @@ jobs:
           echo "Current ENV is ${ENVIRONMENT}"
           echo "Current namespace is ${NAMESPACE}"
           helm install --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                             SMTP_SERVER=${SMTP_SERVER} \
-                             DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
-                             DATABASE_NAME=${DATABASE_NAME} \
-                             IMAGE_TAG=${ENVIRONMENT} \
-                             CAMUNDA_URL="${CAMUNDA_URL}" \
-                             WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
-                             WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}"
+                       --set SMTP_SERVER=${SMTP_SERVER} \
+                       --set DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
+                       --set DATABASE_NAME=${DATABASE_NAME} \
+                       --set IMAGE_TAG=${ENVIRONMENT} \
+                       --set CAMUNDA_URL="${CAMUNDA_URL}" \
+                       --set WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+                       --set WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}"
           oc -n ${NAMESPACE} project
           # oc -n ${NAMESPACE} process -f bpm_dc.yaml \
           #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
