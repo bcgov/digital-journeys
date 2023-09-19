@@ -1,7 +1,7 @@
 name: forms-flow-bpm-deploy
 
 on:
-  workflow_dispatch:
+  # workflow_dispatch:
     # inputs:
     #   environment:
     #     description: 'Environment'
