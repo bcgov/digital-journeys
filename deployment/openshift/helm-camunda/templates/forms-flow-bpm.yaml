@@ -1,7 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: {{ include "helm-camunda.fullname" . }}-forms-flow-bpm
+  name: {{ include "helm-camunda.fullname" . }  -forms-flow-bpm
   labels:
   {{- include "helm-camunda.labels" . | nindent 4 }}
 objects:
