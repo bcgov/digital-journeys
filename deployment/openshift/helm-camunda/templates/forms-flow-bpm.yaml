@@ -1,9 +1,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: {{ include "helm-camunda.fullname" . }  -forms-flow-bpm
+  name: helm-forms-flow-bpm
   labels:
-  {{- include "helm-camunda.labels" . | nindent 4 }}
+   app: forms-flow-bpm
 objects:
 - apiVersion: route.openshift.io/v1
   kind: Route
