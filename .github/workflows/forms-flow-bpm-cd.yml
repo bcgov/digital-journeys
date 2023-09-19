@@ -18,7 +18,8 @@ on:
       - "forms-flow-bpm/**"
       - "deployment/openshift/bpm_bc.yaml"
       - "deployment/openshift/bpm_dc.yaml"
-       - ".github/workflows/**"
+      - ".github/workflows/forms-flow-bpm-cd.yml"
+      - "deployment/openshift/helm-camunda/**"
 
 defaults:
   run:
