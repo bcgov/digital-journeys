@@ -2,40 +2,41 @@ name: forms-flow-bpm-deploy
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - test
-        - production
+    # inputs:
+    #   environment:
+    #     description: 'Environment'
+    #     required: true
+    #     default: 'dev'
+    #     type: choice
+    #     options:
+    #     - dev
+    #     - test
+    #     - production
   push:
-    branches: [ main ]
+    branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
     paths:
       - "forms-flow-bpm/**"
       - "deployment/openshift/bpm_bc.yaml"
       - "deployment/openshift/bpm_dc.yaml"
+       - ".github/workflows/**"
 
 defaults:
   run:
     shell: bash
 
 env:
-  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+  BUILD_NAMESPACE: e66ac2-tools
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-bpm
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+  ENVIRONMENT: helm
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
-  NAMESPACE: ${{ secrets.NAMESPACE }}
+  NAMESPACE: e66ac2-test
   WEBSOCKET_ENCRYPT_KEY: ${{ secrets.WEBSOCKET_ENCRYPT_KEY }}
   WEBSOCKET_SECURITY_ORIGIN: ${{ secrets.WEBSOCKET_SECURITY_ORIGIN }}
   # Camunda related config params
@@ -142,7 +143,7 @@ jobs:
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
-    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    #environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     
     needs:
@@ -165,17 +166,25 @@ jobs:
           test -n "${BRANCH}"
           echo "Current ENV is ${ENVIRONMENT}"
           echo "Current namespace is ${NAMESPACE}"
+          helm install --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                             SMTP_SERVER=${SMTP_SERVER} \
+                             DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
+                             DATABASE_NAME=${DATABASE_NAME} \
+                             IMAGE_TAG=${ENVIRONMENT} \
+                             CAMUNDA_URL="${CAMUNDA_URL}" \
+                             WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+                             WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}"
           oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f bpm_dc.yaml \
-                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                -p SMTP_SERVER=${SMTP_SERVER} \
-                -p DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
-                -p DATABASE_NAME=${DATABASE_NAME} \
-                -p IMAGE_TAG=${ENVIRONMENT} \
-                -p CAMUNDA_URL="${CAMUNDA_URL}" \
-                -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
-                -p WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" | \
-          oc -n ${NAMESPACE} apply -f -
+          # oc -n ${NAMESPACE} process -f bpm_dc.yaml \
+          #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+          #       -p SMTP_SERVER=${SMTP_SERVER} \
+          #       -p DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
+          #       -p DATABASE_NAME=${DATABASE_NAME} \
+          #       -p IMAGE_TAG=${ENVIRONMENT} \
+          #       -p CAMUNDA_URL="${CAMUNDA_URL}" \
+          #       -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
+          #       -p WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" | \
+          # oc -n ${NAMESPACE} apply -f -
       
       - name: verify deploymentConfig
         run: |
