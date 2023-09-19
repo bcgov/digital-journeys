@@ -166,6 +166,7 @@ jobs:
           test -n "${BUILD_NAMESPACE}"
           test -n "${BRANCH}"
           echo "Current ENV is ${ENVIRONMENT}"
+          oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
           helm install helm-bpm --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                        --set SMTP_SERVER=${SMTP_SERVER} \
@@ -176,7 +177,6 @@ jobs:
                        --set WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                        --set WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" \
                        ./helm-camunda
-          oc -n ${NAMESPACE} project
           # oc -n ${NAMESPACE} process -f bpm_dc.yaml \
           #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
           #       -p SMTP_SERVER=${SMTP_SERVER} \
