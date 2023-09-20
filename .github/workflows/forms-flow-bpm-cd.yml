@@ -188,18 +188,18 @@ jobs:
           #       -p WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" | \
           # oc -n ${NAMESPACE} apply -f -
       
-      - name: verify deploymentConfig
-        run: |
-          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-          ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-            $ROLLOUT_STATUS_CMD
-            ATTEMPTS=$((attempts + 1))
-            sleep 10
-          done
-          oc project ${NAMESPACE}     
-          echo "Listing pods.."
-          oc get pods|grep "${APP_NAME}"
-          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-          echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
+      # - name: verify deploymentConfig
+      #   run: |
+      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+      #     ATTEMPTS=0
+      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+      #       $ROLLOUT_STATUS_CMD
+      #       ATTEMPTS=$((attempts + 1))
+      #       sleep 10
+      #     done
+      #     oc project ${NAMESPACE}     
+      #     echo "Listing pods.."
+      #     oc get pods|grep "${APP_NAME}"
+      #     export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+      #     echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
