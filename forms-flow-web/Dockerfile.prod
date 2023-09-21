@@ -19,7 +19,7 @@ RUN npm install
 COPY . /app/
 RUN npm run build
 
-FROM nginx:1.22 as production-stage
+FROM nginx:1.25.2 as production-stage
 
 RUN mkdir /app
 COPY --from=build-stage /app/build /usr/share/nginx/html
