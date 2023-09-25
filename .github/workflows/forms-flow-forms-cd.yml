@@ -1,43 +1,45 @@
 name: forms-flow-forms-deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-        - dev
-        - test
-        - production
+  # workflow_dispatch:
+  #   inputs:
+  #     environment:
+  #       description: 'Environment'
+  #       required: true
+  #       default: 'dev'
+  #       type: choice
+  #       options:
+  #       - dev
+  #       - test
+  #       - production
   push:
-    branches: [ main ]
+    branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
     paths:
       - "forms-flow-forms/**"
       - "deployment/openshift/forms-flow-forms_bc.yaml"
       - "deployment/openshift/forms-flow-forms_dc.yaml"
+      - ".github/workflows/forms-flow-forms-cd.yml"
+      -"deployment/openshift/hel-forms-flow-forms/**"
 
 defaults:
   run:
     shell: bash
 
 env:
-  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
+  BUILD_NAMESPACE: e66ac2-tools
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-forms
-  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+  ENVIRONMENT: helm
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
-  NAMESPACE: ${{ secrets.NAMESPACE }}
+  NAMESPACE: e66ac2-test
   # App url without http(s) prefix
-  APP_URL : ${{ secrets.FORMS_FLOW_FORMS_URL }}
+  APP_URL : helm-digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca
 
 jobs:
   # Logs environment variables
@@ -137,7 +139,7 @@ jobs:
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
-    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    #environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     
     needs:
@@ -156,29 +158,41 @@ jobs:
         working-directory: ./deployment/openshift
         run: |
           oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f forms-flow-forms_dc.yaml \
-                -p NAME=${APP_NAME} \
-                -p FFA_FORMS_URL=${APP_URL} \
-                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                -p IMAGE_TAG=${ENVIRONMENT} \
-                -p CPU_REQUEST=100m \
-                -p CPU_LIMIT=200m \
-                -p MEMORY_REQUEST=100Mi \
-                -p MEMORY_LIMIT=2Gi | \
-          oc -n ${NAMESPACE} apply -f -
+          oc project ${NAMESPACE}
+          echo "Current namespace is ${NAMESPACE}"
+          helm install helm-forms-flow-forms io --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                       --set NAME=${APP_NAME} \
+                       --set FFA_FORMS_URL=${APP_URL} \
+                       --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                       --set IMAGE_TAG=${ENVIRONMENT} \
+                       --set CPU_REQUEST=100m \
+                       --set CPU_LIMIT=200m \
+                       --set MEMORY_LIMIT=2Gi \
+                       ./helm-forms-flow-forms | oc -n ${NAMESPACE} apply -f -
+
+          # oc -n ${NAMESPACE} process -f forms-flow-forms_dc.yaml \
+          #       -p NAME=${APP_NAME} \
+          #       -p FFA_FORMS_URL=${APP_URL} \
+          #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+          #       -p IMAGE_TAG=${ENVIRONMENT} \
+          #       -p CPU_REQUEST=100m \
+          #       -p CPU_LIMIT=200m \
+          #       -p MEMORY_REQUEST=100Mi \
+          #       -p MEMORY_LIMIT=2Gi | \
+          # oc -n ${NAMESPACE} apply -f -
       
-      - name: verify deploymentConfig
-        run: |
-          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-          ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-            $ROLLOUT_STATUS_CMD
-            ATTEMPTS=$((attempts + 1))
-            sleep 10
-          done
-          oc project ${NAMESPACE}     
-          echo "Listing pods.."
-          oc get pods|grep "${APP_NAME}"
-          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-          echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
+      # - name: verify deploymentConfig
+      #   run: |
+      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+      #     ATTEMPTS=0
+      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+      #       $ROLLOUT_STATUS_CMD
+      #       ATTEMPTS=$((attempts + 1))
+      #       sleep 10
+      #     done
+      #     oc project ${NAMESPACE}     
+      #     echo "Listing pods.."
+      #     oc get pods|grep "${APP_NAME}"
+      #     export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+      #     echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
