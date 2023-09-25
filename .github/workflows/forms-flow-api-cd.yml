@@ -172,7 +172,7 @@ jobs:
                        --set CPU_REQUEST=100m \
                        --set CPU_LIMIT=200m  \
                        --set MEMORY_REQUEST=100Mi \
-                       --set MEMORY_LIMIT=2Gi | \
+                       --set MEMORY_LIMIT=2Gi \
                        ./helm-webapi |  oc -n ${NAMESPACE} apply -f -
 
           # oc -n ${NAMESPACE} process -f webapi_dc.yaml \
