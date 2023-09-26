@@ -164,7 +164,7 @@ jobs:
           oc -n ${NAMESPACE} project
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
-          helm install helm-webapi --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+          helm upgrade -i helm-webapi --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                        --set NAME=${APP_NAME} \
                        --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                        --set WEB_API_URL=${APP_URL} \
