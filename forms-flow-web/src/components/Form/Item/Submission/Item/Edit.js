@@ -25,7 +25,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../../../constants/constants";
 import {
-  CLIENT_EDIT_STATUS,
+  // CLIENT_EDIT_STATUS,
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../../constants/applicationConstants";
@@ -55,6 +55,7 @@ import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServ
 import { redirectToSuccessPage } from "../../../../../constants/successTypes";
 import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
 import { printToPDF } from "../../../../../services/PdfService";
+import { hasFormEditAccessByStatus } from "../../../../../helper/access";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -102,7 +103,8 @@ const Edit = React.memo((props) => {
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
-        !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        // !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        !hasFormEditAccessByStatus(applicationDetail?.applicationName, applicationStatus)
         ) {
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }

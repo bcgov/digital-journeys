@@ -1,3 +1,12 @@
+import { FORM_NAMES } from "../constants/formConstants";
+import { 
+  SUBMITTED_STATUS,
+  SUBMITTED_VALIDATION_STATUS,
+  SUBMITTED_FINAL_STATUS,
+  APPROVED_STATUS,
+  DENIED_STATUS,
+  NEW_STATUS, } from "../constants/applicationConstants";
+import { convertObjectKeyValueToLowercase } from './helper';
 /**
  * 
  * @param {String} type 
@@ -76,4 +85,23 @@ export const setFormAndSubmissionAccess = (type, data) => {
     default:
       break;
   }
+};
+
+/* Status of the forms that once submitted can support edit under Submitted Forms page
+  * Those not listed, will only support view submission
+*/
+const formEditStatusMap = {
+  [FORM_NAMES.MATERNITY_AND_PARENTAL_LEAVE_FORM]: [NEW_STATUS, APPROVED_STATUS, DENIED_STATUS],
+  [FORM_NAMES.INFLUENZA_WORKSITE_REGISTRATION]: [SUBMITTED_STATUS],
+  [FORM_NAMES.SL_REVIEW]: [SUBMITTED_VALIDATION_STATUS, SUBMITTED_FINAL_STATUS],
+};
+
+export const hasFormEditAccessByStatus = (formName, status) => {
+  // convert form names and status to lowercase for comparison
+  const lowerCaseFormName = formName.toLowerCase();
+  const lowerCaseStatus = status.toLowerCase();
+  const lowerCaseFormEditStatusMap = convertObjectKeyValueToLowercase(formEditStatusMap);
+  
+  const validStatuses = lowerCaseFormEditStatusMap[lowerCaseFormName] || [];
+  return validStatuses.includes(lowerCaseStatus);
 };
