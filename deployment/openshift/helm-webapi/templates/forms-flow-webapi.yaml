@@ -1,9 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: {{ include "helm-webapi.fullname" . }}-forms-flow-webapi
-  labels:
-  {{- include "helm-webapi.labels" . | nindent 4 }}
+  name: helm-forms-flow-webapi
 label:
   app: forms-flow-ai
 objects:
