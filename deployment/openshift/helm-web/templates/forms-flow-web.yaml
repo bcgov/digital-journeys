@@ -2,8 +2,6 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: helm-forms-flow-web
-labels:
-  app: ${APP_NAME}
 objects:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
