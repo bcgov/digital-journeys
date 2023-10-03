@@ -108,20 +108,17 @@ objects:
       name: ${NAME}
     wildcardPolicy: None
 parameters:
-- description: The name assigned to all of the OpenShift resources associated to the
-    forms-flow-ai
+- description: The name assigned to all of the OpenShift resources associated to the forms-flow-ai
   displayName: APP_NAME
   name: APP_NAME
   required: true
   value: forms-flow-ai
-- description: The name assigned to all of the OpenShift resources associated to the
-    server instance.
+- description: The name assigned to all of the OpenShift resources associated to the server instance.
   displayName: Name
   name: NAME
   required: true
   value: forms-flow-web
-- description: The namespace of the OpenShift project containing the imagestream for
-    the application.
+- description: The namespace of the OpenShift project containing the imagestream for the application.
   displayName: Image Namespace
   name: IMAGE_NAMESPACE
   required: true
