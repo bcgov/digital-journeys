@@ -56,6 +56,6 @@ torch==1.12.1
 tqdm==4.64.0
 transformers==4.21.2
 typing_extensions==4.3.0
-urllib3==1.26.12
+urllib3==1.26.17
 wasabi==0.10.1
 zipp==3.8.1
