@@ -2,8 +2,6 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: helm-forms-flow-documents
-label:
-  app: forms-flow-ai
 objects:
 - apiVersion: route.openshift.io/v1
   kind: Route
