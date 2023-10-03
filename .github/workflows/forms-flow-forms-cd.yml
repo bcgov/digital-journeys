@@ -160,7 +160,7 @@ jobs:
           oc -n ${NAMESPACE} project
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
-          helm install helm-forms-flow-forms io --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+          helm upgrade helm-forms-flow-forms --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                        --set NAME=${APP_NAME} \
                        --set FFA_FORMS_URL=${APP_URL} \
                        --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
