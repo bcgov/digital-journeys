@@ -176,7 +176,8 @@ jobs:
                        --set CAMUNDA_URL="${CAMUNDA_URL}" \
                        --set WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                        --set WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" \
-                       ./helm-camunda
+                       ./helm-camunda 
+          
           # oc -n ${NAMESPACE} process -f bpm_dc.yaml \
           #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
           #       -p SMTP_SERVER=${SMTP_SERVER} \

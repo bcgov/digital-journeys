@@ -19,7 +19,7 @@ on:
       - "deployment/openshift/forms-flow-forms_bc.yaml"
       - "deployment/openshift/forms-flow-forms_dc.yaml"
       - ".github/workflows/forms-flow-forms-cd.yml"
-      - "deployment/openshift/hel-forms-flow-forms/**"
+      - "deployment/openshift/helm-forms-flow-forms/**"
 
 defaults:
   run:
