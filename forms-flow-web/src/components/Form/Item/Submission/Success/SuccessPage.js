@@ -421,7 +421,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            <b>Your form has been sent to your supervisor for approval</b>
+            Your form has been sent to your supervisor for approval
           </span>
           <div className="success-content-body">
             <ol>
@@ -509,7 +509,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            <b>Your form has been sent to your supervisor for approval</b>
+            Your form has been sent to your supervisor for approval
           </span>
           <div className="success-content-body">
             <ol>
