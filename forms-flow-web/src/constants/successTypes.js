@@ -9,6 +9,9 @@ export const COMPLAINT_INTAKE_FORM_1_10_LDB = "1.10_COMPLAINT_INTAKE_FORM_LDB";
 export const COMPLAINT_INTAKE_FORM_1_10_NOEMAIL = "1.10_COMPLAINT_INTAKE_FORM_NOEMAIL";
 export const INFLUENZA_WORKSITE_REGISTRATION = "INFLUENZA_WORKSITE_REGISTRATION";
 export const INFLUENZA_WORKSITE_REGISTRATION_EDIT = "INFLUENZA_WORKSITE_REGISTRATION_EDIT";
+export const MATERNITY_AND_PARENTAL_LEAVE_FORM = "MATERNITY_AND_PARENTAL_LEAVE_FORM";
+export const MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE = "MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE";
+
 
 const submitSuccessPage = {
   seniorleadershipreview: SL_REVIEW_SUBMISSION,
@@ -17,23 +20,31 @@ const submitSuccessPage = {
   "bullying-and-harassment-complaint-article-1-10-ldb": COMPLAINT_INTAKE_FORM_1_10_LDB,
   "bullying-and-harassment-complaint-article-1-10-noemail": COMPLAINT_INTAKE_FORM_1_10_NOEMAIL,
   "2023influenzaworksiteregistration": INFLUENZA_WORKSITE_REGISTRATION,
+  "maternity-parental-and-pre-placement-adoption": MATERNITY_AND_PARENTAL_LEAVE_FORM,
+  "maternity-parental-and-pre-placement-adoption-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
-    if (formKey === "bullying-and-harassment-complaint-article-1-10") {
-      if (submission?.data?.pleaseSelectTheUnionYouBelongTo === "bcGeneralEmployeesUnionBcgeu"
+  if (formKey === "bullying-and-harassment-complaint-article-1-10") {
+    if (submission?.data?.pleaseSelectTheUnionYouBelongTo === "bcGeneralEmployeesUnionBcgeu"
       && submission?.data?.areYouAnEmployeeOfTheLiquorDistributionBoardLdb === "yes") {
-            if (submission?.data?.yourPreferredEmailAddress.includes('gov.bc.ca') ||
-            submission?.data?.yourPreferredEmailAddress.includes('bcldb.com')) {
-              formKey = `${formKey}-ldb`;
-            } else {
-              formKey = `${formKey}-noemail`;
-            }
+      if (submission?.data?.yourPreferredEmailAddress.includes('gov.bc.ca') ||
+        submission?.data?.yourPreferredEmailAddress.includes('bcldb.com')) {
+        formKey = `${formKey}-ldb`;
+      } else {
+        formKey = `${formKey}-noemail`;
       }
     }
-    return redirectToSuccessPage(dispatch, push, submitSuccessPage[formKey]);
+  }
+  if (formKey === "maternity-parental-and-pre-placement-adoption") {
+    if (submission?.data?.empCtg === "K" || submission?.data?.empCtg === "L") {
+      formKey = `${formKey}-ineligible`;
+    }
+  }
+
+  return redirectToSuccessPage(dispatch, push, submitSuccessPage[formKey]);
 };
 
 export const redirectToSuccessPage = (dispatch, push, pageKey) => {
-    return dispatch(push(`/success?type=${pageKey}`));
+  return dispatch(push(`/success?type=${pageKey}`));
 };
