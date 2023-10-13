@@ -3,9 +3,7 @@ kind: Template
 metadata:
   name: helm-forms-flow-web
   labels:
-  {{- include "helm-web.labels" . | nindent 4 }}
-labels:
-  app: ${APP_NAME}
+   app: ${APP_NAME}
 objects:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
