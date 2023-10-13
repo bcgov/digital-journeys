@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: helm-forms-flow-web
   labels:
-   app: ${APP_NAME}
+   app: forms-flow-web
 objects:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
