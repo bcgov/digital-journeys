@@ -468,6 +468,11 @@ const View = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
         setIsCustomFormSubmissionLoading(true);
         break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_INITIAL_SUBMISSION:
+        setPoll(false);
+        exitType.current = "SUBMIT";
+        onSubmit({data: evt.data}, form._id, isPublic);
+        break;
       default:
         return;
     }
