@@ -10,4 +10,5 @@ export const CUSTOM_EVENT_TYPE = {
   POPUP: "popup",
   FORMACCESS: "formaccess",
   CUSTOM_SUBMISSION_LOADING: "customSubmissionLoading",
+  CUSTOM_INITIAL_SUBMISSION: "customInitialSubmission",
 };
