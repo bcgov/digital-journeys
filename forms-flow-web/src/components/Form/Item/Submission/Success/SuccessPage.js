@@ -457,7 +457,7 @@ export default React.memo(() => {
                     leave on the day your baby is born.
                   </li>
                   <li>
-                    Your child is born late as you can't start parental leave
+                    Your child is born late as you can&apos;t start parental leave
                     until after your baby is born.
                   </li>
                 </ol>
@@ -546,7 +546,7 @@ export default React.memo(() => {
                     leave on the day your baby is born.
                   </li>
                   <li>
-                    Your child is born late as you can't start parental leave
+                    Your child is born late as you can&apos;t start parental leave
                     until after your baby is born.
                   </li>
                 </ol>
