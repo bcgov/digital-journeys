@@ -466,7 +466,7 @@ parameters:
   - name: DATA_BUFFER_SIZE
     description: Configure a limit on the number of bytes that can be buffered for webclient
     required: true
-    value: "2"
+    value: "6"
   - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
     description: Maximum result size for Keycloak user queries
     required: true
