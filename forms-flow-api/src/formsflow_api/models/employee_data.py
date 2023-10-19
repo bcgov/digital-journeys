@@ -28,7 +28,15 @@ class EmployeeData():
                                    data.get("office_address2").strip(),
                                    data.get("office_city").strip(),
                                    data.get("office_stateprovince").strip(),
-                                   data.get("office_postal").strip())))
+self.officeAddress = ", ".join(filter(None, [
+    value.strip() for key, value in [
+        ("office_address1", data.get("office_address1")),
+        ("office_address2", data.get("office_address2")),
+        ("office_city", data.get("office_city")),
+        ("office_stateprovince", data.get("office_stateprovince")),
+        ("office_postal", data.get("office_postal"))
+    ] if value is not None and isinstance(value, str)
+]))
    self.officeAddress1 = data.get("office_address1")
    self.officeAddress2 = data.get("office_address2")
    self.officeCity = data.get("office_city")
