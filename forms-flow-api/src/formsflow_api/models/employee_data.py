@@ -10,6 +10,11 @@ class EmployeeData():
    self.firstName = data.get("first_name")
    self.lastName = data.get("last_name")
    self.email = data.get("email")
+   self.address = ", ".join(filter(None, 
+                                  (data.get("address1").strip(),
+                                   data.get("address2").strip(),
+                                   data.get("city").strip(),
+                                   data.get("postal").strip())))
    self.address1 = data.get("address1")
    self.address2 = data.get("address2")
    self.postal = data.get("postal")
@@ -18,6 +23,12 @@ class EmployeeData():
    self.empId = data.get("EMPLID")
    self.positionTitle = data.get("position_title")
    self.depId = data.get("DEPTID")
+   self.officeAddress = ", ".join(filter(None, 
+                                  (data.get("office_address1").strip(),
+                                   data.get("office_address2").strip(),
+                                   data.get("office_city").strip(),
+                                   data.get("office_stateprovince").strip(),
+                                   data.get("office_postal").strip())))
    self.officeAddress1 = data.get("office_address1")
    self.officeAddress2 = data.get("office_address2")
    self.officeCity = data.get("office_city")
