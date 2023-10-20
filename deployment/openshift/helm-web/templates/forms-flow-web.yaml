@@ -135,7 +135,7 @@ parameters:
   name: CPU_LIMIT
   required: true
   value: 250m
-- description: The resources Memory request for this build.
+- description: The resources Memory request for this build
   displayName: Resources Memory Request
   name: MEMORY_REQUEST
   required: true
