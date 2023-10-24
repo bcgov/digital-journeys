@@ -81,9 +81,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) {
-        // this.crmOperation(execution);
-        System.out.println("Starting CRM Delegate");
-        System.out.println("Finishing CRM Delegate");
+        this.crmOperation(execution);
     }
 
     private void crmOperation(DelegateExecution execution) {
