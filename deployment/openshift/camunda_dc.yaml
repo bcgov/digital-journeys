@@ -343,7 +343,7 @@ parameters:
   - name: CAMUNDA_CONN_TIMEOUT
     description: The maximum milliseconds to wait for a connection from the pool.
     required: true
-    value: "5000"
+    value: "60000"
   - name: CAMUNDA_HIKARI_MAX_POOLSIZE
     description: CAMUNDA_HIKARI_MAX_POOLSIZE.
     required: true
