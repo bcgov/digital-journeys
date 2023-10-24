@@ -504,7 +504,7 @@ export default React.memo(() => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Review and Process Froms
+                  Review and Process Forms
                 </a>
                 &nbsp;tab.
               </li>
