@@ -140,6 +140,8 @@ objects:
     labels:
       app: ${NAME}
     name: ${NAME}
+    annotations:
+      haproxy.router.openshift.io/timeout: 600s
   spec:
     host: ${FFA_FORMS_URL}
     to:

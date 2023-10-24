@@ -11,6 +11,8 @@ objects:
     labels:
       app: ${NAME}
     name: ${NAME}
+    annotations:
+      haproxy.router.openshift.io/timeout: 600s
   spec:
     host: ${WEB_API_URL}
     tls:
