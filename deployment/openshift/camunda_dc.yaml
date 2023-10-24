@@ -358,15 +358,15 @@ parameters:
   - name: CAMUNDA_JOB_LOCK_TIME_MILLIS
     description: CAMUNDA_JOB_LOCK_TIME_MILLIS
     required: true
-    value: "300000"
+    value: "600000"
   - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "600000"
   - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "600000"
   - name: CAMUNDA_JDBC_DRIVER
     description: CAMUNDA_JDBC_DRIVER
     required: true
@@ -389,9 +389,9 @@ parameters:
   - name: CAMUNDA_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "600000"
   - name: CAMUNDA_JOB_WAIT_TIME_MILLIS
-    value: "5000"
+    value: "600000"
     description: CAMUNDA_JOB_WAIT_TIME_MILLIS
     required: true
   - name: CAMUNDA_JOB_QUEUE_SIZE
@@ -433,7 +433,7 @@ parameters:
   - name: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
     required: true
-    value: "20000"
+    value: "600000"
   - name: CAMUNDA_HIKARI_IDLE_TIMEOUT
     description: CAMUNDA_HIKARI_IDLE_TIMEOUT
     required: true
