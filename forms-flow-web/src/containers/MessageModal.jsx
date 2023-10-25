@@ -17,7 +17,7 @@ const MessageModal = React.memo((props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button type="button" className="btn btn-default" onClick={onConfirm}>
-            {t("Ok")}
+            {t("OK")}
           </Button>
         </Modal.Footer>
       </Modal>

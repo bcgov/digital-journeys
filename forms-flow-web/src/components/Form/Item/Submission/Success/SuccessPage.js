@@ -416,6 +416,121 @@ export default React.memo(() => {
         </>
       );
     } else if (
+      search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Your form has been sent to your supervisor for approval
+          </span>
+          <div className="success-content-body">
+            <ol>
+              <li>
+                You will receive an email with a pdf of the form attached
+                confirming the same.
+              </li>
+              <li>
+                You can review your submitted form in the&nbsp;
+                <a
+                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Submitted Forms
+                </a>
+                &nbsp;tab.
+              </li>
+            </ol>
+          </div>
+          <span className="success-content-intro">Next steps</span>
+          <div className="success-content-body">
+            <ol>
+              <li>
+                Your supervisor will approve your application and forward it to
+                AskMyHR for processing.
+              </li>
+
+              <li>
+                You must inform your supervisor to update the dates on your
+                application to notify AskMyHR if:
+                <ol type="a">
+                  <li>
+                    You have your child early; you must start your maternity
+                    leave on the day your baby is born.
+                  </li>
+                  <li>
+                    Your child is born late as you can&apos;t start parental
+                    leave until after your baby is born.
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </div>
+          <span className="success-content-intro">
+            In case of miscarriage or stillbirth
+          </span>
+          <div className="success-content-body">
+            If you have a miscarriage, termination or stillbirth more than 19
+            weeks into your pregnancy, you are still eligible to take up to six
+            consecutive weeks of leave starting on the date a pregnancy ends. An
+            employer may request a note from a doctor or nurse practitioner that
+            says when the pregnancy ended.
+          </div>
+          <div className="success-content-body">
+            If the employee is unable to return to work for reasons related to
+            the pregnancy ending, the leave can be extended for six weeks (for a
+            total of 12 weeks)
+          </div>
+        </>
+      );
+    } else if (
+      search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Your approved form has been sent to the AskMyHR team for processing.
+          </span>
+          <div className="success-content-body">
+            <ol>
+              <li>
+                You will receive an email notification summarizing the
+                submission.
+              </li>
+              <li>
+                You can review or edit your submitted form in the&nbsp;
+                <a
+                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/task"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Review and Process Forms
+                </a>
+                &nbsp;tab.
+              </li>
+            </ol>
+          </div>
+        </>
+      );
+    } else if (
+      search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            You have denied the applicant&apos;s request for maternity and/or
+            parental leave.
+          </span>
+          <div className="success-content-body">
+            <ol>
+              <li>
+                Please discuss with the applicant the reason for the denial.
+              </li>
+            </ol>
+          </div>
+        </>
+      );
+    } else if (
       search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM)
     ) {
       return (
@@ -438,27 +553,28 @@ export default React.memo(() => {
                 >
                   Submitted Forms
                 </a>
-                &nbsp; tab
+                &nbsp;tab.
               </li>
             </ol>
-            <b>Next steps</b>
+          </div>
+          <span className="success-content-intro">Next steps</span>
+          <div className="success-content-body">
             <ol>
               <li>
                 Your supervisor will approve your application and forward it to
                 AskMyHR for processing.
               </li>
-
               <li>
                 You must inform your supervisor to update the dates on your
                 application to notify AskMyHR if:
-                <ol type="A">
+                <ol type="a">
                   <li>
                     You have your child early; you must start your maternity
                     leave on the day your baby is born.
                   </li>
                   <li>
-                    Your child is born late as you can&apos;t start parental leave
-                    until after your baby is born.
+                    Your child is born late as you can&apos;t start parental
+                    leave until after your baby is born.
                   </li>
                 </ol>
               </li>
@@ -466,7 +582,7 @@ export default React.memo(() => {
               <li>
                 After you start your leave, you can&nbsp;
                 <a
-                  href="canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html"
+                  href="https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -495,76 +611,15 @@ export default React.memo(() => {
                 your options.
               </li>
             </ol>
-            <b>In case of miscarriage or stillbirth</b>
+          </div>
+          <span className="success-content-intro">
+            In case of miscarriage or stillbirth
+          </span>
+          <div className="success-content-body">
             If you have a miscarriage, termination or stillbirth more than 19
             weeks into your pregnancy, you are still eligible to take up to 17
             consecutive weeks of maternity leave starting from the date of the
             miscarriage, termination or stillbirth.
-          </div>
-        </>
-      );
-    } else if (
-      search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE)
-    ) {
-      return (
-        <>
-          <span className="success-content-intro">
-            Your form has been sent to your supervisor for approval
-          </span>
-          <div className="success-content-body">
-            <ol>
-              <li>
-                You will receive an email with a pdf of the form attached
-                confirming the same.
-              </li>
-              <li>
-                You can review your submitted form in the&nbsp;
-                <a
-                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Submitted Forms
-                </a>
-                &nbsp; tab
-              </li>
-            </ol>
-            <b>Next steps</b>
-
-            <ol>
-              <li>
-                Your supervisor will approve your application and forward it to
-                AskMyHR for processing.
-              </li>
-
-              <li>
-                You must inform your supervisor to update the dates on your
-                application to notify AskMyHR if:
-                <ol type="A">
-                  <li>
-                    You have your child early; you must start your maternity
-                    leave on the day your baby is born.
-                  </li>
-                  <li>
-                    Your child is born late as you can&apos;t start parental leave
-                    until after your baby is born.
-                  </li>
-                </ol>
-              </li>
-            </ol>
-            <b>In case of miscarriage or stillbirth</b>
-            <p>
-              If you have a miscarriage, termination or stillbirth more than 19
-              weeks into your pregnancy, you are still eligible to take up to
-              six consecutive weeks of leave starting on the date a pregnancy
-              ends. An employer may request a note from a doctor or nurse
-              practitioner that says when the pregnancy ended.
-            </p>
-            <p>
-              If the employee is unable to return to work for reasons related to
-              the pregnancy ending, the leave can be extended for six weeks (for
-              a total of 12 weeks)
-            </p>
           </div>
         </>
       );
