@@ -425,45 +425,56 @@ export default React.memo(() => {
           </span>
           <div className="success-content-body">
             <ol>
-              <li>
-                You will receive an email with a pdf of the form attached
-                confirming the same.
-              </li>
-              <li>
-                You can review your submitted form in the&nbsp;
-                <a
-                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Submitted Forms
-                </a>
-                &nbsp;tab.
-              </li>
+              <div>
+                <li>
+                  You will receive an email with a pdf of the form attached
+                  confirming the same.
+                </li>
+              </div>
+              <div>
+                <li>
+                  You can review your submitted form in the&nbsp;
+                  <a
+                    href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Submitted Forms
+                  </a>
+                  &nbsp;tab.
+                </li>
+              </div>
             </ol>
           </div>
           <span className="success-content-intro">Next steps</span>
           <div className="success-content-body">
             <ol>
-              <li>
-                Your supervisor will approve your application and forward it to
-                AskMyHR for processing.
-              </li>
-
-              <li>
-                You must inform your supervisor to update the dates on your
-                application to notify AskMyHR if:
-                <ol type="a">
-                  <li>
-                    You have your child early; you must start your maternity
-                    leave on the day your baby is born.
-                  </li>
-                  <li>
-                    Your child is born late as you can&apos;t start parental
-                    leave until after your baby is born.
-                  </li>
-                </ol>
-              </li>
+              <div>
+                <li>
+                  Your supervisor will approve your application and forward it
+                  to AskMyHR for processing.
+                </li>
+              </div>
+              <div>
+                <li>
+                  You must inform your supervisor to update the dates on your
+                  application to notify AskMyHR if:
+                  <ol type="a">
+                    <div>
+                      <li>
+                        You have your child early; you must start your maternity
+                        leave on the day your baby is born.
+                      </li>
+                    </div>
+                    <div>
+                      <li>
+                        Your child is born late as you can&apos;t start parental
+                        leave until after your baby is born.
+                      </li>
+                    </div>
+                  </ol>
+                </li>
+              </div>
             </ol>
           </div>
           <span className="success-content-intro">
@@ -540,76 +551,93 @@ export default React.memo(() => {
           </span>
           <div className="success-content-body">
             <ol>
-              <li>
-                You will receive an email with a pdf of the form attached
-                confirming the same.
-              </li>
-              <li>
-                You can review your submitted form in the&nbsp;
-                <a
-                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Submitted Forms
-                </a>
-                &nbsp;tab.
-              </li>
+              <div>
+                <li>
+                  You will receive an email with a pdf of the form attached
+                  confirming the same.
+                </li>
+              </div>
+              <div>
+                <li>
+                  You can review your submitted form in the&nbsp;
+                  <a
+                    href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Submitted Forms
+                  </a>
+                  &nbsp;tab.
+                </li>
+              </div>
             </ol>
           </div>
           <span className="success-content-intro">Next steps</span>
           <div className="success-content-body">
             <ol>
-              <li>
-                Your supervisor will approve your application and forward it to
-                AskMyHR for processing.
-              </li>
-              <li>
-                You must inform your supervisor to update the dates on your
-                application to notify AskMyHR if:
-                <ol type="a">
-                  <li>
-                    You have your child early; you must start your maternity
-                    leave on the day your baby is born.
-                  </li>
-                  <li>
-                    Your child is born late as you can&apos;t start parental
-                    leave until after your baby is born.
-                  </li>
-                </ol>
-              </li>
-
-              <li>
-                After you start your leave, you can&nbsp;
-                <a
-                  href="https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  apply for EI
-                </a>
-                . One of the supporting documents, the Record of Employment
-                (ROE) will be submitted directly to the Government of Canada.
-                You will not receive a hard copy. The earliest a Record of
-                Employment (ROE) is issued is 5 days after the end of the pay
-                period in which your leave starts.
-              </li>
-              <li>
-                After your EI application is approved, sign into your &quot;My
-                Service Canada Account&quot;. Provide a copy of the &quot;My
-                Latest Claim EI page&quot; to your supervisor to send into
-                AskMyHR to start your maternity and/or parental leave allowance.
-                You will NOT receive your leave allowance if you do not complete
-                this step.
-              </li>
-              <li>
-                Add your child to your benefits. The birth of your child is an
-                eligible life event therefore there are deadlines to make
-                changes to your benefit options. If you miss the deadline, you
-                can still add your child to your benefits (the first of the
-                month following application) but you cannot make any changes to
-                your options.
-              </li>
+              <div>
+                <li>
+                  Your supervisor will approve your application and forward it
+                  to AskMyHR for processing.
+                </li>
+              </div>
+              <div>
+                <li>
+                  You must inform your supervisor to update the dates on your
+                  application to notify AskMyHR if:
+                  <ol type="a">
+                    <div>
+                      <li>
+                        You have your child early; you must start your maternity
+                        leave on the day your baby is born.
+                      </li>
+                    </div>
+                    <div>
+                      <li>
+                        Your child is born late as you can&apos;t start parental
+                        leave until after your baby is born.
+                      </li>
+                    </div>
+                  </ol>
+                </li>
+              </div>
+              <div>
+                <li>
+                  After you start your leave, you can&nbsp;
+                  <a
+                    href="https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    apply for EI
+                  </a>
+                  . One of the supporting documents, the Record of Employment
+                  (ROE) will be submitted directly to the Government of Canada.
+                  You will not receive a hard copy. The earliest a Record of
+                  Employment (ROE) is issued is 5 days after the end of the pay
+                  period in which your leave starts.
+                </li>
+              </div>
+              <div>
+                <li>
+                  After your EI application is approved, sign into your &quot;My
+                  Service Canada Account&quot;. Provide a copy of the &quot;My
+                  Latest Claim EI page&quot; to your supervisor to send into
+                  AskMyHR to start your maternity and/or parental leave
+                  allowance. You will NOT receive your leave allowance if you do
+                  not complete this step.
+                </li>
+              </div>
+              <div>
+                <li>
+                  Add your child to your benefits. The birth of your child is an
+                  eligible life event therefore there are deadlines to make
+                  changes to your benefit options. If you miss the deadline, you
+                  can still add your child to your benefits (the first of the
+                  month following application) but you cannot make any changes
+                  to your options.
+                </li>
+              </div>
             </ol>
           </div>
           <span className="success-content-intro">
