@@ -403,7 +403,7 @@ parameters:
   - name: CAMUNDA_JOB_MAX_WAIT
     description: CAMUNDA_JOB_MAX_WAIT
     required: true
-    value: "300000"
+    value: "60000"
   - name: CAMUNDA_BPM_HISTORY_LEVEL
     description: CAMUNDA_BPM_HISTORY_LEVEL
     required: true

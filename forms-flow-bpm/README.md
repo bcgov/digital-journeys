@@ -80,7 +80,7 @@ To know more about Camunda, visit https://camunda.com/.
   `CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
   `CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
   `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
-  `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`300000`
+  `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
 
 #### Camunda formsflow.ai Integration Settings  
