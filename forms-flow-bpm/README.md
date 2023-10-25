@@ -65,7 +65,7 @@ To know more about Camunda, visit https://camunda.com/.
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database. Choose your own|`changeme`
  `CAMUNDA_JDBC_DB_NAME`|Postgres Database Name|Used on installation to create the database. Choose your own|`formsflow-bpm`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
- `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`300000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 

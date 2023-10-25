@@ -105,7 +105,7 @@ objects:
         app: ${APP_NAME}
       name: ${NAME}
       annotations:
-        haproxy.router.openshift.io/timeout: 600s
+        haproxy.router.openshift.io/timeout: 300s
     spec:
       host: ${FFAWEB_URL}
       tls:

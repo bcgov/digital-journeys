@@ -174,7 +174,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database. Choose your own|`admin`
  `CAMUNDA_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database. Choose your own|`changeme`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
- `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`300000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
