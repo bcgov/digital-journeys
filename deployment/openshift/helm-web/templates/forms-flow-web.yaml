@@ -2,14 +2,10 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: helm-forms-flow-web
-  labels:
-    app: forms-flow-web
 objects:
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
-    annotations: null
-    creationTimestamp: null
     labels:
       app: ${APP_NAME}
     name: ${NAME}
@@ -41,7 +37,7 @@ objects:
       spec:
         containers:
         - env: null
-          image: 'image-registry.openshift-image-registry.svc:5000/ ${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}'
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
           ports:
           - containerPort: 8080
@@ -74,42 +70,42 @@ objects:
         name: ${NAME}:${TAG_NAME}
         namespace: ${IMAGE_NAMESPACE}
     type: ImageChange
-  - apiVersion: v1
-    kind: Service
-    metadata:
-      annotations: null
-      creationTimestamp: null
-      labels:
-        app: ${APP_NAME}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations: null
+    creationTimestamp: null
+    labels:
+      app: ${APP_NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: ${APP_NAME}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${APP_NAME}
+    name: ${NAME}
+  spec:
+    host: ${FFAWEB_URL}
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
       name: ${NAME}
-    spec:
-      ports:
-      - name: "8080"
-        port: 8080
-        targetPort: 8080
-      selector:
-        app: ${APP_NAME}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      labels:
-        app: ${APP_NAME}
-      name: ${NAME}
-    spec:
-      host: ${FFAWEB_URL}
-      tls:
-        insecureEdgeTerminationPolicy: Redirect
-        termination: edge
-      to:
-        kind: Service
-        name: ${NAME}
-      wildcardPolicy: None
+    wildcardPolicy: None
 parameters:
 - description: The name assigned to the application
   displayName: APP_NAME
   name: APP_NAME
   required: true
-  value: forms-flow-ai
+  value: forms-flow-web
 - description: The name assigned to all of the OpenShift resources
   displayName: Name
   name: NAME
