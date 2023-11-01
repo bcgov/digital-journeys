@@ -70,7 +70,6 @@ import MessageModal from "../../../containers/MessageModal";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
-  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -348,26 +347,6 @@ const View = React.memo((props) => {
     setDefaultVals(getDefaultValues(employeeData.data, form));
   }, [employeeData.data, form]);
 
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    if (areFormLinksWereConverted) {
-      return; 
-    }
-    convertFormLinksInterval = setInterval(() => {
-      /* check formRef before calling function of formio */
-      if (formRef.current !== null) {
-        const done = convertFormLinksToOpenInNewTabs(
-          formRef.current?.formio,
-          convertFormLinksInterval
-        );
-        setAreFormLinksWereConverted(done);
-      }
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
-    };
-  });
-
   /* Pass values to the form components
    A component with the same key should be present in the form otherwise it will be ignored */
   let valueForComponentsInterval = null;
@@ -477,8 +456,6 @@ const View = React.memo((props) => {
         return;
     }
   };
-
-
 
   return (
     <div className="container overflow-y-auto">
@@ -671,6 +648,12 @@ const doProcessActions = (submission, ownProps) => {
 };
 
 const mapStateToProps = (state) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+  
   return {
     user: state.user.userDetail,
     authToken: state.user.bearerToken,
