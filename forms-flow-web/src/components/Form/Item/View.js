@@ -39,6 +39,7 @@ import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
+  FilterDrafts,
   draftCreate,
   draftUpdate,
   publicDraftCreate,
@@ -387,7 +388,23 @@ const View = React.memo((props) => {
     }
   });
 
-  if (isActive || isPublicStatusLoading || formStatusLoading) {
+  /**
+   * check if draft exists
+   */
+  const isDraftListLoading = useSelector(
+    (state) => state.draft.isDraftListLoading
+  );
+  const draftCount = useSelector((state) => state.draft.draftCount);
+  const formTitle = useSelector((state)=> state?.form?.form?.title);
+ 
+  useEffect(() => {  
+    if(formTitle) {
+      dispatch(FilterDrafts({ filters: { DraftName: { filterVal: formTitle } }, 
+        page: 1, sizePerPage: 1 }));
+    }
+  }, [dispatch, formTitle]);
+
+  if (isActive || isPublicStatusLoading || formStatusLoading || isDraftListLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -482,7 +499,13 @@ const View = React.memo((props) => {
             </span>
           </>
         )} */}
-      <div className="d-flex align-items-center justify-content-between">
+      {/* If draft exists */}
+      {draftCount > 0 ? <div className="alert-bc-warning"><p>You have a saved draft available for {formTitle} form. <br /> 
+      You can access your saved drafts in the &nbsp;
+      <Link title="Draft Forms" to="/draft" >
+        Draft Forms       
+      </Link></p></div> : null}
+      <div className="d-flex align-items-center justify-content-between">        
         <div className="main-header">
           <MessageModal
             modalOpen={!hasFormAccess}
@@ -528,7 +551,7 @@ const View = React.memo((props) => {
             </h3>
           ) : (
             ""
-          )} */}
+          )} */}          
           <h3 className="ml-3">
             <span className="task-head-details">
               <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms /
