@@ -11,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
@@ -30,7 +31,11 @@ public class CRMAccessHandler extends AbstractAccessHandler {
     private String crmAuthHeader;
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
+        System.out.println("CRM http request handler: " + " url: " +  url + " payload: " +  payload);
         payload = (payload == null) ? new JsonObject().toString() : payload;
+        System.out.println("CRM http request handler payload: " + payload);
+
+        System.out.println("CRM http request handler crmAuthHeader: " +  crmAuthHeader);
 
         Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.method(method).uri(url)
                 .header("Authorization", crmAuthHeader)
@@ -39,6 +44,8 @@ public class CRMAccessHandler extends AbstractAccessHandler {
                 .header("osvc-crest-application-context", "Retrieve Data")
                 .body(Mono.just(payload), String.class)
                 .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR)))
                 .toEntity(String.class);
 
         ResponseEntity<String> response = entityMono.block();
