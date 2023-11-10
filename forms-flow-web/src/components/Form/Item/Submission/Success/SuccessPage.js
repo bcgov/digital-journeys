@@ -498,17 +498,25 @@ export default React.memo(() => {
       search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED)
     ) {
       return (
-        <>  
-          <span className="success-content-intro">
-            Leave Approved
-          </span>
+        <>
+          <span className="success-content-intro">Leave Approved</span>
           <div className="success-content-body">
             <ol>
               <li>
-                An <b>AskMyHR service request will automatically be submitted</b> on your behalf to process this leave form. You will receive a confirmation email from AskMyHR with the service request number.
+                An{" "}
+                <b>AskMyHR service request will automatically be submitted</b>{" "}
+                on your behalf to process this leave form. You will receive a
+                confirmation email from AskMyHR with the service request number.
               </li>
               <li>
-                Employees must inform their supervisor if there are any changes to the start date of the their maternity or parental leaves. As the <b>supervisor you can make changes to the start date, length of leave and parental leave allowance dates on behalf of the employee.</b>
+                Employees must inform their supervisor if there are any changes
+                to the start date of the their maternity or parental leaves. As
+                the{" "}
+                <b>
+                  supervisor you can make changes to the start date, length of
+                  leave and parental leave allowance dates on behalf of the
+                  employee.
+                </b>
               </li>
             </ol>
           </div>
@@ -519,13 +527,13 @@ export default React.memo(() => {
     ) {
       return (
         <>
-          <span className="success-content-intro">
-            Leave Denied
-          </span>
+          <span className="success-content-intro">Leave Denied</span>
           <div className="success-content-body">
             <ol>
               <li>
-                Please inform the employee the reason for denial. If they still want to go on leave, the employee must resubmit the form. Employees can access the form in the "Submitted forms" tab.
+                Please inform the employee the reason for denial. If they still
+                want to go on leave, the employee must resubmit the form.
+                Employees can access the form in the "Submitted forms" tab.
               </li>
             </ol>
           </div>
