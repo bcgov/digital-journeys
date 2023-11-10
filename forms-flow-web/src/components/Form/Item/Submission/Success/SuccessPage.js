@@ -533,7 +533,8 @@ export default React.memo(() => {
               <li>
                 Please inform the employee the reason for denial. If they still
                 want to go on leave, the employee must resubmit the form.
-                Employees can access the form in the "Submitted forms" tab.
+                Employees can access the form in the &quot;Submitted forms&quot;
+                tab.
               </li>
             </ol>
           </div>
