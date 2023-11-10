@@ -498,26 +498,17 @@ export default React.memo(() => {
       search.includes(successTypes.MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED)
     ) {
       return (
-        <>
+        <>  
           <span className="success-content-intro">
-            Your approved form has been sent to the AskMyHR team for processing.
+            Leave Approved
           </span>
           <div className="success-content-body">
             <ol>
               <li>
-                You will receive an email notification summarizing the
-                submission.
+                An <b>AskMyHR service request will automatically be submitted</b> on your behalf to process this leave form. You will receive a confirmation email from AskMyHR with the service request number.
               </li>
               <li>
-                You can review or edit your submitted form in the&nbsp;
-                <a
-                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/task"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Review and Process Forms
-                </a>
-                &nbsp;tab.
+                Employees must inform their supervisor if there are any changes to the start date of the their maternity or parental leaves. As the <b>supervisor you can make changes to the start date, length of leave and parental leave allowance dates on behalf of the employee.</b>
               </li>
             </ol>
           </div>
@@ -529,13 +520,12 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            You have denied the applicant&apos;s request for maternity and/or
-            parental leave.
+            Leave Denied
           </span>
           <div className="success-content-body">
             <ol>
               <li>
-                Please discuss with the applicant the reason for the denial.
+                Please inform the employee the reason for denial. If they still want to go on leave, the employee must resubmit the form. Employees can access the form in the "Submitted forms" tab.
               </li>
             </ol>
           </div>
