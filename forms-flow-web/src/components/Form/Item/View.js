@@ -503,8 +503,8 @@ const View = React.memo((props) => {
       {draftCount > 0 ? (
         <div className="alert-bc-warning">
           <p>
-            You have a saved draft available for {formTitle} form. <br />
-            You can access your saved drafts in the &nbsp;
+            You have a saved draft available for {formTitle?.endsWith('form') ? formTitle : `${formTitle} form`}. <br />
+            You can access your saved drafts in &nbsp;
             <Link title="Draft Forms" to="/draft">
               Draft Forms
             </Link>
