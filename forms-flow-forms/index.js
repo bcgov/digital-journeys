@@ -205,10 +205,10 @@ module.exports = function(config) {
       let mongoUrl = config.mongo;
       let mongoConfig = config.mongoConfig ? JSON.parse(config.mongoConfig) : {};
       if (!mongoConfig.hasOwnProperty('connectTimeoutMS')) {
-        mongoConfig.connectTimeoutMS = 300000;
+        mongoConfig.connectTimeoutMS = 90000;
       }
       if (!mongoConfig.hasOwnProperty('socketTimeoutMS')) {
-        mongoConfig.socketTimeoutMS = 300000;
+        mongoConfig.socketTimeoutMS = 90000;
       }
       if (!mongoConfig.hasOwnProperty('useNewUrlParser')) {
         mongoConfig.useNewUrlParser = true;
