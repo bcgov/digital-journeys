@@ -510,7 +510,7 @@ export default React.memo(() => {
               </li>
               <li>
                 Employees must inform their supervisor if there are any changes
-                to the start date of the their maternity or parental leaves. As
+                to the start date of their maternity or parental leaves. As
                 the{" "}
                 <b>
                   supervisor you can make changes to the start date, length of
