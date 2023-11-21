@@ -65,7 +65,6 @@ const View = React.memo((props) => {
     (state) => state.formDelete.formSubmitted
   );
 
-  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const formRef = useRef(null);
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -152,23 +151,6 @@ const View = React.memo((props) => {
       if (poll) saveDraft(payload, exitType.current);
     };
   }, [poll, exitType.current, draftSubmission]);
-
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    if (areFormLinksWereConverted) {
-      return; 
-    }
-    convertFormLinksInterval = setInterval(() => {
-      const done = convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
-      setAreFormLinksWereConverted(done);
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
-    };
-  });
 
   /* Pass values to the form components
    A component with the same key should be present in the form otherwise it will be ignored */
@@ -434,6 +416,12 @@ const doProcessActions = (submission, ownProps) => {
 };
 
 const mapStateToProps = (state) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+  
   return {
     user: state.user.userDetail,
     authToken: state.user.bearerToken,

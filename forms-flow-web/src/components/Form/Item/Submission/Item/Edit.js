@@ -138,19 +138,6 @@ const Edit = React.memo((props) => {
     };
   });
 
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    convertFormLinksInterval = setInterval(() => {
-      convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
-    };
-  });
-
   /* Pass values to the form components
    A component with the same key should be present in the form otherwise it will be ignored */
   let valueForComponentsInterval = null;
@@ -333,6 +320,12 @@ Edit.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+
   return {
     user: state.user.userDetail,
     authToken: state.user.bearerToken,
