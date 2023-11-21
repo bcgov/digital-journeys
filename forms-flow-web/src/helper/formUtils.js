@@ -1,18 +1,18 @@
+import Utils from 'formiojs/utils';
 
-const convertFormLinksToOpenInNewTabs = (formio, convertFormLinksInterval) => {
-  if (formio) {
-    clearInterval(convertFormLinksInterval);
-    formio.everyComponent((component) => {
-      if (component.component.html) {
-        component.component.html = component.component.html.replace(
+const convertFormLinksToOpenInNewTabs = (form) => {
+  Utils.eachComponent(
+    form.components,
+    (component) => {
+      if (component.html) {
+        component.html = component.html.replace(
           /<a\s+href=/gi,
           '<a target="_blank" href='
         );
       }
-    });
-  }
-  formio.redraw();
-  return true;
+    },
+    true
+  );
 };
 
 const setValueForComponents = (formio, valueForComponentsInterval, keyValuePairs) => {
@@ -194,5 +194,5 @@ export {
   getDefaultValues,
   getFormSupportedIDPFromJSON, 
   setValueForComponents,
-  mergeFormioAccessRoles,
+  mergeFormioAccessRoles
 };

@@ -24,6 +24,7 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmAssignedTo;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmCustomFields;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmC;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmReferenceContactPostRequest;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmStatusWithType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -206,9 +207,15 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         CrmLookupNameObject crmCategory = new CrmLookupNameObject(crmCategoryLookupName);
         CrmLookupNameObject crmStaffGroup = new CrmLookupNameObject(crmStaffGroupLookupName);
         CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
+        String crmIncidentStatusLookupName = "Unresolved";
+        if (isUpdate) {
+            crmIncidentStatusLookupName = "Updated";
+        }
+        CrmLookupNameObject crmIncidentStatus = new CrmLookupNameObject(crmIncidentStatusLookupName);
+        CrmStatusWithType crmStatusWithType = new CrmStatusWithType(crmIncidentStatus);
         CrmC crmC = new CrmC(crmPriorityDuedate);
         CrmCustomFields crmCustomFields = new CrmCustomFields(crmC);
-        CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields);
+        CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields, crmStatusWithType);
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {

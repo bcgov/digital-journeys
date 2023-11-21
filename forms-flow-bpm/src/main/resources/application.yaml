@@ -41,7 +41,7 @@ formsflow.ai:
     spring:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:6}
-        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:200000}
+        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:90000}
   ods:
     url: ${ODS_URL}
     security:
@@ -94,9 +94,9 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     minimum-idle: 10
     maximumPoolSize: ${CAMUNDA_HIKARI_MAX_POOLSIZE:30}
-    connectionTimeout: ${CAMUNDA_HIKARI_CONN_TIMEOUT:30000}
-    idleTimeout: ${CAMUNDA_HIKARI_IDLE_TIMEOUT:600000}
-    validationTimeout: ${CAMUNDA_HIKARI_VALID_TIMEOUT:5000}
+    connectionTimeout: ${CAMUNDA_HIKARI_CONN_TIMEOUT:90000}
+    idleTimeout: ${CAMUNDA_HIKARI_IDLE_TIMEOUT:90000}
+    validationTimeout: ${CAMUNDA_HIKARI_VALID_TIMEOUT:90000}
   security:
     oauth2:
       client:
