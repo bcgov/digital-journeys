@@ -9,8 +9,13 @@ export const RESUBMITTED_STATUS = "Resubmitted";
 export const VALIDATED_STATUS = "Validated";
 export const SUBMITTED_VALIDATION_STATUS = "Submitted - Validation";
 export const SUBMITTED_FINAL_STATUS = "Submitted - Final";
+export const APPROVED_STATUS = "APPROVED";
+export const DENIED_STATUS = "DENIED";
+export const NEW_STATUS = "NEW";
+export const COMPLETED_STATUS = "Completed";
 
-export const CLIENT_EDIT_STATUS = [
+// No longer need this, as edit access is now controlled by the formEditStatusMap in forms-flow-web/src/helper/access.js
+/* export const CLIENT_EDIT_STATUS = [
   AWAITING_ACKNOWLEDGEMENT,
   RESUBMIT_STATUS,
   SUBMITTED_STATUS,
@@ -18,7 +23,7 @@ export const CLIENT_EDIT_STATUS = [
   VALIDATED_STATUS,
   SUBMITTED_VALIDATION_STATUS,
   SUBMITTED_FINAL_STATUS,
-];
+]; */
 
 export const UPDATE_EVENT_STATUS = [RESUBMIT_STATUS, AWAITING_ACKNOWLEDGEMENT];
 

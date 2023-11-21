@@ -10,6 +10,13 @@ class EmployeeData():
    self.firstName = data.get("first_name")
    self.lastName = data.get("last_name")
    self.email = data.get("email")
+   self.address = ", ".join(filter(None, [
+        value.strip() for key, value in [
+            ("address1", data.get("address1")),
+            ("address2", data.get("address2")),
+            ("city", data.get("city")),
+            ("postal", data.get("postal"))
+        ] if value is not None and isinstance(value, str)]))
    self.address1 = data.get("address1")
    self.address2 = data.get("address2")
    self.postal = data.get("postal")
@@ -18,6 +25,14 @@ class EmployeeData():
    self.empId = data.get("EMPLID")
    self.positionTitle = data.get("position_title")
    self.depId = data.get("DEPTID")
+   self.officeAddress = ", ".join(filter(None, [
+        value.strip() for key, value in [
+            ("office_address1", data.get("office_address1")),
+            ("office_address2", data.get("office_address2")),
+            ("office_city", data.get("office_city")),
+            ("office_stateprovince", data.get("office_stateprovince")),
+            ("office_postal", data.get("office_postal"))
+        ] if value is not None and isinstance(value, str)]))
    self.officeAddress1 = data.get("office_address1")
    self.officeAddress2 = data.get("office_address2")
    self.officeCity = data.get("office_city")

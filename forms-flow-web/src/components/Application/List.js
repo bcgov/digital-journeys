@@ -27,7 +27,7 @@ import {
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
 } from "../../constants/constants";
-import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
+// import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import Alert from "react-bootstrap/Alert";
 import { Translation } from "react-i18next";
 
@@ -39,6 +39,7 @@ import { push } from "connected-react-router";
 import Confirm from "../../containers/Confirm";
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay";
+import { hasFormEditAccessByStatus } from "../../helper/access";
 
 export const ApplicationList = React.memo(() => {
   const { t } = useTranslation();
@@ -95,12 +96,13 @@ export const ApplicationList = React.memo(() => {
     dispatch(getAllApplications(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef, isDeletingApplication]);
 
-  const isClientEdit = (applicationStatus) => {
+  const isClientEdit = (applicationStatus, formName) => {
     if (
       getUserRolePermission(userRoles, CLIENT) ||
       getUserRolePermission(userRoles, STAFF_REVIEWER)
     ) {
-      return CLIENT_EDIT_STATUS.includes(applicationStatus);
+      return hasFormEditAccessByStatus(formName, applicationStatus);
+      // return CLIENT_EDIT_STATUS.includes(applicationStatus);
     } else {
       return false;
     }
@@ -147,7 +149,8 @@ export const ApplicationList = React.memo(() => {
 
   const listApplications = (applications) => {
     let totalApplications = applications.map((application) => {
-      application.isClientEdit = isClientEdit(application.applicationStatus);
+      application.isClientEdit = isClientEdit(application.applicationStatus, 
+        application.applicationName);
       application.loggedInUserObj = userObj;
       application.userRoles = userRoles;
       return application;

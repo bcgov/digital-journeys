@@ -60,19 +60,6 @@ const View = React.memo((props) => {
     };
   });
 
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    convertFormLinksInterval = setInterval(() => {
-      convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
-    };
-  });
-
   let updatedSubmission;
   if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
     updatedSubmission = customSubmission;
@@ -126,6 +113,12 @@ const View = React.memo((props) => {
 //   showPrintButton: true,
 // };
 const mapStateToProps = (state, props) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+  
   const isDraftView = props.page === "draft-detail" ? true : false;
   return {
     form: selectRoot("form", state),
