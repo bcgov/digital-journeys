@@ -174,7 +174,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database. Choose your own|`admin`
  `CAMUNDA_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database. Choose your own|`changeme`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
- `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`90000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
@@ -186,7 +186,7 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
 `CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
 `CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
-`CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
+`CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`90000`
 `CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
 `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
 `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`

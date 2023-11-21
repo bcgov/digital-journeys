@@ -118,6 +118,8 @@ objects:
     labels:
       app: ${NAME}
     name: ${NAME}
+    annotations:
+      haproxy.router.openshift.io/timeout: 300s
   spec:
     host: ${DATA_ANALYSIS_API_URL}
     tls:

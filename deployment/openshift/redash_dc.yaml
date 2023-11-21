@@ -597,6 +597,8 @@ objects:
     labels:
       app: ${NAME}
     name: ${NAME}
+    annotations:
+      haproxy.router.openshift.io/timeout: 300s
   spec:
     host: ${FFA_ANALYTICS_URL}
     path: /

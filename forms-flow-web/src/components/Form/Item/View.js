@@ -39,6 +39,7 @@ import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
+  FilterDrafts,
   draftCreate,
   draftUpdate,
   publicDraftCreate,
@@ -70,7 +71,6 @@ import MessageModal from "../../../containers/MessageModal";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
-  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
   const formStatusLoading = useSelector(
@@ -348,26 +348,6 @@ const View = React.memo((props) => {
     setDefaultVals(getDefaultValues(employeeData.data, form));
   }, [employeeData.data, form]);
 
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    if (areFormLinksWereConverted) {
-      return; 
-    }
-    convertFormLinksInterval = setInterval(() => {
-      /* check formRef before calling function of formio */
-      if (formRef.current !== null) {
-        const done = convertFormLinksToOpenInNewTabs(
-          formRef.current?.formio,
-          convertFormLinksInterval
-        );
-        setAreFormLinksWereConverted(done);
-      }
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
-    };
-  });
-
   /* Pass values to the form components
    A component with the same key should be present in the form otherwise it will be ignored */
   let valueForComponentsInterval = null;
@@ -408,7 +388,23 @@ const View = React.memo((props) => {
     }
   });
 
-  if (isActive || isPublicStatusLoading || formStatusLoading) {
+  /**
+   * check if draft exists
+   */
+  const isDraftListLoading = useSelector(
+    (state) => state.draft.isDraftListLoading
+  );
+  const draftCount = useSelector((state) => state.draft.draftCount);
+  const formTitle = useSelector((state)=> state?.form?.form?.title);
+ 
+  useEffect(() => {  
+    if(formTitle) {
+      dispatch(FilterDrafts({ filters: { DraftName: { filterVal: formTitle } }, 
+        page: 1, sizePerPage: 1 }));
+    }
+  }, [dispatch, formTitle]);
+
+  if (isActive || isPublicStatusLoading || formStatusLoading || isDraftListLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -468,12 +464,15 @@ const View = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
         setIsCustomFormSubmissionLoading(true);
         break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_INITIAL_SUBMISSION:
+        setPoll(false);
+        exitType.current = "SUBMIT";
+        onSubmit({data: evt.data}, form._id, isPublic);
+        break;
       default:
         return;
     }
   };
-
-
 
   return (
     <div className="container overflow-y-auto">
@@ -500,7 +499,19 @@ const View = React.memo((props) => {
             </span>
           </>
         )} */}
-      <div className="d-flex align-items-center justify-content-between">
+      {/* If draft exists */}
+      {draftCount > 0 ? (
+        <div className="alert-bc-warning">
+          <p>
+            You have a saved draft available for {formTitle?.endsWith('form') ? formTitle : `${formTitle} form`}. <br />
+            You can access your saved drafts in &nbsp;
+            <Link title="Draft Forms" to="/draft">
+              Draft Forms
+            </Link>
+          </p>
+        </div>
+      ) : null}
+      <div className="d-flex align-items-center justify-content-between">        
         <div className="main-header">
           <MessageModal
             modalOpen={!hasFormAccess}
@@ -546,7 +557,7 @@ const View = React.memo((props) => {
             </h3>
           ) : (
             ""
-          )} */}
+          )} */}          
           <h3 className="ml-3">
             <span className="task-head-details">
               <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms /
@@ -666,6 +677,12 @@ const doProcessActions = (submission, ownProps) => {
 };
 
 const mapStateToProps = (state) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+  
   return {
     user: state.user.userDetail,
     authToken: state.user.bearerToken,
