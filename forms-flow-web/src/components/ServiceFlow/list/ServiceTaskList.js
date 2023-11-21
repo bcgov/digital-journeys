@@ -10,7 +10,7 @@ import Loading from "../../../containers/Loading";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import {
-  getProcessDataObjectFromList,
+  // getProcessDataObjectFromList,
   getFormattedDateAndTime,
 } from "../../../apiManager/services/formatterService";
 import TaskFilterComponent from "./search/TaskFilterComponent";
@@ -30,7 +30,7 @@ const ServiceFlowTaskList = React.memo(() => {
   );
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
-  const processList = useSelector((state) => state.bpmTasks.processList);
+  // const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector((state) => state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
@@ -80,7 +80,7 @@ const ServiceFlowTaskList = React.memo(() => {
                 </div>
               </Row>
               <div className="font-size-16 d-flex justify-content-between">
-                <div className=" pr-0" style={{ maxWidth: "65%" }}>
+                {/* <div className=" pr-0" style={{ maxWidth: "65%" }}>
                   <span data-toggle="tooltip" title="Form Name">
                     {
                       getProcessDataObjectFromList(
@@ -89,7 +89,7 @@ const ServiceFlowTaskList = React.memo(() => {
                       )?.name
                     }
                   </span>
-                </div>
+                </div> */}
                 {/* <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}

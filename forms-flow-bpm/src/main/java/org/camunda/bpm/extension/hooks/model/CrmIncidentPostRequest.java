@@ -10,6 +10,7 @@ public class CrmIncidentPostRequest {
   private CrmLookupNameObject crmCategory;
   private CrmAssignedTo crmAssignedTo;
   private CrmCustomFields crmCustomFields;
+  private CrmStatusWithType crmStatusWithType;
   
   public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject) {
     this.crmPrimaryContact = crmPrimaryContact;
@@ -17,7 +18,8 @@ public class CrmIncidentPostRequest {
   }
 
   public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, 
-    CrmLookupNameObject crmProduct, CrmLookupNameObject crmCategory, CrmAssignedTo crmAssignedTo, CrmCustomFields crmCustomFields) {
+    CrmLookupNameObject crmProduct, CrmLookupNameObject crmCategory, CrmAssignedTo crmAssignedTo, CrmCustomFields crmCustomFields,
+    CrmStatusWithType crmStatusWithType) {
     this.crmPrimaryContact = crmPrimaryContact;
     this.subject = subject;
     this.crmThreads = crmThreads;
@@ -25,6 +27,7 @@ public class CrmIncidentPostRequest {
     this.crmProduct = crmProduct;
     this.crmAssignedTo = crmAssignedTo;
     this.crmCustomFields = crmCustomFields;
+    this.crmStatusWithType = crmStatusWithType;
   }
 
   public CrmIdObject getPrimaryContact() {
@@ -73,6 +76,14 @@ public class CrmIncidentPostRequest {
 
   public void setAssignedTo(CrmAssignedTo crmAssignedTo) {
     this.crmAssignedTo = crmAssignedTo;
+  }
+
+  public CrmStatusWithType getStatusWithType() {
+    return crmStatusWithType;
+  }
+
+  public void setStatusWithType(CrmStatusWithType crmStatusWithType) {
+    this.crmStatusWithType = crmStatusWithType;
   }
 
   public CrmCustomFields getCustomFields() {
