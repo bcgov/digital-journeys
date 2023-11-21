@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 
 @Named("SendSubmissionToODSDelegate")
@@ -46,6 +48,7 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         String endpoint = String.valueOf(execution.getVariableLocal("endpoint"));
         String httpMethod = String.valueOf(execution.getVariableLocal("httpMethod"));
         String objectKeycase = String.valueOf(execution.getVariableLocal("objectKeycase"));
+        List<String> replaceTextList = (List) execution.getVariableLocal("replaceTextList");
         // List of object keys that should not be flatten on send to ODS
         List<String> flatObjectExclusionList = (List) execution.getVariableLocal("flatObjectExclusionList");
         // If exceptions not defined, set an empty list
@@ -87,11 +90,12 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";
         if (objectKeycase.equals("snake_case")) {
-            json = objectMapper.writeValueAsString(convertToSnake(values));
-        } else {
-            json = objectMapper.writeValueAsString(values);
+            values = convertToSnake(values);
         }
-        System.out.println(json);
+        if (replaceTextList != null) {
+            values = replaceTextAll(values, replaceTextList);
+        }
+        json = objectMapper.writeValueAsString(values);
 
         boolean debug = Boolean.parseBoolean(String.valueOf(execution.getVariableLocal("debug")));
 
@@ -126,6 +130,27 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
         Map<String, Object> map = new HashMap<>();
         for (var entry : values.entrySet()) {
             map.put(camelToSnake(entry.getKey()), entry.getValue());
+        }
+        return map;
+    }
+
+    public Map<String, Object> replaceTextAll(Map<String, Object> values, List<String> replaceTextList) {
+        Map<String, Object> map = new HashMap<>();
+        for (var entry : values.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                String temp = entry.getValue().toString();
+                for (String str : replaceTextList) {
+                    String[] replaceArray = str.split(",");
+                    if (replaceArray.length > 1) {
+                        temp = temp.replaceAll(
+                            Pattern.quote(replaceArray[0]), 
+                            Matcher.quoteReplacement(replaceArray[1]));
+                    }
+                }
+                map.put(entry.getKey(), temp);
+            } else {
+                map.put(entry.getKey(), entry.getValue());
+            }
         }
         return map;
     }

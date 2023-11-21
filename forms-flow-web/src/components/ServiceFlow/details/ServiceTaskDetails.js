@@ -52,6 +52,7 @@ import {
 } from "../../../constants/constants";
 import { redirectToSuccessPage } from "../../../constants/successTypes";
 import { printToPDF } from "../../../services/PdfService";
+import MessageModal from "../../../containers/MessageModal";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -86,6 +87,9 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const userRoles = useSelector((state) => state.user.roles);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState();
 
   useEffect(() => {
     if (taskId) {
@@ -217,6 +221,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF({ formName: customEvent.formName, pdfName: customEvent.pdfName });
         break;
+      case CUSTOM_EVENT_TYPE.POPUP:
+        setPopupData({ title: customEvent.title, body: customEvent.body });
+        setShowPopup(true);
+        break;
       default:
         return;
     }
@@ -276,6 +284,14 @@ const ServiceFlowTaskDetails = React.memo(() => {
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>
+              {popupData && (
+                <MessageModal
+                  modalOpen={showPopup}
+                  title={popupData.title}
+                  message={popupData.body}
+                  onConfirm={() => setShowPopup(false)}
+                />
+              )}
               <LoadingOverlay
                 active={task?.assignee !== currentUser}
                 styles={{

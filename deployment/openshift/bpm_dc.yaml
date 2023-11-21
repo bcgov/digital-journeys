@@ -9,6 +9,8 @@ objects:
       labels:
         app: ${NAME}
       name: ${NAME}
+      annotations:
+        haproxy.router.openshift.io/timeout: 300s
     spec:
       host: ${CAMUNDA_URL}
       path: /camunda
@@ -249,6 +251,16 @@ objects:
                     configMapKeyRef:
                       name: forms-flow-ai-config
                       key: BPM_CLIENT_CONN_TIMEOUT
+                - name: CRM_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: CRM_URL
+                - name: CRM_AUTH_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: forms-flow-ai-config
+                      key: CRM_AUTH_TOKEN
 
               imagePullPolicy: Always
               livenessProbe:
@@ -354,7 +366,7 @@ parameters:
   - name: CAMUNDA_CONN_TIMEOUT
     description: The maximum milliseconds to wait for a connection from the pool.
     required: true
-    value: "5000"
+    value: "90000"
   - name: CAMUNDA_HIKARI_MAX_POOLSIZE
     description: CAMUNDA_HIKARI_MAX_POOLSIZE.
     required: true
@@ -366,15 +378,15 @@ parameters:
   - name: CAMUNDA_JOB_LOCK_TIME_MILLIS
     description: CAMUNDA_JOB_LOCK_TIME_MILLIS
     required: true
-    value: "300000"
+    value: "90000"
   - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "90000"
   - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "90000"
   - name: CAMUNDA_JDBC_DRIVER
     description: CAMUNDA_JDBC_DRIVER
     required: true
@@ -382,7 +394,7 @@ parameters:
   - name: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
     required: true
-    value: "600000"
+    value: "90000"
   - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
     description: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
     required: true
@@ -394,9 +406,9 @@ parameters:
   - name: CAMUNDA_HIKARI_VALID_TIMEOUT
     description: CAMUNDA_HIKARI_VALID_TIMEOUT
     required: true
-    value: "20000"
+    value: "90000"
   - name: CAMUNDA_JOB_WAIT_TIME_MILLIS
-    value: "5000"
+    value: "90000"
     description: CAMUNDA_JOB_WAIT_TIME_MILLIS
     required: true
   - name: CAMUNDA_JOB_QUEUE_SIZE
@@ -426,11 +438,11 @@ parameters:
   - name: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
     description: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
     required: true
-    value: "20000"
+    value: "90000"
   - name: CAMUNDA_HIKARI_IDLE_TIMEOUT
     description: CAMUNDA_HIKARI_IDLE_TIMEOUT
     required: true
-    value: "600000"
+    value: "90000"
   - name: CAMUNDA_JOB_MAX_POOL_SIZE
     description: CAMUNDA_JOB_MAX_POOL_SIZE
     required: true
@@ -455,7 +467,7 @@ parameters:
   - name: DATA_BUFFER_SIZE
     description: Configure a limit on the number of bytes that can be buffered for webclient
     required: true
-    value: "2"
+    value: "6"
   - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
     description: Maximum result size for Keycloak user queries
     required: true

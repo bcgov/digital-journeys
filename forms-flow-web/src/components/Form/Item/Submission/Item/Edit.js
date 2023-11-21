@@ -25,7 +25,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../../../../constants/constants";
 import {
-  CLIENT_EDIT_STATUS,
+  // CLIENT_EDIT_STATUS,
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../../constants/applicationConstants";
@@ -55,6 +55,8 @@ import { getTaskSubmitFormReq } from "../../../../../apiManager/services/bpmServ
 import { redirectToSuccessPage } from "../../../../../constants/successTypes";
 import { CUSTOM_EVENT_TYPE } from "../../../../ServiceFlow/constants/customEventTypes";
 import { printToPDF } from "../../../../../services/PdfService";
+import { hasFormEditAccessByStatus } from "../../../../../helper/access";
+import MessageModal from "../../../../../containers/MessageModal";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -81,6 +83,9 @@ const Edit = React.memo((props) => {
 
   const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
 
+  const [showPopup, setShowPopup] = React.useState(false);
+  const [popupData, setPopupData] = React.useState();
+
   const applicationStatus = useSelector(
     (state) => state.applications.applicationDetail?.applicationStatus || ""
   );
@@ -102,7 +107,8 @@ const Edit = React.memo((props) => {
     if (applicationStatus && !onFormSubmit) {
       if (
         getUserRolePermission(userRoles, CLIENT) &&
-        !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        // !CLIENT_EDIT_STATUS.includes(applicationStatus)
+        !hasFormEditAccessByStatus(applicationDetail?.applicationName, applicationStatus)
         ) {
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }
@@ -129,19 +135,6 @@ const Edit = React.memo((props) => {
     }, 1000);
     return () => {
       clearInterval(scrollToErrorInterval);
-    };
-  });
-
-  let convertFormLinksInterval = null;
-  useEffect(() => {
-    convertFormLinksInterval = setInterval(() => {
-      convertFormLinksToOpenInNewTabs(
-        formRef.current?.formio,
-        convertFormLinksInterval
-      );
-    }, 1000);
-    return () => {
-      clearInterval(convertFormLinksInterval);
     };
   });
 
@@ -242,6 +235,10 @@ const Edit = React.memo((props) => {
           pdfName: customEvent.pdfName,
         });
         break;
+      case CUSTOM_EVENT_TYPE.POPUP:
+        setPopupData({ title: customEvent.title, body: customEvent.body });
+        setShowPopup(true);
+        break;
       case CUSTOM_EVENT_TYPE.ERROR_CUSTOM_VALIDATION:
         toast.error(customEvent.error);
         break;
@@ -256,6 +253,13 @@ const Edit = React.memo((props) => {
   return (
     <div className="container">
       <div className="main-header">
+        {popupData && 
+          <MessageModal
+            modalOpen={showPopup}
+            title={popupData.title}
+            message={popupData.body}
+            onConfirm={() => setShowPopup(false)}
+          />}
         <SubmissionError
           modalOpen={props.submissionError.modalOpen}
           message={props.submissionError.message}
@@ -316,6 +320,12 @@ Edit.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
+  // Get form data from state and preprocess it before passed to be rendered
+  const { form } = selectRoot("form", state);
+  if (form._id) {
+    convertFormLinksToOpenInNewTabs(form);
+  }
+
   return {
     user: state.user.userDetail,
     authToken: state.user.bearerToken,

@@ -12,6 +12,7 @@ from formsflow_api_utils.utils import (
     get_form_and_submission_id_from_form_url,
     profiletime,
     COLD_FLU_ADMIN_GROUP,
+    SL_REVIEW_ADMIN_GROUP
 )
 from marshmallow.exceptions import ValidationError
 
@@ -85,10 +86,19 @@ class ApplicationsResource(Resource):
                     page_no=page_no,
                     limit=limit,
                 )
-            elif auth.has_role([COLD_FLU_ADMIN_GROUP]):
-                influenza_worksite_process_key = current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY")
-                if influenza_worksite_process_key is None:
-                    current_app.logger.warning("INFLUENZA_WORKSITE_PROCESS_KEY is not set")
+            elif (auth.has_role([COLD_FLU_ADMIN_GROUP]) or 
+                  auth.has_role([SL_REVIEW_ADMIN_GROUP])):
+                role_process_keys = {
+                    COLD_FLU_ADMIN_GROUP: current_app.config.get("INFLUENZA_WORKSITE_PROCESS_KEY"),
+                    SL_REVIEW_ADMIN_GROUP: current_app.config.get("SL_REVIEW_PROCESS_KEY")
+                }
+                process_keys_filter = []
+                for key, value in role_process_keys.items():
+                    if auth.has_role([key]):
+                        if value is None:
+                            current_app.logger.warning(f"{key} related process key is not set")
+                        else:
+                            process_keys_filter.append(value)
                 (
                     application_schema_dump,
                     application_count,
@@ -107,7 +117,7 @@ class ApplicationsResource(Resource):
                     token=request.headers["Authorization"],
                     page_no=page_no,
                     limit=limit,
-                    process_keys=[influenza_worksite_process_key],
+                    process_keys=process_keys_filter,
                 )
             else:
                 (

@@ -886,8 +886,6 @@ header span:hover {
   background-color: #F9F1C6;
   padding: 15px;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
   &:before {
     margin-right: 11px;
     content: url(./assets/warning.svg);
@@ -905,8 +903,6 @@ header span:hover {
   background-color: #f2dede;
   padding: 15px;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
   &:before {
     margin-right: 11px;
     content: url(./assets/danger.svg);
@@ -923,8 +919,6 @@ header span:hover {
   background-color: #d9eaf7;
   padding: 15px;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
   &:before {
     margin-right: 11px;
     content: url(./assets/info.svg);

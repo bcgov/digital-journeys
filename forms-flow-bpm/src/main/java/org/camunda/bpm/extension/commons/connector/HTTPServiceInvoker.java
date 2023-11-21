@@ -51,10 +51,20 @@ public class HTTPServiceInvoker {
     private String fileServiceUrl;
     @Value("${formsflow.ai.documentApi.url}")
     private String documentApiUrl;
+    @Value("${formsflow.ai.crm.url}")
+    private String crmUrl;
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
+    }
+
+    public ResponseEntity<String> execute(String url, HttpMethod method, String payload, Boolean isUpdate, String type) {
+        if (isUpdate) {
+            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, isUpdate);
+        } else {
+            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
+        }
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
@@ -91,6 +101,8 @@ public class HTTPServiceInvoker {
             }
         } else if (StringUtils.contains(url, odsUrl)) {
             return "ODSAccessHandler";
+        } else if (StringUtils.contains(url, crmUrl)) {
+            return "CRMAccessHandler";
         } else if (StringUtils.contains(url, fileServiceUrl)) {
             return "fileAccessHandler";
         } else if (StringUtils.contains(url, documentApiUrl)) {
