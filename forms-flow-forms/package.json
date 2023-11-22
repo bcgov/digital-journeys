@@ -48,7 +48,7 @@
     "mailgun.js": "^3.7.0",
     "memory-cache": "^0.2.0",
     "moment": "^2.29.2",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.40",
     "mongodb": "^4.11.0",
     "mongoose": "^6.7.1",
     "mssql": "^8.0.0",
