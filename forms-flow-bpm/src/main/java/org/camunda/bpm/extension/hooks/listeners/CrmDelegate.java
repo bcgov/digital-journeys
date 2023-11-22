@@ -70,6 +70,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_THREAD_TEXT_FIELD = "crmThreadText";
     private static final String CRM_EMPLOYEE_ID_FIELD = "empId";
     private static final String CRM_PRIORITY_DUEDATE_FIELD = "crmPriorityDuedate";
+    private static final String MANAGER_DENIED_STATUS = "managerDeniedStatus";
+    private static final String MANAGER_ACTION = "action";
+    private static final String DENIED_THREAD_TEXT = "deniedThreadText";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -89,6 +92,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         System.out.println("Starting CRM operation");
         // Get the formId and submissionId from the formUrl
         String formUrl = String.valueOf(execution.getVariables().get(FORM_URL));
+        String userAction = String.valueOf(execution.getVariables().get(MANAGER_ACTION));
+        String managerDeniedStatus = String.valueOf(execution.getVariables().get(MANAGER_DENIED_STATUS));
         Map<String, String> ids = extractIds(formUrl);
         String formId = ids.get(FORM_ID);
         String submissionId = ids.get(SUBMISSION_ID);
@@ -98,80 +103,85 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             throw new ApplicationServiceException("formId or submissionId is null");
         }
 
-        // Find current user's idir
-        String currentUserIdir = null;
-        try {
-            currentUserIdir = getCurrentUserIdir(execution);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("No idir user found! Exception: " + e);
-        }
-        if (currentUserIdir == null) {
-            System.out.println("currentUserIdir is null: " + currentUserIdir);
-            throw new ApplicationServiceException("currentUserIdir is null");
-        }
-        
-        // Find the manager's contact details in CRM
-        Integer managerContactId = getContactIdByIdir(currentUserIdir);
-        if (managerContactId == null) {
-            System.out.println("managerContactId is null: " + managerContactId);
-            throw new ApplicationServiceException("managerContactId is null");
-        }
-        
-        // Find the employee's contact details in CRM
-        String employeeId = String.valueOf(execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD));
-        Integer employeeContactId = null;
-        if (execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD) != null && !employeeId.equals("null")) {
-            employeeContactId = getContactIdByEmployeeId(employeeId);
-            if (employeeContactId == null) {
-                System.out.println("employeeContactId is null: " + employeeContactId);
-                throw new ApplicationServiceException("employeeContactId is null");
-            }
-        }
-
         String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
         Boolean isUpdate = false;
         if (execution.getVariables().get(CRM_ID) != null && !crmId.isEmpty() && !crmId.equals("null")) {
             System.out.println("CRM update conditions met");
             isUpdate = true;
         }
-
-        // Create/Update incident in CRM
-        CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution, isUpdate);
-        if (crmIncidentPostResponse == null) {
-            System.out.println("crmIncidentPostResponse is null: " + crmIncidentPostResponse);
-            throw new ApplicationServiceException("createUpdateCrmIncident failed.");
-        }
-        Integer crmIncidentId = crmIncidentPostResponse.getId();
-        // Saving the CRM incident id and lookupName in form
-        execution.setVariable(CRM_ID, crmIncidentId);
-        execution.setVariable(CRM_LOOKUP_NAME, crmIncidentPostResponse.getLookupName());
-
-        if (crmIncidentId == null) {
-            System.out.println("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
-            throw new ApplicationServiceException("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
-        }
-
-        // Add the employee as a contact reference to the incident
-        if (employeeContactId == null) {
-            System.out.println("employeeContactId is null. Skipping addCrmContactReference");
-        } else if (isUpdate) {
-            System.out.println("This is a CrmUpdate. Skipping addCrmContactReference");
+        if (!isUpdate && userAction.equals(managerDeniedStatus)) {
+            System.out.println("Application denied no CRM ticket required");
+            execution.setVariable(CRM_ID, "");
+            execution.setVariable(CRM_LOOKUP_NAME, "");
         } else {
+            // Find current user's idir
+            String currentUserIdir = null;
             try {
-                addCrmContactReference(employeeContactId, crmIncidentId);
-            } catch(Exception e) {
-                System.out.println("addCrmContactReference failed. Exception: " + e);
+                currentUserIdir = getCurrentUserIdir(execution);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("No idir user found! Exception: " + e);
+            }
+            if (currentUserIdir == null) {
+                System.out.println("currentUserIdir is null: " + currentUserIdir);
+                throw new ApplicationServiceException("currentUserIdir is null");
+            }
+            
+            // Find the manager's contact details in CRM
+            Integer managerContactId = getContactIdByIdir(currentUserIdir);
+            if (managerContactId == null) {
+                System.out.println("managerContactId is null: " + managerContactId);
+                throw new ApplicationServiceException("managerContactId is null");
+            }
+            
+            // Find the employee's contact details in CRM
+            String employeeId = String.valueOf(execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD));
+            Integer employeeContactId = null;
+            if (execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD) != null && !employeeId.equals("null")) {
+                employeeContactId = getContactIdByEmployeeId(employeeId);
+                if (employeeContactId == null) {
+                    System.out.println("employeeContactId is null: " + employeeContactId);
+                    throw new ApplicationServiceException("employeeContactId is null");
+                }
+            }
+    
+            // Create/Update incident in CRM
+            CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution, isUpdate);
+            if (crmIncidentPostResponse == null) {
+                System.out.println("crmIncidentPostResponse is null: " + crmIncidentPostResponse);
+                throw new ApplicationServiceException("createUpdateCrmIncident failed.");
+            }
+            Integer crmIncidentId = crmIncidentPostResponse.getId();
+            // Saving the CRM incident id and lookupName in form
+            execution.setVariable(CRM_ID, crmIncidentId);
+            execution.setVariable(CRM_LOOKUP_NAME, crmIncidentPostResponse.getLookupName());
+    
+            if (crmIncidentId == null) {
+                System.out.println("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
+                throw new ApplicationServiceException("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
+            }
+    
+            // Add the employee as a contact reference to the incident
+            if (employeeContactId == null) {
+                System.out.println("employeeContactId is null. Skipping addCrmContactReference");
+            } else if (isUpdate) {
+                System.out.println("This is a CrmUpdate. Skipping addCrmContactReference");
+            } else {
+                try {
+                    addCrmContactReference(employeeContactId, crmIncidentId);
+                } catch(Exception e) {
+                    System.out.println("addCrmContactReference failed. Exception: " + e);
+                    e.printStackTrace();
+                }
+            }
+    
+            // Generate a PDF of the form submission
+            try {
+                generateAndAddPDFForForm(formId, submissionId, crmIncidentId);
+            } catch (Exception e) {
+                System.out.println("generatePDFForForm failed. Exception: " + e);
                 e.printStackTrace();
             }
-        }
-
-        // Generate a PDF of the form submission
-        try {
-            generateAndAddPDFForForm(formId, submissionId, crmIncidentId);
-        } catch (Exception e) {
-            System.out.println("generatePDFForForm failed. Exception: " + e);
-            e.printStackTrace();
         }
         
         System.out.println("Finished CRM operation");
@@ -184,12 +194,18 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String crmStaffGroupLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD));
         String crmSubject = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBJECT_FIELD));
         String submitterDisplayName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBMITTER_NAME_FIELD));
+        String userAction = String.valueOf(execution.getVariables().get(MANAGER_ACTION));
+        String managerDeniedStatus = String.valueOf(execution.getVariables().get(MANAGER_DENIED_STATUS));
+        String deniedThreadText = String.valueOf(execution.getVariables().get(DENIED_THREAD_TEXT));
         String crmPriorityDuedate = null;
         if (execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD) != null && 
             !String.valueOf(execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD)).equals("null")) {
             crmPriorityDuedate = String.valueOf(execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD));
         }
         String threadText = String.valueOf(execution.getVariables().get(CRM_THREAD_TEXT_FIELD));
+        if (isUpdate && userAction.equals(managerDeniedStatus)) {
+            threadText = deniedThreadText;
+        }
         if (threadText == null) {
             threadText = "";
         }
