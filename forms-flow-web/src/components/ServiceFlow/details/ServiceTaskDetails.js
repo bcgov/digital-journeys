@@ -91,6 +91,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState();
 
+  /** custom event loading */
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] =
+    React.useState(false);
+
   useEffect(() => {
     if (taskId) {
       dispatch(setSelectedTaskID(taskId));
@@ -219,11 +223,17 @@ const ServiceFlowTaskDetails = React.memo(() => {
         onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-        printToPDF({ formName: customEvent.formName, pdfName: customEvent.pdfName });
+        printToPDF({
+          formName: customEvent.formName,
+          pdfName: customEvent.pdfName,
+        });
         break;
       case CUSTOM_EVENT_TYPE.POPUP:
         setPopupData({ title: customEvent.title, body: customEvent.body });
         setShowPopup(true);
+        break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
+        setIsCustomFormSubmissionLoading(true);
         break;
       default:
         return;
@@ -280,7 +290,15 @@ const ServiceFlowTaskDetails = React.memo(() => {
     /*TODO split render*/
     return (
       <div className="service-task-details">
-        <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
+        <LoadingOverlay
+          active={isTaskUpdating || isCustomFormSubmissionLoading}
+          spinner
+          text={
+            isCustomFormSubmissionLoading
+              ? "Submitting...this can take a few minutes"
+              : "Loading..."
+          }
+        >
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>
