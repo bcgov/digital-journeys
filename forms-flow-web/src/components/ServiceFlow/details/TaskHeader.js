@@ -28,11 +28,11 @@ import { useTranslation } from "react-i18next";
 const isWorkflowNameHidden = (workFlowName) => {
   const filterWorkFlowNames = ['maternity-parental-and-pre-placement-adoption'];
   return filterWorkFlowNames.includes(workFlowName);
-}
+};
 
 const displayWorkFlowName = (name) => {
   return isWorkflowNameHidden(name) ? '' : name;
-}
+};
 
 const TaskHeader = React.memo(() => {
   const task = useSelector((state) => state.bpmTasks.taskDetail);
