@@ -1,10 +1,10 @@
 import React, { /*useEffect,*/ useState } from "react";
 import { Row, /*Col*/ } from "react-bootstrap";
-import {
-  /*getISODateTime,*/
-  /*getFormattedDateAndTime,*/
-  getProcessDataObjectFromList,
-} from "../../../apiManager/services/formatterService";
+// import {
+//   /*getISODateTime,*/
+//   /*getFormattedDateAndTime,*/
+//   getProcessDataObjectFromList,
+// } from "../../../apiManager/services/formatterService";
 import { /*useDispatch,*/ useSelector } from "react-redux";
 // import DatePicker from "react-datepicker";
 // import moment from "moment";
@@ -25,19 +25,10 @@ import AddGroupModal from "./AddGroupModal";
 // import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
-const isWorkflowNameHidden = (workFlowName) => {
-  const filterWorkFlowNames = ['maternity-parental-and-pre-placement-adoption'];
-  return filterWorkFlowNames.includes(workFlowName);
-};
-
-const displayWorkFlowName = (name) => {
-  return isWorkflowNameHidden(name) ? '' : name;
-};
-
 const TaskHeader = React.memo(() => {
   const task = useSelector((state) => state.bpmTasks.taskDetail);
   // const taskId = useSelector((state) => state.bpmTasks.taskId);
-  const processList = useSelector((state) => state.bpmTasks.processList);
+  // const processList = useSelector((state) => state.bpmTasks.processList);
   // const username = useSelector(
   //   (state) => state.user?.userDetail?.preferred_username || ""
   // );
@@ -216,16 +207,16 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
+      <Row className="ml-0 task-header">{task?.name}</Row>      
+      {/* <Row className="ml-0 task-name">
         <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
-           displayWorkFlowName(getProcessDataObjectFromList(processList, task?.processDefinitionId)
-              ?.name)
+           getProcessDataObjectFromList(processList, task?.processDefinitionId)
+              ?.name
           }
         </span>
-      </Row>
+      </Row> */}
       <Row className="ml-0">
         <span data-title={t("Application ID")} className="application-id">
           {t("Application ID")}# {task?.applicationId}
