@@ -25,6 +25,15 @@ import AddGroupModal from "./AddGroupModal";
 // import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
+const isWorkflowNameHidden = (workFlowName) => {
+  const filterWorkFlowNames = ['maternity-parental-and-pre-placement-adoption'];
+  return filterWorkFlowNames.includes(workFlowName);
+}
+
+const displayWorkFlowName = (name) => {
+  return isWorkflowNameHidden(name) ? '' : name;
+}
+
 const TaskHeader = React.memo(() => {
   const task = useSelector((state) => state.bpmTasks.taskDetail);
   // const taskId = useSelector((state) => state.bpmTasks.taskId);
@@ -212,8 +221,8 @@ const TaskHeader = React.memo(() => {
         <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
-            getProcessDataObjectFromList(processList, task?.processDefinitionId)
-              ?.name
+           displayWorkFlowName(getProcessDataObjectFromList(processList, task?.processDefinitionId)
+              ?.name)
           }
         </span>
       </Row>
