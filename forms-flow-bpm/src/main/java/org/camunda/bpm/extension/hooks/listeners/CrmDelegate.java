@@ -25,6 +25,7 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmCustomFields;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmC;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmReferenceContactPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmStatusWithType;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmIncidentPatchRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -242,7 +243,14 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 System.out.println("Update CRM incident with ID :" + crmId);
                 response = httpServiceInvoker.execute(
                     url, HttpMethod.POST, objectMapper.writeValueAsString(crmIncidentPostRequest), isUpdate, "CRM");
-                    CrmIncidentPostResponse crmIncidentPostResponse = new CrmIncidentPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
+                CrmIncidentPostResponse crmIncidentPostResponse = new CrmIncidentPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
+                // Sending an email by calling /incidentReponse endpoint
+                CrmIdObject crmIncident = new CrmIdObject(Integer.parseInt(crmId));
+                CrmIncidentPatchRequest crmIncidentPatchRequest = new CrmIncidentPatchRequest(crmIncident, true);
+                url = getEndpointUrl("incidentResponse");
+                ResponseEntity<String> patchResponse = httpServiceInvoker.execute(
+                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmIncidentPatchRequest), isUpdate, "CRM");
+                
                 return crmIncidentPostResponse;
             } else {
                 response = httpServiceInvoker.execute(
