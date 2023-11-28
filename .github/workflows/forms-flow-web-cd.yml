@@ -169,7 +169,8 @@ jobs:
                      --set CPU_LIMIT=200m  \
                      --set MEMORY_REQUEST=100Mi \
                      --set MEMORY_LIMIT=2Gi \
-                     ./helm-web |  oc -n ${NAMESPACE} apply -f -
+                     ./helm-web
+        oc -n ${NAMESPACE} process helm-web | oc -n ${NAMESPACE} apply -f -
 
         # oc -n ${NAMESPACE} process -f web_dc.yaml \
         #       -p NAME=${APP_NAME} \
