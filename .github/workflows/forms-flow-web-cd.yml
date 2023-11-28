@@ -160,17 +160,28 @@ jobs:
         oc -n ${NAMESPACE} project
         oc project ${NAMESPACE}
         echo "Current namespace is ${NAMESPACE}"
+        # helm upgrade -i helm-forms-flow-web \
+        #              --set NAME=${APP_NAME} \
+        #              --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+        #              --set FFAWEB_URL=${APP_URL} \
+        #              --set TAG_NAME=${ENVIRONMENT} \
+        #              --set CPU_REQUEST=100m \
+        #              --set CPU_LIMIT=200m  \
+        #              --set MEMORY_REQUEST=100Mi \
+        #              --set MEMORY_LIMIT=2Gi \
+        #              ./helm-web
         helm upgrade -i helm-forms-flow-web \
-                     --set NAME=${APP_NAME} \
-                     --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                     --set FFAWEB_URL=${APP_URL} \
-                     --set TAG_NAME=${ENVIRONMENT} \
-                     --set CPU_REQUEST=100m \
-                     --set CPU_LIMIT=200m  \
-                     --set MEMORY_REQUEST=100Mi \
-                     --set MEMORY_LIMIT=2Gi \
                      ./helm-web
-        oc -n ${NAMESPACE} process helm-forms-flow-web | oc -n ${NAMESPACE} apply -f -
+        oc -n ${NAMESPACE} process helm-forms-flow-web \
+              -p NAME=${APP_NAME} \
+              -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+              -p TAG_NAME=${ENVIRONMENT} \
+              -p FFAWEB_URL=${APP_URL} \
+              -p CPU_REQUEST=100m \
+              -p CPU_LIMIT=200m \
+              -p MEMORY_REQUEST=100Mi \
+              -p MEMORY_LIMIT=2Gi | \
+        oc -n ${NAMESPACE} apply -f -
 
         # oc -n ${NAMESPACE} process -f web_dc.yaml \
         #       -p NAME=${APP_NAME} \
