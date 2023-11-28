@@ -160,7 +160,7 @@ jobs:
         oc -n ${NAMESPACE} project
         oc project ${NAMESPACE}
         echo "Current namespace is ${NAMESPACE}"
-        helm upgrade -i helm-web \
+        helm upgrade -i helm-web helm-web \
                      --set NAME=${APP_NAME} \
                      --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                      --set FFAWEB_URL=${APP_URL} \
@@ -169,7 +169,6 @@ jobs:
                      --set CPU_LIMIT=200m  \
                      --set MEMORY_REQUEST=100Mi \
                      --set MEMORY_LIMIT=2Gi \
-                     ./helm-web |  oc -n ${NAMESPACE} apply -f -
 
         # oc -n ${NAMESPACE} process -f web_dc.yaml \
         #       -p NAME=${APP_NAME} \
