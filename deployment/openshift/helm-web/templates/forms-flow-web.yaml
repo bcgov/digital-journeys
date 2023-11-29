@@ -51,13 +51,15 @@ objects:
             name: ${NAME}-config
             readOnly: true
         restartPolicy: Always
-      volumes:
-      - configMap:
-          defaultMode: 420
-          name: ${NAME}-keycloak-config
-      - configMap:
-          defaultMode: 420
-          name: ${NAME}-config
+        volumes:
+          - name: ${NAME}-keycloak-config
+            configMap:
+              defaultMode: 420
+              name: ${NAME}-keycloak-config
+          - name: ${NAME}-config
+            configMap:
+              defaultMode: 420
+              name: ${NAME}-config
   test: false
   triggers:
   - type: ConfigChange
