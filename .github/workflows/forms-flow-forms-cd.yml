@@ -160,7 +160,7 @@ jobs:
           oc -n ${NAMESPACE} project
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
-          helm upgrade -i helm-forms-flow-forms \
+          helm upgrade -i helm-forms-flow-forms ./helm-forms-flow-forms
                       #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                       #  --set NAME=${APP_NAME} \
                       #  --set FFA_FORMS_URL=${APP_URL} \
@@ -169,7 +169,7 @@ jobs:
                       #  --set CPU_REQUEST=100m \
                       #  --set CPU_LIMIT=200m \
                       #  --set MEMORY_LIMIT=2Gi \
-                       ./helm-forms-flow-forms
+        
 
           oc -n ${NAMESPACE} process helm-forms-flow-forms \
                 -p NAME=${APP_NAME} \
