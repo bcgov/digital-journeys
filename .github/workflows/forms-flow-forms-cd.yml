@@ -160,26 +160,27 @@ jobs:
           oc -n ${NAMESPACE} project
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
-          helm upgrade -i helm-forms-flow-forms --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                       --set NAME=${APP_NAME} \
-                       --set FFA_FORMS_URL=${APP_URL} \
-                       --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                       --set IMAGE_TAG=${ENVIRONMENT} \
-                       --set CPU_REQUEST=100m \
-                       --set CPU_LIMIT=200m \
-                       --set MEMORY_LIMIT=2Gi \
-                       ./helm-forms-flow-forms | oc -n ${NAMESPACE} apply -f -
+          helm upgrade -i helm-forms-flow-forms \
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set NAME=${APP_NAME} \
+                      #  --set FFA_FORMS_URL=${APP_URL} \
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set IMAGE_TAG=${ENVIRONMENT} \
+                      #  --set CPU_REQUEST=100m \
+                      #  --set CPU_LIMIT=200m \
+                      #  --set MEMORY_LIMIT=2Gi \
+                       ./helm-forms-flow-forms
 
-          # oc -n ${NAMESPACE} process -f forms-flow-forms_dc.yaml \
-          #       -p NAME=${APP_NAME} \
-          #       -p FFA_FORMS_URL=${APP_URL} \
-          #       -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-          #       -p IMAGE_TAG=${ENVIRONMENT} \
-          #       -p CPU_REQUEST=100m \
-          #       -p CPU_LIMIT=200m \
-          #       -p MEMORY_REQUEST=100Mi \
-          #       -p MEMORY_LIMIT=2Gi | \
-          # oc -n ${NAMESPACE} apply -f -
+          oc -n ${NAMESPACE} process helm-forms-flow-forms \
+                -p NAME=${APP_NAME} \
+                -p FFA_FORMS_URL=${APP_URL} \
+                -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                -p IMAGE_TAG=${ENVIRONMENT} \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
 
       # - name: verify deploymentConfig
       #   run: |
