@@ -29,8 +29,13 @@ public class DeleteSubmissionListener extends BaseListener implements JavaDelega
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         try {
-            deleteSubmission(execution);
-            deleteApplication(execution);
+            String formName = String.valueOf(execution.getVariables().get("formName"));
+            // #672 & #1488 please remove below consition after 01/21/2024
+            if (!formName.equals("Senior Leadership Review Form")) {
+                System.out.println("Start deleting submission and application");
+                deleteSubmission(execution);
+                deleteApplication(execution);
+            }
         } catch (IOException e) {
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
