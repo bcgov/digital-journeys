@@ -159,29 +159,31 @@ jobs:
         working-directory: ./deployment/openshift
         run: |
           oc project ${NAMESPACE}
+          #oc -n ${NAMESPACE} project
           echo "Current namespace is ${NAMESPACE}"
-          helm upgrade -i helm-forms-flow-documents --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                       --set NAME=${APP_NAME} \
-                       --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-                       --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
-                       --set TAG_NAME=${ENVIRONMENT} \
-                       --set FORMSFLOW_DOC_API_URL=${APP_URL} \
-                       --set CPU_REQUEST=100m \
-                       --set CPU_LIMIT=200m \
-                       --set MEMORY_REQUEST=100Mi \
-                       --set MEMORY_LIMIT=2Gi \
-                       ./helm-forms-flow-documents | oc -n ${NAMESPACE} apply -f -
-          # oc -n ${NAMESPACE} project
-          # oc -n ${NAMESPACE} process -f forms-flow-documents_dc.yaml \
-          #       -p NAME=${APP_NAME} \
-          #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-          #       -p TAG_NAME=${ENVIRONMENT} \
-          #       -p FORMSFLOW_DOC_API_URL=${APP_URL} \
-          #       -p CPU_REQUEST=100m \
-          #       -p CPU_LIMIT=200m \
-          #       -p MEMORY_REQUEST=100Mi \
-          #       -p MEMORY_LIMIT=2Gi | \
-          # oc -n ${NAMESPACE} apply -f -
+          helm upgrade -i helm-forms-flow-documents ./helm-forms-flow-documents 
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set NAME=${APP_NAME} \
+                      #  --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set TAG_NAME=${ENVIRONMENT} \
+                      #  --set FORMSFLOW_DOC_API_URL=${APP_URL} \
+                      #  --set CPU_REQUEST=100m \
+                      #  --set CPU_LIMIT=200m \
+                      #  --set MEMORY_REQUEST=100Mi \
+                      #  --set MEMORY_LIMIT=2Gi \
+                      
+      
+          oc -n ${NAMESPACE} process helm-forms-flow-documents \
+                -p NAME=${APP_NAME} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=${ENVIRONMENT} \
+                -p FORMSFLOW_DOC_API_URL=${APP_URL} \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
       
       # - name: verify deploymentConfig
       #   run: |
