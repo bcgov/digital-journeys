@@ -330,7 +330,9 @@ services:
     build:
       context: ./forms-flow-documents/
       dockerfile: Dockerfile
-    restart: unless-stopped
+    restart: always
+    depends_on:
+      - forms-flow-forms
     ports:
       - '5006:5006'
     volumes:
