@@ -242,7 +242,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   const onFormSubmitCallback = (actionType = "", successPage) => {
     if (bpmTaskId) {
-      dispatch(setBPMTaskDetailLoader(true));
+      // comment out the following line. It is showing the 3 dots animation.
+      // dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
         task?.formUrl
       );
