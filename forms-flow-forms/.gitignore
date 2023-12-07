@@ -6,3 +6,4 @@ app*
 npm-debug.log
 .env
 mongodb
+trigger.txt
