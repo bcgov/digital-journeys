@@ -165,7 +165,7 @@ jobs:
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
           helm upgrade -i helm-forms-flow-webapi ./helm-webapi
-                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \ 
                       #  --set NAME=${APP_NAME} \
                       #  --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                       #  --set WEB_API_URL=${APP_URL} \
@@ -176,16 +176,16 @@ jobs:
                       #  --set MEMORY_LIMIT=2Gi \
                        
 
-          # oc -n ${NAMESPACE} process -f webapi_dc.yaml \
-          #       -p NAME=${APP_NAME} \
-          #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-          #       -p TAG_NAME=${ENVIRONMENT} \
-          #       -p WEB_API_URL=${APP_URL} \
-          #       -p CPU_REQUEST=100m \
-          #       -p CPU_LIMIT=200m \
-          #       -p MEMORY_REQUEST=100Mi \
-          #       -p MEMORY_LIMIT=2Gi | \
-          # oc -n ${NAMESPACE} apply -f -
+          oc -n ${NAMESPACE} process helm-forms-flow-webapi \
+                -p NAME=${APP_NAME} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=${ENVIRONMENT} \
+                -p WEB_API_URL=${APP_URL} \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
       
       # - name: verify deploymentConfig
       #   run: |
