@@ -36,11 +36,12 @@ const DraftOperations = ({ row }) => {
             {buttonText}
           </span>
         </Link>
-        <span style={{ marginLeft: "2rem" }}>
+        <span style={{ marginLeft: "2rem", color: "red", cursor: "pointer" }} onClick={() => deleteDraft()}>
           <span>
-            <i className={deleteIcon} onClick={() => deleteDraft()} />
+            <i className={deleteIcon} />
             &nbsp;
           </span>
+          {`Delete`}
         </span>
       </div>
     </>

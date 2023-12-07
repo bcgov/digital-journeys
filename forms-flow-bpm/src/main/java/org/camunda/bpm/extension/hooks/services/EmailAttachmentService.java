@@ -67,7 +67,7 @@ public class EmailAttachmentService {
     public ByteArrayDataSource generatePdf(String formId, String submissionId) throws IOException {
         String url = String.format("%s/form/%s/submission/%s/export/pdf", documentApiUrl, formId, submissionId);
 
-        Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.GET, null);
+        Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.POST, null);
 
         return new ByteArrayDataSource(pdfFile.block(), "application/pdf");
     }

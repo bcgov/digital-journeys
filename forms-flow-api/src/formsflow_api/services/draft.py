@@ -150,7 +150,6 @@ class DraftService:
         
 
         application = Application.find_by_id(draft.application_id)
-        # draft.delete()
         mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
         if application.form_process_mapper_id != mapper.id:
             # The form mapper version got updated after the draft entry
@@ -160,6 +159,7 @@ class DraftService:
             application, mapper, data["form_url"], data["web_form_url"], token
         )
         ApplicationService.start_task(mapper, payload, token, application)
+        draft.delete()
         return application
 
     @staticmethod
