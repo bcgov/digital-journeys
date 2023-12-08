@@ -220,7 +220,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         reloadCurrentTask();
         break;
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, customEvent?.isDefaultLoaderHidden);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF({
@@ -240,9 +240,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onFormSubmitCallback = (actionType = "", successPage) => {
+  const onFormSubmitCallback = (actionType = "", successPage, isDefaultLoaderHidden = false) => {
     if (bpmTaskId) {
-      dispatch(setBPMTaskDetailLoader(true));
+      // The following dispatch is the place where showing the 3 dots animation.
+      !isDefaultLoaderHidden && dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
         task?.formUrl
       );
