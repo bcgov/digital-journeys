@@ -220,7 +220,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
         reloadCurrentTask();
         break;
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, customEvent?.isDefaultLoaderHidden);
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, 
+          customEvent?.isDefaultLoaderHidden);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF({
