@@ -140,16 +140,13 @@ class DraftService:
         """Makes the draft into an application."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name or ANONYMOUS_USER
-        draft = Draft.make_submission(draft_id, data, user_id)
+        draft, original_draft_data = Draft.make_submission(draft_id, data, user_id)
         if not draft:
             response, status = {
                 "type": "Bad request error",
                 "message": f"Invalid request data - draft id {draft_id} does not exist",
             }, HTTPStatus.BAD_REQUEST
             raise BusinessException(response, status)
-        
-        draft.delete()
-        
         application = Application.find_by_id(draft.application_id)
         mapper = FormProcessMapper.find_form_by_form_id(application.latest_form_id)
         if application.form_process_mapper_id != mapper.id:
@@ -159,8 +156,17 @@ class DraftService:
         payload = ApplicationService.get_start_task_payload(
             application, mapper, data["form_url"], data["web_form_url"], token
         )
-        ApplicationService.start_task(mapper, payload, token, application)
-        return application
+        try:
+            ApplicationService.start_task(mapper, payload, token, application)
+            draft.delete()
+            return application
+        except Exception as e:
+            # Deleting submission and reverting the application and draft changes
+            ApplicationService.delete_submission_by_application(application)
+            data["application_status"] = DRAFT_APPLICATION_STATUS
+            data["submission_id"] = None
+            Draft.un_make_submission(draft_id, data, user_id, original_draft_data)
+            raise
 
     @staticmethod
     @user_context

@@ -95,6 +95,7 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 "error": camunda_error,
             }
             current_app.logger.critical(response)
+            raise Exception("Camunda workflow not able to create a task")
 
     @staticmethod
     @user_context
@@ -127,7 +128,15 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
             payload = ApplicationService.get_start_task_payload(
                 application, mapper, form_url, web_form_url, token
             )
-            ApplicationService.start_task(mapper, payload, token, application)
+            try:
+                ApplicationService.start_task(mapper, payload, token, application)
+            except Exception as e:
+                # Deleting submission 
+                ApplicationService.delete_submission_by_application(application)
+                ApplicationService.delete_application(application.id)
+                print("exception catched at create_application after ApplicationService.start_task")
+                raise
+
         return application, HTTPStatus.CREATED
 
     @staticmethod
