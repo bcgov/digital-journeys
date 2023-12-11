@@ -184,7 +184,7 @@ class DraftSubmissionResource(Resource):
             current_app.logger.warning(err)
             error, status = err.error, err.status_code
             return error, status
-
+        # This will capture issues regarding the Camunda start process/task
         except Exception as unexpected_error:
             raise unexpected_error
 
