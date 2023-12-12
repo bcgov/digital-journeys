@@ -134,7 +134,6 @@ class ApplicationService:  # pylint: disable=too-many-public-methods
                 # Deleting submission 
                 ApplicationService.delete_submission_by_application(application)
                 ApplicationService.delete_application(application.id)
-                print("exception catched at create_application after ApplicationService.start_task")
                 raise
 
         return application, HTTPStatus.CREATED
