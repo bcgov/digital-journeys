@@ -442,6 +442,9 @@ class ApplicationResourcesByIds(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(err)
             return response, status
+        # This will capture issues regarding the Camunda start process/task
+        except Exception as unexpected_error:
+            raise unexpected_error
         except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
