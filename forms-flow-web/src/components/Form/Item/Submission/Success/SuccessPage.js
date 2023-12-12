@@ -510,8 +510,7 @@ export default React.memo(() => {
               </li>
               <li>
                 Employees must inform their supervisor if there are any changes
-                to the start date of their maternity or parental leaves. As
-                the{" "}
+                to the start date of their maternity or parental leaves. As the{" "}
                 <b>
                   supervisor you can make changes to the start date, length of
                   leave and parental leave allowance dates on behalf of the
@@ -552,8 +551,9 @@ export default React.memo(() => {
             <ol>
               <div>
                 <li>
-                  You will receive an email with a pdf of the form attached
-                  confirming the same.
+                  You will receive an email confirming your submission. Your
+                  supervisor will also be notified via email about your form
+                  that needs approval.
                 </li>
               </div>
               <div>
@@ -576,14 +576,14 @@ export default React.memo(() => {
             <ol>
               <div>
                 <li>
-                  Your supervisor will approve your application and forward it
-                  to AskMyHR for processing.
+                  Your supervisor will approve your application after which it
+                  will be forwarded to AskMyHR for processing automatically.
                 </li>
               </div>
               <div>
                 <li>
                   You must inform your supervisor to update the dates on your
-                  application to notify AskMyHR if:
+                  form if:
                   <ol type="a">
                     <div>
                       <li>
