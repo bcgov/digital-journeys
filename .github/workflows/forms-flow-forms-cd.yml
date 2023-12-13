@@ -134,6 +134,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
+          build-args: |
+            FORMIO_SOURCE_REPO_URL=https://github.com/AOT-Technologies/formio
+            FORMIO_SOURCE_REPO_BRANCH=fv5.1.1
 
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
