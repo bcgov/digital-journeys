@@ -39,7 +39,7 @@ env:
   # Namespace for the triggered environment, e.g., d89793-dev
   NAMESPACE: e66ac2-test
   # App url without http(s) prefix
-  APP_URL: helm-digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca
+  APP_URL: helm-digital-journeys-forms-flow.apps.silver.devops.gov.bc.ca
 
 jobs:
   # Logs environment variables
