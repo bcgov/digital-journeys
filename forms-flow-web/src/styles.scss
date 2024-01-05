@@ -201,11 +201,12 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 {
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
 }
 .btn-wizard-nav-submit,
 .btn-wizard-nav-next,
 .btn-wizard-nav-previous {
-  margin-left:5px;
     width: 180px; 
 }
 .is-invalid {
