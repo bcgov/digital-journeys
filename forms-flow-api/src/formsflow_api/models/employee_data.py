@@ -47,5 +47,8 @@ class EmployeeData():
    self.empCtg = data.get("EMPL_CTG")
    self.appointmentStatus = data.get("appointment_status")
    self.salAdminPlan = data.get("sal_admin_plan")
-   self.fullPartTime = data.get("full_part_time")
    self.phone = data.get("phone")
+   # Possible values: "F" for full-time, "P" for part-time, "D" for on demand     
+   self.fullPartTime = data.get("FULL_PART_TIME")
+   # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
+   self.jobIndicator = data.get("job_indicator")
