@@ -8,7 +8,7 @@ Mako==1.1.6
 MarkupSafe==2.0.1
 SQLAlchemy-Utils==0.38.2
 SQLAlchemy==1.4.31
-Werkzeug==2.0.2
+Werkzeug==3.0.1
 alembic==1.7.6
 aniso8601==9.0.1
 attrs==21.4.0
