@@ -71,6 +71,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_THREAD_TEXT_FIELD = "crmThreadText";
     private static final String CRM_EMPLOYEE_ID_FIELD = "empId";
     private static final String CRM_PRIORITY_DUEDATE_FIELD = "crmPriorityDuedate";
+    private static final String CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD = "crmMatPatAttachmentFileNameField";
     private static final String MANAGER_DENIED_STATUS = "managerDeniedStatus";
     private static final String MANAGER_ACTION = "action";
     private static final String DENIED_THREAD_TEXT = "deniedThreadText";
@@ -325,8 +326,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private void generateAndAddPDFForForm(String formId, String submissionId, int crmIncidentId) throws Exception {
-        String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, ATTACHMENT_FILE_NAME);
-        addCrmAttachment(crmIncidentId, pdfEncodedBase64, ATTACHMENT_FILE_NAME);
+        String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+        String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
+        addCrmAttachment(crmIncidentId, pdfEncodedBase64, fileName);
         System.out.println("Finished generating and adding PDF for form");
     }
 
