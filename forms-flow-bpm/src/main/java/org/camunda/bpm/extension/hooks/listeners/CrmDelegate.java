@@ -179,7 +179,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     
             // Generate a PDF of the form submission
             try {
-                generateAndAddPDFForForm(formId, submissionId, crmIncidentId);
+                String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+                generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
             } catch (Exception e) {
                 System.out.println("generatePDFForForm failed. Exception: " + e);
                 e.printStackTrace();
@@ -325,8 +326,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
     }
 
-    private void generateAndAddPDFForForm(String formId, String submissionId, int crmIncidentId) throws Exception {
-        String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+    private void generateAndAddPDFForForm(String formId, String submissionId, int crmIncidentId, String fileName) throws Exception {
         String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
         addCrmAttachment(crmIncidentId, pdfEncodedBase64, fileName);
         System.out.println("Finished generating and adding PDF for form");
