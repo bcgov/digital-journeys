@@ -527,15 +527,11 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">Leave Denied</span>
-          <div className="success-content-body">
-            <ol>
-              <li>
-                Please inform the employee the reason for denial. If they still
-                want to go on leave, the employee must resubmit the form.
-                Employees can access the form in the &quot;Submitted forms&quot;
-                tab.
-              </li>
-            </ol>
+          <div className="success-content-body">                          
+              Please inform the employee the reason for denial. If they still
+              want to go on leave, the employee must resubmit the form.
+              Employees can access the form in the &quot;Submitted forms&quot;
+              tab.              
           </div>
         </>
       );
