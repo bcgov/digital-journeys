@@ -937,6 +937,7 @@ header span:hover {
 .alert-bc-info.formio-hidden,
 .alert-bc-warning.formio-hidden {
   padding: 0;
+  margin: 0;
   background-color: transparent;
   &:before {
     margin-right: 11px;
