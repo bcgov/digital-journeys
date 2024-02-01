@@ -4,7 +4,7 @@
 class EmployeeData():
   # data: Response retrieved from the ODS
   # Spec of possible values can be found at: https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rst#Datamart_Telework_employee_demo
-  def __init__(self, data):
+  def __init__(self, data, noofrecords=1):
    self.displayName = " ".join(filter(None, (data.get("first_name"), data.get("last_name"))))
    self.name = data.get("name")
    self.firstName = data.get("first_name")
@@ -52,3 +52,4 @@ class EmployeeData():
    self.fullPartTime = data.get("FULL_PART_TIME")
    # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
    self.jobIndicator = data.get("job_indicator")
+   self.noofrecords = noofrecords

@@ -31,7 +31,7 @@ class EmployeeDataService:
         employee_data_res = response_from_BCGov.json()
 
         if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
-          emp_data = EmployeeData(employee_data_res["value"][0])
+          emp_data = EmployeeData(employee_data_res["value"][0], len(employee_data_res["value"]))
           cache.set(guid, emp_data, timeout=14400)
           return emp_data.__dict__
       else:
