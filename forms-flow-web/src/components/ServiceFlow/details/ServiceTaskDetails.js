@@ -135,6 +135,11 @@ const ServiceFlowTaskDetails = React.memo(() => {
       Formio.clearCache();
       dispatch(resetFormData("form"));
       function fetchForm() {
+        /* #1501 getForm generated lots of unnecessary console warning, 
+           use the following to disable console.warn
+        */
+        console.warn = () => {};
+
         dispatch(
           getForm("form", formId, (err) => {
             if (!err) {
