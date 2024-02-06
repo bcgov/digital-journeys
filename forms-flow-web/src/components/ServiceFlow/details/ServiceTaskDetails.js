@@ -134,7 +134,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(resetFormData("form"));
-      function fetchForm() {
+      function fetchForm() {        
         dispatch(
           getForm("form", formId, (err) => {
             if (!err) {
@@ -169,9 +169,20 @@ const ServiceFlowTaskDetails = React.memo(() => {
   );
 
   useEffect(() => {
+    const originalConsoleWarn = console.warn;
+    
     if (task?.formUrl) {
+      /* #1501 getForm generated lots of unnecessary console warning, 
+           use the following to disable console.warn
+        */      
+      console.warn = () => {};
+
       dispatch(setFormSubmissionLoading(true));
       getFormSubmissionData(task?.formUrl);
+    }
+
+    return () => {
+      console.warn = originalConsoleWarn;
     }
   }, [task?.formUrl, dispatch, getFormSubmissionData]);
 
