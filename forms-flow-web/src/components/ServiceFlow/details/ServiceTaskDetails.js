@@ -183,7 +183,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
     return () => {
       console.warn = originalConsoleWarn;
-    }
+    };
   }, [task?.formUrl, dispatch, getFormSubmissionData]);
 
   useEffect(() => {
