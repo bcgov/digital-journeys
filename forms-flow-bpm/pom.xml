@@ -332,7 +332,7 @@
 		<dependency>
 				<groupId>org.keycloak</groupId>
 				<artifactId>keycloak-admin-client</artifactId>
-				<version>20.0.0</version>
+				<version>23.0.4</version>
 		</dependency>
 
 	</dependencies>
