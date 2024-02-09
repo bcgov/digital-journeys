@@ -37,7 +37,7 @@ class Application(
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
-        """Create new application."""        
+        """Create new application."""
         if application_info:
             application = Application()
             application.created_by = application_info["created_by"]
@@ -172,12 +172,9 @@ class Application(
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         )
-        print("filters",filters )
-        print("FILTER_MAPS::", FILTER_MAPS)
         for key, value in filters.items():
             if value:
-                filter_map = FILTER_MAPS[key]
-                print("filter_map:",key, "key:", filter_map)
+                filter_map = FILTER_MAPS[key]                
                 model_name = (
                     Application
                     if not filter_map["field"] == "form_name"
@@ -206,6 +203,7 @@ class Application(
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
         )
+        # This if for searching submissionDisplayName under submitted page ticket 1597
         if filters["application_name"]:
             filter_conditions.append(Application.submission_display_name.ilike(f'%{filters["application_name"]}%'))
             query = query.filter(or_(*filter_conditions)) if filter_conditions else query

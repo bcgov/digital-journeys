@@ -113,7 +113,7 @@ class DraftResourceById(Resource):
     def put(draft_id: int):
         """Update draft details."""
         draft_json = request.get_json()
-        try:            
+        try:
             draft_schema = DraftSchema()
             dict_data = draft_schema.load(draft_json)
             DraftService.update_draft(draft_id=draft_id, data=dict_data)
