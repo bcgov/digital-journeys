@@ -33,10 +33,11 @@ class Application(
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
+    submission_display_name = db.Column(db.String(255), nullable=True)
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
-        """Create new application."""
+        """Create new application."""        
         if application_info:
             application = Application()
             application.created_by = application_info["created_by"]
@@ -45,7 +46,8 @@ class Application(
                 "form_process_mapper_id"
             ]
             application.submission_id = application_info["submission_id"]
-            application.latest_form_id = application_info["form_id"]
+            application.latest_form_id = application_info["form_id"]            
+            application.submission_display_name = application_info["submission_display_name"]
             application.save()
             return application
         return None
@@ -170,9 +172,12 @@ class Application(
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         )
+        print("filters",filters )
+        print("FILTER_MAPS::", FILTER_MAPS)
         for key, value in filters.items():
             if value:
                 filter_map = FILTER_MAPS[key]
+                print("filter_map:",key, "key:", filter_map)
                 model_name = (
                     Application
                     if not filter_map["field"] == "form_name"
@@ -201,7 +206,11 @@ class Application(
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
         )
-        query = query.filter(*filter_conditions) if filter_conditions else query
+        if filters["application_name"]:
+            filter_conditions.append(Application.submission_display_name.ilike(f'%{filters["application_name"]}%'))
+            query = query.filter(or_(*filter_conditions)) if filter_conditions else query
+        else:
+            query = query.filter(*filter_conditions) if filter_conditions else query        
         return query
 
     @classmethod

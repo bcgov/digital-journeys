@@ -65,7 +65,7 @@ class ApplicationsResource(Resource):
             created_to_date = dict_data.get("created_to_date")
             modified_from_date = dict_data.get("modified_from_date")
             modified_to_date = dict_data.get("modified_to_date")
-            sort_order = dict_data.get("sort_order", "desc")
+            sort_order = dict_data.get("sort_order", "desc")            
             if auth.has_role([REVIEWER_GROUP]):
                 (
                     application_schema_dump,

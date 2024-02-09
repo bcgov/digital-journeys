@@ -67,6 +67,10 @@ class DraftResource(Resource):
             draft_schema = DraftSchema()
             draft_dict_data = draft_schema.load(draft_json)
             token = request.headers["Authorization"]
+            # get submission_display_name          
+            application_dict_data["submission_display_name"] = application_dict_data["data"]["submissionDisplayName"]
+            del application_dict_data["data"]
+
             res = DraftService.create_new_draft(
                 application_dict_data, draft_dict_data, token
             )

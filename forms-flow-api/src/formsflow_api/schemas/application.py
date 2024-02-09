@@ -63,8 +63,8 @@ class ApplicationSchema(Schema):
     submission_id = fields.Str(data_key="submissionId")
     form_url = fields.Str(data_key="formUrl", load_only=True)
     web_form_url = fields.Str(data_key="webFormUrl", load_only=True)
-
-
+    data = fields.Dict(data_key="data", load_only=True)
+    
 class ApplicationUpdateSchema(Schema):
     """This class manages application update request schema."""
 
