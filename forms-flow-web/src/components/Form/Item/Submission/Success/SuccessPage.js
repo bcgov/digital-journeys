@@ -389,7 +389,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for registering your worksite for the 2023 Cold and Flu
+            Thank you for registering your worksite for the {new Date().getFullYear()} Cold and Flu
             Program
           </span>
           <div className="success-content-body">
