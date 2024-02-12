@@ -168,6 +168,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             .values(
                 application_status=data["application_status"],
                 submission_id=data["submission_id"],
+                submission_display_name=data["submission_display_name"]
             )
         )
         cls.execute(stmt)
