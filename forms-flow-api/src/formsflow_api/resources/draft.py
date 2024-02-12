@@ -1,4 +1,5 @@
 """API endpoints for draft resource."""
+
 from http import HTTPStatus
 
 from flask import current_app, request
@@ -68,8 +69,12 @@ class DraftResource(Resource):
             draft_schema = DraftSchema()
             draft_dict_data = draft_schema.load(draft_json)
             token = request.headers["Authorization"]
-            # get submission_display_name          
-            application_dict_data["submission_display_name"] = application_dict_data["data"]["submissionDisplayName"] if "submissionDisplayName" in application_dict_data["data"].keys() else None
+            # get submission_display_name
+            application_dict_data["submission_display_name"] = (
+                application_dict_data["data"]["submissionDisplayName"]
+                if "submissionDisplayName" in application_dict_data["data"].keys()
+                else None
+            )
             del application_dict_data["data"]
 
             res = DraftService.create_new_draft(
@@ -137,7 +142,7 @@ class DraftResourceById(Resource):
             current_app.logger.warning(submission_err)
 
             return response, status
-    
+
     @staticmethod
     @auth.require
     @profiletime
@@ -170,14 +175,22 @@ class DraftSubmissionResource(Resource):
             application_schema = ApplicationSubmissionSchema()
             dict_data = application_schema.load(payload)
             dict_data["application_status"] = NEW_APPLICATION_STATUS
-            
+
             # get submission_display_name from submission and update to application table
-            # because when user enter their name, the draft was already created and the submissionDisplayName is not there yet
+            # because when user enter their name, 
+            # the draft was already created and the submissionDisplayName is not there yet
             # therefore we get final value from the submission and update the application table
             formio_service = FormioService()
             form_io_token = formio_service.get_formio_access_token()
-            submission = formio_service.get_submission( {"form_id": dict_data["form_id"], "sub_id": dict_data["submission_id"]}, form_io_token)            
-            dict_data["submission_display_name"] = submission["data"]["submissionDisplayName"] if "submissionDisplayName" in submission["data"].keys() else None
+            submission = formio_service.get_submission(
+                {"form_id": dict_data["form_id"], "sub_id": dict_data["submission_id"]},
+                form_io_token,
+            )
+            dict_data["submission_display_name"] = (
+                submission["data"]["submissionDisplayName"]
+                if "submissionDisplayName" in submission["data"].keys()
+                else None
+            )
 
             response = DraftService.make_submission_from_draft(
                 dict_data, draft_id, token
