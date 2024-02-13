@@ -1,41 +1,41 @@
-/*eslint-disable no-unused-vars*/
-import React, {useEffect, useState} from "react";
-import { Row, Col } from "react-bootstrap";
-import {
-  getISODateTime,
-  getFormattedDateAndTime,
-  getProcessDataObjectFromList,
-} from "../../../apiManager/services/formatterService";
-import {useDispatch, useSelector} from "react-redux";
-import DatePicker from "react-datepicker";
-import moment from "moment";
+import React, { /*useEffect,*/ useState } from "react";
+import { Row, /*Col*/ } from "react-bootstrap";
+// import {
+//   /*getISODateTime,*/
+//   /*getFormattedDateAndTime,*/
+//   getProcessDataObjectFromList,
+// } from "../../../apiManager/services/formatterService";
+import { /*useDispatch,*/ useSelector } from "react-redux";
+// import DatePicker from "react-datepicker";
+// import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
-import {
-  claimBPMTask,
-  // fetchServiceTaskList,
-  getBPMTaskDetail,
-  unClaimBPMTask, updateAssigneeBPMTask,
-  updateBPMTask
-} from "../../../apiManager/services/bpmTaskServices";
-import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
+// import {
+//   claimBPMTask,
+//   // fetchServiceTaskList,
+//   getBPMTaskDetail,
+//   unClaimBPMTask, updateAssigneeBPMTask,
+//   updateBPMTask
+// } from "../../../apiManager/services/bpmTaskServices";
+// import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
-import UserSelectionDebounce from "./UserSelectionDebounce";
-import SocketIOService from "../../../services/SocketIOService";
+// import UserSelectionDebounce from "./UserSelectionDebounce";
+// import SocketIOService from "../../../services/SocketIOService";
 import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
   // const taskId = useSelector((state) => state.bpmTasks.taskId);
-  const processList = useSelector((state) => state.bpmTasks.processList);
-  /* const username = useSelector(
-    (state) => state.user?.userDetail?.preferred_username || ""
-  ); */
-  const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
-  // const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
-  // const reqData = useSelector(state => state.bpmTasks.listReqParams);
-  // const firstResult = useSelector(state=> state.bpmTasks.firstResult);
+  // const processList = useSelector((state) => state.bpmTasks.processList);
+  // const username = useSelector(
+  //   (state) => state.user?.userDetail?.preferred_username || ""
+  // );
+  const taskGroups = useSelector((state) => state.bpmTasks.taskGroups);
+  // const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
+  // const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  // const firstResult = useSelector((state) => state.bpmTasks.firstResult);
+  // const userRoles = useSelector((state) => state.user.roles);
   // const [followUpDate, setFollowUpDate] = useState(null);
   // const [dueDate, setDueDate] = useState(null);
   const [showModal, setModal] = useState(false);
@@ -218,16 +218,16 @@ const TaskHeader = React.memo(() => {
         onClose={() => setModal(false)}
         groups={taskGroups}
       />
-      <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
+      <Row className="ml-0 task-header">{task?.name}</Row>      
+      {/* <Row className="ml-0 task-name">
         <span className="application-id" data-title={t("Process Name")}>
           {" "}
           {
-            getProcessDataObjectFromList(processList, task?.processDefinitionId)
+           getProcessDataObjectFromList(processList, task?.processDefinitionId)
               ?.name
           }
         </span>
-      </Row>
+      </Row> */}
       <Row className="ml-0">
         <span data-title={t("Application ID")} className="application-id">
           {t("Application ID")}# {task?.applicationId}

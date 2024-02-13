@@ -57,3 +57,17 @@ The mongoDB disc might need to be reset. To do this, delete the `./mongodb` fold
 ### Postgres
 
 TODO: figure out if migrations are even possible. might be worth to reset the posgres DB on local anyways, because if Mongo was reset it will orphan any Tasks left unfinished. Migration will need to be figured out for the prod environment however.
+
+### Upgrading the Formio (forms-flow-forms) (Version 5.1.0 onwards)
+
+Starting from version `5.1.0`, the Formio component's subfolder (`/forms-flow-forms`) has had modifications, setting it apart from other components in the manner of updating. This directory only contains files with custom aspects. During the build process, Formio repository is initially cloned from a [separate repository maintained by AOT](https://github.com/AOT-Technologies/formio). The contents of `/forms-flow-forms` are then overlaid, replacing any files with custom changes. For additional context, refer to the Docker files located in `/forms-flow-forms`.
+
+Follow the steps below to update Formio to a newer version:
+
+1. Navigate to the [Formio repository hosted by AOT](https://github.com/AOT-Technologies/formio) and under 'tags', choose the version you aim to update to. Each version of forms-flow-ai should correspond to an equivalent version (tag) in the Formio repository. You will find an environment variable `FORMIO_SOURCE_REPO_BRANCH` in the `/forms-flow-forms` Docker files that should point to the new version you're upgrading to.
+
+2. Manually compare all source files under `/forms-flow-forms/src` with equivalent files in the AOT's Formio repository for the version you're updating. Ensure that any changes in the new version are compatible with the customizations applied to the DGJ files. Use a tool such as VS Code to compare files and manually merge them. You should incorporate all updates from AOT's Formio into the DGJ file, while maintaining the customization.
+
+3. Check other files in the root of `/forms-flow-forms` against their counterparts in AOT's Formio to identify any additional changes in the new version. `package.json` deserves special attention.
+
+In case you encounter issues with `package-lock.json` during or after the update, delete the file along with `node_modules` locally. Then, reinstall the dependencies locally using a Node version identical to the one mentioned in your Docker files. This can be performed outside Docker and will automatically generate a new `package-lock.json` that will work with no problem.
