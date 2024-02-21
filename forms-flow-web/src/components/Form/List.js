@@ -135,15 +135,16 @@ const List = React.memo((props) => {
     let filters = [pageNo, limit, sortBy, sortOrder, searchText];
     if (isDesigner) {
       filters.push(formType);
+      dispatch(setFormSearchLoading(true));
+      dispatch(fetchBPMFormList(...filters));
     } else {
       let username = userDetail?.username; 
       if (username) {
         username = username.split("_")[(username.split("_")).length - 1];
       }
-      filters.push(username);
+      dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText, null, username));
     }
-    dispatch(setFormSearchLoading(true));
-    dispatch(fetchBPMFormList(...filters));
+    
   };
 
   useEffect(() => {

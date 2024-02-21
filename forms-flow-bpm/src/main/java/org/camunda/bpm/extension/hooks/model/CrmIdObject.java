@@ -1,9 +1,9 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
-public class CrmPrimaryContact {
+public class CrmIdObject {
     private int id;
 
-    public CrmPrimaryContact(int id) {
+    public CrmIdObject(int id) {
         this.id = id;
     }
 

@@ -31,7 +31,7 @@ class EmployeeDataService:
         employee_data_res = response_from_BCGov.json()
 
         if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
-          emp_data = EmployeeData(employee_data_res["value"][0])
+          emp_data = EmployeeData(employee_data_res["value"][0], len(employee_data_res["value"]))
           cache.set(guid, emp_data, timeout=14400)
           return emp_data.__dict__
       else:
@@ -103,7 +103,7 @@ class EmployeeDataService:
         skip = f"&$skip={offset}"
 
         fields = ["name","first_name","last_name","middle_name","Organization","level1_program",
-        "EMPLID","position_title","office_city","city","level2_division","level3_branch",
+        "EMPLID","position_title","office_city","city","level2_division","level3_branch","DEPTID",
         "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name"]
         select_fields = ",".join(fields)
 

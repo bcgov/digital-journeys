@@ -71,6 +71,7 @@ export const ANONYMOUS_USER = "anonymous";
 
 export const MANAGER_GROUP = 'manager';
 export const COLD_FLU_ADMIN_GROUP = 'cold-flu-admin';
+export const SL_REVIEW_ADMIN_GROUP = 'sl-review-admin';
 
 
 export const OPERATIONS = {

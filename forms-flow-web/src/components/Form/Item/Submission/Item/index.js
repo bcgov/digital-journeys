@@ -16,10 +16,11 @@ import {
   STAFF_REVIEWER,
   EDIT_SUBMISSION_PAGE,
 } from "../../../../../constants/constants";
-import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstants";
+// import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstants";
 import Loading from "../../../../../containers/Loading";
 import { clearSubmissionError } from "../../../../../actions/formActions";
 import { getCustomSubmission } from "../../../../../apiManager/services/FormServices";
+import { hasFormEditAccessByStatus } from "../../../../../helper/access";
 
 const Item = React.memo(() => {
   const { formId, submissionId } = useParams();
@@ -42,6 +43,10 @@ const Item = React.memo(() => {
 
   // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`
 
+  const applicationDetail = useSelector(
+    (state) => state.applications.applicationDetail
+  );
+
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
     if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
@@ -63,7 +68,9 @@ const Item = React.memo(() => {
       setEditAllowed(true);
     } else if (applicationStatus) {
       if (getUserRolePermission(userRoles, CLIENT)) {
-        setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
+        // setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
+        setEditAllowed(hasFormEditAccessByStatus(applicationDetail?.applicationName, 
+          applicationStatus));
         setShowSubmissionLoading(false);
       }
     }

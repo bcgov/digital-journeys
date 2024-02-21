@@ -1,4 +1,4 @@
-FROM artifacts.developer.gov.bc.ca/docker-remote/python:3.9-slim-buster
+FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app
 

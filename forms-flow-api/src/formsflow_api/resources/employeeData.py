@@ -8,7 +8,7 @@ from formsflow_api_utils.utils import (
     auth,
     cors_preflight,
     profiletime,
-    SL_REVIEW_ADMIN_GROUP,
+    # SL_REVIEW_GROUP,
 )
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_api.services import EmployeeDataService, KeycloakService
@@ -61,7 +61,7 @@ class EmployeeNames(Resource):
     @staticmethod
     @profiletime
     @auth.require
-    @auth.has_one_of_roles([SL_REVIEW_ADMIN_GROUP])
+    # @auth.has_one_of_roles([SL_REVIEW_GROUP])
     def get():
         """Get employee names from ODS. Users must have employee-search role to be able to access this endpoint."""
 
