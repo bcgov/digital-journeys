@@ -10,9 +10,8 @@ const debug = {
   loadSubmission: require('debug')('formio:cache:loadSubmission'),
   loadSubmissions: require('debug')('formio:cache:loadSubmissions'),
   loadSubForms: require('debug')('formio:cache:loadSubForms'),
+  error: require('debug')('formio:error'),
   loadSubmissionAcl: require('debug')('formio:cache:loadSubmissionAcl'),
-  load: require('debug')('formio:cache:loadSubForms'),
-  error: require('debug')('formio:error')
 };
 
 module.exports = function(router) {
@@ -148,15 +147,20 @@ module.exports = function(router) {
 
       const formRevs = {};
       async.each(revs, (rev, next) => {
-        const formRevision = parseInt(rev.revision || rev.formRevision);
+        const formRevision = rev.revision || rev.formRevision;
         debug.loadSubForms(`Loading form ${util.idToBson(rev.form)} revision ${formRevision}`);
+        const loadRevision = formRevision.length === 24 ? router.formio.resources.formrevision.model.findOne(
+            {_id: util.idToBson(rev.revision)}
+        ) :
         router.formio.resources.formrevision.model.findOne(
           hook.alter('formQuery', {
             _rid: util.idToBson(rev.form),
-            _vid: formRevision,
+            _vid: parseInt(formRevision),
             deleted: {$eq: null}
           }, req)
-        ).lean().exec((err, result) => {
+        );
+
+        loadRevision.lean().exec((err, result) => {
           if (err) {
             debug.loadSubForms(err);
             return next(err);
@@ -249,6 +253,7 @@ module.exports = function(router) {
       debug.loadSubmission(`Searching for form: ${formId}, and submission: ${subId}`);
       const query = {_id: subId, form: formId, deleted: {$eq: null}};
       debug.loadSubmission(query);
+      hook.invoke('submissionCollection', req);
       const submissionModel = req.submissionModel || router.formio.resources.submission.model;
       submissionModel.findOne(hook.alter('submissionQuery', query, req)).lean().exec((err, submission) => {
         if (err) {
@@ -545,7 +550,7 @@ module.exports = function(router) {
         }, next);
       });
     },
-    
+
     /**
     * Load a submission ACL using caching.
     *
@@ -559,46 +564,45 @@ module.exports = function(router) {
     *   The callback function to invoke after loading the submission.
     */
     loadSubmissionAcl(req, formId, subId, cb) {
-     const cache = this.cache(req);
-     if (cache.submissionAcl[subId]) {
-       debug.loadSubmissionAcl(`Cache hit: ${subId}`);
-       return cb(null, cache.submissionAcl[subId]);
-     }
-
-     subId = util.idToBson(subId);
-     if (subId === false) {
-       return cb('Invalid submission _id given.');
-     }
-
-     formId = util.idToBson(formId);
-     if (formId === false) {
-       return cb('Invalid form _id given.');
-     }
-
-     debug.loadSubmissionAcl(`Searching for ACL for form: ${formId}, and submission: ${subId}`);
-     const query = {_id: subId, form: formId, deleted: {$eq: null}};
-     debug.loadSubmissionAcl(query);
-     const submissionAclModel = req.submissionAclModel || router.formio.mongoose.model('submissionAcl');
-     submissionAclModel.findOne(hook.alter('submissionAclQuery', query, req)).lean().exec((err, submission) => {
-       if (err) {
-         debug.loadSubmissionAcl(err);
-         return cb(err);
-       }
-       if (!submission) {
-         debug.loadSubmissionAcl('No submission found for the given query.');
-         return cb(null, null);
-       }
-
-       hook.alter('loadSubmissionAcl', submission, req, (err, submission) => {
-         if (err) {
-           debug.loadSubmissionAcl(err);
-           return cb(err);
-         }
-         cache.submissionAcl[subId] = submission;
-         cb(null, submission);
-       });
-     });
-   },
-
+      const cache = this.cache(req);
+      if (cache.submissionAcl[subId]) {
+        debug.loadSubmissionAcl(`Cache hit: ${subId}`);
+        return cb(null, cache.submissionAcl[subId]);
+      }
+ 
+      subId = util.idToBson(subId);
+      if (subId === false) {
+        return cb('Invalid submission _id given.');
+      }
+ 
+      formId = util.idToBson(formId);
+      if (formId === false) {
+        return cb('Invalid form _id given.');
+      }
+ 
+      debug.loadSubmissionAcl(`Searching for ACL for form: ${formId}, and submission: ${subId}`);
+      const query = {_id: subId, form: formId, deleted: {$eq: null}};
+      debug.loadSubmissionAcl(query);
+      const submissionAclModel = req.submissionAclModel || router.formio.mongoose.model('submissionAcl');
+      submissionAclModel.findOne(hook.alter('submissionAclQuery', query, req)).lean().exec((err, submission) => {
+        if (err) {
+          debug.loadSubmissionAcl(err);
+          return cb(err);
+        }
+        if (!submission) {
+          debug.loadSubmissionAcl('No submission found for the given query.');
+          return cb(null, null);
+        }
+ 
+        hook.alter('loadSubmissionAcl', submission, req, (err, submission) => {
+          if (err) {
+            debug.loadSubmissionAcl(err);
+            return cb(err);
+          }
+          cache.submissionAcl[subId] = submission;
+          cb(null, submission);
+        });
+      });
+    },
   };
 };

@@ -185,7 +185,7 @@ export const taskFilters = [
   },
   {
     label: <Translation>{(t) => t("Description")}</Translation>,
-    key: "description",
+    key: "Description",
     operator: FILTER_OPERATOR_TYPES.LIKE,
     type: Filter_Search_Types.STRING,
     value: "",

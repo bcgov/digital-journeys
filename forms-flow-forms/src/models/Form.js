@@ -141,6 +141,14 @@ module.exports = (formio) => {
         type: [String],
         index: true
       },
+      tenantKey:{
+        type: String,
+        index: true
+      },
+      parentFormId:{
+        type: String,
+        index: true
+      },
       deleted: {
         type: Number,
         default: null

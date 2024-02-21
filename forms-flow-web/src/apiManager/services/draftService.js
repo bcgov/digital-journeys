@@ -1,10 +1,10 @@
 import {
+  httpDELETERequest,
   httpGETRequest,
   httpPOSTRequest,
   httpPOSTRequestWithoutToken,
   httpPUTRequest,
   httpPUTRequestWithoutToken,
-  httpDELETERequest,
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
@@ -215,11 +215,11 @@ export const FilterDrafts = (params, ...rest) => {
       let modifiedFrom = moment
         .utc(modified.filterVal[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       let modifiedTo = moment
         .utc(modified.filterVal[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 
@@ -246,20 +246,7 @@ export const FilterDrafts = (params, ...rest) => {
   };
 };
 
-export const deleteDraftById = (draftId, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const apiUrlDeleteDraft = `${API.DRAFT_BASE}/${draftId}`;
-  return () => {
-    httpDELETERequest(apiUrlDeleteDraft)
-      .then((res) => {
-        if (res.data) {
-          done(null, res.data);
-        } else {
-          done(null);
-        }
-      })
-      .catch((error) => {
-        done(error);
-      });
-  };
+export const deleteDraftbyId = (draftId) => {
+  let url = `${API.DRAFT_BASE}/${draftId}`;
+  return httpDELETERequest(url);
 };

@@ -1,6 +1,151 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+
+## 5.1.1 - 2023-05-18
+
+`Added`
+
+**forms-flow-bpm**
+
+* `External Task` APIs are exposed in bpm abstraction layer.
+
+`Modified`
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* camunda upgraded from version 7.17.0 to 7.18.0.
+* camunda-keycloak upgraded from version 2.2.3 to 7.18.0.
+* camundaConnect upgraded from 1.5.0 to 1.5.4.
+* camundaMail upgraded from 1.3.0 to 1.5.0.
+* camunda-template-engines upgraded from 1.0.0 to 2.1.0
+* spring boot upgraded from version 2.6.6 to  2.7.11.
+* spring security Oauth2 upgraded from version 2.6.6 to 2.6.7.
+* camunda-bpm-assert upgraded from 12.0 to 13.0.
+* groovy upgraded from 3.0.13 to 3.0.17.
+* graalVm upgraded from 22.1.0.1 to 22.3.2.
+* jackson upgraded from version 2.14.0 to 2.15.0.
+
+
+## 5.1.0 - 2022-01-18
+
+`Added`
+
+**forms-flow-web**
+
+* Added form versoning.
+* Added discard option for draft feature.
+* Added form embedding.
+* Added support for resources
+
+**forms-flow-forms**
+
+* Added environment variable `FORMIO_CLIENT_UI`.
+* Added health check API-end point `/checkpoint`
+
+**forms-flow-api**
+
+* Added DB changes to accomodate form type, parent form id. 
+* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/1a55b7674144_form_history.py).
+* Added new table for form history
+* Added new api to get form history by form id.
+* Added new api to delete draft.
+* Added new api to get the list of users for a role/group from keycloak.
+
+**forms-flow-bpm**
+
+* Added environment variables `REDIS_ENABLED`,`REDIS_HOST`,`REDIS_PORT`,`REDIS_PASSCODE` and `SESSION_COOKIE_SECURE`.
+
+**forms-flow-documents**
+
+* Added support for PDF templating.
+
+
+`Modified`
+
+**forms-flow-api**
+
+* Updated certifi to 2022.12.7, protobuf to 3.20.2 and  joblib to 1.2.0.
+* Modified swagger documentation.
+
+
+
+**forms-flow-bpm**
+
+*Upgrade notes:*
+
+* spring boot upgraded from version 2.6.4. to  2.6.6.
+* spring websocket upgraded from version 5.3.4 to 5.3.20.
+* spring messaging upgraded from version 5.3.4 to 5.3.20.
+* spring security Oauth2 upgraded from version 2.6.4. to 2.6.6.
+* postgresql upgraded from version 42.4.1 to 42.4.3.
+* jackson upgraded from version 2.13.3 to 2.14.0.
+
+
+`Fixed`
+
+**forms-flow-api**
+
+* Fixed Python security vulnerabilities.
+
+`Generic Changes`
+* In Quick Installation:
+<br> &nbsp;&nbsp;&nbsp;&nbsp;Fixed versions for databases.<br> &nbsp;&nbsp;&nbsp;&nbsp;Reduced script size.<br> &nbsp;&nbsp;&nbsp;&nbsp;Added IP confirmation to avoid IP issues.
+
+* Moved form list of designer to forms-flow-api.
+
+`Known Issues`
+
+**forms-flow-bpm**
+* Camunda Integration shows Invalid Credentials with formsflow.ai docker deployment, for more details refer [here](https://github.com/AOT-Technologies/forms-flow-ai/issues/978).
+       
+Note: Temporary fix added. Setting the value of environment variable `SESSION_COOKIE_SECURE` to `false` makes the camunda login works with ip.
+For a production setup value should be true, which will work with Kubernetes and docker deployments with nginx.
+
+
+## 5.0.2 - 2022-12-07
+
+**forms-flow-web**
+
+`Fixed`
+
+* Frozen UI during form design.
+
+## 5.0.1 - 2022-10-10
+
+**forms-flow-web**
+
+`Added`
+
+* Added websocket support for multitenancy.
+
+`Modified`
+
+* Modified task page UI.
+* Modified alignment of wizard.
+
+`Removed`
+
+* Removed environment variable `REACT_APP_FORMIO_JWT_SECRET` form [config.sample.js](./forms-flow-web/public/config/config.sample.js).
+
+**forms-flow-api**
+
+`Added`
+
+* Return the role name as path for authorization.
+* Added formsflow API support to start application with data.
+
+**forms-flow-bpm**
+
+`Added`
+
+* Added new endpoints for process instance variables.
+* Added web socket support files to build.
+
+
+
 ## 5.0.0 - 2022-09-02
 
 `Added`
@@ -21,7 +166,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added environment variable `CUSTOM_SUBMISSION_URL`, `CUSTOM_SUBMISSION_ENABLED` for support form adapter.
 * Added environment variables `DRAFT_ENABLED`, `DRAFT_POLLING_RATE` to manage draft feature. 
 * Added environment variable `EXPORT_PDF_ENABLED`for pdf service.
+* Added environment variable `PUBLIC_WORKFLOW_ENABLED` for enabling public workflow creation for multitenancy users.
 * Added environment variable `DOCUMENT_SERVICE_URL`for document service.
+* Added environment variable `OPENTELEMETRY_SERVICE`for opentelemetry service.
 
 
 
@@ -38,7 +185,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added API support for `draft` feature.
 * Added API support for `Form Adapter`.
 * Added environment variable `MULTI_TENANCY_ENABLED`, `KEYCLOAK_ENABLE_CLIENT_AUTH` to support mulitenancy.
-
+* Added new environment variable `FORMIO_JWT_SECRET`.
 
 **forms-flow-bpm**
 
@@ -112,6 +259,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Removed View submissions button from reviewer form list and view submissions route.
 * Removed the environment variables `CLIENT_ROLE_ID`, `DESIGNER_ROLE_ID`, `REVIEWER_ROLE_ID`,`ANONYMOUS_ID`, `USER_RESOURCE_ID`.
+* Removed the environment variable `FORMIO_JWT_SECRET`.
 
 
 `Generic Changes`

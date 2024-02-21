@@ -15,27 +15,27 @@ const initialState = {
   isTaskUpdating: false,
   appHistory: [],
   isHistoryListLoading: true,
-  isTaskDetailLoading: true,
-  isTaskDetailUpdating: false,
-  isGroupLoading: false,
-  processList: [],
-  userList: [],
-  filterList: [],
-  isFilterLoading: true,
-  selectedFilter: null,
-  taskId: null,
-  filterListSortParams: { sorting: [{ ...TASK_FILTER_LIST_DEFAULT_PARAM }] },
-  filterSearchSelections: [],
-  filterListSearchParams: {},
-  listReqParams: { sorting: [{ ...TASK_FILTER_LIST_DEFAULT_PARAM }] },
-  searchQueryType: QUERY_TYPES.ALL,
-  variableNameIgnoreCase: false,
-  variableValueIgnoreCase: false,
-  taskGroups: [],
-  taskFormSubmissionReload: false,
-  activePage: 1,
-  firstResult: 0,
-  bpmTasks: []
+  isTaskDetailLoading:true,
+  isTaskDetailUpdating:false,
+  isGroupLoading:false,
+  processList:[],
+  userList:[],
+  filterList:[],
+  isFilterLoading:true,
+  selectedFilter:null,
+  taskId:null,
+  filterListSortParams:{sorting:[{...TASK_FILTER_LIST_DEFAULT_PARAM}]},
+  filterSearchSelections:[],
+  filterListSearchParams:{},
+  listReqParams:{sorting:[{...TASK_FILTER_LIST_DEFAULT_PARAM}]},
+  searchQueryType:QUERY_TYPES.ALL,
+  variableNameIgnoreCase:false,
+  variableValueIgnoreCase:false,
+  taskGroups:[],
+  taskFormSubmissionReload:false,
+  activePage:1,
+  firstResult:0,
+  bpmTasks: [],
 };
 
 const bpmTasks = (state = initialState, action) => {
@@ -125,16 +125,13 @@ const bpmTasks = (state = initialState, action) => {
     case ACTION_CONSTANTS.RELOAD_TASK_FORM_SUBMISSION:
       return { ...state, taskFormSubmissionReload: action.payload };
     case ACTION_CONSTANTS.BPM_TASK_LIST_ACTIVE_PAGE:
-      return {
-        ...state,
-        activePage: action.payload,
-        firstResult: getFirstResultIndex(action.payload),
-      };
-    case ACTION_CONSTANTS.BPM_TASKS:
-      return { ...state, bpmTasks: action.payload };
-    case ACTION_CONSTANTS.BPM_TASKS_ERROR:
-      return { ...state, bpmTasks: action.payload };
-    default:
+      return {...state, activePage:action.payload, 
+        firstResult: getFirstResultIndex(action.payload)};
+      case ACTION_CONSTANTS.BPM_TASKS:
+        return { ...state, bpmTasks: action.payload };
+      case ACTION_CONSTANTS.BPM_TASKS_ERROR:
+        return { ...state, bpmTasks: action.payload };
+      default:
       return state;
   }
 };

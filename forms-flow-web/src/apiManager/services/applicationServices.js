@@ -22,7 +22,7 @@ import { replaceUrl } from "../../helper/helper";
 import moment from "moment";
 import { getFormattedProcess } from "./formatterService";
 import { setPublicFormStatus } from "../../actions/formActions";
-import { setDraftCount } from "../../actions/draftActions";
+import {setDraftCount} from "../../actions/draftActions";
 
 export const getAllApplicationsByFormId = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -220,7 +220,7 @@ export const FilterApplications = (params, ...rest) => {
     if (id && id !== "") {
       url += `&Id=${id.filterVal}`;
     }
-
+    
     if (applicationStatus && applicationStatus !== "") {
       url += `&applicationStatus=${applicationStatus?.filterVal}`;
     }
@@ -229,11 +229,11 @@ export const FilterApplications = (params, ...rest) => {
       let modifiedFrom = moment
         .utc(modified.filterVal[0])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       let modifiedTo = moment
         .utc(modified.filterVal[1])
         .format("YYYY-MM-DDTHH:mm:ssZ")
-        .replace("+", "%2B");
+        .replace(/\+/g, "%2B");
       url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
     }
 

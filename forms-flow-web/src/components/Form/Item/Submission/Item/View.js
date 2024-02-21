@@ -24,7 +24,6 @@ import { updateCustomSubmission } from "../../../../../apiManager/services/FormS
 import { printToPDF } from "../../../../../services/PdfService";
 import { convertFormLinksToOpenInNewTabs, enableFormButton } from "../../../../../helper/formUtils";
 
-
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -109,9 +108,10 @@ const View = React.memo((props) => {
   );
 });
 
-// View.defaultProps = {
-//   showPrintButton: true,
-// };
+/* View.defaultProps = {
+  showPrintButton: true,
+}; */
+
 const mapStateToProps = (state, props) => {
   // Get form data from state and preprocess it before passed to be rendered
   const { form } = selectRoot("form", state);

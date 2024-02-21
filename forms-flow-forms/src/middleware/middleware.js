@@ -6,7 +6,6 @@ module.exports = function(router) {
     params: require('./params')(router),
     accessHandler: require('./accessHandler')(router),
     addSubmissionResourceAccess: require('./addSubmissionResourceAccess')(router),
-    bootstrapSubmissionResourceAccess: require('./bootstrapSubmissionResourceAccess')(router),
     bootstrapEntityOwner: require('./bootstrapEntityOwner')(router),
     bootstrapFormAccess: require('./bootstrapFormAccess')(router),
     bootstrapNewRoleAccess: require('./bootstrapNewRoleAccess')(router),
@@ -40,6 +39,7 @@ module.exports = function(router) {
     filterIndex: require('./filterIndex')(router),
     mongodbConnectionState: require('./mongodbConnectionState')(router),
     revisionLoader: require('./revisionLoader')(router),
-    tokenVerify:require("./tokenVerify")(router)
+    tokenVerify:require("./tokenVerify")(router),
+    bootstrapSubmissionResourceAccess: require('./bootstrapSubmissionResourceAccess')(router),
   };
 };

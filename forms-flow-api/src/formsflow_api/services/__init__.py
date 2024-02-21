@@ -8,8 +8,12 @@ from formsflow_api.services.authorization import AuthorizationService
 from formsflow_api.services.draft import DraftService
 from formsflow_api.services.external.analytics_api import RedashAPIService
 from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
+from formsflow_api.services.filter import FilterService
+from formsflow_api.services.form_embed import CombineFormAndApplicationCreate
+from formsflow_api.services.form_history_logs import FormHistoryService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
+from formsflow_api.services.user import UserService
 from formsflow_api.services.ministry_names_service import MinistryNamesService
 from formsflow_api.services.employeeDataService import EmployeeDataService
 from formsflow_api.services.release_note import ReleaseNoteService
@@ -26,9 +30,13 @@ __all__ = [
     "FormioService",
     "DraftService",
     "AuthorizationService",
+    "FilterService",
+    "UserService",
+    "FormHistoryService",
+    "CombineFormAndApplicationCreate",
     "EmployeeDataService",
     "MinistryNamesService",
     "ReleaseNoteService",
     "KeycloakService",
-    "InfluenzaService"
+    "InfluenzaService",
 ]

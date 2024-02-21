@@ -17,11 +17,14 @@ from formsflow_api.resources.authorization import API as AUTHORIZATION_API
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.draft import API as DRAFT_API
+from formsflow_api.resources.filter import API as FILTER_API
+from formsflow_api.resources.form_embed import API as FORM_EMBED_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.formio import API as FORMIO_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
 from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
+from formsflow_api.resources.roles import API as KEYCLOAK_ROLES_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 from formsflow_api.resources.employeeData import API as EMPLOYEE_DATA_API
 from formsflow_api.resources.ministry_names import API as MINISTRY_NAMES_API
@@ -79,6 +82,9 @@ API.add_namespace(KEYCLOAK_USER_API, path="/user")
 API.add_namespace(DRAFT_API, path="/draft")
 API.add_namespace(FORMIO_API, path="/formio")
 API.add_namespace(AUTHORIZATION_API, path="/authorizations")
+API.add_namespace(FILTER_API, path="/filter")
+API.add_namespace(KEYCLOAK_ROLES_API, path="/roles")
+API.add_namespace(FORM_EMBED_API, path="/embed")
 API.add_namespace(EMPLOYEE_DATA_API, path="/employee-data")
 API.add_namespace(MINISTRY_NAMES_API, path="/ministry-names")
 API.add_namespace(RELEASE_NOTE_API, path="/release-note")
