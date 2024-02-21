@@ -57,7 +57,7 @@ export const defaultSortedBy = [
 //   );
 // };
 
-const LinkSubmission = (cell, row, redirectUrl) => {
+const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
   const dispatch = useDispatch();
 
   const checkRolesViewOlny = [SL_REVIEW_ADMIN_GROUP];
@@ -138,7 +138,7 @@ const LinkSubmission = (cell, row, redirectUrl) => {
       )}
     </div>
   );
-};
+});
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);

@@ -36,7 +36,7 @@ class Application(
     submission_display_name = db.Column(db.String(255), nullable=True)
 
     draft = db.relationship(
-        "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
+        "Draft", backref=db.backref("Application", cascade="save-update, merge")
     )
 
     @classmethod
