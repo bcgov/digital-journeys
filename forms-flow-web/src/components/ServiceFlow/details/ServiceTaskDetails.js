@@ -52,6 +52,7 @@ import {
 } from "../../../constants/constants";
 import { redirectToSuccessPage } from "../../../constants/successTypes";
 import { printToPDF } from "../../../services/PdfService";
+import MessageModal from "../../../containers/MessageModal";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
@@ -84,6 +85,13 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const submission = useSelector((state) => state.submission.submission);
   const isSubmissionLoaded = !(_.isEmpty(submission));
   const userRoles = useSelector((state) => state.user.roles);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState();
+
+  /** custom event loading */
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] =
+    React.useState(false);
 
   useEffect(() => {
     if (taskId) {
@@ -124,7 +132,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(resetFormData("form"));
-      function fetchForm() {
+      function fetchForm() {        
         dispatch(
           getForm("form", formId, (err) => {
             if (!err) {
@@ -159,10 +167,21 @@ const ServiceFlowTaskDetails = React.memo(() => {
   );
 
   useEffect(() => {
+    const originalConsoleWarn = console.warn;
+    
     if (task?.formUrl) {
+      /* #1501 getForm generated lots of unnecessary console warning, 
+           use the following to disable console.warn
+        */      
+      console.warn = () => {};
+
       dispatch(setFormSubmissionLoading(true));
       getFormSubmissionData(task?.formUrl);
     }
+
+    return () => {
+      console.warn = originalConsoleWarn;
+    };
   }, [task?.formUrl, dispatch, getFormSubmissionData]);
 
   useEffect(() => {
@@ -212,20 +231,31 @@ const ServiceFlowTaskDetails = React.memo(() => {
         reloadCurrentTask();
         break;
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        // onFormSubmitCallback(customEvent.actionType);
-        onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, 
+          customEvent?.isDefaultLoaderHidden);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
-          printToPDF({ formName: customEvent.formName, pdfName: customEvent.pdfName });
+        printToPDF({
+          formName: customEvent.formName,
+          pdfName: customEvent.pdfName,
+        });
+        break;
+      case CUSTOM_EVENT_TYPE.POPUP:
+        setPopupData({ title: customEvent.title, body: customEvent.body });
+        setShowPopup(true);
+        break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
+        setIsCustomFormSubmissionLoading(true);
         break;
       default:
         return;
     }
   };
 
-  const onFormSubmitCallback = (actionType = "", successPage) => {
+  const onFormSubmitCallback = (actionType = "", successPage, isDefaultLoaderHidden = false) => {
     if (bpmTaskId) {
-      dispatch(setBPMTaskDetailLoader(true));
+      // The following dispatch is the place where showing the 3 dots animation.
+      !isDefaultLoaderHidden && dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
         task?.formUrl
       );
@@ -273,10 +303,26 @@ const ServiceFlowTaskDetails = React.memo(() => {
     /*TODO split render*/
     return (
       <div className="service-task-details">
-        <LoadingOverlay active={isTaskUpdating} spinner text={t("Loading...")}>
+        <LoadingOverlay
+          active={isTaskUpdating || isCustomFormSubmissionLoading}
+          spinner
+          text={
+            isCustomFormSubmissionLoading
+              ? "Submitting...this can take a few minutes"
+              : "Loading..."
+          }
+        >
           <TaskHeader />
           <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
             <Tab eventKey="form" title={t("Form")}>
+              {popupData && (
+                <MessageModal
+                  modalOpen={showPopup}
+                  title={popupData.title}
+                  message={popupData.body}
+                  onConfirm={() => setShowPopup(false)}
+                />
+              )}
               <LoadingOverlay
                 active={task?.assignee !== currentUser}
                 styles={{

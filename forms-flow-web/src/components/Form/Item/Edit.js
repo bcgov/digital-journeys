@@ -27,7 +27,7 @@ import {
   setRestoreFormData,
   setRestoreFormId,
 } from "../../../actions/formActions";
-import {  removeTenantKey } from "../../../helper/helper";
+import { addTenankey, removeTenantKey } from "../../../helper/helper";
 import { fetchFormById } from "../../../apiManager/services/bpmFormServices";
 import {
   formCreate,
@@ -38,7 +38,7 @@ import { manipulatingFormData } from "../../../apiManager/services/formFormatter
 import SaveAsNewVersionConfirmationModal from "./SaveAsNewVersionConfirmationModal";
 import LoadingOverlay from "react-loading-overlay";
 
-// import { getFormSupportedIDPFromJSON, mergeFormioAccessRoles } from "../../../helper/formUtils";
+import { getFormSupportedIDPFromJSON, mergeFormioAccessRoles } from "../../../helper/formUtils";
 
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -345,11 +345,69 @@ const Edit = React.memo(() => {
     newFormData.componentChanged = isFormComponentsChanged();
     newFormData.parentFormId = prviousData.parentFormId;
 
-    formUpdate(newFormData._id, newFormData)
+    const roleIdsFromLocalStorage = localStorage.getItem("roleIds")
+      ? JSON.parse(localStorage.getItem("roleIds"))
+      : undefined;
+    const COLD_FLU_ADMIN_ROLE_ID = roleIdsFromLocalStorage?.find(
+      (el) => el.type === "COLD_FLU_ADMIN"
+    )?.roleId;
+    const SL_REVIEW_ADMIN_ROLE_ID = roleIdsFromLocalStorage?.find(
+      (el) => el.type === "SL_REVIEW_ADMIN"
+    )?.roleId;
+    const prevFormDataSubmissionAccess = _cloneDeep(formData).submissionAccess;
+    // Keep cold-flu-admin or sl-review-admin role if exists
+    if ((
+        COLD_FLU_ADMIN_ROLE_ID &&
+        prevFormDataSubmissionAccess
+          .map((el) => el.roles)
+          .flat()
+          .some((el) => el === COLD_FLU_ADMIN_ROLE_ID)
+        ) ||
+        (
+          SL_REVIEW_ADMIN_ROLE_ID &&
+          prevFormDataSubmissionAccess
+            .map((el) => el.roles)
+            .flat()
+            .some((el) => el === SL_REVIEW_ADMIN_ROLE_ID)
+        )
+    ) {
+      const mergedSubmissionAccess = mergeFormioAccessRoles(
+        prevFormDataSubmissionAccess,
+        submissionAccess
+      );
+      newFormData.submissionAccess = mergedSubmissionAccess;
+    } else {
+      newFormData.submissionAccess = submissionAccess;
+    }
+    newFormData.access = formAccess;
+    if (MULTITENANCY_ENABLED && tenantKey) {
+      if (newFormData.path) {
+        newFormData.path = addTenankey(newFormData.path, tenantKey);
+      }
+      if (newFormData.name) {
+        newFormData.name = addTenankey(newFormData.name, tenantKey);
+      }
+    }
+    const idp = getFormSupportedIDPFromJSON(form);
+    const newForm = {
+      ...newFormData,
+      supportedIdp : idp
+    };
+    formUpdate(newFormData._id, newForm)
       .then((res) => {
         const { data: submittedData } = res;
+        console.log("We are in save form data");
         if (isMapperSaveNeeded(submittedData)) {
-          const data = setFormProcessDataToVariable(submittedData);
+            const data = {
+                anonymous:
+                  processListData.anonymous === null
+                    ? false
+                    : processListData.anonymous,
+                formName: submittedData.title,
+                id: processListData.id,
+                formId: submittedData._id,
+                supportedIdp: newForm.supportedIdp
+              };
 
           // PUT request : when application count is zero.
           // POST request with updated version : when application count is positive.

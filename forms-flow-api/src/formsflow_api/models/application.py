@@ -33,9 +33,10 @@ class Application(
     # Submission id will be null for drafts
     submission_id = db.Column(db.String(100), nullable=True)
     latest_form_id = db.Column(db.String(100), nullable=False)
+    submission_display_name = db.Column(db.String(255), nullable=True)
 
     draft = db.relationship(
-        "Draft", backref=db.backref("Application", cascade="save-update, merge, delete")
+        "Draft", backref=db.backref("Application", cascade="save-update, merge")
     )
 
     @classmethod
@@ -49,7 +50,8 @@ class Application(
                 "form_process_mapper_id"
             ]
             application.submission_id = application_info["submission_id"]
-            application.latest_form_id = application_info["form_id"]
+            application.latest_form_id = application_info["form_id"]            
+            application.submission_display_name = application_info["submission_display_name"]
             application.save()
             return application
         return None
@@ -176,7 +178,7 @@ class Application(
         )
         for key, value in filters.items():
             if value:
-                filter_map = FILTER_MAPS[key]
+                filter_map = FILTER_MAPS[key]                
                 model_name = (
                     Application
                     if not filter_map["field"] == "form_name"
@@ -205,7 +207,12 @@ class Application(
             FormProcessMapper.process_name.label("process_name"),
             FormProcessMapper.process_tenant.label("process_tenant"),
         )
-        query = query.filter(*filter_conditions) if filter_conditions else query
+        # This if for searching submissionDisplayName under submitted page ticket 1597
+        if filters["application_name"]:
+            filter_conditions.append(Application.submission_display_name.ilike(f'%{filters["application_name"]}%'))
+            query = query.filter(or_(*filter_conditions)) if filter_conditions else query
+        else:
+            query = query.filter(*filter_conditions) if filter_conditions else query        
         return query
 
     @classmethod

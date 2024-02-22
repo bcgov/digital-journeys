@@ -1,9 +1,9 @@
 package main.java.org.camunda.bpm.extension.hooks.model;
 
-public class CrmProduct {
+public class CrmLookupNameObject {
     private String lookupName;
     
-    public CrmProduct(String lookupName) {
+    public CrmLookupNameObject(String lookupName) {
         this.lookupName = lookupName;
     }
     

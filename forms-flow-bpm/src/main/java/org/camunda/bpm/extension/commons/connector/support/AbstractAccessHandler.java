@@ -17,6 +17,11 @@ public abstract class AbstractAccessHandler implements IAccessHandler{
     }
 
     @Override
+    public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, Boolean isUpdate) {
+        return null;
+    }
+
+    @Override
     public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
         return null;
     }

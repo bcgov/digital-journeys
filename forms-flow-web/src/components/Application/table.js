@@ -22,6 +22,7 @@ import { getEmployeeNameFromSubmission } from "../../helper/helper";
 import {
   SL_REVIEW_PROCESS_KEY,
   INFLUENZA_WORKSITE_PROCESS_KEY,
+  SL_REVIEW_ADMIN_GROUP
 } from "../../constants/constants";
 
 let statusFilter, idFilter, nameFilter, modifiedDateFilter;
@@ -56,8 +57,23 @@ export const defaultSortedBy = [
 //   );
 // };
 
-const LinkSubmission = (cell, row, redirectUrl) => {
+const LinkSubmission = React.memo(({cell, row, redirectUrl}) => {
   const dispatch = useDispatch();
+
+  const checkRolesViewOlny = [SL_REVIEW_ADMIN_GROUP];
+  const assignedSelectedRoles = checkRolesViewOlny.filter(value => row.userRoles.includes(value));
+  const allowedProcessKeysForViewOlny = [
+    SL_REVIEW_PROCESS_KEY
+  ];
+  let isViewOnly = false;
+  const isSubmissionOwner = row.submission.owner === row.loggedInUserObj.email;
+  if (assignedSelectedRoles.length > 0 &&
+    row.isClientEdit && 
+    allowedProcessKeysForViewOlny.some((el) => el === row.processKey) && 
+    !isSubmissionOwner) {
+    row.isClientEdit = false;
+    isViewOnly = true;
+  }
   const url = row.isClientEdit
     ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`
     : `${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
@@ -106,7 +122,7 @@ const LinkSubmission = (cell, row, redirectUrl) => {
           </span>
         </div>
       </div>
-      {allowedProcessKeysForDeletion.some((el) => el === row.processKey) && (
+      {allowedProcessKeysForDeletion.some((el) => el === row.processKey) && !isViewOnly && (
         <div
           style={{ textDecoration: "none", marginLeft: "16px" }}
           onClick={() => handleDeleteApplication(row)}
@@ -122,7 +138,7 @@ const LinkSubmission = (cell, row, redirectUrl) => {
       )}
     </div>
   );
-};
+});
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell);

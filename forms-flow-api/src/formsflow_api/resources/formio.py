@@ -11,12 +11,13 @@ from formsflow_api_utils.utils import (
     CLIENT_GROUP,
     DESIGNER_GROUP,
     REVIEWER_GROUP,
+    COLD_FLU_ADMIN_GROUP,
+    SL_REVIEW_ADMIN_GROUP,
     auth,
     cache,
     cors_preflight,
     get_role_ids_from_user_groups,
     profiletime,
-    COLD_FLU_ADMIN_GROUP,
 )
 from formsflow_api_utils.utils.enums import FormioRoles
 from formsflow_api_utils.utils.startup import (
@@ -94,6 +95,8 @@ class FormioResource(Resource):
                 filter_list.append(FormioRoles.CLIENT.name)
             if COLD_FLU_ADMIN_GROUP in user.roles:
                 filter_list.append(FormioRoles.COLD_FLU_ADMIN.name)
+            if SL_REVIEW_ADMIN_GROUP in user.roles:
+                filter_list.append(FormioRoles.SL_REVIEW_ADMIN.name)
             return item["type"] in filter_list
 
         @after_this_request

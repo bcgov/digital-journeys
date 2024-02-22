@@ -24,6 +24,7 @@ public interface IAccessHandler {
      * @return
      */
     ResponseEntity<String> exchange(String url, HttpMethod method, String payload);
+    ResponseEntity<String> exchange(String url, HttpMethod method, String payload, Boolean isUpdate);
 
     /**
      * exchange function using the custom class

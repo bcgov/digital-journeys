@@ -27,7 +27,7 @@ import {
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
-import { REVIEWER_GROUP, MANAGER_ROLE } from "../../constants/userContants";
+import { REVIEWER_GROUP, MANAGER_ROLE, FORMSFLOW_CLIENT_ROLE } from "../../constants/userContants";
 import { MAX_RESULTS, HIDEFROMTASKLIST } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (
@@ -50,7 +50,7 @@ export const fetchServiceTaskList = (
     const userInfo = UserService.getUserInfo();
     if (userInfo) {
       if(userInfo?.role !== undefined && userInfo?.username !== undefined) {
-        if (userInfo.role.includes(MANAGER_ROLE)) {
+        if ([MANAGER_ROLE, FORMSFLOW_CLIENT_ROLE].some(r=> userInfo.role.includes(r))) {
           reqData = {...reqData, assignee: userInfo.username};
         }
       }

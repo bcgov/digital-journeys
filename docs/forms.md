@@ -10,7 +10,10 @@
 6. [Form Retention](#form-retention)
 7. [Fetch default values in Draft](#fetch-default-values-in-draft)
 8. [Form display name in draft and submission list](#form-display-name-in-draft-and-submission-list)
-
+9. [Custom Events](#custom-events)
+    1. [Submission Loader](#submission-loader)
+    2. [Action Complete](#action-complete)
+    
 ## Calculated Form Values
 
 If you would like a certain form field to have a calculated value based on the input from previous fields it could potentially require the use of some custom javascript code.
@@ -188,3 +191,60 @@ if (data?.primary_first_name && data?.primary_last_name) {
   value = `${data.primary_first_name} ${data.primary_last_name}`;
 }
 ```
+
+## Custom Events
+- We use `form.emit('customEvent', {...})` to connect `Formio` and `forms-flow-web`.
+  
+### Submission Loader
+- when send this event, it will show black glass style make with proper wording like "submitting...".
+
+![](images/custom-event-submission-loader.png)
+
+### Action Complete
+1. in the form, we send the `actionComplete` event to control the event after submission complete. 
+   
+Noticed that `isDefaultLoaderHidden` is optional. This event has default loader which is 3 dots animation. You can hide this default loader by sending `isDefaultLoaderHidden: true`. Currently, we only set up this param in `Mat/Pat`
+
+```ts
+form.emit("customEvent", {
+  type: "actionComplete",
+  successPage: "SOME CONSTANT KEY",
+  isDefaultLoaderHidden: true
+})
+
+```
+![](images/custom-event-action-complete.png)
+
+2. in the code. 
+  - Supervisor Edit View: `forms-flow-web/src/components/ServiceFlow/details/ServiceTaskDetails.js`  
+  Searching the following code and the key `CUSTOM_EVENT_TYPE.ACTION_COMPLETE`
+  ```js
+  const onCustomEventCallBack = (customEvent) => {
+    switch (customEvent.type) {
+      case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
+        reloadTasks();
+        break;
+      case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
+        reloadCurrentTask();
+        break;
+      case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, customEvent?.isDefaultLoaderHidden);
+        break;
+      case CUSTOM_EVENT_TYPE.PRINT_PDF:
+        printToPDF({
+          formName: customEvent.formName,
+          pdfName: customEvent.pdfName,
+        });
+        break;
+      case CUSTOM_EVENT_TYPE.POPUP:
+        setPopupData({ title: customEvent.title, body: customEvent.body });
+        setShowPopup(true);
+        break;
+      case CUSTOM_EVENT_TYPE.CUSTOM_SUBMISSION_LOADING:
+        setIsCustomFormSubmissionLoading(true);
+        break;
+      default:
+        return;
+    }
+  };
+  ```

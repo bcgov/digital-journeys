@@ -69,5 +69,36 @@ const getEmployeeNameFromSubmission = (form, submission) => {
   return submitterName ? submitterName.trim() : "";
 };
 
-export { replaceUrl, addTenankey, removeTenantKey, checkAndAddTenantKey, 
-  getEmployeeNameFromSubmission };
+function convertObjectKeyValueToLowercase(obj) {
+  if (typeof obj !== 'object') {
+    throw new Error('Input is not an object');
+  }
+
+  const result = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (Array.isArray(value)) {
+      result[key.toLowerCase()] = value.map((item) =>
+        typeof item === 'string' ? item.toLowerCase() : item
+      );
+    } else if (typeof value === 'string') {
+      result[key.toLowerCase()] = value.toLowerCase();
+    } else if (typeof value === 'object') {
+      result[key.toLowerCase()] = convertObjectKeyValueToLowercase(value);
+    } else {
+      result[key.toLowerCase()] = value;
+    }
+  }
+
+  return result;
+}
+
+export {
+  replaceUrl,
+  addTenankey,
+  removeTenantKey,
+  checkAndAddTenantKey,
+  getEmployeeNameFromSubmission,
+  convertObjectKeyValueToLowercase
+};
+
