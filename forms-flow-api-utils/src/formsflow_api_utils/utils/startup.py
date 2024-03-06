@@ -23,6 +23,7 @@ def setup_jwt_manager(app, jwt_manager):
         return resource["roles"] if resource else a_dict["roles"]
     print("setup_jwt_manager Called")
     app.config["JWT_ROLE_CALLBACK"] = get_roles
+    print(app.config["JWT_ROLE_CALLBACK"])
     jwt_manager.init_app(app)
 
 
