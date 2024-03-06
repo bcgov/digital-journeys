@@ -1,17 +1,17 @@
 name: forms-flow-web-deploy
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     environment:
-  #       description: 'Environment'
-  #       required: true
-  #       default: 'dev'
-  #       type: choice
-  #       options:
-  #       - dev
-  #       - test
-  #       - production
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - production
   push:
     branches: [DGJ_1236-update-to-the-new-helm-chart-deployment]
     paths:
@@ -26,20 +26,20 @@ defaults:
     shell: bash
 
 env:
-  BUILD_NAMESPACE: e66ac2-tools
+  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
   OPENSHIFT_SERVER_URL: ${{ secrets.OPENSHIFT_SERVER_URL }}
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-web
-  ENVIRONMENT: helm
+  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
-  NAMESPACE: e66ac2-test
+  NAMESPACE: ${{ secrets.NAMESPACE }}
   # App url without http(s) prefix
-  APP_URL: helm-digital-journeys.apps.silver.devops.gov.bc.ca
+  APP_URL: ${{ secrets.FFAWEB_URL }}
 
 jobs:
   # Logs environment variables
@@ -47,21 +47,21 @@ jobs:
     name: Print environment variables
     runs-on: ubuntu-latest
     steps:
-    - name: Print environment variables
-      run: |
-        echo BUILD_NAMESPACE: $BUILD_NAMESPACE
-        echo OPENSHIFT_TOKEN: $OPENSHIFT_TOKEN
-        echo OPENSHIFT_USERNAME: $OPENSHIFT_USERNAME
-        echo OPENSHIFT_REGISTRY_TOKEN: $OPENSHIFT_REGISTRY_TOKEN
-        echo OPENSHIFT_SERVER_URL: $OPENSHIFT_SERVER_URL
-        echo OPENSHIFT_IMAGE_REGISTRY_URL: $OPENSHIFT_IMAGE_REGISTRY_URL
-        echo APP_NAME: $APP_NAME
-        echo ENVIRONMENT: $ENVIRONMENT
-        echo branch: $BRANCH
-        echo docker file name: $DOCKER_FILE_NAME
-        echo namespace: $NAMESPACE
-        echo APP_URL: $APP_URL
-
+      - name: Print environment variables
+        run: |
+          echo BUILD_NAMESPACE: $BUILD_NAMESPACE
+          echo OPENSHIFT_TOKEN: $OPENSHIFT_TOKEN
+          echo OPENSHIFT_USERNAME: $OPENSHIFT_USERNAME
+          echo OPENSHIFT_REGISTRY_TOKEN: $OPENSHIFT_REGISTRY_TOKEN
+          echo OPENSHIFT_SERVER_URL: $OPENSHIFT_SERVER_URL
+          echo OPENSHIFT_IMAGE_REGISTRY_URL: $OPENSHIFT_IMAGE_REGISTRY_URL
+          echo APP_NAME: $APP_NAME
+          echo ENVIRONMENT: $ENVIRONMENT
+          echo branch: $BRANCH
+          echo docker file name: $DOCKER_FILE_NAME
+          echo namespace: $NAMESPACE
+          echo APP_URL: $APP_URL
+  
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
@@ -69,17 +69,17 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     steps:
-    - name: Log in to OpenShift
-      run: |
-        oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: apply openshift buildConfigs
-      working-directory: ./deployment/openshift
-      run: |
-        oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
+      - name: apply openshift buildConfigs
+        working-directory: ./deployment/openshift
+        run: |
+          oc -n ${BUILD_NAMESPACE} process -f web_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
 
   build-and-push-image:
     name: Build the image and push it to the registry
@@ -88,124 +88,124 @@ jobs:
     permissions:
       contents: read
       packages: write
-
+    
     needs:
-    - apply-openshift-buildConfigs
+      - apply-openshift-buildConfigs
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        install: true
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
 
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
-        tags: ${{ env.ENVIRONMENT }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
+          tags: ${{ env.ENVIRONMENT }}
 
-    - run: echo ${{ steps.meta.outputs.tags }}
+      - run: echo ${{ steps.meta.outputs.tags }}
 
-    - name: Log in to the Container registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}
-        username: ${{ env.OPENSHIFT_USERNAME }}
-        password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}
+          username: ${{ env.OPENSHIFT_USERNAME }}
+          password: ${{ env.OPENSHIFT_REGISTRY_TOKEN }}
 
-    - name: Cache Docker layers
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-${{ env.APP_NAME }}
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ env.APP_NAME }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v3
-      with:
-        context: ${{ env.APP_NAME }}
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ env.APP_NAME }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
 
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
-    # environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
 
     needs:
-    - apply-openshift-buildConfigs
-    - build-and-push-image
+      - apply-openshift-buildConfigs
+      - build-and-push-image
 
     steps:
-    - name: Checkout Target Branch
-      uses: actions/checkout@v3
+      - name: Checkout Target Branch
+        uses: actions/checkout@v3
 
-    - name: Log in to OpenShift
-      run: |
-        oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
+      - name: Log in to OpenShift
+        run: |
+          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
 
-    - name: apply deploymentConfig
-      working-directory: ./deployment/openshift
-      run: |
-        oc -n ${NAMESPACE} project
-        oc project ${NAMESPACE}
-        echo "Current namespace is ${NAMESPACE}"
-        # helm upgrade -i helm-forms-flow-web \
-        #              --set NAME=${APP_NAME} \
-        #              --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-        #              --set FFAWEB_URL=${APP_URL} \
-        #              --set TAG_NAME=${ENVIRONMENT} \
-        #              --set CPU_REQUEST=100m \
-        #              --set CPU_LIMIT=200m  \
-        #              --set MEMORY_REQUEST=100Mi \
-        #              --set MEMORY_LIMIT=2Gi \
-        #              ./helm-web
-        helm upgrade -i helm-forms-flow-web \
-                     ./helm-web
-        oc -n ${NAMESPACE} process helm-forms-flow-web \
-              -p NAME=${APP_NAME} \
-              -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-              -p TAG_NAME=${ENVIRONMENT} \
-              -p FFAWEB_URL=${APP_URL} \
-              -p CPU_REQUEST=100m \
-              -p CPU_LIMIT=200m \
-              -p MEMORY_REQUEST=100Mi \
-              -p MEMORY_LIMIT=2Gi | \
-        oc -n ${NAMESPACE} apply -f -
+      - name: apply deploymentConfig
+        working-directory: ./deployment/openshift
+        run: |
+          oc -n ${NAMESPACE} project
+          oc project ${NAMESPACE}
+          echo "Current namespace is ${NAMESPACE}"
+          # helm upgrade -i helm-forms-flow-web \
+          #              --set NAME=${APP_NAME} \
+          #              --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+          #              --set FFAWEB_URL=${APP_URL} \
+          #              --set TAG_NAME=${ENVIRONMENT} \
+          #              --set CPU_REQUEST=100m \
+          #              --set CPU_LIMIT=200m  \
+          #              --set MEMORY_REQUEST=100Mi \
+          #              --set MEMORY_LIMIT=2Gi \
+          #              ./helm-web
+          helm upgrade -i helm-forms-flow-web \
+                      ./helm-web
+          oc -n ${NAMESPACE} process helm-forms-flow-web \
+                -p NAME=${APP_NAME} \
+                -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                -p TAG_NAME=${ENVIRONMENT} \
+                -p FFAWEB_URL=${APP_URL} \
+                -p CPU_REQUEST=100m \
+                -p CPU_LIMIT=200m \
+                -p MEMORY_REQUEST=100Mi \
+                -p MEMORY_LIMIT=2Gi | \
+          oc -n ${NAMESPACE} apply -f -
+      
+          # oc -n ${NAMESPACE} process -f web_dc.yaml \
+          #       -p NAME=${APP_NAME} \
+          #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+          #       -p TAG_NAME=${ENVIRONMENT} \
+          #       -p FFAWEB_URL=${APP_URL} \
+          #       -p CPU_REQUEST=100m \
+          #       -p CPU_LIMIT=200m \
+          #       -p MEMORY_REQUEST=100Mi \
+          #       -p MEMORY_LIMIT=2Gi | \
+          # oc -n ${NAMESPACE} apply -f -
 
-        # oc -n ${NAMESPACE} process -f web_dc.yaml \
-        #       -p NAME=${APP_NAME} \
-        #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
-        #       -p TAG_NAME=${ENVIRONMENT} \
-        #       -p FFAWEB_URL=${APP_URL} \
-        #       -p CPU_REQUEST=100m \
-        #       -p CPU_LIMIT=200m \
-        #       -p MEMORY_REQUEST=100Mi \
-        #       -p MEMORY_LIMIT=2Gi | \
-        # oc -n ${NAMESPACE} apply -f -
-
-    # - name: verify deploymentConfig
-    #   run: |
-    #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-    #     ATTEMPTS=0
-    #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-    #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-    #       $ROLLOUT_STATUS_CMD
-    #       ATTEMPTS=$((attempts + 1))
-    #       sleep 10
-    #     done
-    #     oc project ${NAMESPACE}     
-    #     echo "Listing pods.."
-    #     oc get pods|grep "${APP_NAME}"
-    #     export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-    #     echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
+      - name: verify deploymentConfig
+        run: |
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP_NAME}"
+          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+          echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
