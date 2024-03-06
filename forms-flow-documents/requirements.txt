@@ -42,5 +42,5 @@ six==1.16.0
 urllib3==1.26.11
 zipp==3.8.1
 nested-lookup==0.2.25
-git+https://github.com/bcgov/digital-journeys.git@upgrade/DGJ_951-upgrade_to_v5.1.1#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+git+https://github.com/bcgov/digital-journeys.git@GJ_1236-update-to-the-new-helm-chart-deployment#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
 # git+https://github.com/bcgov/digital-journeys.git@main#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
