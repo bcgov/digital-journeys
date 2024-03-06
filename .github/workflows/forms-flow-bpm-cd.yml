@@ -168,7 +168,7 @@ jobs:
           echo "Current ENV is ${ENVIRONMENT}"
           oc project ${NAMESPACE}
           echo "Current namespace is ${NAMESPACE}"
-          helm upgrade helm-forms-flow-bpm  ./helm-camunda 
+          helm upgrade -i helm-forms-flow-bpm  ./helm-camunda 
                       #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                       #  --set SMTP_SERVER=${SMTP_SERVER} \
                       #  --set DATABASE_SERVICE_NAME=${DATABASE_SERVICE_NAME} \
