@@ -1059,9 +1059,9 @@ a{
   flex-wrap: nowrap;
   flex-direction: row;
 }
-.btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
-  margin-left:5px;
-}
+// .btn-wizard-nav-submit, .btn-wizard-nav-next, .btn-wizard-nav-previous{
+//   margin-left:5px;
+// }
 
 div.upload {
   background-color:rgb(239,239,239);
@@ -1201,5 +1201,9 @@ button.floatingButton.floating-right-bottom-3 {
 
 // Hide the submit button on the wizard form. Will allow the designer to add custom submit buttons
 .btn-wizard-nav-submit {
+  display: none;
+}
+
+.hideFromTaskHeader {
   display: none;
 }

@@ -29,7 +29,7 @@ function TaskHead() {
 
   return (
     <div className="header-container">
-    <div className="main-header">
+    <div className="main-header hideFromTaskHeader">
       
         <div
          
