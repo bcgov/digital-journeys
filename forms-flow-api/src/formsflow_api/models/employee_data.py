@@ -25,6 +25,20 @@ class EmployeeData():
    self.empId = data.get("EMPLID")
    self.positionTitle = data.get("position_title")
    self.depId = data.get("DEPTID")
+   self.mailAddress = ", ".join(filter(None, [
+        value.strip() for key, value in [
+            ("mail_address1", data.get("mail_address1")),
+            ("mail_address2", data.get("mail_address2")),
+            ("mail_city", data.get("mail_city")),
+            ("mail_stateprovince", data.get("mail_stateprovince")),
+            ("mail_postal", data.get("mail_postal"))
+        ] if value is not None and isinstance(value, str)]))
+   self.mailAddress1 = data.get("mail_address1")
+   self.mailAddress2 = data.get("mail_address2")
+   self.mailCity = data.get("mail_city")
+   self.mailCountry = data.get("mail_country")
+   self.mailPostal = data.get("mail_postal")
+   self.mailStateprovince = data.get("mail_stateprovince")
    self.officeAddress = ", ".join(filter(None, [
         value.strip() for key, value in [
             ("office_address1", data.get("office_address1")),
