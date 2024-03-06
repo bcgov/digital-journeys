@@ -1,20 +1,19 @@
 name: forms-flow-webapi-deploy
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     environment:
-  #       description: 'Environment'
-  #       required: true
-  #       default: 'dev'
-  #       type: choice
-  #       options:
-  #       - dev
-  #       - test
-  #       - production
-  #       - helm
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - test
+        - production
   push:
-    branches: [ DGJ_1236-update-to-the-new-helm-chart-deployment ]
+    branches: [DGJ_1236-update-to-the-new-helm-chart-deployment]
     paths:
       - "forms-flow-api/**"
       - "forms-flow-api-utils/**"
@@ -28,7 +27,7 @@ defaults:
     shell: bash
 
 env:
-  BUILD_NAMESPACE: e66ac2-tools
+  BUILD_NAMESPACE: ${{ secrets.BUILD_NAMESPACE }}
   OPENSHIFT_TOKEN: ${{ secrets.SA_TOKEN }}
   OPENSHIFT_USERNAME: ${{ secrets.SA_USERNAME }}
   OPENSHIFT_REGISTRY_TOKEN: ${{ secrets.SA_USERNAME_TOKEN }}
@@ -36,13 +35,13 @@ env:
   OPENSHIFT_IMAGE_REGISTRY_URL: ${{ secrets.OPENSHIFT_IMAGE_REGISTRY_URL }}
   APP_NAME: forms-flow-webapi
   APP_DIR_NAME: forms-flow-api
-  ENVIRONMENT: helm
+  ENVIRONMENT: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
   BRANCH: ${{ github.ref_name }}
   DOCKER_FILE_NAME: Dockerfile.prod
   # Namespace for the triggered environment, e.g., d89793-dev
-  NAMESPACE: e66ac2-test
+  NAMESPACE: ${{ secrets.NAMESPACE }}
   # App url without http(s) prefix
-  APP_URL : helm-digital-journeys-forms-flow-api.apps.silver.devops.gov.bc.ca
+  APP_URL : ${{ secrets.FORMS_FLOW_WEBAPI_URL }}
 
 jobs:
   # Logs environment variables
@@ -143,7 +142,7 @@ jobs:
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
-    #environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
+    environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
     
     needs:
@@ -187,18 +186,18 @@ jobs:
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
       
-      # - name: verify deploymentConfig
-      #   run: |
-      #     # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
-      #     ATTEMPTS=0
-      #     ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
-      #     until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-      #       $ROLLOUT_STATUS_CMD
-      #       ATTEMPTS=$((attempts + 1))
-      #       sleep 10
-      #     done
-      #     oc project ${NAMESPACE}     
-      #     echo "Listing pods.."
-      #     oc get pods|grep "${APP_NAME}"
-      #     export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
-      #     echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
+      - name: verify deploymentConfig
+        run: |
+          # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
+          ATTEMPTS=0
+          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+          until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+            $ROLLOUT_STATUS_CMD
+            ATTEMPTS=$((attempts + 1))
+            sleep 10
+          done
+          oc project ${NAMESPACE}     
+          echo "Listing pods.."
+          oc get pods|grep "${APP_NAME}"
+          export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"
+          echo "${APP_NAME} is exposed at 'https://'${ROUTE}"
