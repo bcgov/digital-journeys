@@ -62,7 +62,7 @@ const LinkSubmission = React.memo(({ cell, row, redirectUrl }) => {
     SL_REVIEW_PROCESS_KEY
   ];
   let isViewOnly = false;
-  const isSubmissionOwner = row.submission.owner === row.loggedInUserObj.email;
+  const isSubmissionOwner = row?.submission?.owner === row?.loggedInUserObj?.email;
   if (assignedSelectedRoles.length > 0 &&
     row.isClientEdit && 
     allowedProcessKeysForViewOlny.some((el) => el === row.processKey) && 
