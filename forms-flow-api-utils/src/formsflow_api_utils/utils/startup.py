@@ -15,15 +15,9 @@ def setup_jwt_manager(app, jwt_manager):
     """Use flask app to configure the JWTManager to work for a particular Realm."""
 
     def get_roles(a_dict):
-        print("Remove after testing")
-        print(app.config["JWT_OIDC_AUDIENCE"])
-        for k, v in a_dict.items():
-            print(k, v)
         resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
         return resource["roles"] if resource else a_dict["roles"]
-    print("setup_jwt_manager Called")
     app.config["JWT_ROLE_CALLBACK"] = get_roles
-    print(app.config["JWT_ROLE_CALLBACK"])
     jwt_manager.init_app(app)
 
 
