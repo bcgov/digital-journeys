@@ -1,0 +1,78 @@
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: forms-flow-files
+  tags: forms-flow-files
+
+parameters:
+  - name: NAME
+    displayName: App Name
+    description: The name of the application
+    required: true
+    value: forms-flow-files
+
+  - name: SOURCE_REPOSITORY_URL
+    displayName: Git Repository URL
+    description: The URL of the repository with your application source code.
+    value: https://github.com/bcgov/digital-journeys
+
+  - name: SOURCE_REPOSITORY_REF
+    displayName: Git Reference
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
+    value: main
+  
+  - name: SOURCE_CONTEXT_DIR
+    displayName: Git context directory
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
+    value: /forms-flow-files
+  
+  - name: TAG
+    displayName: Output Tag for the application image
+    description: Set this to the appropriate tag depending upon the environmnet you are building
+    required: true
+
+objects:
+  # - kind: ConfigMap -- TO be included in build config
+  
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: ${NAME}
+      annotations:
+        description: "Keeps track of changes in the application image"
+      labels:
+        app: ${NAME}
+  
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      name: ${NAME}
+      labels:
+        app: ${NAME}
+    spec:
+      failedBuildsHistoryLimit: 5
+      successfulBuildsHistoryLimit: 5
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${NAME}:${TAG}'
+      resources:
+        limits:
+          cpu: '2'
+          memory: 4Gi
+        requests:
+          cpu: '1'
+          memory: 2Gi
+      strategy:
+        type: Docker
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+      source:
+        type: Git
+        git:
+          uri: ${SOURCE_REPOSITORY_URL}
+          ref: ${SOURCE_REPOSITORY_REF}
+        contextDir: ${SOURCE_CONTEXT_DIR}
+      triggers:
+        - type: ConfigChange
+      runPolicy: Serial
