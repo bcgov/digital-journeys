@@ -15,8 +15,13 @@ def setup_jwt_manager(app, jwt_manager):
     """Use flask app to configure the JWTManager to work for a particular Realm."""
 
     def get_roles(a_dict):
-        resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
-        return resource["roles"] if resource else a_dict["roles"]
+        try:
+            resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
+            return resource["roles"] if resource else a_dict["roles"]
+        except Exception as e:
+            print("error in setup_jwt_manager.get_roles")
+            print(e)
+            return ["formsflow-client"]
     app.config["JWT_ROLE_CALLBACK"] = get_roles
     jwt_manager.init_app(app)
 
