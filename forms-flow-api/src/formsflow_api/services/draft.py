@@ -173,9 +173,10 @@ class DraftService:
     def delete_draft(draft_id: int, **kwargs):
         """Delete draft."""
         user: UserContext = kwargs["user"]
-        user_id: str = user.user_name or ANONYMOUS_USER
-        draft = Draft.get_by_id(draft_id, user_id)
+        user_id: str = user.user_name
+        draft = Draft.get_by_id(draft_id=draft_id, user_id=user_id)
         if draft:
+            # deletes the draft and application entry related to the draft.
             draft.delete()
         else:
             response, status = {

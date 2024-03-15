@@ -15,14 +15,15 @@ import NotFound from "./NotFound";
 import { setTenantFromId } from "../apiManager/services/tenantServices";
 
 const Form = lazy(() => import("./Form"));
-const Success = lazy(() => import('./Form/Item/Submission/Success/SuccessPage'));
 const ServiceFlow = lazy(() => import("./ServiceFlow"));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
 const Admin = lazy(() => import("./Admin"));
-const Modeller = lazy(() => import("./Modeller")); //BPMN Modeller
+const Modeler = lazy(() => import("./Modeler")); //BPMN Modeler
 const Drafts = lazy(() => import("./Draft"));
+
+const Success = lazy(() => import('./Form/Item/Submission/Success/SuccessPage'));
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const PrivateRoute = React.memo((props) => {
   useEffect(() => {
     if (tenantId && props.store) {
       let currentTenant = sessionStorage.getItem("tenantKey");
-      if (currentTenant && currentTenant !== tenantId) {
+      if(currentTenant && currentTenant !== tenantId){
         sessionStorage.clear();
         localStorage.clear();
       }
@@ -144,7 +145,7 @@ const PrivateRoute = React.memo((props) => {
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
             <DesignerRoute
               path={`${BASE_ROUTE}processes`}
-              component={Modeller}
+              component={Modeler}
             />
             <ClientReviewerRoute
               path={`${BASE_ROUTE}application`}

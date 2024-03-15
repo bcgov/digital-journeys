@@ -1,0 +1,217 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: helm-forms-flow-documents
+objects:
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: ${FORMSFLOW_DOC_API_URL}
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${NAME}
+  spec:
+    ports:
+    - port: 5006
+      protocol: TCP
+      targetPort: 5006
+    selector:
+      app: ${NAME}
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations: null
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 700
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: KEYCLOAK_URL
+            valueFrom:
+              secretKeyRef:
+                key: keycloak_url
+                name: ${FORMSFLOW_CONFIG_NAME}-secret
+          - name: KEYCLOAK_URL_REALM
+            valueFrom:
+              secretKeyRef:
+                key: keycloak_realm
+                name: ${FORMSFLOW_CONFIG_NAME}-secret
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: DATABASE_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_AUDIENCE
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_AUDIENCE
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_CACHING_ENABLED
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_CACHING_ENABLED
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_ISSUER
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_ISSUER
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_JWKS_URI
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_JWKS_URI
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: JWT_OIDC_WELL_KNOWN_CONFIG
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_WELL_KNOWN_CONFIG
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMSFLOW_API_CORS_ORIGINS
+            value: '*'
+          - name: FORMIO_URL
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMIO_ROOT_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_ROOT_EMAIL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMIO_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_ROOT_PASSWORD
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+            valueFrom:
+              configMapKeyRef:
+                key: KEYCLOAK_ENABLE_CLIENT_AUTH
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMSFLOW_API_URL
+            valueFrom:
+              configMapKeyRef:
+                key: WEB_API_BASE_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMSFLOW_DOC_API_URL
+            valueFrom:
+              configMapKeyRef:
+                key: FORMSFLOW_DOC_API_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: CHROME_DRIVER_PATH
+            valueFrom:
+              configMapKeyRef:
+                key: CHROME_DRIVER_PATH
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMIO_JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: FORMIO_JWT_SECRET
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+          name: ${NAME}
+          ports:
+          - containerPort: 5006
+          resources: {}
+          stdin: true
+          tty: true
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:${TAG_NAME}
+          namespace: ${IMAGE_NAMESPACE}
+      type: ImageChange
+  status: {}
+parameters:
+- description: The name assigned to all of the OpenShift resources associated to the
+    server instance.
+  displayName: Name
+  name: NAME
+  required: true
+  value: forms-flow-documents
+- description: The namespace of the OpenShift project containing the imagestream for
+    the application.
+  displayName: Image Namespace
+  name: IMAGE_NAMESPACE
+  required: true
+  value: d89793-tools
+- description: The name of this instance of the application
+  displayName: Application Instance Name
+  name: INSTANCE
+- description: Secrets are referred from this.
+  name: FORMSFLOW_CONFIG_NAME
+  required: true
+  value: forms-flow-ai
+- description: Secrets are referred from this.
+  name: FORMSFLOW_SECRET
+  required: true
+  value: forms-flow-ai
+- description: The TAG name for this environment, e.g., dev, test, prod
+  displayName: Environment TAG name
+  name: TAG_NAME
+  required: true
+  value: latest
+- description: The resources CPU request (in cores) for this build.
+  displayName: Resources CPU Request
+  name: CPU_REQUEST
+  required: true
+  value: 100m
+- description: The resources CPU limit (in cores) for this build.
+  displayName: Resources CPU Limit
+  name: CPU_LIMIT
+  required: true
+  value: 750m
+- description: The resources Memory request (in Mi, Gi, etc) for this build.
+  displayName: Resources Memory Request
+  name: MEMORY_REQUEST
+  required: true
+  value: 100Mi
+- description: The resources Memory limit (in Mi, Gi, etc) for this build.
+  displayName: Resources Memory Limit
+  name: MEMORY_LIMIT
+  required: true
+  value: 2Gi
+- description: forms-flow-documents API URL without https prefix.
+  displayName: FORMSFLOW_DOC_API_URL
+  name: FORMSFLOW_DOC_API_URL
+  required: false

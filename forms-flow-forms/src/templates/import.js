@@ -866,8 +866,8 @@ module.exports = (router) => {
               "name": result.name,
               "path": result.path,
               "tags": result.tags,
+              "components": result.components,
               "supportedidp": result?.supportedidp,
-              "components": result.components
           };
 
           if (isFormId) {
@@ -960,6 +960,9 @@ module.exports = (router) => {
 
   return {
     install,
-    template: importTemplate
+    template: importTemplate,
+    check: checkTemplate,
+    tryToLoadComponents,
+    findProjectId
   };
 };

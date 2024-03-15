@@ -66,6 +66,8 @@ class InfluenzaService:
     @staticmethod
     def get_worksites_ministries(args):
       worksite_ministry_url = current_app.config.get("ODS_URL") + "/ods_datamart_influenza_vw_worksites_ministries_joined"
+      print("worksite_ministry_url")
+      print(worksite_ministry_url)
       auth_token = current_app.config.get("ODS_AUTH_TOKEN")
       
       # Get the query params

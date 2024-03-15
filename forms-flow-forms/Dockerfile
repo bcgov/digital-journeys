@@ -2,11 +2,9 @@
 # if the application is built from a source repo other than aot , use the custom copying.
 # steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
-
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
 FROM node:16-buster
-
 # set working directory
 WORKDIR /forms-flow-forms/app
 
@@ -15,6 +13,10 @@ WORKDIR /forms-flow-forms/app
 RUN apt-get update && \
     apt-get install -y git lsyncd
 
+ARG FORMIO_SOURCE_REPO_BRANCH
+ARG FORMIO_SOURCE_REPO_URL
+# Clone code
+RUN git clone --depth 1 -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /aot-formio
 # Using an alternative package install location
 # to allow overwriting the /app folder at runtime
 # stackoverflow.com/a/13021677
@@ -22,29 +24,34 @@ ENV NPM_PACKAGES=/.npm-packages \
     PATH=$NPM_PACKAGES/bin:$PATH \
     NODE_PATH=$NPM_PACKAGES/lib/node_modules:$NODE_PATH
 RUN echo "prefix = $NPM_PACKAGES" >> ~/.npmrc
-
 # Include details of the required dependencies
 COPY ./package.json $NPM_PACKAGES/
-COPY ./package-lock.json $NPM_PACKAGES/
+# Not including package-lock.json because it causes issue while installing the dependencies
+# COPY ./package-lock.json $NPM_PACKAGES/
 COPY ./lsyncd.conf ./lsyncd.conf
 
 # Use "Continuous Integration" to install as-is from package-lock.json
-RUN npm ci --prefix=$NPM_PACKAGES
-
+# commenting out npm ci next line due to the issue with defaultpackage-lock.json instead use npm i
+# RUN npm ci --prefix=$NPM_PACKAGES
+RUN npm i --prefix=$NPM_PACKAGES
 # Link in the global install because `require()` only looks for ./node_modules
 # WARNING: This is overwritten by volume-mount at runtime!
 #          See docker-compose.yml for instructions
 RUN ln -sf $NPM_PACKAGES/node_modules node_modules
-
 # Set this to inspect more from the application. Examples:
 #   DEBUG=formio:db (see index.js for more)
 #   DEBUG=formio:*
 ENV DEBUG=""
 
-COPY . /digital-journeys
+# Copy AOT formio first and then copy DGJ formio on top of it to add/overwrite the files with customizations
+RUN cp -r /aot-formio/* /forms-flow-forms/app
+COPY . /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/
+
+# Copy DGJ formio folder into a folder in the container so that it can be updated and mounted to /forms-flow-forms/app at runtime using lsyncd and docker volume that is defined in the docker-compose.yml
+COPY . /digital-journeys
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)

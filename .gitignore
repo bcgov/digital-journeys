@@ -1,3 +1,46 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+null
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IntelliJ IDEA
+.idea
+*.iml
+
+# ML Jobs
+jobs/sentiment-analysis/venv
+jobs/sentiment-analysis/__pycache__
+jobs/sentiment-analysis/sentiment_analysis.egg-info
+jobs/sentiment-analysis/tests/__pycache__
+jobs/sentiment-analysis/utils/__pycache__
+jobs/sentiment-analysis/dbms/__pycache__
+
+#Visual Studio Code
+.vscode
+
+#Database
+postgres/
+mongodb/
+
 ### Flask ###
 instance/*
 !instance/.gitignore
@@ -25,9 +68,6 @@ __pycache__/
 
 # A gitigored directory for local files
 .local-files/*
-
-# Idea
-.idea
 
 # Local History for Visual Studio Code
 .history/

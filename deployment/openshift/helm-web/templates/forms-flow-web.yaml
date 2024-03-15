@@ -1,0 +1,159 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: helm-forms-flow-web
+objects:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APP_NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${APP_NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources:
+        limits:
+          cpu: ${CPU_LIMIT}
+          memory: ${MEMORY_LIMIT}
+        requests:
+          cpu: ${CPU_REQUEST}
+          memory: ${MEMORY_REQUEST}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${APP_NAME}
+      spec:
+        containers:
+        - env: null
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+          name: ${NAME}
+          ports:
+          - containerPort: 8080
+          resources: {}
+          tty: true
+          volumeMounts:
+          - mountPath: ${KC_MOUNT_PATH}
+            name: ${NAME}-keycloak-config
+            readOnly: true
+          - mountPath: ${MOUNT_PATH}
+            name: ${NAME}-config
+            readOnly: true
+        restartPolicy: Always
+        volumes:
+        - name: ${NAME}-keycloak-config
+          configMap:
+            defaultMode: 420
+            name: ${NAME}-keycloak-config
+        - name: ${NAME}-config
+          configMap:
+            defaultMode: 420
+            name: ${NAME}-config
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:${TAG_NAME}
+          namespace: ${IMAGE_NAMESPACE}
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations: null
+    creationTimestamp: null
+    labels:
+      app: ${APP_NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: ${APP_NAME}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${APP_NAME}
+    name: ${NAME}
+  spec:
+    host: ${FFAWEB_URL}
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+parameters:
+- description: The name assigned to the application
+  displayName: APP_NAME
+  name: APP_NAME
+  required: true
+  value: forms-flow-web
+- description: The name assigned to all of the OpenShift resources
+  displayName: Name
+  name: NAME
+  required: true
+  value: forms-flow-web
+- description: The namespace of the imagestream
+  displayName: Image Namespace
+  name: IMAGE_NAMESPACE
+  required: true
+  value: e66ac2-tools
+- description: The TAG name for this environment, e.g., dev, test, prod
+  displayName: Environment TAG name
+  name: TAG_NAME
+  required: true
+  value: latest
+- description: The resources CPU request (in cores) for this build.
+  displayName: Resources CPU Request
+  name: CPU_REQUEST
+  required: true
+  value: 100m
+- description: The resources CPU limit (in cores) for this build.
+  displayName: Resources CPU Limit
+  name: CPU_LIMIT
+  required: true
+  value: 250m
+- description: The resources Memory request for this build
+  displayName: Resources Memory Request
+  name: MEMORY_REQUEST
+  required: true
+  value: 100Mi
+- description: The resources Memory limit (in Mi, Gi, etc) for this build.
+  displayName: Resources Memory Limit
+  name: MEMORY_LIMIT
+  required: true
+  value: 2Gi
+- description: The path where the app config directory will get mounted.
+  displayName: Mount config directory.
+  name: KC_MOUNT_PATH
+  required: true
+  value: /usr/share/nginx/html/config/kc
+- description: The path where the app config directory will get mounted.
+  displayName: Mount config directory.
+  name: MOUNT_PATH
+  required: true
+  value: /usr/share/nginx/html/config/
+- description: Route to access Forms Flow AI Web site
+  displayName: FFAWEB_URL
+  name: FFAWEB_URL
+  required: true

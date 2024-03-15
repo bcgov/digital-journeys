@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
-import { Translation } from "react-i18next";
+import { Translation, withTranslation } from "react-i18next";
 import "../../resourceBundles/i18n";
 
 //TODO convert this code to functional component
@@ -19,12 +19,13 @@ import "../../resourceBundles/i18n";
 // for edit
 import {
   fetchAllBpmProcesses,
+  getApplicationCount,
   getFormProcesses,
   resetFormProcessData,
   saveFormProcessMapperPost,
   saveFormProcessMapperPut,
 } from "../../apiManager/services/processServices";
-import { selectRoot, selectError, getForm } from "react-formio";
+import { selectRoot, selectError, getForm, Formio } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -37,6 +38,7 @@ import {
   STEPPER_ROUTES,
 } from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
+
 import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 class StepperPage extends PureComponent {
@@ -92,6 +94,7 @@ class StepperPage extends PureComponent {
       nextProps.match.params.formId !== prevState.formId
     ) {
       if (nextProps.match.params.formId !== FORM_CREATE_ROUTE) {
+        Formio.cache = {};
         nextProps.getForm(nextProps.match.params.formId);
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }
@@ -244,6 +247,8 @@ class StepperPage extends PureComponent {
         ? formProcessList.taskVariable
         : [],
       anonymous: formProcessList.anonymous ? true : false,
+      parentFormId: formProcessList.parentFormId,
+      formType: formProcessList.formType,
       supportedIdp: idp,
     };
 
@@ -262,6 +267,9 @@ class StepperPage extends PureComponent {
     if (formProcessList && formProcessList.id) {
       data.id = formProcessList.id;
     }
+
+    data.workflowChanged = data?.processKey !== formPreviousData.processKey;
+    data.statusChanged =  processData?.status !== formPreviousData.status;
 
     if (isNewVersionNeeded()) {
       // POST request for creating new mapper version of the current form.
@@ -296,13 +304,7 @@ class StepperPage extends PureComponent {
         if (previewMode) {
           return <Preview handleNext={this.handleNext} />;
         } else if (editMode) {
-          return (
-            <Edit
-              handleNext={this.handleNext}
-              {...this.props}
-              setPreviewMode={this.setPreviewMode}
-            />
-          );
+          return <Edit />;
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
       case 1:
@@ -342,7 +344,7 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-
+    const { t } = this.props;
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -353,9 +355,7 @@ class StepperPage extends PureComponent {
           {this.props.isAuthenticated ? (
             <Link
               to={`${this.state.redirectUrl}form`}
-              title={<Translation >
-              {(t) => t("Back to Form List")}
-            </Translation>}
+              title={t("Back to Form List")}
             >
               <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
@@ -422,7 +422,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getAllProcesses: (tenantKey) => {
-    const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
+      const tenantIdIn = MULTITENANCY_ENABLED ? tenantKey : null;
       dispatch(
         // eslint-disable-next-line no-unused-vars
         fetchAllBpmProcesses(tenantIdIn, (err, res) => {
@@ -462,9 +462,11 @@ const mapDispatchToProps = (dispatch) => {
     getFormProcessesDetails: (formId) => {
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        getFormProcesses(formId, (err, res) => {
-          if (err) {
-            console.log(err);
+        getFormProcesses(formId, (err, data) => {
+          if (!err) {
+            dispatch(getApplicationCount(data.id));
+          }else{
+            console.error(err);
           }
         })
       );
@@ -473,4 +475,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StepperPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withTranslation()(StepperPage));

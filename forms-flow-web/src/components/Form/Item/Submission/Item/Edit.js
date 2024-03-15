@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect , useState, useRef} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -29,7 +29,7 @@ import {
   UPDATE_EVENT_STATUS,
   getProcessDataReq,
 } from "../../../../../constants/applicationConstants";
-import { Link, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { updateApplicationEvent } from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
@@ -79,9 +79,10 @@ const Edit = React.memo((props) => {
     editSubmissionPage,
   } = props;
 
+  const [updatedSubmissionData, setUpdatedSubmissionData] = useState({});
+  
   const formRef = useRef(null);
-
-  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = useState(false);
 
   const [showPopup, setShowPopup] = React.useState(false);
   const [popupData, setPopupData] = React.useState();
@@ -280,31 +281,38 @@ const Edit = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
+        // active={isFormSubmissionLoading}
         active={isFormSubmissionLoading || isCustomFormSubmissionLoading}
         spinner
+        // text={t("Loading...")}
         text={isFormSubmissionLoading || isCustomFormSubmissionLoading ? "Submitting..." : "Loading..."}
         className="col-12"
       >
         <div className="ml-4 mr-4" id="formview">
           <Form
             form={form}
-            submission={updatedSubmission}
+            submission={isFormSubmissionLoading ? updatedSubmissionData : updatedSubmission}
             url={url}
             hideComponents={hideComponents}
-            onSubmit={(submission) =>
+            onSubmit={(submission) =>{
+
+              setUpdatedSubmissionData(submission);
               onSubmit(
                 submission,
                 applicationDetail,
                 onFormSubmit,
                 form._id,
                 redirectUrl
-              )
+              );
+            }
+              
             }
             options={{
               ...options,
               i18n: formio_resourceBundles,
               language: lang,
             }}
+            // onCustomEvent={onCustomEvent}
             onCustomEvent={applicationTask ? onApplicationFormSubmitCustomEvent : onCustomEvent}
             ref={formRef}
           />
@@ -328,7 +336,6 @@ const mapStateToProps = (state) => {
 
   return {
     user: state.user.userDetail,
-    authToken: state.user.bearerToken,
     form: selectRoot("form", state),
     submission: selectRoot("submission", state),
     isAuthenticated: state.user.isAuthenticated,
@@ -346,6 +353,7 @@ const mapStateToProps = (state) => {
       },
     },
     submissionError: selectRoot("formDelete", state).formSubmissionError,
+    authToken: state.user.bearerToken,
     task: state?.bpmTasks?.taskDetail,
   };
 };
@@ -367,15 +375,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           ) {
             const data = getProcessDataReq(applicationDetail);
             dispatch(
-              updateApplicationEvent(data, () => { 
+              updateApplicationEvent(data, () => {
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
                 if (onFormSubmit) {
                   onFormSubmit();
                 } else {
-                  // toast.success(
-                  //   <Translation>{(t) => t("Submission Saved")}</Translation>
-                  // );
+                  /* toast.success(
+                    <Translation>{(t) => t("Submission Saved")}</Translation>
+                  ); */
                   toast.success(
                     "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
                   );
@@ -394,9 +402,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (onFormSubmit) {
               onFormSubmit();
             } else {
-              // toast.success(
-              //   <Translation>{(t) => t("Submission Saved")}</Translation>
-              // );
+              /* toast.success(
+                <Translation>{(t) => t("Submission Saved")}</Translation>
+              ); */
               toast.success(
                 "Thank you for your submission. Once your submission has been reviewed by your supervisor, you will receive a notification via email. You can view a copy of your submission in your forms dashboard."
               );
@@ -430,15 +438,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           onFormSubmit ? formId : ownProps.match.params.formId,
           callBack
         );
+      }else{
+        dispatch(
+          saveSubmission(
+            "submission",
+            submission,
+            onFormSubmit ? formId : ownProps.match.params.formId,
+            callBack
+          )
+        );
       }
-      dispatch(
-        saveSubmission(
-          "submission",
-          submission,
-          onFormSubmit ? formId : ownProps.match.params.formId,
-          callBack
-        )
-      );
+     
     },
     onConfirm: () => {
       const ErrorDetails = { modalOpen: false, message: "" };

@@ -71,16 +71,9 @@ export const saveLastUpdatedDraft = (data) => (dispatch) => {
   });
 };
 
-export const setSelectedDraftForDelete = (data) => (dispatch) => {
+export const setDraftDelete = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.SET_SELECTED_DRAFT_FOR_DELETE,
-    payload: data,
-  });
-};
-
-export const setDeleteDraft = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.DELETE_DRAFT,
+    type: ACTION_CONSTANTS.DRAFT_DELETE,
     payload: data,
   });
 };

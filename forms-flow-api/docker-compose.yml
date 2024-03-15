@@ -20,8 +20,9 @@ services:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    links:
+    depends_on:
       - forms-flow-webapi-db
+    entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
       - '5000:5000'
     volumes:
@@ -43,13 +44,15 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      WEB_BASE_URL: ${WEB_BASE_URL:-null}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
       KEYCLOAK_ENABLE_CLIENT_AUTH: ${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
-
+      FORM_EMBED_JWT_SECRET: ${FORM_EMBED_JWT_SECRET:-f6a69a42-7f8a-11ed-a1eb-0242ac120002}
+ 
     stdin_open: true # -i
     tty: true # -t
     networks:
