@@ -13,7 +13,7 @@ on:
         - test
         - production
   push:
-    branches: [DGJ_1236-update-to-the-new-helm-chart-deployment]
+    branches: [main]
     paths:
       - "forms-flow-forms/**"
       - "deployment/openshift/forms-flow-forms_bc.yaml"
