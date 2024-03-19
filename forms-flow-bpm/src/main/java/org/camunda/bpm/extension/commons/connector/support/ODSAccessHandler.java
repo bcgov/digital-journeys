@@ -34,7 +34,11 @@ public class ODSAccessHandler extends AbstractAccessHandler {
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
-
+        System.out.println("ODSAccessHandler : ");
+        System.out.println(url);
+        System.out.println(method);
+        System.out.println(odsAuthHeader);
+        System.out.println(payload);
         Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.method(method).uri(url)
                 .header("Authorization", odsAuthHeader)
                 .accept(MediaType.APPLICATION_JSON)
