@@ -646,6 +646,24 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (
+      search.includes(successTypes.DELETE_TELEWORK)
+    ) {
+      let name = search.replace(`?type=${successTypes.DELETE_TELEWORK}_`, "");
+      name = name.split("_");
+      for(let i = 0; i < name.length; i++) {
+        if (name[i].length >= 2) {
+          name[i] = name[i][0].toUpperCase() + name[i].substr(1).toLowerCase();
+        }
+      }
+      name = name.join(" ");
+      return (
+        <>
+          <span className="success-content-intro">
+            {name}&apos;s telework form was deleted successfully.
+          </span>
+        </>
+      );
     }
   };
 
