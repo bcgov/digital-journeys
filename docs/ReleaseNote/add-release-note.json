@@ -1,5 +1,5 @@
 {
-    "title": "Release notes: November, 2022",
+    "title": "Welcome to Digital Journeys",
     "content": {
             "title": "Release Note",
             "display": "form",
@@ -9,87 +9,7 @@
             "tags": [
                 "common"
             ],
-            "components": [
-                {
-                    "label": "HTML",
-                    "tag": "p",
-                    "className": "",
-                    "attrs": [
-                        {
-                            "attr": "",
-                            "value": ""
-                        }
-                    ],
-                    "content": "Updates to the Digital Journeys platform.<br/><br/>",
-                    "refreshOnChange": false,
-                    "customClass": "",
-                    "hidden": false,
-                    "modalEdit": false,
-                    "key": "html",
-                    "tags": [],
-                    "properties": {},
-                    "conditional": {
-                        "show": null,
-                        "when": null,
-                        "eq": "",
-                        "json": ""
-                    },
-                    "customConditional": "",
-                    "logic": [],
-                    "attributes": {},
-                    "overlay": {
-                        "style": "",
-                        "page": "",
-                        "left": "",
-                        "top": "",
-                        "width": "",
-                        "height": ""
-                    },
-                    "type": "htmlelement",
-                    "input": false,
-                    "tableView": false,
-                    "placeholder": "",
-                    "prefix": "",
-                    "suffix": "",
-                    "multiple": false,
-                    "defaultValue": null,
-                    "protected": false,
-                    "unique": false,
-                    "persistent": false,
-                    "clearOnHide": true,
-                    "refreshOn": "",
-                    "redrawOn": "",
-                    "dataGridLabel": false,
-                    "labelPosition": "top",
-                    "description": "",
-                    "errorLabel": "",
-                    "tooltip": "",
-                    "hideLabel": false,
-                    "tabindex": "",
-                    "disabled": false,
-                    "autofocus": false,
-                    "dbIndex": false,
-                    "customDefaultValue": "",
-                    "calculateValue": "",
-                    "calculateServer": false,
-                    "widget": null,
-                    "validateOn": "change",
-                    "validate": {
-                        "required": false,
-                        "custom": "",
-                        "customPrivate": false,
-                        "strictDateValidation": false,
-                        "multiple": false,
-                        "unique": false
-                    },
-                    "allowCalculateOverride": false,
-                    "encrypted": false,
-                    "showCharCount": false,
-                    "showWordCount": false,
-                    "allowMultipleMasks": false,
-                    "addons": [],
-                    "id": "efxfzxs"
-                },
+            "components": [                
                 {
                     "html": "<h3>New features in the form</h3>",
                     "label": "New features in the form",
@@ -315,7 +235,7 @@
                     "id": "er0gfbb"
                 },
                 {
-                    "html": "<h3>Global features accessed from the top menu bar</h3>",
+                    "html": "<h3>Features accessed from the top menu bar</h3>",
                     "label": "h",
                     "customClass": "margin-bottom-10",
                     "refreshOnChange": false,
@@ -387,7 +307,7 @@
                     "id": "ekzcotl"
                 },
                 {
-                    "html": "<p style=\"margin-left:40px;\"><strong>\"Forms\" Tab:</strong> Where you can find all forms available for you.</p><p style=\"margin-left:40px;\"><strong>\"Draft Forms\" Tab: </strong>Where your draft forms are stored and available for you to complete and submit.</p><p style=\"margin-left:40px;\"><strong>\"Submitted Forms\":</strong> Where all forms you have submitted before, and status of each submission.</p>",
+                    "html": "<p style=\"margin-left:40px;\"><strong>\"Forms\" Tab:</strong> Where you can find all forms available for you.</p><p style=\"margin-left:40px;\"><strong>\"Draft Forms\" Tab: </strong>Where your draft forms are stored and available for you to complete and submit.</p><p style=\"margin-left:40px;\"><strong>\"Submitted Forms\":</strong> Where all forms you have submitted before, and status of each submission.</p><p style=\"margin-left:40px;\"><strong>\"Review and Process Forms\":</strong> Where supervisors can access forms for pending for approval, and previously approved or denied forms.</p>",
                     "label": "Content",
                     "customClass": "margin-bottom-0",
                     "refreshOnChange": false,
@@ -457,7 +377,7 @@
                     "allowMultipleMasks": false,
                     "addons": [],
                     "id": "ecbwd9p"
-                },
+                },                
                 {
                     "label": "HTML",
                     "tag": "p",
