@@ -649,7 +649,7 @@ export default React.memo(() => {
     } else if (
       search.includes(successTypes.DELETE_TELEWORK)
     ) {
-      let name = search.replace("?type=DELETE_TELEWORK_", "");
+      let name = search.replace(`?type=${successTypes.DELETE_TELEWORK}_`, "");
       name = name.split("_");
       for(let i = 0; i < name.length; i++) {
         if (name[i].length >= 2) {
