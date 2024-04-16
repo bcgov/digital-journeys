@@ -5,7 +5,6 @@ import { fetchAlertNoteData } from "../../apiManager/services/alertNoteService";
 const AlertNoteBanner = React.memo(() => {
     const dispatch = useDispatch();
     const alertNoteData = useSelector((state) => state.alertNote);
-    console.log({alertNoteData});
     useEffect(() => {
         dispatch(fetchAlertNoteData());
     }, [dispatch, fetchAlertNoteData]);
