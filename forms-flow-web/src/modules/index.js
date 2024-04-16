@@ -19,6 +19,7 @@ import draftSubmission from "./draftReducer";
 import formRestore from "./RestoreFormReducer";
 import employeeData from "./employeeDataReducer";
 import releaseNote from "./releaseNoteReducer";
+import alertNote from "./alertNoteReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -49,6 +50,7 @@ const createRootReducer = (history) =>
     draft: draftSubmission,
     employeeData,
     releaseNote,
+    alertNote,
   });
 
 export default createRootReducer;

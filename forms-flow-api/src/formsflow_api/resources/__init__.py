@@ -30,6 +30,7 @@ from formsflow_api.resources.employeeData import API as EMPLOYEE_DATA_API
 from formsflow_api.resources.ministry_names import API as MINISTRY_NAMES_API
 from formsflow_api.resources.release_note import API as RELEASE_NOTE_API
 from formsflow_api.resources.influenzaWorksite import API as INFLUENZA_API
+from formsflow_api.resources.alert_note import API as ALERT_NOTE_API
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
@@ -89,3 +90,4 @@ API.add_namespace(EMPLOYEE_DATA_API, path="/employee-data")
 API.add_namespace(MINISTRY_NAMES_API, path="/ministry-names")
 API.add_namespace(RELEASE_NOTE_API, path="/release-note")
 API.add_namespace(INFLUENZA_API, path="/influenza")
+API.add_namespace(ALERT_NOTE_API, path="/alert-note")

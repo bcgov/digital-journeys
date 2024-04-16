@@ -26,6 +26,7 @@ from .form_history_logs import FormHistorySchema
 from .process import ProcessListSchema
 from .roles import RolesGroupsSchema
 from formsflow_api.schemas.release_note import ReleaseNoteSchema
+from formsflow_api.schemas.alert_note import AlertNoteSchema
 from .keycloak_admin import (
     KeycloakResponseSchema, 
     KeycloakUserSchema, 

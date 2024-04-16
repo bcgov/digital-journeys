@@ -181,6 +181,7 @@ const ACTION_CONSTANTS = {
 
   // Release note data
   RELEASE_NOTE_DATA: "RELEASE_NOTE_DATA",
+  ALERT_NOTE_DATA: "ALERT_NOTE_DATA",
 };
 
 export default ACTION_CONSTANTS;
