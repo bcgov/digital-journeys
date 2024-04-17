@@ -664,6 +664,49 @@ export default React.memo(() => {
           </span>
         </>
       );
+    } else if (
+      search.includes(successTypes.COI_SUBMISSION)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Your form has been sent to your supervisor
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                You will receive an email confirming your submission. 
+                Your supervisor will also be notified via email about your form submission.
+              </li>
+              <li>
+                You can modify your submission prior to receiving approval from your supervisor. 
+                You can find your submitted form in the Submitted Forms
+                &nbsp;
+                <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
+                  Submitted Forms
+                </a>
+                &nbsp; tab.
+              </li>
+            </ul>
+          </div>
+
+          <span className="success-content-intro">
+            Next steps
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                After your supervisor approves, you will receive a confirmation and a 
+                copy of your form on your email. 
+                Your form will be automatically forwarded to AskMyHR for further processing.
+              </li>
+              <li>
+                In case your supervisor needs some additional information, they will reach out to you.
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     }
   };
 
