@@ -389,8 +389,8 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for registering your worksite for the {new Date().getFullYear()} Cold and Flu
-            Program
+            Thank you for registering your worksite for the{" "}
+            {new Date().getFullYear()} Cold and Flu Program
           </span>
           <div className="success-content-body">
             <ul>
@@ -527,11 +527,10 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">Leave Denied</span>
-          <div className="success-content-body">                          
-              Please inform the employee the reason for denial. If they still
-              want to go on leave, the employee must resubmit the form.
-              Employees can access the form in the &quot;Submitted forms&quot;
-              tab.              
+          <div className="success-content-body">
+            Please inform the employee the reason for denial. If they still want
+            to go on leave, the employee must resubmit the form. Employees can
+            access the form in the &quot;Submitted forms&quot; tab.
           </div>
         </>
       );
@@ -646,12 +645,10 @@ export default React.memo(() => {
           </div>
         </>
       );
-    } else if (
-      search.includes(successTypes.DELETE_TELEWORK)
-    ) {
+    } else if (search.includes(successTypes.DELETE_TELEWORK)) {
       let name = search.replace(`?type=${successTypes.DELETE_TELEWORK}_`, "");
       name = name.split("_");
-      for(let i = 0; i < name.length; i++) {
+      for (let i = 0; i < name.length; i++) {
         if (name[i].length >= 2) {
           name[i] = name[i][0].toUpperCase() + name[i].substr(1).toLowerCase();
         }
@@ -664,9 +661,7 @@ export default React.memo(() => {
           </span>
         </>
       );
-    } else if (
-      search.includes(successTypes.COI_SUBMISSION)
-    ) {
+    } else if (search.includes(successTypes.COI_SUBMISSION)) {
       return (
         <>
           <span className="success-content-intro">
@@ -675,13 +670,14 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                You will receive an email confirming your submission. 
-                Your supervisor will also be notified via email about your form submission.
+                You will receive an email confirming your submission. Your
+                supervisor will also be notified via email about your form
+                submission.
               </li>
               <li>
-                You can modify your submission prior to receiving approval from your supervisor. 
-                You can find your submitted form in the Submitted Forms
-                &nbsp;
+                You can modify your submission prior to receiving approval from
+                your supervisor. You can find your submitted form in the
+                Submitted Forms &nbsp;
                 <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
                   Submitted Forms
                 </a>
@@ -690,18 +686,17 @@ export default React.memo(() => {
             </ul>
           </div>
 
-          <span className="success-content-intro">
-            Next steps
-          </span>
+          <span className="success-content-intro">Next steps</span>
           <div className="success-content-body">
             <ul>
               <li>
-                After your supervisor approves, you will receive a confirmation and a 
-                copy of your form on your email. 
-                Your form will be automatically forwarded to AskMyHR for further processing.
+                After your supervisor approves, you will receive a confirmation
+                and a copy of your form on your email. Your form will be
+                automatically forwarded to AskMyHR for further processing.
               </li>
               <li>
-                In case your supervisor needs some additional information, they will reach out to you.
+                In case your supervisor needs some additional information, they
+                will reach out to you.
               </li>
             </ul>
           </div>
