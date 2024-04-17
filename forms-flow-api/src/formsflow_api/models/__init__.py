@@ -11,6 +11,7 @@ from .form_history_logs import FormHistory
 from .form_process_mapper import FormProcessMapper
 from .release_note import ReleaseNote
 from .release_note_map_user import ReleaseNoteMapUser
+from .alert_note import AlertNote
 
 __all__ = [
     "db",
@@ -26,4 +27,5 @@ __all__ = [
     "FormHistory",
     "ReleaseNote",
     "ReleaseNoteMapUser",
+    "AlertNote"
 ]

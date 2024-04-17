@@ -15,6 +15,7 @@ import NotFound from "./NotFound";
 
 import { Container } from "react-bootstrap";
 import ReleaseNoteModal from "./ReleaseNote/ReleaseNoteModal";
+import AlertNoteBanner from "./AlertNote/AlertNoteBanner";
 
 const BaseRouting = React.memo(({ store }) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
@@ -23,6 +24,7 @@ const BaseRouting = React.memo(({ store }) => {
     <>
       {isAuth ? <NavBar /> : null}
       {isAuth ? <ReleaseNoteModal /> : null}
+      {isAuth ? <AlertNoteBanner /> : null}
       <div className="wrapper">
         {/*{isAuth?<SideBar store={store} />:null}*/}
         <div className="content">

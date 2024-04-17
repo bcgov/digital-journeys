@@ -19,6 +19,7 @@ from formsflow_api.services.employeeDataService import EmployeeDataService
 from formsflow_api.services.release_note import ReleaseNoteService
 from formsflow_api.services.keycloak_service import KeycloakService
 from formsflow_api.services.influenza_service import InfluenzaService
+from formsflow_api.services.alert_note import AlertNoteService
 
 __all__ = [
     "ApplicationService",
@@ -39,4 +40,5 @@ __all__ = [
     "ReleaseNoteService",
     "KeycloakService",
     "InfluenzaService",
+    "AlertNoteService",
 ]
