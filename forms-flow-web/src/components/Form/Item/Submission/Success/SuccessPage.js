@@ -702,6 +702,25 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (
+      search.includes(successTypes.COI_SUPERVISOR_SUBMISSION_APPROVED)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Conflict of Interest Disclosure Form approved
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                An <b>AskMyHR service request will automatically be submitted</b> on
+                your behalf to process this form. You will receive a
+                confirmation email from AskMyHR with the service request number.
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     }
   };
 
