@@ -18,6 +18,8 @@ RUN apk update && \
     apk add g++=8.3.0-r0 &&\
     apk add git
 
+# Clone code
+RUN git clone -b ${FORMIO_SOURCE_REPO_BRANCH} ${FORMIO_SOURCE_REPO_URL} /forms/
 
 # Using an alternative package install location
 # to allow overwriting the /app folder at runtime
@@ -43,6 +45,8 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:db (see index.js for more)
 #   DEBUG=formio:*
 ENV DEBUG=""
+
+RUN cp -r /forms/forms-flow-forms/* /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/

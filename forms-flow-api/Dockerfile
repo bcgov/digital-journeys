@@ -20,6 +20,7 @@ RUN pip install -e .
 COPY ./lsyncd.conf lsyncd.conf
 
 EXPOSE 5000
+COPY wait-for-service.sh /wait-for-service.sh
+RUN chmod u+x /wait-for-service.sh
 RUN chmod u+x ./entrypoint.dev
-
 CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]

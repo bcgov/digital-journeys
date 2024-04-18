@@ -56,7 +56,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         self.commit()
 
     @classmethod
-    def get_by_id(cls, draft_id: str, user_id: str) -> Draft:
+    def get_by_id(cls, draft_id: str, user_id: str, 
+                  draft_status: DraftStatus = DraftStatus.ACTIVE) -> Draft:
         """Retrieves the draft entry by id."""
         result = (
             cls.query.join(Application, Application.id == cls.application_id)
@@ -66,7 +67,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             )
             .filter(
                 and_(
-                    cls.status == str(DraftStatus.ACTIVE.value),
+                    cls.status == str(draft_status.value),
                     Application.created_by == user_id,
                     cls.id == draft_id,
                 )
@@ -157,6 +158,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         """Activates the application from the draft entry."""
         # draft = cls.query.get(draft_id)
         draft = cls.get_by_id(draft_id, user_id)
+        # Storing and later returning original draft.data to later un-submit the draft in case something goes wrong on the Camunda workflow side
+        draft_data = draft.data
         if not draft:
             return None
         stmt = (
@@ -165,12 +168,13 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             .values(
                 application_status=data["application_status"],
                 submission_id=data["submission_id"],
+                submission_display_name=data["submission_display_name"]
             )
         )
         cls.execute(stmt)
         # The update statement will be commited by the following update
         draft.update({"status": DraftStatus.INACTIVE.value, "data": {}})
-        return draft
+        return draft, draft_data
 
     @classmethod
     def filter_conditions(cls, **filters):
@@ -216,3 +220,23 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         )
         draft_count = query.count()
         return draft_count
+    
+    @classmethod
+    def un_make_submission(cls, draft_id, data, user_id, original_draft_data):
+        """Un-activates the application from the draft entry."""
+        # draft = cls.query.get(draft_id)
+        draft = cls.get_by_id(draft_id, user_id, DraftStatus.INACTIVE)
+        if not draft:
+            return None
+        stmt = (
+            update(Application)
+            .where(Application.id == draft.application_id)
+            .values(
+                application_status=data["application_status"],
+                submission_id=data["submission_id"],
+            )
+        )
+        cls.execute(stmt)
+        # The update statement will be commited by the following update
+        draft.update({"status": DraftStatus.ACTIVE.value, "data": original_draft_data})
+        return draft

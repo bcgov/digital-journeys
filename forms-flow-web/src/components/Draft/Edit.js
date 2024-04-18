@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
@@ -24,15 +25,15 @@ import {
   setFormSubmissionLoading,
   setFormSubmitted,
 } from "../../actions/formActions";
-import {
-  setDraftDetail
-} from "../../actions/draftActions";
 import { postCustomSubmission } from "../../apiManager/services/FormServices";
 import {
   getProcessReq,
   getDraftReqFormat,
 } from "../../apiManager/services/bpmServices";
-import { draftUpdate } from "../../apiManager/services/draftService";
+import {
+  deleteDraftbyId,
+  draftUpdate,
+} from "../../apiManager/services/draftService";
 import {
   CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
@@ -43,8 +44,11 @@ import {
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
-// eslint-disable-next-line no-unused-vars
 import SavingLoading from "../Loading/SavingLoading";
+import Confirm from "../../containers/Confirm";
+import { setDraftDelete } from "../../actions/draftActions";
+
+import { setDraftDetail } from "../../actions/draftActions";
 import { redirectToFormSuccessPage } from "../../constants/successTypes";
 import { convertFormLinksToOpenInNewTabs, 
   hasUserAccessToForm, getDefaultValues, setValueForComponents } from "../../helper/formUtils";
@@ -64,13 +68,14 @@ const View = React.memo((props) => {
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
-
+  const draftDelete = useSelector((state) => state.draft?.draftDelete);
+  const [areFormLinksWereConverted, setAreFormLinksWereConverted] = React.useState(false);
   const formRef = useRef(null);
+  
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const draftSubmission = useSelector((state) => state.draft.submission);
-  // eslint-disable-next-line no-unused-vars
   const [draftSaved, setDraftSaved] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   /**
@@ -81,16 +86,14 @@ const View = React.memo((props) => {
   // Holds the latest data saved by the server
   const lastUpdatedDraft = useSelector((state) => state.draft.lastUpdated);
   const draftRef = useRef();
-  const { formId } = useParams();
+  const { formId, draftId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const exitType = useRef("UNMOUNT");
 
   const [hasFormAccess, setHasFormAccess] = useState(true);
   const [addEditForm, setAddEditForm] = useState({isAllow: true});
-
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState();
-
   const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
   
   const {
@@ -109,17 +112,17 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const saveDraft = (payload, exitType = exitType) => {
+    if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     if (draftSubmission?.id) {
+      if (String(draftSubmission?.id) !== String(draftId)) return;
       if (dataChanged) {
         setDraftSaved(false);
         if (!showNotification) setShowNotification(true);
         dispatch(
           draftUpdate(payload, draftSubmission?.id, (err) => {
             if (exitType === "UNMOUNT" && !err) {
-              toast.success(
-              t("Submission saved to draft.")
-              );
+              toast.success(t("Submission saved to draft."));
               dispatch(setDraftDetail(null));
             }
             if (!err) {
@@ -150,7 +153,7 @@ const View = React.memo((props) => {
       let payload = getDraftReqFormat(formId, draftRef.current);
       if (poll) saveDraft(payload, exitType.current);
     };
-  }, [poll, exitType.current, draftSubmission]);
+  }, [poll, exitType.current, draftSubmission?.id]);
 
   /* Pass values to the form components
    A component with the same key should be present in the form otherwise it will be ignored */
@@ -200,6 +203,46 @@ const View = React.memo((props) => {
     );
   }
 
+  const deleteDraft = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: true,
+        draftId: draftSubmission.id,
+        draftName: draftSubmission.DraftName,
+      })
+    );
+  };
+
+  const onYes = () => {
+    deleteDraftbyId(draftDelete.draftId)
+      .then(() => {
+        toast.success(t("Draft Deleted Successfully"));
+        dispatch(push(`${redirectUrl}draft`));
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        dispatch(
+          setDraftDelete({
+            modalOpen: false,
+            draftId: null,
+            draftName: "",
+          })
+        );
+      });
+  };
+
+  const onNo = () => {
+    dispatch(
+      setDraftDelete({
+        modalOpen: false,
+        draftId: null,
+        draftName: "",
+      })
+    );
+  };
+
   /** Is form enable to fetch default data from ODS?
    * EmployeeData and Submission are required, Check before processing.
    * "enableDraftDefault" is hidden param/field in the form,
@@ -219,7 +262,7 @@ const View = React.memo((props) => {
     }
   }
 
-  if (isFormSubmitted && !isAuthenticated) { 
+  if (isFormSubmitted && !isAuthenticated) {
     //This code has relevance only for form Submission Edit by Anonymous Users
     return (
       <div className="text-center pt-5">
@@ -273,12 +316,16 @@ const View = React.memo((props) => {
 
   return (
     <div className="container overflow-y-auto">
-      {/* {
+      {/*{
         <>
           <span className="pr-2  mr-2 d-flex justify-content-end align-items-center">
             {poll && showNotification && (
               <SavingLoading
-                text={draftSaved ? t("Saved to draft") : t("Saving...")}
+                text={
+                  draftSaved
+                    ? t("Saved to Applications/Drafts")
+                    : t("Saving...")
+                }
                 saved={draftSaved}
               />
             )}
@@ -325,7 +372,7 @@ const View = React.memo((props) => {
           {form.title ? (
             <h3 className="ml-3">
               <span className="task-head-details">
-                <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
+              <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; {t("Drafts")}
                 /
               </span>{" "}
               {form.title}
@@ -334,6 +381,13 @@ const View = React.memo((props) => {
             ""
           )}
         </div>
+        <button
+          className="btn btn-danger mr-2"
+          style={{ width: "8.5em" }}
+          onClick={() => deleteDraft()}
+        >
+          {t("Discard Draft")}
+        </button>
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
@@ -344,6 +398,18 @@ const View = React.memo((props) => {
         className="col-12"
       >
         <div className="ml-4 mr-4" id="formview">
+          <Confirm
+            modalOpen={draftDelete.modalOpen}
+            message={`${t("Are you sure you wish to delete the draft")} "${
+              draftDelete.draftName
+            }" 
+            ${t("with ID")} "${draftDelete.draftId}"`}
+            onNo={() => onNo()}
+            onYes={() => {
+              exitType.current = "SUBMIT";
+              onYes();
+            }}
+          />
           {
             <Form
               form={form}
@@ -377,6 +443,9 @@ const View = React.memo((props) => {
   );
 });
 
+const executeAuthSideEffects = (dispatch, redirectUrl) => {
+  dispatch(push(`${redirectUrl}draft`));
+};
 
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
@@ -400,16 +469,17 @@ const doProcessActions = (submission, ownProps) => {
       applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
+          // toast.success(
+          //   <Translation>{(t) => t("Submission Saved")}</Translation>
+          // );
           redirectToFormSuccessPage(dispatch, push, form?.path, submission);
         } else {
           toast.error(
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
-        if (!isAuth) {
-          dispatch(setFormSubmitted(true));
-        }
-        
+        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
+        else dispatch(setFormSubmitted(true));
       })
     );
   };
@@ -424,11 +494,9 @@ const mapStateToProps = (state) => {
   
   return {
     user: state.user.userDetail,
-    authToken: state.user.bearerToken,
     tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     submission: selectRoot("draft", state),
-    employeeData: selectRoot("employeeData", state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [selectError("form", state), selectError("submission", state)],
     options: {
@@ -440,6 +508,8 @@ const mapStateToProps = (state) => {
       },
     },
     submissionError: selectRoot("formDelete", state).formSubmissionError,
+    authToken: state.user.bearerToken,
+    employeeData: selectRoot("employeeData", state),
   };
 };
 

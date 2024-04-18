@@ -13,12 +13,14 @@ on:
         - test
         - production
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "forms-flow-api/**"
       - "forms-flow-api-utils/**"
       - "deployment/openshift/webapi_bc.yaml"
       - "deployment/openshift/webapi_dc.yaml"
+      - ".github/workflows/forms-flow-api-cd.yml"
+      - "deployment/openshift/helm-webapi/**"
 
 defaults:
   run:
@@ -159,7 +161,21 @@ jobs:
         working-directory: ./deployment/openshift
         run: |
           oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f webapi_dc.yaml \
+          oc project ${NAMESPACE}
+          echo "Current namespace is ${NAMESPACE}"
+          helm upgrade -i helm-forms-flow-webapi ./helm-webapi
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \ 
+                      #  --set NAME=${APP_NAME} \
+                      #  --set IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
+                      #  --set WEB_API_URL=${APP_URL} \
+                      #  --set TAG_NAME=${ENVIRONMENT} \
+                      #  --set CPU_REQUEST=100m \
+                      #  --set CPU_LIMIT=200m  \
+                      #  --set MEMORY_REQUEST=100Mi \
+                      #  --set MEMORY_LIMIT=2Gi \
+                       
+
+          oc -n ${NAMESPACE} process helm-forms-flow-webapi \
                 -p NAME=${APP_NAME} \
                 -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
                 -p TAG_NAME=${ENVIRONMENT} \

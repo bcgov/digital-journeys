@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import reactor.core.publisher.Mono;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class EmailAttachmentService {
     public ByteArrayDataSource generatePdf(String formId, String submissionId) throws IOException {
         String url = String.format("%s/form/%s/submission/%s/export/pdf", documentApiUrl, formId, submissionId);
 
-        Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.GET, null);
+        Mono<byte[]> pdfFile = httpServiceInvoker.exchangeForFile(url, HttpMethod.POST, null);
 
         return new ByteArrayDataSource(pdfFile.block(), "application/pdf");
     }

@@ -93,7 +93,8 @@ const ServiceFlowTaskList = React.memo(() => {
                 {/* <div
                   data-toggle="tooltip"
                   title={t("Task assignee")}
-                  className="pr-0 text-right"
+                  className="pr-0 text-right d-inline-block text-truncate"
+                  style={{maxWidth:"150"}}
                 >
                   <span> {task.assignee}</span>
                 </div> */}
@@ -145,6 +146,8 @@ const ServiceFlowTaskList = React.memo(() => {
               )}
             </div>
           ))}
+
+          <Row style={{justifyContent: "flex-end"}}>
           <div className="pagination-wrapper">
             <Pagination
               activePage={activePage}
@@ -156,6 +159,8 @@ const ServiceFlowTaskList = React.memo(() => {
               nextPageText=">"
             />
           </div>
+          </Row>
+
         </>
       );
     } else {
@@ -171,7 +176,7 @@ const ServiceFlowTaskList = React.memo(() => {
   return (
     <>
       <ListGroup className="service-task-list">
-        <TaskFilterComponent totalTasks={isTaskListLoading ? 0 : tasksCount} />
+        <TaskFilterComponent  totalTasks={isTaskListLoading ? 0 : tasksCount} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

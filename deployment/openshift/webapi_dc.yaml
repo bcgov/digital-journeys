@@ -80,16 +80,6 @@ objects:
                 secretKeyRef:
                   key: INSIGHTS_API_KEY
                   name: ${FORMSFLOW_CONFIG_NAME}-config
-            - name: KEYCLOAK_ADMIN_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: KEYCLOAK_ADMIN_USERNAME
-                  name: ${FORMSFLOW_CONFIG_NAME}-config
-            - name: KEYCLOAK_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: KEYCLOAK_ADMIN_PASSWORD
-                  name: ${FORMSFLOW_CONFIG_NAME}-config
             - name: KEYCLOAK_URL
               valueFrom:
                 secretKeyRef:
@@ -261,7 +251,7 @@ parameters:
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: "d89793-tools"
+    value: "e66ac2-tools"
   - name: INSTANCE
     description: The name of this instance of the application
     displayName: Application Instance Name

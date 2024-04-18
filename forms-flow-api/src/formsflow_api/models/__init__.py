@@ -6,9 +6,12 @@ from .authorization import Authorization, AuthType
 from .base_model import BaseModel
 from .db import db, ma
 from .draft import Draft
+from .filter import Filter
+from .form_history_logs import FormHistory
 from .form_process_mapper import FormProcessMapper
 from .release_note import ReleaseNote
 from .release_note_map_user import ReleaseNoteMapUser
+from .alert_note import AlertNote
 
 __all__ = [
     "db",
@@ -20,6 +23,9 @@ __all__ = [
     "Draft",
     "AuthType",
     "Authorization",
+    "Filter",
+    "FormHistory",
     "ReleaseNote",
     "ReleaseNoteMapUser",
+    "AlertNote"
 ]

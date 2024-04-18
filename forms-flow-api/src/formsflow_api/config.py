@@ -86,6 +86,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
+    # Web url
+    WEB_BASE_URL = os.getenv("WEB_BASE_URL")
+
     # Formio url
     FORMIO_URL = os.getenv("FORMIO_URL")
     FORMIO_USERNAME = os.getenv("FORMIO_ROOT_EMAIL")
@@ -102,6 +105,10 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # Formio JWT Secret
     FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "--- change me now ---")
+    # Form embed JWT Secret for custom authentication
+    FORM_EMBED_JWT_SECRET = os.getenv(
+        "FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
+    )
 
     # ODS
     EMPLOYEE_DATA_API_URL = os.getenv("EMPLOYEE_DATA_API_URL")
@@ -114,7 +121,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Process keys
     SL_REVIEW_PROCESS_KEY = os.getenv("SL_REVIEW_PROCESS_KEY")
     INFLUENZA_WORKSITE_PROCESS_KEY = os.getenv("INFLUENZA_WORKSITE_PROCESS_KEY")
-
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
@@ -151,6 +157,9 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     # Use docker to spin up mocks
     USE_DOCKER_MOCK = os.getenv("USE_DOCKER_MOCK", "False").lower() == "true"
+    TEST_FORM_EMBED_JWT_SECRET = os.getenv(
+        "TEST_FORM_EMBED_JWT_SECRET", "f6a69a42-7f8a-11ed-a1eb-0242ac120002"
+    )
 
     JWT_OIDC_TEST_KEYS = {
         "keys": [

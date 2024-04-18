@@ -389,8 +389,8 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for registering your worksite for the 2023 Cold and Flu
-            Program
+            Thank you for registering your worksite for the{" "}
+            {new Date().getFullYear()} Cold and Flu Program
           </span>
           <div className="success-content-body">
             <ul>
@@ -510,8 +510,7 @@ export default React.memo(() => {
               </li>
               <li>
                 Employees must inform their supervisor if there are any changes
-                to the start date of their maternity or parental leaves. As
-                the{" "}
+                to the start date of their maternity or parental leaves. As the{" "}
                 <b>
                   supervisor you can make changes to the start date, length of
                   leave and parental leave allowance dates on behalf of the
@@ -529,14 +528,9 @@ export default React.memo(() => {
         <>
           <span className="success-content-intro">Leave Denied</span>
           <div className="success-content-body">
-            <ol>
-              <li>
-                Please inform the employee the reason for denial. If they still
-                want to go on leave, the employee must resubmit the form.
-                Employees can access the form in the &quot;Submitted forms&quot;
-                tab.
-              </li>
-            </ol>
+            Please inform the employee the reason for denial. If they still want
+            to go on leave, the employee must resubmit the form. Employees can
+            access the form in the &quot;Submitted forms&quot; tab.
           </div>
         </>
       );
@@ -552,8 +546,9 @@ export default React.memo(() => {
             <ol>
               <div>
                 <li>
-                  You will receive an email with a pdf of the form attached
-                  confirming the same.
+                  You will receive an email confirming your submission. Your
+                  supervisor will also be notified via email about your form
+                  that needs approval.
                 </li>
               </div>
               <div>
@@ -576,14 +571,14 @@ export default React.memo(() => {
             <ol>
               <div>
                 <li>
-                  Your supervisor will approve your application and forward it
-                  to AskMyHR for processing.
+                  Your supervisor will approve your application after which it
+                  will be forwarded to AskMyHR for processing automatically.
                 </li>
               </div>
               <div>
                 <li>
                   You must inform your supervisor to update the dates on your
-                  application to notify AskMyHR if:
+                  form if:
                   <ol type="a">
                     <div>
                       <li>
@@ -647,6 +642,82 @@ export default React.memo(() => {
             weeks into your pregnancy, you are still eligible to take up to 17
             consecutive weeks of maternity leave starting from the date of the
             miscarriage, termination or stillbirth.
+          </div>
+        </>
+      );
+    } else if (search.includes(successTypes.DELETE_TELEWORK)) {
+      let name = search.replace(`?type=${successTypes.DELETE_TELEWORK}_`, "");
+      name = name.split("_");
+      for (let i = 0; i < name.length; i++) {
+        if (name[i].length >= 2) {
+          name[i] = name[i][0].toUpperCase() + name[i].substr(1).toLowerCase();
+        }
+      }
+      name = name.join(" ");
+      return (
+        <>
+          <span className="success-content-intro">
+            {name}&apos;s telework form was deleted successfully.
+          </span>
+        </>
+      );
+    } else if (search.includes(successTypes.COI_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Your form has been sent to your supervisor
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                You will receive an email confirming your submission. Your
+                supervisor will also be notified via email about your form
+                submission
+              </li>
+              <li>
+                You can modify your submission prior to receiving approval from
+                your supervisor. You can find your submitted form in the
+                Submitted Forms &nbsp;
+                <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
+                  Submitted Forms
+                </a>
+                &nbsp; tab
+              </li>
+            </ul>
+          </div>
+
+          <span className="success-content-intro">Next steps</span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                After your supervisor approves, you will receive a confirmation
+                and a copy of your form on your email. Your form will be
+                automatically forwarded to AskMyHR for further processing
+              </li>
+              <li>
+                In case your supervisor needs some additional information, they
+                will reach out to you
+              </li>
+            </ul>
+          </div>
+        </>
+      );
+    } else if (
+      search.includes(successTypes.COI_SUPERVISOR_SUBMISSION_APPROVED)
+    ) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Conflict of Interest Disclosure Form approved
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                An <b>AskMyHR service request will automatically be submitted</b> on
+                your behalf to process this form. You will receive a
+                confirmation email from AskMyHR with the service request number
+              </li>
+            </ul>
           </div>
         </>
       );

@@ -4,7 +4,7 @@
 class EmployeeData():
   # data: Response retrieved from the ODS
   # Spec of possible values can be found at: https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rst#Datamart_Telework_employee_demo
-  def __init__(self, data):
+  def __init__(self, data, noofrecords=1):
    self.displayName = " ".join(filter(None, (data.get("first_name"), data.get("last_name"))))
    self.name = data.get("name")
    self.firstName = data.get("first_name")
@@ -25,6 +25,20 @@ class EmployeeData():
    self.empId = data.get("EMPLID")
    self.positionTitle = data.get("position_title")
    self.depId = data.get("DEPTID")
+   self.mailAddress = ", ".join(filter(None, [
+        value.strip() for key, value in [
+            ("mail_address1", data.get("mail_address1")),
+            ("mail_address2", data.get("mail_address2")),
+            ("mail_city", data.get("mail_city")),
+            ("mail_stateprovince", data.get("mail_stateprovince")),
+            ("mail_postal", data.get("mail_postal"))
+        ] if value is not None and isinstance(value, str)]))
+   self.mailAddress1 = data.get("mail_address1")
+   self.mailAddress2 = data.get("mail_address2")
+   self.mailCity = data.get("mail_city")
+   self.mailCountry = data.get("mail_country")
+   self.mailPostal = data.get("mail_postal")
+   self.mailStateprovince = data.get("mail_stateprovince")
    self.officeAddress = ", ".join(filter(None, [
         value.strip() for key, value in [
             ("office_address1", data.get("office_address1")),
@@ -47,5 +61,9 @@ class EmployeeData():
    self.empCtg = data.get("EMPL_CTG")
    self.appointmentStatus = data.get("appointment_status")
    self.salAdminPlan = data.get("sal_admin_plan")
-   self.fullPartTime = data.get("full_part_time")
    self.phone = data.get("phone")
+   # Possible values: "F" for full-time, "P" for part-time, "D" for on demand     
+   self.fullPartTime = data.get("FULL_PART_TIME")
+   # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
+   self.jobIndicator = data.get("job_indicator")
+   self.noofrecords = noofrecords

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Tab, Tabs } from "react-bootstrap";
-import _ from "lodash";
 import TaskHeader from "./TaskHeader";
 import {
   reloadTaskFormSubmission,
@@ -44,6 +43,7 @@ import {
 import { getCustomSubmission } from "../../../apiManager/services/FormServices";
 import { getFormioRoleIds } from "../../../apiManager/services/userservices";
 
+import _ from "lodash";
 import {
   getUserRolePermission,
 } from "../../../helper/user";
@@ -70,10 +70,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const taskFormSubmissionReload = useSelector(
     (state) => state.bpmTasks.taskFormSubmissionReload
   );
-
-  const submission = useSelector((state) => state.submission.submission);
-  const isSubmissionLoaded = !(_.isEmpty(submission));
-
   const dispatch = useDispatch();
   const currentUser = useSelector(
     (state) => state.user?.userDetail?.preferred_username || ""
@@ -86,6 +82,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
+  const submission = useSelector((state) => state.submission.submission);
+  const isSubmissionLoaded = !(_.isEmpty(submission));
   const userRoles = useSelector((state) => state.user.roles);
 
   const [showPopup, setShowPopup] = useState(false);
@@ -134,7 +132,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(formUrl);
       Formio.clearCache();
       dispatch(resetFormData("form"));
-      function fetchForm() {
+      function fetchForm() {        
         dispatch(
           getForm("form", formId, (err) => {
             if (!err) {
@@ -169,14 +167,26 @@ const ServiceFlowTaskDetails = React.memo(() => {
   );
 
   useEffect(() => {
+    const originalConsoleWarn = console.warn;
+    
     if (task?.formUrl) {
+      /* #1501 getForm generated lots of unnecessary console warning, 
+           use the following to disable console.warn
+        */      
+      console.warn = () => {};
+
       dispatch(setFormSubmissionLoading(true));
       getFormSubmissionData(task?.formUrl);
     }
+
+    return () => {
+      console.warn = originalConsoleWarn;
+    };
   }, [task?.formUrl, dispatch, getFormSubmissionData]);
 
   useEffect(() => {
     if (task?.formUrl && taskFormSubmissionReload) {
+      // dispatch(setFormSubmissionLoading(false));
       dispatch(setFormSubmissionLoading(true));
       getFormSubmissionData(task?.formUrl);
       dispatch(reloadTaskFormSubmission(false));
@@ -208,6 +218,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
       ); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id));
       dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
+      
     }
   };
 
@@ -220,7 +231,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
         reloadCurrentTask();
         break;
       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
-        onFormSubmitCallback(customEvent.actionType, customEvent.successPage);
+        onFormSubmitCallback(customEvent.actionType, customEvent.successPage, 
+          customEvent?.isDefaultLoaderHidden);
         break;
       case CUSTOM_EVENT_TYPE.PRINT_PDF:
         printToPDF({
@@ -240,9 +252,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   };
 
-  const onFormSubmitCallback = (actionType = "", successPage) => {
+  const onFormSubmitCallback = (actionType = "", successPage, isDefaultLoaderHidden = false) => {
     if (bpmTaskId) {
-      dispatch(setBPMTaskDetailLoader(true));
+      // The following dispatch is the place where showing the 3 dots animation.
+      !isDefaultLoaderHidden && dispatch(setBPMTaskDetailLoader(true));
       const { formId, submissionId } = getFormIdSubmissionIdFromURL(
         task?.formUrl
       );
@@ -260,7 +273,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
           ),
           (err) => {
             if (!err) {
-              // reloadTasks();
+              reloadTasks();
               redirectToSuccessPage(dispatch, push, successPage);
             } else {
               dispatch(setBPMTaskDetailLoader(false));
@@ -320,6 +333,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
                   }),
                 }}
               >
+                {/* {task?.assignee === currentUser ? ( */}
                 {task?.assignee === currentUser && isSubmissionLoaded ? (
                   <FormEdit
                     onFormSubmit={onFormSubmitCallback}

@@ -13,11 +13,13 @@ on:
         - test
         - production
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "forms-flow-forms/**"
       - "deployment/openshift/forms-flow-forms_bc.yaml"
       - "deployment/openshift/forms-flow-forms_dc.yaml"
+      - ".github/workflows/forms-flow-forms-cd.yml"
+      - "deployment/openshift/helm-forms-flow-forms/**"
 
 defaults:
   run:
@@ -37,7 +39,7 @@ env:
   # Namespace for the triggered environment, e.g., d89793-dev
   NAMESPACE: ${{ secrets.NAMESPACE }}
   # App url without http(s) prefix
-  APP_URL : ${{ secrets.FORMS_FLOW_FORMS_URL }}
+  APP_URL: ${{ secrets.FORMS_FLOW_FORMS_URL }}
 
 jobs:
   # Logs environment variables
@@ -78,7 +80,7 @@ jobs:
         working-directory: ./deployment/openshift
         run: |
           oc -n ${BUILD_NAMESPACE} process -f forms-flow-forms_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
-  
+
   build-and-push-image:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
@@ -86,29 +88,29 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     needs:
       - apply-openshift-buildConfigs
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
         with:
           install: true
-      
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
           tags: ${{ env.ENVIRONMENT }}
-      
+
       - run: echo ${{ steps.meta.outputs.tags }}
-      
+
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -132,18 +134,21 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
-  
+          build-args: |
+            FORMIO_SOURCE_REPO_URL=https://github.com/AOT-Technologies/formio
+            FORMIO_SOURCE_REPO_BRANCH=fv5.1.1
+
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
     environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    
+
     needs:
       - apply-openshift-buildConfigs
       - build-and-push-image
-    
+
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v3
@@ -151,12 +156,25 @@ jobs:
       - name: Log in to OpenShift
         run: |
           oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
-  
+
       - name: apply deploymentConfig
         working-directory: ./deployment/openshift
         run: |
           oc -n ${NAMESPACE} project
-          oc -n ${NAMESPACE} process -f forms-flow-forms_dc.yaml \
+          oc project ${NAMESPACE}
+          echo "Current namespace is ${NAMESPACE}"
+          helm upgrade -i helm-forms-flow-forms ./helm-forms-flow-forms
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set NAME=${APP_NAME} \
+                      #  --set FFA_FORMS_URL=${APP_URL} \
+                      #  --set TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
+                      #  --set IMAGE_TAG=${ENVIRONMENT} \
+                      #  --set CPU_REQUEST=100m \
+                      #  --set CPU_LIMIT=200m \
+                      #  --set MEMORY_LIMIT=2Gi \
+        
+
+          oc -n ${NAMESPACE} process helm-forms-flow-forms \
                 -p NAME=${APP_NAME} \
                 -p FFA_FORMS_URL=${APP_URL} \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
@@ -166,7 +184,7 @@ jobs:
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
-      
+
       - name: verify deploymentConfig
         run: |
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
@@ -177,7 +195,7 @@ jobs:
             ATTEMPTS=$((attempts + 1))
             sleep 10
           done
-          oc project ${NAMESPACE}     
+          oc project ${NAMESPACE}
           echo "Listing pods.."
           oc get pods|grep "${APP_NAME}"
           export ROUTE="$(oc get route ${APP_NAME} -o jsonpath='{.spec.host}')"

@@ -16,8 +16,10 @@ import formCheckList from "./formCheckListReducer";
 import dashboardReducer from "./dashboardReducer";
 import tenantReducer from "./tenantReducer";
 import draftSubmission from "./draftReducer";
+import formRestore from "./RestoreFormReducer";
 import employeeData from "./employeeDataReducer";
 import releaseNote from "./releaseNoteReducer";
+import alertNote from "./alertNoteReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -28,6 +30,7 @@ const createRootReducer = (history) =>
     applications,
     bpmTasks,
     bpmForms,
+    formRestore,
     form: form({ name: "form" }),
     forms: forms({
       name: "forms",
@@ -46,7 +49,8 @@ const createRootReducer = (history) =>
     tenants: tenantReducer,
     draft: draftSubmission,
     employeeData,
-    releaseNote
+    releaseNote,
+    alertNote,
   });
 
 export default createRootReducer;

@@ -141,13 +141,13 @@ module.exports = (router) => {
             'display',
             'action',
             'tags',
-            'supportedidp',
             'settings',
             'components',
             'access',
             'submissionAccess',
             'properties',
             'controller',
+            'supportedidp',
             ...includeFormFields,
           );
           _map.forms[form._id.toString()] = machineName;

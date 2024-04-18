@@ -10,10 +10,12 @@ import { BASE_ROUTE } from "../constants/constants";
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 import { ToastContainer } from "react-toastify";
-import { Container } from "react-bootstrap";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./NotFound";
+
+import { Container } from "react-bootstrap";
 import ReleaseNoteModal from "./ReleaseNote/ReleaseNoteModal";
+import AlertNoteBanner from "./AlertNote/AlertNoteBanner";
 
 const BaseRouting = React.memo(({ store }) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
@@ -22,6 +24,7 @@ const BaseRouting = React.memo(({ store }) => {
     <>
       {isAuth ? <NavBar /> : null}
       {isAuth ? <ReleaseNoteModal /> : null}
+      {isAuth ? <AlertNoteBanner /> : null}
       <div className="wrapper">
         {/*{isAuth?<SideBar store={store} />:null}*/}
         <div className="content">

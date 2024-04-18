@@ -2,6 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   draftSubmission: {},
+  draftDelete : { modalOpen: false, draftId:null, draftName:'' },
   draftSubmissionError: {
     error: null,
     message: null,
@@ -15,8 +16,6 @@ const initialState = {
   submission: {},
   draftDetailStatusCode: "",
   lastUpdated: {},
-  selectedDraftForDelete: { modalOpen: false, draftId: "", draftName: "" },
-  draftDeleteError: null
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -48,14 +47,8 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, draftDetailStatusCode: action.payload };
     case ACTION_CONSTANTS.DRAFT_LAST_UPDATED:
       return { ...state, lastUpdated: action.payload };
-    case ACTION_CONSTANTS.SET_SELECTED_DRAFT_FOR_DELETE:
-      return { ...state, selectedDraftForDelete: action.payload };
-    case ACTION_CONSTANTS.DELETE_DRAFT:
-      return {
-        ...state,
-        draftSubmission: action.payload,
-        draftDeleteError: null,
-      };
+    case ACTION_CONSTANTS.DRAFT_DELETE:
+      return { ...state, draftDelete: action.payload };
     default:
       return state;
   }

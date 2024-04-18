@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
-import { Link } from "react-router-dom";
 import {
   CLIENT,
   MULTITENANCY_ENABLED,
@@ -14,11 +13,14 @@ import {
 } from "../../../actions/processActions";
 import { setFormDeleteStatus } from "../../../actions/formActions";
 import {
-  getApplicationCount,
   getFormProcesses,
   resetFormProcessData,
+  getAllApplicationCount
 } from "../../../apiManager/services/processServices";
+
 import { Translation } from "react-i18next";
+
+import { Link } from "react-router-dom";
 
 const FormOperations = React.memo(({ formData }) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
@@ -46,7 +48,7 @@ const FormOperations = React.memo(({ formData }) => {
         if (data) {
           dispatch(
             // eslint-disable-next-line no-unused-vars
-            getApplicationCount(data.id, (err, res) => {
+              getAllApplicationCount(formData._id,(err, res) => {
               dispatch(setIsApplicationCountLoading(false));
               dispatch(setFormDeleteStatus(formDetails));
             })
@@ -77,6 +79,13 @@ const FormOperations = React.memo(({ formData }) => {
       <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );
+  const deleteForm = (
+    <i
+      className="fa fa-trash fa-lg delete_button"
+      onClick={() => deleteForms(formData)}
+    />
+  );
+
   const formsTab = (name, link) => {
     return (
       <Link to={`${redirectUrl}${link}`} style={{ textDecoration: "none", margin: "auto 5px" }}>
@@ -87,12 +96,6 @@ const FormOperations = React.memo(({ formData }) => {
       </Link>
     );
   };
-  const deleteForm = (
-    <i
-      className="fa fa-trash fa-lg delete_button"
-      onClick={() => deleteForms(formData)}
-    />
-  );
 
   let buttons = {
     CLIENT_OR_REVIEWER: [

@@ -13,6 +13,9 @@ export const MATERNITY_AND_PARENTAL_LEAVE_FORM = "MATERNITY_AND_PARENTAL_LEAVE_F
 export const MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE = "MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE";
 export const MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED = "MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED";
 export const MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED = "MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED";
+export const DELETE_TELEWORK = "DELETE_TELEWORK";
+export const COI_SUBMISSION = 'COI_SUBMISSION';
+export const COI_SUPERVISOR_SUBMISSION_APPROVED = 'COI_SUPERVISOR_SUBMISSION_APPROVED';
 
 
 const submitSuccessPage = {
@@ -22,8 +25,8 @@ const submitSuccessPage = {
   "bullying-and-harassment-complaint-article-1-10-ldb": COMPLAINT_INTAKE_FORM_1_10_LDB,
   "bullying-and-harassment-complaint-article-1-10-noemail": COMPLAINT_INTAKE_FORM_1_10_NOEMAIL,
   "2023influenzaworksiteregistration": INFLUENZA_WORKSITE_REGISTRATION,
-  "maternity-parental-and-pre-placement-adoption": MATERNITY_AND_PARENTAL_LEAVE_FORM,
-  "maternity-parental-and-pre-placement-adoption-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
+  "maternity-parental-leave-and-allowance": MATERNITY_AND_PARENTAL_LEAVE_FORM,
+  "maternity-parental-leave-and-allowance-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
@@ -38,7 +41,7 @@ export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) =
       }
     }
   }
-  if (formKey === "maternity-parental-and-pre-placement-adoption") {
+  if (formKey === "maternity-parental-leave-and-allowance") {
     if (submission?.data?.empCtg === "K" || submission?.data?.empCtg === "L") {
       formKey = `${formKey}-ineligible`;
     }

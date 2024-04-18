@@ -15,6 +15,8 @@ class EmployeeDataService:
       #TODO: get auth token from bcgov using @param guid
       
       employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+      print("employee_data_api_url")
+      print(employee_data_api_url)
       test_auth_token = current_app.config.get(
           "ODS_AUTH_TOKEN")
       emp_data = cache.get(guid)
@@ -31,7 +33,7 @@ class EmployeeDataService:
         employee_data_res = response_from_BCGov.json()
 
         if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
-          emp_data = EmployeeData(employee_data_res["value"][0])
+          emp_data = EmployeeData(employee_data_res["value"][0], len(employee_data_res["value"]))
           cache.set(guid, emp_data, timeout=14400)
           return emp_data.__dict__
       else:
@@ -93,6 +95,8 @@ class EmployeeDataService:
     def get_employee_names(args):
       try:
         employee_data_api_url = current_app.config.get("EMPLOYEE_SEARCH_API_URL")
+        print("employee_data_api_url")
+        print(employee_data_api_url)
         search = args.get("search", None)
         if search and not search.isalpha():
           search = re.sub(r'[^A-Za-z]+', '_', unquote(search))

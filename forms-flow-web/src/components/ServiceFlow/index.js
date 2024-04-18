@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Translation } from "react-i18next";
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import { Col, Container, Row } from "react-bootstrap";
@@ -28,6 +27,9 @@ import cloneDeep from "lodash/cloneDeep";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { push } from "connected-react-router";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../../constants/constants";
+import TaskHead from "../../containers/TaskHead";
+
+import { Translation } from "react-i18next";
 
 export default React.memo(() => {
   const dispatch = useDispatch();
@@ -186,6 +188,7 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
+      <TaskHead/>
       <div className="header-container" 
           style={{marginTop: "20px", marginBottom: "40px"}}>
         <div className="main-header">

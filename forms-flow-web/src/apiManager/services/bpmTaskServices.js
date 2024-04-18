@@ -27,7 +27,7 @@ import {
 import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
 import { taskDetailVariableDataFormatter } from "./formatterService";
-import { REVIEWER_GROUP, MANAGER_ROLE } from "../../constants/userContants";
+import { REVIEWER_GROUP, MANAGER_ROLE, FORMSFLOW_CLIENT_ROLE } from "../../constants/userContants";
 import { MAX_RESULTS, HIDEFROMTASKLIST } from "../../components/ServiceFlow/constants/taskConstants";
 
 export const fetchServiceTaskList = (
@@ -50,7 +50,7 @@ export const fetchServiceTaskList = (
     const userInfo = UserService.getUserInfo();
     if (userInfo) {
       if(userInfo?.role !== undefined && userInfo?.username !== undefined) {
-        if (userInfo.role.includes(MANAGER_ROLE)) {
+        if ([MANAGER_ROLE, FORMSFLOW_CLIENT_ROLE].some(r=> userInfo.role.includes(r))) {
           reqData = {...reqData, assignee: userInfo.username};
         }
       }
@@ -147,7 +147,7 @@ export const fetchProcessDefinitionList = (...rest) => {
 export const fetchUserList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
-  const getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  const getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   return (dispatch) => {
     httpGETRequest(getReviewerUserListApi, {}, UserService.getToken())
       .then((res) => {
@@ -174,14 +174,15 @@ export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const paramData = { memberOfGroup: REVIEWER_GROUP };
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
-  //let getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  //let getReviewerUserListApi = `${API.GET_API_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
   if (searchType && query) {
     //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
-    paramData[searchType] = `%${query}%`;
+    paramData[searchType] = `${query}`;
+    
   }
 
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_USER_LIST, paramData, UserService.getToken())
+    httpGETRequest(API.GET_API_USER_LIST, paramData, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMUserList(res.data));
@@ -257,8 +258,8 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
             if (responses[1]?.data) {
               let taskDetailUpdates = responses[1]?.data;
               taskDetail = {
-                ...taskDetail,
                 ...taskDetailVariableDataFormatter(taskDetailUpdates),
+                ...taskDetail,
               };
             }
 
