@@ -672,7 +672,7 @@ export default React.memo(() => {
               <li>
                 You will receive an email confirming your submission. Your
                 supervisor will also be notified via email about your form
-                submission.
+                submission
               </li>
               <li>
                 You can modify your submission prior to receiving approval from
@@ -681,7 +681,7 @@ export default React.memo(() => {
                 <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
                   Submitted Forms
                 </a>
-                &nbsp; tab.
+                &nbsp; tab
               </li>
             </ul>
           </div>
@@ -692,11 +692,11 @@ export default React.memo(() => {
               <li>
                 After your supervisor approves, you will receive a confirmation
                 and a copy of your form on your email. Your form will be
-                automatically forwarded to AskMyHR for further processing.
+                automatically forwarded to AskMyHR for further processing
               </li>
               <li>
                 In case your supervisor needs some additional information, they
-                will reach out to you.
+                will reach out to you
               </li>
             </ul>
           </div>
@@ -715,7 +715,7 @@ export default React.memo(() => {
               <li>
                 An <b>AskMyHR service request will automatically be submitted</b> on
                 your behalf to process this form. You will receive a
-                confirmation email from AskMyHR with the service request number.
+                confirmation email from AskMyHR with the service request number
               </li>
             </ul>
           </div>
