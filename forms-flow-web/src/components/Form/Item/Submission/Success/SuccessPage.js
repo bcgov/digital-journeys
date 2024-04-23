@@ -676,8 +676,7 @@ export default React.memo(() => {
               </li>
               <li>
                 You can modify your submission prior to receiving approval from
-                your supervisor. You can find your submitted form in the
-                Submitted Forms &nbsp;
+                your supervisor. You can find your submitted form in the &nbsp;
                 <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
                   Submitted Forms
                 </a>
@@ -713,8 +712,9 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                An <b>AskMyHR service request will automatically be submitted</b> on
-                your behalf to process this form. You will receive a
+                An{" "}
+                <b>AskMyHR service request will automatically be submitted</b>{" "}
+                on your behalf to process this form. You will receive a
                 confirmation email from AskMyHR with the service request number
               </li>
             </ul>
