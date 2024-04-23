@@ -27,6 +27,7 @@ const submitSuccessPage = {
   "2023influenzaworksiteregistration": INFLUENZA_WORKSITE_REGISTRATION,
   "maternity-parental-leave-and-allowance": MATERNITY_AND_PARENTAL_LEAVE_FORM,
   "maternity-parental-leave-and-allowance-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
+  "conflict-of-interest-disclosure": COI_SUBMISSION,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
