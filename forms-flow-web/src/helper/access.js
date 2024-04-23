@@ -1,11 +1,12 @@
 import { FORM_NAMES } from "../constants/formConstants";
-import { 
+import {
   SUBMITTED_STATUS,
   SUBMITTED_VALIDATION_STATUS,
   SUBMITTED_FINAL_STATUS,
   APPROVED_STATUS,
   DENIED_STATUS,
-  NEW_STATUS, } from "../constants/applicationConstants";
+  NEW_STATUS,
+} from "../constants/applicationConstants";
 import { convertObjectKeyValueToLowercase } from './helper';
 /**
  * 
@@ -98,6 +99,7 @@ const formEditStatusMap = {
   [FORM_NAMES.INFLUENZA_WORKSITE_REGISTRATION]: [SUBMITTED_STATUS],
   [FORM_NAMES.SL_REVIEW]: [SUBMITTED_VALIDATION_STATUS, SUBMITTED_FINAL_STATUS],
   [FORM_NAMES.SENIOR_LEADER_REVIEW]: [SUBMITTED_VALIDATION_STATUS, SUBMITTED_FINAL_STATUS],
+  [FORM_NAMES.COI]: [NEW_STATUS],
 };
 
 export const hasFormEditAccessByStatus = (formName, status) => {
@@ -105,7 +107,7 @@ export const hasFormEditAccessByStatus = (formName, status) => {
   const lowerCaseFormName = formName.toLowerCase();
   const lowerCaseStatus = status.toLowerCase();
   const lowerCaseFormEditStatusMap = convertObjectKeyValueToLowercase(formEditStatusMap);
-  
+
   const validStatuses = lowerCaseFormEditStatusMap[lowerCaseFormName] || [];
   return validStatuses.includes(lowerCaseStatus);
 };
