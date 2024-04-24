@@ -33,6 +33,6 @@ jobs:
           # Only Exec into one pod, and place the backups in the shared and mounted backup PVC
           oc exec ${podNames[0]} -- sh -c """
             mkdir -p /tmp/file-backups && \
-            find /tmp/file-backups/ -maxdepth 1 -mtime ${NO_OF_DAYS} -type d -exec rm -r  {} \; && \
+            find /tmp/file-backups/ -maxdepth 1 -mtime +5 -type d -exec rm -r  {} \; && \
             echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
             rsync -rz /uploads/ /tmp/file-backups/uploads-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S")"""
