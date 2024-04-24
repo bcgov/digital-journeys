@@ -1,9 +1,6 @@
 name: Run file backups for forms-flow-files
 
 on:
-  schedule:
-    - cron: '0 9 * * *'
-
   workflow_dispatch:
 
 jobs:
@@ -13,7 +10,7 @@ jobs:
       fail-fast: false
       #Run file backups for multiple environments
       matrix:
-        namespace: [d89793-dev, d89793-test]
+        namespace: [e66ac2-test]
     runs-on: ubuntu-latest
     env:
       APP: forms-flow-files
@@ -29,6 +26,7 @@ jobs:
           echo "Current namespace is ${{ matrix.namespace }}"
           podNames=$(oc get pods -l app=${APP} --field-selector=status.phase=Running -o name)
           echo $podNames
+          echo "Pod 0 in the list is :" $podNames[0]
           
           #Backup ${APP} to a backup PVC pointing to /tmp/file-backups
           #Purge backups older than NO_OF_DAYS to reclaim space
