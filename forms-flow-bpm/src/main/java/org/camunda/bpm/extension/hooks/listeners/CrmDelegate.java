@@ -187,14 +187,14 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 }
             }
     
-            // // Generate a PDF of the form submission
-            // try {
-            //     String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
-            //     generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
-            // } catch (Exception e) {
-            //     System.out.println("generatePDFForForm failed. Exception: " + e);
-            //     e.printStackTrace();
-            // }
+            // Generate a PDF of the form submission
+            try {
+                String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+                generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
+            } catch (Exception e) {
+                System.out.println("generatePDFForForm failed. Exception: " + e);
+                e.printStackTrace();
+            }
         }
         
         System.out.println("Finished CRM operation");
@@ -252,14 +252,15 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         ArrayList<CrmFileAttachment> formPdfAttachments = this.formPDFAttachInCRM(execution);
         ArrayList<CrmFileAttachment> crmFileAttachments = this.crmAttachFiles(execution);
         if (crmFileAttachments != null) {
-            if (formPdfAttachments != null) {
-                crmFileAttachments.addAll(formPdfAttachments);
-            }
+            // if (formPdfAttachments != null) {
+            //     crmFileAttachments.addAll(formPdfAttachments);
+            // }
             crmIncidentPostRequest.setFileAttachments(crmFileAttachments);
         } else {
-            if (formPdfAttachments != null) {
-                crmIncidentPostRequest.setFileAttachments(formPdfAttachments);
-            }
+            System.out.println("No file attachment found for CRM in form");
+            // if (formPdfAttachments != null) {
+            //     crmIncidentPostRequest.setFileAttachments(formPdfAttachments);
+            // }
         }
         
         String url = getEndpointUrl(INCIDENTS);
@@ -450,6 +451,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 fileName = String.valueOf(execution.getVariables().get(CRM_FORM_PDF_ATTACHMENT_NAME));
             }
             String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
+            System.out.println("pdfEncodedBase64");
+            System.out.println(pdfEncodedBase64);
             CrmFileAttachment attachment = new CrmFileAttachment(pdfEncodedBase64);
             attachment.setFileName(fileName);
             attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
