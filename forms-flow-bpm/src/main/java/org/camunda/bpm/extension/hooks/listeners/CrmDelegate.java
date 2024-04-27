@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.model.Attachment;
+import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,7 @@ import main.java.org.camunda.bpm.extension.hooks.model.CrmC;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmReferenceContactPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmStatusWithType;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmIncidentPatchRequest;
+import main.java.org.camunda.bpm.extension.hooks.model.CrmFileAttachment;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -67,6 +69,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD = "crmCategoryLookupName";
     private static final String CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD = "crmStaffGroupLookupName";
     private static final String CRM_MAT_PAT_SUBJECT_FIELD = "crmSubject";
+    private static final String CRM_INCIDENT_SUBJECT_FIELD = "crmIncidentSubject";
     private static final String CRM_MAT_PAT_SUBMITTER_NAME_FIELD = "submissionDisplayName";
     private static final String CRM_THREAD_TEXT_FIELD = "crmThreadText";
     private static final String CRM_EMPLOYEE_ID_FIELD = "empId";
@@ -75,6 +78,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String MANAGER_DENIED_STATUS = "managerDeniedStatus";
     private static final String MANAGER_ACTION = "action";
     private static final String DENIED_THREAD_TEXT = "deniedThreadText";
+    private static final String CRM_FILE_FIELDS_FROM_FORM = "crmFileFields";
+    private static final String CRM_FORM_PDF_ATTACHMENT_NAME = "crmFormPdfAttachmentName";
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -84,6 +89,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
 
     @Autowired
     private EmailAttachmentService attachmentService;
+
+    @Autowired
+    private FormSubmissionService formSubmissionService;
 
     @Override
     public void execute(DelegateExecution execution) {
@@ -155,6 +163,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             }
             Integer crmIncidentId = crmIncidentPostResponse.getId();
             // Saving the CRM incident id and lookupName in form
+            System.out.println(crmIncidentId);
+            System.out.println(crmIncidentPostResponse.getLookupName());
             execution.setVariable(CRM_ID, crmIncidentId);
             execution.setVariable(CRM_LOOKUP_NAME, crmIncidentPostResponse.getLookupName());
     
@@ -177,14 +187,14 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 }
             }
     
-            // Generate a PDF of the form submission
-            try {
-                String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
-                generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
-            } catch (Exception e) {
-                System.out.println("generatePDFForForm failed. Exception: " + e);
-                e.printStackTrace();
-            }
+            // // Generate a PDF of the form submission
+            // try {
+            //     String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+            //     generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
+            // } catch (Exception e) {
+            //     System.out.println("generatePDFForForm failed. Exception: " + e);
+            //     e.printStackTrace();
+            // }
         }
         
         System.out.println("Finished CRM operation");
@@ -200,6 +210,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         String userAction = String.valueOf(execution.getVariables().get(MANAGER_ACTION));
         String managerDeniedStatus = String.valueOf(execution.getVariables().get(MANAGER_DENIED_STATUS));
         String deniedThreadText = String.valueOf(execution.getVariables().get(DENIED_THREAD_TEXT));
+        String crmIncidentSubjectField = String.valueOf(execution.getVariables().get(CRM_INCIDENT_SUBJECT_FIELD));
         String crmPriorityDuedate = null;
         if (execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD) != null && 
             !String.valueOf(execution.getVariables().get(CRM_PRIORITY_DUEDATE_FIELD)).equals("null")) {
@@ -214,6 +225,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         }
         
         String crmIncidentSubject = crmSubject + " for " + submitterDisplayName;
+        if (crmIncidentSubjectField != null && !crmIncidentSubjectField.equals("null")) {
+            crmIncidentSubject = crmIncidentSubjectField;
+        }
         CrmIdObject crmPrimaryContact = new CrmIdObject(managerContactId);
         
         CrmIdObject crmEntryType = new CrmIdObject(4); // lookupName": "Customer Proxy"
@@ -235,6 +249,19 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         CrmC crmC = new CrmC(crmPriorityDuedate);
         CrmCustomFields crmCustomFields = new CrmCustomFields(crmC);
         CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields, crmStatusWithType);
+        ArrayList<CrmFileAttachment> formPdfAttachments = this.formPDFAttachInCRM(execution);
+        ArrayList<CrmFileAttachment> crmFileAttachments = this.crmAttachFiles(execution);
+        if (crmFileAttachments != null) {
+            if (formPdfAttachments != null) {
+                crmFileAttachments.addAll(formPdfAttachments);
+            }
+            crmIncidentPostRequest.setFileAttachments(crmFileAttachments);
+        } else {
+            if (formPdfAttachments != null) {
+                crmIncidentPostRequest.setFileAttachments(formPdfAttachments);
+            }
+        }
+        
         String url = getEndpointUrl(INCIDENTS);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -407,5 +434,95 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             ids.put("submissionId", m.group(2));
         }
         return ids;
+    }
+
+    private ArrayList<CrmFileAttachment> formPDFAttachInCRM(DelegateExecution execution) {
+        // Generate a PDF of the form submission
+        ArrayList<CrmFileAttachment> crmFileAttachments = new ArrayList<CrmFileAttachment>();
+        try {
+            String formUrl = String.valueOf(execution.getVariables().get(FORM_URL));
+            Map<String, String> ids = extractIds(formUrl);
+            String formId = ids.get(FORM_ID);
+            String submissionId = ids.get(SUBMISSION_ID);
+
+            String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+            if (fileName == null || fileName.equals("null")) {
+                fileName = String.valueOf(execution.getVariables().get(CRM_FORM_PDF_ATTACHMENT_NAME));
+            }
+            String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
+            CrmFileAttachment attachment = new CrmFileAttachment(pdfEncodedBase64);
+            attachment.setFileName(fileName);
+            attachment.setName(fileName);
+            crmFileAttachments.add(attachment);
+            return crmFileAttachments;
+        } catch (Exception e) {
+            System.out.println("generatePDFForForm failed. Exception: " + e);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private ArrayList<CrmFileAttachment> crmAttachFiles(DelegateExecution execution) {
+        // ArrayList<CrmFileAttachment> crmFileAttachments = new ArrayList<CrmFileAttachment>();
+        String crmFileFields = String.valueOf(execution.getVariables().get(CRM_FILE_FIELDS_FROM_FORM));
+
+        if (crmFileFields != null && !crmFileFields.equals("null")) {
+            String formUrl = String.valueOf(execution.getVariables().get(FORM_URL));
+            String fields[] = crmFileFields.trim().split(",");
+
+            if (fields.length > 0) {
+                String submission = formSubmissionService.readSubmission(formUrl);
+                if(submission.isEmpty()) {
+                    return null;
+                } else {
+                    return extractFileFromSubmission(submission, fields);
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private static ArrayList<CrmFileAttachment> extractFileFromSubmission(String submission, String fields[]) {
+        ArrayList<CrmFileAttachment> crmFileAttachments = new ArrayList<CrmFileAttachment>();
+        try {
+            ObjectMapper objectMapper3 = new ObjectMapper();
+            JsonNode jsonNode = objectMapper3.readTree(submission);
+
+            for(String f : fields) {
+                String fileAlias[] = f.split(":");
+                JsonNode item = jsonNode.path("data").path(fileAlias[0]);
+                if (item.size() > 0) {
+                    JsonNode firstItem = item.get(0);
+                    String data = removeBase64TextFromData(firstItem.get("url").asText());
+                    CrmFileAttachment attachment = new CrmFileAttachment(data);
+                    String fileName = firstItem.get("name").asText();
+                    attachment.setFileName(fileName);
+                    // Max limit for name field is 40
+                    if (fileAlias.length > 1) {
+                        attachment.setName(fileAlias[1]);
+                    } else {
+                        attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
+                    }
+                    attachment.setContentType(firstItem.get("type").asText());
+                    crmFileAttachments.add(attachment);
+                }
+            }
+
+            if (crmFileAttachments.size() > 0) {
+                return crmFileAttachments;
+            } else {
+                return null;
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String removeBase64TextFromData(String base64) {
+        return base64.replaceAll("data:.*?;base64,","");
     }
 }

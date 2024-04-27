@@ -54,9 +54,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
-        System.out.println("Print request details for TEST");
-        System.out.println(url);
-        System.out.println(method);
+        System.out.println("Print request details:");
         System.out.println(accessToken);
         System.out.println(payload);
 

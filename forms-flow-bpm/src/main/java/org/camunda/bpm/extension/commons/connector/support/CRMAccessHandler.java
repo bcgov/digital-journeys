@@ -58,6 +58,7 @@ public class CRMAccessHandler extends AbstractAccessHandler {
             HttpResponse<String> httpResponse = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
             if (httpResponse.statusCode() >= 400 && httpResponse.statusCode() < 500) {
+                System.out.println(httpResponse.body());
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             } else if (httpResponse.statusCode() >= 500) {
                 throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,6 +94,7 @@ public class CRMAccessHandler extends AbstractAccessHandler {
             HttpResponse<String> httpResponse = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
             if (httpResponse.statusCode() >= 400 && httpResponse.statusCode() < 500) {
+                System.out.println(httpResponse.body());
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
             } else if (httpResponse.statusCode() >= 500) {
                 throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
