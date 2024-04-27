@@ -452,7 +452,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
             CrmFileAttachment attachment = new CrmFileAttachment(pdfEncodedBase64);
             attachment.setFileName(fileName);
-            // attachment.setName(fileName);
+            attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
+            attachment.setContentType("application/pdf");
             crmFileAttachments.add(attachment);
             return crmFileAttachments;
         } catch (Exception e) {
@@ -502,7 +503,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                     attachment.setFileName(fileName);
                     // Max limit for name field is 40
                     if (fileAlias.length > 1) {
-                        attachment.setName(fileAlias[1]);
+                        attachment.setName(fileAlias[1].substring(0, Math.min(fileAlias[1].length(), 39)));
                     } else {
                         attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
                     }
