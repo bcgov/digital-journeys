@@ -188,13 +188,13 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             }
     
             // Generate a PDF of the form submission
-            try {
-                String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
-                generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
-            } catch (Exception e) {
-                System.out.println("generatePDFForForm failed. Exception: " + e);
-                e.printStackTrace();
-            }
+            // try {
+            //     String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
+            //     generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
+            // } catch (Exception e) {
+            //     System.out.println("generatePDFForForm failed. Exception: " + e);
+            //     e.printStackTrace();
+            // }
         }
         
         System.out.println("Finished CRM operation");
