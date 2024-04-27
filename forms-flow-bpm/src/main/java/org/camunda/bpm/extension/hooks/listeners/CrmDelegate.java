@@ -452,7 +452,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             String pdfEncodedBase64 = generatePDFForForm(formId, submissionId, fileName);
             CrmFileAttachment attachment = new CrmFileAttachment(pdfEncodedBase64);
             attachment.setFileName(fileName);
-            attachment.setName(fileName);
+            // attachment.setName(fileName);
             crmFileAttachments.add(attachment);
             return crmFileAttachments;
         } catch (Exception e) {
