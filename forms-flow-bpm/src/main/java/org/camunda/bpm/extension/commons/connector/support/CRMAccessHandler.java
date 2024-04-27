@@ -38,7 +38,8 @@ public class CRMAccessHandler extends AbstractAccessHandler {
     
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         payload = (payload == null) ? new JsonObject().toString() : payload;
-
+        System.out.println("payload");
+        System.out.println(payload);
         try {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(URI.create(url))
