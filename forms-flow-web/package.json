@@ -35,13 +35,14 @@
     "redux-mock-store": "^1.5.4"
   },
   "dependencies": {
-    "@bpmn-io/properties-panel": "^0.17.0",
     "@bcgov/bc-sans": "^1.0.1",
     "@bcgov/bootstrap-theme": "https://github.com/bcgov/bootstrap-theme/releases/download/v1.1.3/bcgov-bootstrap-theme-1.1.3.tgz",
+    "@bpmn-io/properties-panel": "^0.17.0",
     "@button-inc/bcgov-theme": "^1.0.1",
     "@button-inc/component-library": "^1.0.1",
     "@material-ui/core": "^4.11.4",
     "@ronchalant/react-loading-overlay": "^1.1.0",
+    "@snowplow/browser-tracker": "^3.23.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "axios": "^0.21.4",
     "bpmn-js": "^13.2.2",
@@ -60,9 +61,10 @@
     "flagged": "^2.0.5",
     "formiojs": "^4.14.0",
     "formsflow-formio-custom-elements": "^1.0.3",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.1",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
-    "html2canvas": "^1.4.1",
     "jsonwebtoken": "9.0.0",
     "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",
@@ -96,8 +98,7 @@
     "sockjs-client": "^1.5.1",
     "source-map-explorer": "^2.5.2",
     "stompjs": "^2.3.3",
-    "ws": "^7.4.6",
-    "html2pdf.js": "^0.10.1"
+    "ws": "^7.4.6"
   },
   "resolutions": {
     "xmldom": "0.6.0",
