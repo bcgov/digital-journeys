@@ -38,8 +38,7 @@ const useLocationChange = () => {
 const useSnowPlow = () => {
   React.useEffect(() => {
     const isInit = isTrackerInitialized();
-    if (!isInit) {
-      console.log("hello", COLLECTOR);
+    if (!isInit) {      
       initializeTracker(COLLECTOR);
       trackPageView();
     }
