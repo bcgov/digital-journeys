@@ -11,6 +11,7 @@ public class CrmIncidentPostRequest {
   private CrmAssignedTo crmAssignedTo;
   private CrmCustomFields crmCustomFields;
   private CrmStatusWithType crmStatusWithType;
+  private ArrayList<CrmFileAttachment> crmFileAttachments;
   
   public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject) {
     this.crmPrimaryContact = crmPrimaryContact;
@@ -92,5 +93,13 @@ public class CrmIncidentPostRequest {
 
   public void setCustomFields(CrmCustomFields crmCustomFields) {
     this.crmCustomFields = crmCustomFields;
+  }
+
+  public ArrayList<CrmFileAttachment> getFileAttachments() {
+    return crmFileAttachments;
+  }
+
+  public void setFileAttachments(ArrayList<CrmFileAttachment> crmFileAttachments) {
+    this.crmFileAttachments = crmFileAttachments;
   }
 }

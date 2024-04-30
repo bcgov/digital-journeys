@@ -40,7 +40,7 @@ formsflow.ai:
   camunda:
     spring:
       webclient:
-        maxInMemorySize: ${DATA_BUFFER_SIZE:6}
+        maxInMemorySize: ${DATA_BUFFER_SIZE:32}
         connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:90000}
   ods:
     url: ${ODS_URL}

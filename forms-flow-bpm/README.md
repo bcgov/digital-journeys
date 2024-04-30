@@ -114,7 +114,7 @@ To know more about Camunda, visit https://camunda.com/.
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
- `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2  (In MB)`
+ `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`32  (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
  `BPM_API_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/camunda`
