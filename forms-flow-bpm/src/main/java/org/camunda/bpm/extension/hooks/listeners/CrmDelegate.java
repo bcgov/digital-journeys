@@ -163,8 +163,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             }
             Integer crmIncidentId = crmIncidentPostResponse.getId();
             // Saving the CRM incident id and lookupName in form
-            System.out.println(crmIncidentId);
-            System.out.println(crmIncidentPostResponse.getLookupName());
             execution.setVariable(CRM_ID, crmIncidentId);
             execution.setVariable(CRM_LOOKUP_NAME, crmIncidentPostResponse.getLookupName());
     
@@ -186,15 +184,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                     e.printStackTrace();
                 }
             }
-    
-            // Generate a PDF of the form submission
-            // try {
-            //     String fileName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_ATTACHMENT_FILE_NAME_FIELD));
-            //     generateAndAddPDFForForm(formId, submissionId, crmIncidentId, fileName);
-            // } catch (Exception e) {
-            //     System.out.println("generatePDFForForm failed. Exception: " + e);
-            //     e.printStackTrace();
-            // }
         }
         
         System.out.println("Finished CRM operation");
@@ -465,7 +454,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     }
 
     private ArrayList<CrmFileAttachment> crmAttachFiles(DelegateExecution execution) {
-        // ArrayList<CrmFileAttachment> crmFileAttachments = new ArrayList<CrmFileAttachment>();
         String crmFileFields = String.valueOf(execution.getVariables().get(CRM_FILE_FIELDS_FROM_FORM));
 
         if (crmFileFields != null && !crmFileFields.equals("null")) {
