@@ -169,7 +169,7 @@ Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
- `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 (in MB)`
+ `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`32 (in MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
 
 ##### formsflow.ai forms variable settings
