@@ -16,10 +16,11 @@ import NotFound from "./NotFound";
 import { Container } from "react-bootstrap";
 import ReleaseNoteModal from "./ReleaseNote/ReleaseNoteModal";
 import AlertNoteBanner from "./AlertNote/AlertNoteBanner";
+import useSnowPlow from "../customHooks/useSnowPlow";
 
 const BaseRouting = React.memo(({ store }) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-
+  useSnowPlow();
   return (
     <>
       {isAuth ? <NavBar /> : null}
