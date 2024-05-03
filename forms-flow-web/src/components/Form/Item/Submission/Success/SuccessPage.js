@@ -390,7 +390,7 @@ export default React.memo(() => {
         <>
           <span className="success-content-intro">
             Thank you for registering your worksite for the{" "}
-            {new Date().getFullYear()} Cold and Flu Program
+            {new Date().getFullYear()} Worksite Influenza Vaccination Program
           </span>
           <div className="success-content-body">
             <ul>
@@ -675,8 +675,8 @@ export default React.memo(() => {
                 submission
               </li>
               <li>
-                You can modify your submission prior to receiving approval from
-                your supervisor. You can find your submitted form in the &nbsp;
+                You can modify your form prior to final submission by your
+                supervisor. You can find your submitted form in the &nbsp;
                 <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
                   Submitted Forms
                 </a>
@@ -689,7 +689,7 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                After your supervisor approves, you will receive a confirmation
+                After your supervisor submits, you will receive a confirmation
                 and a copy of your form on your email. Your form will be
                 automatically forwarded to AskMyHR for further processing
               </li>
@@ -707,7 +707,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Conflict of Interest Disclosure Form approved
+            Conflict of Interest Disclosure Form Submitted for Documentation
           </span>
           <div className="success-content-body">
             <ul>
