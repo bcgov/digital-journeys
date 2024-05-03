@@ -676,11 +676,11 @@ export default React.memo(() => {
               </li>
               <li>
                 You can modify your form prior to final submission by your
-                supervisor. You can find your submitted form in the &nbsp;
+                supervisor. You can find your submitted form in the&nbsp;
                 <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
                   Submitted Forms
                 </a>
-                &nbsp; tab
+                &nbsp;tab
               </li>
             </ul>
           </div>
