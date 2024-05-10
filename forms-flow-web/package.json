@@ -42,6 +42,7 @@
     "@button-inc/component-library": "^1.0.1",
     "@material-ui/core": "^4.11.4",
     "@ronchalant/react-loading-overlay": "^1.1.0",
+    "@snowplow/browser-plugin-link-click-tracking": "^3.23.0",
     "@snowplow/browser-tracker": "^3.23.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "axios": "^0.21.4",
