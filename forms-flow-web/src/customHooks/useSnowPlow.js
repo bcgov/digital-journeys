@@ -34,19 +34,27 @@ const initializeTracker = (endpoint) => {
 
 const isTrackerInitialized = () => tracker !== undefined;
 
-const useSnowPlow = () => {
-  const location = useLocation();
-
-  // this is for internal link click
-  React.useEffect(() => {
-    const isInit = isTrackerInitialized();
-    if (!isInit) {
-      initializeTracker(COLLECTOR);
-    }
+const startTracking = () => {
+  setTimeout(() => {
     enableLinkClickTracking({ pseudoClicks: true });
     refreshLinkClickTracking();
     trackPageView();
-  }, [location]);
+  }, 500);
+};
+
+const useSnowPlow = () => {
+  const location = useLocation();
+  const [isInit, setIsInit] = React.useState(isTrackerInitialized());
+  if (!isInit) {
+    initializeTracker(COLLECTOR);
+    setIsInit(true);
+  }
+  // this is for internal link click
+  React.useEffect(() => {
+    if (isInit) {
+      startTracking();
+    }
+  }, [location, isInit]);
 
   // this is for external link click
   React.useEffect(() => {
@@ -62,8 +70,9 @@ const useSnowPlow = () => {
 
         // Check if the hostname of the URL is different from the current location's hostname
         if (href.hostname !== location.hostname) {
-          enableLinkClickTracking({ pseudoClicks: true });
-          refreshLinkClickTracking();
+          if (isInit) {
+            startTracking();
+          }
         }
       }
     };
@@ -75,7 +84,7 @@ const useSnowPlow = () => {
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, []);
+  }, [isInit]);
 };
 
 export default useSnowPlow;
