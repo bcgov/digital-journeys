@@ -3,6 +3,10 @@ import {
   trackPageView,
   enableActivityTracking,
 } from "@snowplow/browser-tracker";
+import {
+  refreshLinkClickTracking,
+  enableLinkClickTracking,
+} from "@snowplow/browser-plugin-link-click-tracking";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
@@ -20,10 +24,13 @@ const initializeTracker = (endpoint) => {
     contexts: { webPage: true, performanceTiming: true },
   });
 
+  // plugins
   enableActivityTracking({
     minimumVisitLength: 30,
     heartbeatDelay: 30,
   });
+  enableLinkClickTracking({ pseudoClicks: true });
+  refreshLinkClickTracking();
 };
 
 const isTrackerInitialized = () => tracker !== undefined;
@@ -38,9 +45,8 @@ const useLocationChange = () => {
 const useSnowPlow = () => {
   React.useEffect(() => {
     const isInit = isTrackerInitialized();
-    if (!isInit) {      
+    if (!isInit) {
       initializeTracker(COLLECTOR);
-      trackPageView();
     }
   }, []);
 
