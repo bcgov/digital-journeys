@@ -37,8 +37,8 @@ const isTrackerInitialized = () => tracker !== undefined;
 const useSnowPlow = () => {
   const location = useLocation();
 
+  // this is for internal link click
   React.useEffect(() => {
-    // plugins
     const isInit = isTrackerInitialized();
     if (!isInit) {
       initializeTracker(COLLECTOR);
@@ -47,6 +47,35 @@ const useSnowPlow = () => {
     refreshLinkClickTracking();
     trackPageView();
   }, [location]);
+
+  // this is for external link click
+  React.useEffect(() => {
+    const handleClick = (event) => {
+      // Get the element that was clicked
+      const target = event.target;
+
+      // Check if the clicked element is a link
+      if (target.tagName === "A" && target.href) {
+        // Create a URL object from the href property
+        const href = new URL(target.href);
+        const location = window.location;
+
+        // Check if the hostname of the URL is different from the current location's hostname
+        if (href.hostname !== location.hostname) {
+          enableLinkClickTracking({ pseudoClicks: true });
+          refreshLinkClickTracking();
+        }
+      }
+    };
+
+    // Attach the event listener to document
+    document.addEventListener("click", handleClick);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
 };
 
 export default useSnowPlow;
