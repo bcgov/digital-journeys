@@ -725,7 +725,7 @@ export default React.memo(() => {
             <ul>
               <li>
                 The form will be automatically sent to AskMyHR for inclusion on
-                the employee's personnel file. You will receive a confirmation
+                the employee&apos;s personnel file. You will receive a confirmation
                 from AskMyHR that the service request has been created
               </li>
             </ul>
