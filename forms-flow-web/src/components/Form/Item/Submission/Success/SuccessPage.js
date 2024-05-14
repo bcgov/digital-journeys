@@ -370,7 +370,11 @@ export default React.memo(() => {
               </li>
               <li>
                 You may check the&nbsp;
-                <a href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu">
+                <a
+                  href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Cold & Flu page on the Careers & MyHR website
                 </a>
                 &nbsp; regularly for the most current information on the
@@ -400,7 +404,11 @@ export default React.memo(() => {
               </li>
               <li>
                 You may check the&nbsp;
-                <a href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/health-safety-and-sick-leave-resources/health/cold-flu">
+                <a
+                  href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/health-safety-and-sick-leave-resources/health/cold-flu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Careers & MyHR
                 </a>
                 &nbsp; for the most current information on the program
@@ -675,7 +683,11 @@ export default React.memo(() => {
               <li>
                 You can modify your form prior to final submission by your
                 supervisor. You can find your submitted form in the&nbsp;
-                <a href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application">
+                <a
+                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Submitted Forms
                 </a>
                 &nbsp;tab
@@ -687,9 +699,11 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                After your supervisor submits, you will receive a confirmation
-                and a copy of your form on your email. Your form will be
-                automatically forwarded to AskMyHR for further processing
+                After your supervisor reviews your disclosure, makes a decision
+                on the outcome and submits, you will receive a confirmation and
+                a copy of your form on your email. Your form will be
+                automatically sent to AskMyHR for inclusion on your personnel
+                file
               </li>
               <li>
                 In case your supervisor needs some additional information, they
@@ -705,15 +719,14 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Conflict of Interest Disclosure Form Submitted for Documentation
+            Conflict of Interest Disclosure Form Submitted Successfully
           </span>
           <div className="success-content-body">
             <ul>
               <li>
-                An{" "}
-                <b>AskMyHR service request will automatically be submitted</b>{" "}
-                on your behalf to process this form. You will receive a
-                confirmation email from AskMyHR with the service request number
+                The form will be automatically sent to AskMyHR for inclusion on
+                the employee's personnel file. You will receive a confirmation
+                from AskMyHR that the service request has been created
               </li>
             </ul>
           </div>
