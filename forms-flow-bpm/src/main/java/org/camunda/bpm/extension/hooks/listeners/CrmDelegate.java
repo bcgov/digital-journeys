@@ -485,19 +485,20 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 String fileAlias[] = f.split(":");
                 JsonNode item = jsonNode.path("data").path(fileAlias[0]);
                 if (item.size() > 0) {
-                    JsonNode firstItem = item.get(0);
-                    String data = removeBase64TextFromData(firstItem.get("url").asText());
-                    CrmFileAttachment attachment = new CrmFileAttachment(data);
-                    String fileName = firstItem.get("name").asText();
-                    attachment.setFileName(fileName);
-                    // Max limit for name field is 40
-                    if (fileAlias.length > 1) {
-                        attachment.setName(fileAlias[1].substring(0, Math.min(fileAlias[1].length(), 39)));
-                    } else {
-                        attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
+                    for (JsonNode currentItem : item) {
+                        String data = removeBase64TextFromData(currentItem.get("url").asText());
+                        CrmFileAttachment attachment = new CrmFileAttachment(data);
+                        String fileName = currentItem.get("name").asText();
+                        attachment.setFileName(fileName);
+                        // Max limit for name field is 40
+                        if (fileAlias.length > 1) {
+                            attachment.setName(fileAlias[1].substring(0, Math.min(fileAlias[1].length(), 39)));
+                        } else {
+                            attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
+                        }
+                        attachment.setContentType(currentItem.get("type").asText());
+                        crmFileAttachments.add(attachment);
                     }
-                    attachment.setContentType(firstItem.get("type").asText());
-                    crmFileAttachments.add(attachment);
                 }
             }
 
