@@ -72,14 +72,17 @@ Both default tasks, `Update Application Status` and `Send Data to Forms` are man
 
 #### *Update Application Status*
 Add three `Execute listners`.
+
 ![](UAS_1.png)
 ![](UAS_2.png)
 ![](UAS_3.png)
 
 #### *Send data to forms*
 Add one `Execute listners`. Make sure you pass `crmId` and `crmLookupName` as those fields are update in workflow and needs to send to formio database.
+
 ![](Formdata.png)
 
 #### Create CRM ticket
 Here, a service task is required, and only one method, 'CrmDelegate,' needs to be implemented. Please refer to the image below for details.
+
 ![](CRM.png)
