@@ -54,6 +54,10 @@ Upon opening the website or loading the page, an active alert banner can be retr
 ![](alert-danger.png)
 ![](alert-success.png)
 
+### Update Alert banner details
+Please connect to the WebAPI PostgreSQL database and manually update the `alert_note` table accordingly. For connection instructions, please refer to the information provided [here](../cleanup-environment.md)
+
+
 ## Future enhancement
 Currently, there is no frontend developed for managing alert banners. Below is a list of features that can be reviewed, and required features can be selected for implementation. It is not necessary to add all the features/points:
 - Add an API to modify any alert banner at any time.
