@@ -27,6 +27,7 @@ import {
   // DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
+  ANONYMOUS_USER
 } from "../../constants/constants";
 // import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
 import Alert from "react-bootstrap/Alert";
@@ -77,6 +78,10 @@ export const ApplicationList = React.memo(() => {
   );
 
   const [isDeletingApplication, setIsDeletingApplication] = React.useState(false);
+
+  if (getUserRolePermission(userRoles, ANONYMOUS_USER)) {
+    dispatch(push(`${redirectUrl}form`));
+  }
 
   useEffect(() => {
     setIsLoading(false);

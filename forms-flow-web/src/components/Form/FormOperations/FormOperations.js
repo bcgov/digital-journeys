@@ -6,6 +6,7 @@ import {
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
   STAFF_REVIEWER,
+  ANONYMOUS_USER
 } from "../../../constants/constants";
 import {
   setIsApplicationCountLoading,
@@ -103,14 +104,19 @@ const FormOperations = React.memo(({ formData }) => {
       formsTab("Draft Forms", "draft"),
       formsTab("Submitted Forms", "application")],
     STAFF_DESIGNER: [viewOrEdit, deleteForm],
+    ANONYMOUS_USER: [submitNew]
   };
   const formButtonOperations = () => {
     let operationButtons = [];
-    if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
-      operationButtons.push(buttons.CLIENT_OR_REVIEWER);
-    }
-    if (userRoles.includes(STAFF_DESIGNER)) {
-      operationButtons.push(buttons.STAFF_DESIGNER); //  OPERATIONS.edit,
+    if (userRoles.includes(ANONYMOUS_USER)) {
+      operationButtons.push(buttons.ANONYMOUS_USER);
+    } else {
+      if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
+        operationButtons.push(buttons.CLIENT_OR_REVIEWER);
+      }
+      if (userRoles.includes(STAFF_DESIGNER)) {
+        operationButtons.push(buttons.STAFF_DESIGNER); //  OPERATIONS.edit,
+      }
     }
     return operationButtons;
   };

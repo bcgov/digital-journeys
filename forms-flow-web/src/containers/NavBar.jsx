@@ -21,6 +21,7 @@ import {
   MULTITENANCY_ENABLED,
   DRAFT_ENABLED,
   MANAGER_GROUP,
+  ANONYMOUS_USER
 } from "../constants/constants";
 import { push } from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
@@ -138,7 +139,7 @@ const NavBar = React.memo(() => {
         Forms
       </Link>
     ) : null,
-    DRAFT_ENABLED ? (
+    DRAFT_ENABLED && !getUserRolePermission(userRoles, ANONYMOUS_USER) ? (
       <Link
         className={pathname.match(/^\/draft/) ? "active" : null}
         to="/draft"
@@ -154,7 +155,7 @@ const NavBar = React.memo(() => {
         Admin
       </Link>
     ) : null,
-    showApplications ? (
+    showApplications && !getUserRolePermission(userRoles, ANONYMOUS_USER) ? (
       <Link
         className={pathname.match(/^\/application/) ? "active" : null}
         to="/application"

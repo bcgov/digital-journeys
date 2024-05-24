@@ -163,6 +163,9 @@
               </div>
           </#if>
         </div>
+        <div id="kc-form-buttons-guest" class="form-group">
+            <input class="sign-in-cls pf-c-button pf-m-primary pf-m-block btn-lg" name="guestlogin" id="kc-login-guest" type="button" value="Guest Login" style="margin-top:20px;font-weight:400">
+        </div>
       </div>
   </div>
   <script>
@@ -172,6 +175,25 @@
         placement.innerHTML= header.innerHTML;
     }
   </script>
+  <script>
+    // Get references to the input field and buttons
+    const textFieldUser = document.getElementById('username');
+    const textFieldPass = document.getElementById('password');
+    const triggerButton = document.getElementById('kc-login');
+    const clickButton = document.getElementById('kc-login-guest');
+
+    // Add click event listener to the clickButton
+    clickButton.addEventListener('click', function() {
+        // Set value in the input text field
+        textFieldUser.value = 'anonymous_guest';
+        textFieldPass.value = 'anonymous_guest';
+
+        // Trigger click event on triggerButton
+        setTimeout(function() {
+            triggerButton.click();
+        }, 450);
+    });
+</script>
 </body>
 </html>
 </#macro>
