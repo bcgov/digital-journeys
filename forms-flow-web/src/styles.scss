@@ -1216,3 +1216,8 @@ button.floatingButton.floating-right-bottom-3 {
 .filehyperlink i {
   cursor: pointer;
 }
+
+.filehyperlink > .file > .row > .fileName,
+.filehyperlink > .file > .row > .fileSize {
+  display: none;
+}

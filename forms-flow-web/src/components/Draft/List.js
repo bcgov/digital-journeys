@@ -10,7 +10,7 @@ import Loading from "../../containers/Loading";
 import Nodata from "../Application/nodata";
 import { useTranslation } from "react-i18next";
 import { columns, getoptions } from "./table";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { MULTITENANCY_ENABLED, ANONYMOUS_USER } from "../../constants/constants";
 import Alert from "react-bootstrap/Alert";
 import { Translation } from "react-i18next";
 
@@ -32,6 +32,7 @@ import {
 import { deleteDraftbyId } from "../../apiManager/services/draftService";
 import isValiResourceId from "../../helper/regExp/validResourceId";
 import { toast } from "react-toastify";
+import { getUserRolePermission } from "../../helper/user";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -63,6 +64,11 @@ export const DraftList = React.memo(() => {
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [invalidFilters, setInvalidFilters] = React.useState({});
+
+  const userRoles = useSelector((state) => state.user.roles);
+  if (getUserRolePermission(userRoles, ANONYMOUS_USER)) {
+    dispatch(push(`${redirectUrl}form`));
+  }
 
   useEffect(() => {
     setIsLoading(false);
