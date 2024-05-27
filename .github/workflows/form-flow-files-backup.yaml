@@ -1,9 +1,8 @@
 name: Run file backups for forms-flow-files
 
-on:
-  schedule:
-    - cron: '0 9 * * *'
 
+
+on:
   workflow_dispatch:
 
 jobs:
@@ -13,7 +12,7 @@ jobs:
       fail-fast: false
       #Run file backups for multiple environments
       matrix:
-        namespace: [d89793-dev, d89793-test]
+        namespace: [e66ac2-test, d89793-dev]
     runs-on: ubuntu-latest
     env:
       APP: forms-flow-files
@@ -29,12 +28,14 @@ jobs:
           echo "Current namespace is ${{ matrix.namespace }}"
           podNames=$(oc get pods -l app=${APP} --field-selector=status.phase=Running -o name)
           echo $podNames
+          echo "Pod 0 in the list is :" $podNames[0]
           
           #Backup ${APP} to a backup PVC pointing to /tmp/file-backups
           #Purge backups older than NO_OF_DAYS to reclaim space
           # Only Exec into one pod, and place the backups in the shared and mounted backup PVC
           oc exec ${podNames[0]} -- sh -c """
             mkdir -p /tmp/file-backups && \
-            find /tmp/file-backups/ -maxdepth 1 -mtime ${NO_OF_DAYS} -type d -exec rm -r  {} \; && \
+            find /tmp/file-backups/ -maxdepth 1 -mtime +5 -type d -exec rm -r  {} \; && \
+            find /uploads/ -maxdepth 1 -mtime +90 -exec rm -r  {} \; && \
             echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
             rsync -rz /uploads/ /tmp/file-backups/uploads-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S")"""
