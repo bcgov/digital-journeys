@@ -293,7 +293,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         {t("Select a task in the list.")}
       </Row>
     );
-  } else if (isTaskLoading) {
+  } else if (!isCustomFormSubmissionLoading && isTaskLoading) {
     return (
       <div className="service-task-details">
         <Loading />
