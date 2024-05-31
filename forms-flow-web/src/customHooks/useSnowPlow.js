@@ -45,29 +45,21 @@ const startTracking = () => {
   return () => clearTimeout(timer);
 };
 
-let pastLocation = null;
-let currentLocation = null;
-
 const useSnowPlow = () => {
   const location = useLocation();
   const [isInit, setIsInit] = React.useState(isTrackerInitialized());
-  if (!isInit) {
-    initializeTracker(COLLECTOR);
-    setIsInit(true);
-  }
 
   // this is for internal link click
-  // pastLocation and currentLocation are used to prevent duplicate tracking
   React.useEffect(() => {
-    if (location) {
-      currentLocation = location.pathname;
-    }
     let clearTimer = () => {};
-    if (!!location && pastLocation !== currentLocation && isInit) {
+    if (!isInit) {
+      initializeTracker(COLLECTOR);
+      setIsInit(true);
+    } else {
       clearTimer = startTracking();
     }
+
     return () => {
-      pastLocation = currentLocation;
       clearTimer();
     };
   }, [location, isInit]);
