@@ -699,15 +699,15 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                After your supervisor reviews your disclosure, makes a decision
-                on the outcome and submits, you will receive a confirmation and
-                a copy of your form on your email. Your form will be
-                automatically sent to AskMyHR for inclusion on your personnel
-                file
+                After your supervisor reviews your disclosure, documents a
+                decision on the outcome and submits, you will receive a
+                confirmation and a copy of your form in your email. Your form
+                will be automatically sent to AskMyHR for placement on your
+                personnel file
               </li>
               <li>
-                In case your supervisor needs some additional information, they
-                will reach out to you
+                Your supervisor will reach out to you if they need some
+                additional information
               </li>
             </ul>
           </div>
