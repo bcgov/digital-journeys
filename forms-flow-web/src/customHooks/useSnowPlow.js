@@ -18,6 +18,7 @@ const COLLECTOR =
 
 const initializeTracker = (endpoint) => {
   tracker = newTracker("Snowplow_standalone_PSA", endpoint, {
+    appId: "Snowplow_standalone_PSA",
     cookieLifetime: 86400 * 548,
     platform: "web",
     post: true,
@@ -34,26 +35,33 @@ const initializeTracker = (endpoint) => {
 
 const isTrackerInitialized = () => tracker !== undefined;
 
+// return clearTimer for preventing duplicate tracking
 const startTracking = () => {
-  setTimeout(() => {
+  const timer = setTimeout(() => {
     enableLinkClickTracking({ pseudoClicks: true });
     refreshLinkClickTracking();
     trackPageView();
   }, 500);
+  return () => clearTimeout(timer);
 };
 
 const useSnowPlow = () => {
   const location = useLocation();
   const [isInit, setIsInit] = React.useState(isTrackerInitialized());
-  if (!isInit) {
-    initializeTracker(COLLECTOR);
-    setIsInit(true);
-  }
+
   // this is for internal link click
   React.useEffect(() => {
-    if (isInit) {
-      startTracking();
+    let clearTimer = () => {};
+    if (!isInit) {
+      initializeTracker(COLLECTOR);
+      setIsInit(true);
+    } else {
+      clearTimer = startTracking();
     }
+
+    return () => {
+      clearTimer();
+    };
   }, [location, isInit]);
 
   // this is for external link click
