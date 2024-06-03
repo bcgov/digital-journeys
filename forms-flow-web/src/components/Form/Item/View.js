@@ -57,7 +57,10 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getApplicationCount, getFormProcesses } from "../../../apiManager/services/processServices";
+import {
+  getApplicationCount,
+  getFormProcesses,
+} from "../../../apiManager/services/processServices";
 import { setFormStatusLoading } from "../../../actions/processActions";
 // eslint-disable-next-line no-unused-vars
 import SavingLoading from "../../Loading/SavingLoading";
@@ -65,10 +68,17 @@ import SavingLoading from "../../Loading/SavingLoading";
 import { setDraftSubmission } from "../../../actions/draftActions";
 import { fetchEmployeeData } from "../../../apiManager/services/employeeDataService";
 import { printToPDF } from "../../../services/PdfService";
-import { convertFormLinksToOpenInNewTabs, 
-  hasUserAccessToForm, getDefaultValues, setValueForComponents } from "../../../helper/formUtils";
+import {
+  convertFormLinksToOpenInNewTabs,
+  hasUserAccessToForm,
+  getDefaultValues,
+  setValueForComponents,
+} from "../../../helper/formUtils";
 import { redirectToFormSuccessPage } from "../../../constants/successTypes";
 import MessageModal from "../../../containers/MessageModal";
+
+import { ANONYMOUS_USER } from "../../../constants/constants";
+import { getUserRolePermission } from "../../../helper/user";
 
 const View = React.memo((props) => {
   const [formStatus, setFormStatus] = React.useState("");
@@ -117,14 +127,15 @@ const View = React.memo((props) => {
   // eslint-disable-next-line no-unused-vars
   const [notified, setNotified] = useState(false);
   const [defaultVals, setDefaultVals] = useState({});
-  
+
   const [hasFormAccess, setHasFormAccess] = useState(false);
-  const [addEditForm, setAddEditForm] = useState({isAllow: true});
-  
+  const [addEditForm, setAddEditForm] = useState({ isAllow: true });
+
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState();
 
-  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] = React.useState(false);
+  const [isCustomFormSubmissionLoading, setIsCustomFormSubmissionLoading] =
+    React.useState(false);
 
   const {
     isAuthenticated,
@@ -208,10 +219,12 @@ const View = React.memo((props) => {
     if (exitType === "SUBMIT") return;
     let dataChanged = !isEqual(payload.data, lastUpdatedDraft.data);
     // check if draftsave is disebled in form or not
-    if (payload.data?.isSaveDraftEnabled !== undefined &&
-      payload.data?.isSaveDraftEnabled === false) {
-    return;
-  }
+    if (
+      payload.data?.isSaveDraftEnabled !== undefined &&
+      payload.data?.isSaveDraftEnabled === false
+    ) {
+      return;
+    }
     if (draftSubmissionId && isDraftCreated) {
       if (dataChanged) {
         setDraftSaved(false);
@@ -349,14 +362,13 @@ const View = React.memo((props) => {
     }
     getEmployeeData();
     dispatch(setMaintainBPMFormPagination(true));
-
   }, [getForm, getEmployeeData, isAuthenticated, dispatch]);
 
-  /** 
-   * Move  getDefaultValues function into form Utils helper 
+  /**
+   * Move  getDefaultValues function into form Utils helper
    * reference ticket,
    * https://github.com/bcgov/digital-journeys/issues/835
-  */
+   */
   useEffect(() => {
     setDefaultVals(getDefaultValues(employeeData.data, form));
   }, [employeeData.data, form]);
@@ -367,35 +379,41 @@ const View = React.memo((props) => {
   useEffect(() => {
     valueForComponentsInterval = setInterval(() => {
       if (formRef.current !== null && formRef.current?.formio) {
-        const keyValuePairs = [{key: "token", value: authToken}];
-        setValueForComponents(formRef.current.formio, valueForComponentsInterval, keyValuePairs);
+        const keyValuePairs = [{ key: "token", value: authToken }];
+        setValueForComponents(
+          formRef.current.formio,
+          valueForComponentsInterval,
+          keyValuePairs
+        );
       }
     }, 1000);
     return () => {
       clearInterval(valueForComponentsInterval);
     };
-    // Add the states to the dependency array to re-run the effect when they change 
+    // Add the states to the dependency array to re-run the effect when they change
   }, [authToken]);
 
   useEffect(() => {
-    if (user && user.role.some(el => el === STAFF_DESIGNER)) {
+    if (user && user.role.some((el) => el === STAFF_DESIGNER)) {
       setHasFormAccess(true);
-    } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
+    } else if (user && !user.role.some((el) => el === STAFF_DESIGNER)) {
       /* check formRef before calling function of formio */
       if (formRef.current !== null) {
-        if (formRef.current?.formio 
-          && formRef.current.formio?._form
-          && formRef.current.formio._form?.supportedidp !== undefined) {
-            if (formRef.current.formio._form?.supportedidp === "") {
-              setHasFormAccess(true);
-            } else {
-              setHasFormAccess(
-                hasUserAccessToForm(
-                  formRef.current.formio._form?.supportedidp.split(","),
-                  user.username
-                )
-              );
-            }
+        if (
+          formRef.current?.formio &&
+          formRef.current.formio?._form &&
+          formRef.current.formio._form?.supportedidp !== undefined
+        ) {
+          if (formRef.current.formio._form?.supportedidp === "") {
+            setHasFormAccess(true);
+          } else {
+            setHasFormAccess(
+              hasUserAccessToForm(
+                formRef.current.formio._form?.supportedidp.split(","),
+                user.username
+              )
+            );
+          }
         }
       }
     }
@@ -408,16 +426,27 @@ const View = React.memo((props) => {
     (state) => state.draft.isDraftListLoading
   );
   const draftCount = useSelector((state) => state.draft.draftCount);
-  const formTitle = useSelector((state)=> state?.form?.form?.title);
- 
-  useEffect(() => {  
-    if(formTitle) {
-      dispatch(FilterDrafts({ filters: { DraftName: { filterVal: formTitle } }, 
-        page: 1, sizePerPage: 1 }));
+  const formTitle = useSelector((state) => state?.form?.form?.title);
+  const userRoles = useSelector((state) => state.user.roles); // check user role for anonymous user
+
+  useEffect(() => {
+    if (formTitle) {
+      dispatch(
+        FilterDrafts({
+          filters: { DraftName: { filterVal: formTitle } },
+          page: 1,
+          sizePerPage: 1,
+        })
+      );
     }
   }, [dispatch, formTitle]);
 
-  if (isActive || isPublicStatusLoading || formStatusLoading || isDraftListLoading) {
+  if (
+    isActive ||
+    isPublicStatusLoading ||
+    formStatusLoading ||
+    isDraftListLoading
+  ) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -467,7 +496,7 @@ const View = React.memo((props) => {
         setShowPopup(true);
         break;
       case CUSTOM_EVENT_TYPE.FORMACCESS:
-        setAddEditForm({ 
+        setAddEditForm({
           isAllow: evt.isAllow,
           title: evt.title,
           message: evt.message,
@@ -480,7 +509,7 @@ const View = React.memo((props) => {
       case CUSTOM_EVENT_TYPE.CUSTOM_INITIAL_SUBMISSION:
         setPoll(false);
         exitType.current = "SUBMIT";
-        onSubmit({data: evt.data}, form._id, isPublic);
+        onSubmit({ data: evt.data }, form._id, isPublic);
         break;
       default:
         return;
@@ -520,10 +549,12 @@ const View = React.memo((props) => {
           </>
         )} */}
       {/* If draft exists */}
-      {draftCount > 0 ? (
+      {draftCount > 0 && !getUserRolePermission(userRoles, ANONYMOUS_USER) ? (
         <div className="alert-bc-warning">
           <p>
-            You have a saved draft available for {formTitle?.endsWith('form') ? formTitle : `${formTitle} form`}. <br />
+            You have a saved draft available for{" "}
+            {formTitle?.endsWith("form") ? formTitle : `${formTitle} form`}.{" "}
+            <br />
             You can access your saved drafts in &nbsp;
             <Link title="Draft Forms" to="/draft">
               Draft Forms
@@ -531,9 +562,9 @@ const View = React.memo((props) => {
           </p>
         </div>
       ) : null}
-      <div className="d-flex align-items-center justify-content-between">        
+      <div className="d-flex align-items-center justify-content-between">
         <div className="main-header">
-        <MessageModal
+          <MessageModal
             modalOpen={!hasFormAccess}
             title="Form Access Error"
             message={"You do not have access to this form!"}
@@ -546,23 +577,30 @@ const View = React.memo((props) => {
             title={addEditForm.title}
             message={addEditForm.message}
             onConfirm={() => {
-              window.location.replace(`${window.location.origin}/${addEditForm.redirectPath}`);
+              window.location.replace(
+                `${window.location.origin}/${addEditForm.redirectPath}`
+              );
             }}
           />
-          {popupData && 
+          {popupData && (
             <MessageModal
               modalOpen={showPopup}
               title={popupData.title}
               message={popupData.body}
               onConfirm={() => setShowPopup(false)}
-            />}
+            />
+          )}
           <SubmissionError
             modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
             onConfirm={props.onConfirm}
           ></SubmissionError>
           {isAuthenticated ? (
-            <Link title="go back" to={`${redirectUrl}form`} className="back-link">
+            <Link
+              title="go back"
+              to={`${redirectUrl}form`}
+              className="back-link"
+            >
               <i className="fa fa-chevron-left fa-lg" />
             </Link>
           ) : null}
@@ -577,7 +615,7 @@ const View = React.memo((props) => {
             </h3>
           ) : (
             ""
-          )} */}          
+          )} */}
           <h3 className="ml-3">
             <span className="task-head-details">
               <i className="fa fa-wpforms" aria-hidden="true" /> &nbsp; Forms /
@@ -704,7 +742,7 @@ const mapStateToProps = (state) => {
   if (form._id) {
     convertFormLinksToOpenInNewTabs(form);
   }
-  
+
   return {
     user: state.user.userDetail,
     tenant: state?.tenants?.tenantId,
