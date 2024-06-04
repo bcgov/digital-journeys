@@ -16,6 +16,7 @@ export const MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED = "MATERNITY_AND_PARENTAL_
 export const DELETE_TELEWORK = "DELETE_TELEWORK";
 export const COI_SUBMISSION = 'COI_SUBMISSION';
 export const COI_SUPERVISOR_SUBMISSION_APPROVED = 'COI_SUPERVISOR_SUBMISSION_APPROVED';
+export const ERIP_SUBMISSION = 'ERIP_SUBMISSION';
 
 
 const submitSuccessPage = {
@@ -28,6 +29,7 @@ const submitSuccessPage = {
   "maternity-parental-leave-and-allowance": MATERNITY_AND_PARENTAL_LEAVE_FORM,
   "maternity-parental-leave-and-allowance-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
   "conflict-of-interest-disclosure": COI_SUBMISSION,
+  "early-retirement-incentive-plan": ERIP_SUBMISSION,
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
