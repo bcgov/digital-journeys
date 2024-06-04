@@ -740,6 +740,9 @@ export default React.memo(() => {
             Thank you for submitting your ERIP application, it is currently
             being processed.
           </span>
+          <div>
+            <span className="success-content-intro">Next steps:</span>
+          </div>
           <div className="success-content-body">
             <ul>
               <li>
