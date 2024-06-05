@@ -6,7 +6,8 @@ export const FORM_NAMES = {
   INFLUENZA_WORKSITE_REGISTRATION: '2024 Influenza Worksite Clinic Registration',
   MATERNITY_AND_PARENTAL_LEAVE_FORM: 'Maternity and parental leave form',
   MATERNITY_PARENTAL_LEAVE_AND_ALLOWANCE_FORM: 'Maternity, Parental Leave and Allowance form',
-  COI: 'Conflict of Interest Disclosure'
+  COI: 'Conflict of Interest Disclosure',
+  ERIP: 'Early Retirement Incentive Plan',
 };
 /** 
  * please review "Form display name in draft and submission list" on below link

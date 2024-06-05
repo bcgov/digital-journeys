@@ -733,6 +733,55 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.ERIP_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for submitting your ERIP application, it is currently
+            being processed.
+          </span>
+          <div>
+            <span className="success-content-intro">Next steps:</span>
+          </div>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                You will need to apply for your pension separately from the ERIP
+                application process. It is very important that you contact the
+                BC Pension Corporation at{" "}
+                <a href="tel:+18006653554">1 800 665-3554</a>, Monday to Friday,
+                8:00 am to 4:30 pm no later than 30 days prior to your
+                retirement date of October 1.
+              </li>
+              <li>
+                Your lump sum ERIP payment cheque will be issued and should
+                arrive in the mail within four to six weeks. If you have
+                selected an RRSP payment option, a cheque will be mailed
+                directly to your bank for deposit into your RRSP account.
+              </li>
+              <li>You will be paid LTD benefits up to September 30.</li>
+              <li>Canada Life will be notified of your early retirement.</li>
+            </ul>
+          </div>
+
+          <span className="success-content-intro">Next steps</span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                After your supervisor reviews your disclosure, documents a
+                decision on the outcome and submits, you will receive a
+                confirmation and a copy of your form in your email. Your form
+                will be automatically sent to AskMyHR for placement on your
+                personnel file
+              </li>
+              <li>
+                Your supervisor will reach out to you if they need some
+                additional information
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     }
   };
 
