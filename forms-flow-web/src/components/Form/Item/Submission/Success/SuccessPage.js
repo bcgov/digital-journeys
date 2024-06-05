@@ -740,8 +740,8 @@ export default React.memo(() => {
             Thank you for submitting your ERIP application, it is currently
             being processed.
           </span>
-          <div>
-            <span className="success-content-intro">Next steps:</span>
+          <div className="success-content-intro">
+            <span>Next steps:</span>
           </div>
           <div className="success-content-body">
             <ul>
@@ -761,23 +761,6 @@ export default React.memo(() => {
               </li>
               <li>You will be paid LTD benefits up to September 30.</li>
               <li>Canada Life will be notified of your early retirement.</li>
-            </ul>
-          </div>
-
-          <span className="success-content-intro">Next steps</span>
-          <div className="success-content-body">
-            <ul>
-              <li>
-                After your supervisor reviews your disclosure, documents a
-                decision on the outcome and submits, you will receive a
-                confirmation and a copy of your form in your email. Your form
-                will be automatically sent to AskMyHR for placement on your
-                personnel file
-              </li>
-              <li>
-                Your supervisor will reach out to you if they need some
-                additional information
-              </li>
             </ul>
           </div>
         </>
