@@ -35,6 +35,21 @@
             <script src="${script}" type="text/javascript"></script>
         </#list>
     </#if>
+    <style>
+        @media (max-width: 1140px) {
+            #kc-guest-wrap {
+                width: 100% !important;
+            }
+            #kc-form-buttons-guest {
+                width: 49.5% !important;
+            }
+        }
+        @media (max-width: 767px) {
+            #kc-form-buttons-guest {
+                width: 100% !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="${properties.kcBodyClass!}">
@@ -163,8 +178,21 @@
               </div>
           </#if>
         </div>
-        <div id="kc-form-buttons-guest" class="form-group">
-            <input class="sign-in-cls pf-c-button pf-m-primary pf-m-block btn-lg" name="guestlogin" id="kc-login-guest" type="button" value="Guest Login" style="margin-top:20px;font-weight:400">
+        <div id = "kc-guest-wrap" style="width:90%">
+            <div id="kc-form-buttons-guest" class="form-group social-path-row" style="
+                background: #f9f9f9;
+                border-color: #ececec;
+                width: 45%;
+                padding: 0px 10px 0px 10px;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+                box-sizing: border-box;
+            ">
+                <button class="sign-in-cls pf-c-button pf-m-primary pf-m-block btn-lg" name="guestlogin" id="kc-login-guest" type="button" style="margin: 20px 0px 20px 0px;font-weight:400;width: 100% !important;max-width: 380px;display: block;box-sizing: border-box;text-align: left !important;">
+                    Guest Login
+                </button>
+            </div>
         </div>
       </div>
   </div>
