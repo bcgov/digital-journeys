@@ -478,8 +478,9 @@ const doProcessActions = (submission, ownProps) => {
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
-        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
-        else dispatch(setFormSubmitted(true));
+        if (isAuth) {
+          // executeAuthSideEffects(dispatch, redirectUrl);
+        } else dispatch(setFormSubmitted(true));
       })
     );
   };
