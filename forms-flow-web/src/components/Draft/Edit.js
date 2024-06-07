@@ -443,9 +443,9 @@ const View = React.memo((props) => {
   );
 });
 
-const executeAuthSideEffects = (dispatch, redirectUrl) => {
-  dispatch(push(`${redirectUrl}draft`));
-};
+// const executeAuthSideEffects = (dispatch, redirectUrl) => {
+//   dispatch(push(`${redirectUrl}draft`));
+// };
 
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
@@ -478,8 +478,13 @@ const doProcessActions = (submission, ownProps) => {
             <Translation>{(t) => t("Submission Failed.")}</Translation>
           );
         }
-        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
-        else dispatch(setFormSubmitted(true));
+        if (isAuth) {
+          /** 
+           * comment out the following line if you want to 
+           * redirect to draft page after submission
+          */
+          // executeAuthSideEffects(dispatch, redirectUrl);
+        } else dispatch(setFormSubmitted(true));
       })
     );
   };
