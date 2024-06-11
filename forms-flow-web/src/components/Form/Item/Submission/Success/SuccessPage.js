@@ -738,7 +738,7 @@ export default React.memo(() => {
         <>
           <span className="success-content-intro">
             Thank you for submitting your ERIP application, it is currently
-            being processed.
+            being processed
           </span>
           <div className="success-content-intro">
             <span>Next steps:</span>
@@ -751,16 +751,16 @@ export default React.memo(() => {
                 BC Pension Corporation at{" "}
                 <a href="tel:+18006653554">1 800 665-3554</a>, Monday to Friday,
                 8:00 am to 4:30 pm no later than 30 days prior to your
-                retirement date of October 1.
+                retirement date of October 1
               </li>
               <li>
                 Your lump sum ERIP payment cheque will be issued and should
                 arrive in the mail within four to six weeks. If you have
                 selected an RRSP payment option, a cheque will be mailed
-                directly to your bank for deposit into your RRSP account.
+                directly to your bank for deposit into your RRSP account
               </li>
-              <li>You will be paid LTD benefits up to September 30.</li>
-              <li>Canada Life will be notified of your early retirement.</li>
+              <li>You will be paid LTD benefits up to September 30</li>
+              <li>Canada Life will be notified of your early retirement</li>
             </ul>
           </div>
         </>
