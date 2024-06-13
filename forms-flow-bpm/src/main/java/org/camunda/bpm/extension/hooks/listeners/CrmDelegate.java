@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import main.java.org.camunda.bpm.extension.hooks.model.CrmFileAttachmentPostRequest;
 import main.java.org.camunda.bpm.extension.hooks.model.CrmIdObject;
@@ -67,6 +68,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
     private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD = "crmProductLookupName";
     private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD = "crmCategoryLookupName";
+    private static final String CRM_CATEGORY_LOOKUP_ID_FIELD = "crmCategoryLookupId";
     private static final String CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD = "crmStaffGroupLookupName";
     private static final String CRM_MAT_PAT_SUBJECT_FIELD = "crmSubject";
     private static final String CRM_INCIDENT_SUBJECT_FIELD = "crmIncidentSubject";
@@ -193,6 +195,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         // Loading the CRM fields from the form
         String crmProductLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD));
         String crmCategoryLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD));
+        String crmCategoryIdField = String.valueOf(execution.getVariables().get(CRM_CATEGORY_LOOKUP_ID_FIELD));
         String crmStaffGroupLookupName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_STAFF_GROUP_LOOKUP_NAME_FIELD));
         String crmSubject = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBJECT_FIELD));
         String submitterDisplayName = String.valueOf(execution.getVariables().get(CRM_MAT_PAT_SUBMITTER_NAME_FIELD));
@@ -226,7 +229,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         ArrayList<CrmThread> crmThreads = new ArrayList<CrmThread>();
         crmThreads.add(crmThread1);
         CrmLookupNameObject crmProduct = new CrmLookupNameObject(crmProductLookupName);
-        CrmLookupNameObject crmCategory = new CrmLookupNameObject(crmCategoryLookupName);
         CrmLookupNameObject crmStaffGroup = new CrmLookupNameObject(crmStaffGroupLookupName);
         CrmAssignedTo crmAssignedTo = new CrmAssignedTo(crmStaffGroup);
         String crmIncidentStatusLookupName = "Unresolved";
@@ -237,7 +239,24 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         CrmStatusWithType crmStatusWithType = new CrmStatusWithType(crmIncidentStatus);
         CrmC crmC = new CrmC(crmPriorityDuedate);
         CrmCustomFields crmCustomFields = new CrmCustomFields(crmC);
-        CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields, crmStatusWithType);
+        // CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmProduct, crmCategory, crmAssignedTo, crmCustomFields, crmStatusWithType);
+        CrmIncidentPostRequest crmIncidentPostRequest = new CrmIncidentPostRequest(crmPrimaryContact, crmIncidentSubject, crmThreads, crmCustomFields, crmStatusWithType);
+
+        // If a category ID is provided, use it; otherwise, use the name to look up the record in CRM.
+        if (crmCategoryIdField != null && !crmCategoryIdField.equals("null")) {
+            CrmIdObject crmCategoryId = new CrmIdObject(Integer.parseInt(crmCategoryIdField));
+            crmIncidentPostRequest.setCategory(crmCategoryId);
+        } else {
+            CrmLookupNameObject crmCategory = new CrmLookupNameObject(crmCategoryLookupName);
+            crmIncidentPostRequest.setCategory(crmCategory);
+        }
+
+        // Do not update product and assignTo at the time of update CRM
+        if (!isUpdate) {
+            crmIncidentPostRequest.setProduct(crmProduct);
+            crmIncidentPostRequest.setAssignedTo(crmAssignedTo);
+        }
+        
         ArrayList<CrmFileAttachment> formPdfAttachments = this.formPDFAttachInCRM(execution);
         ArrayList<CrmFileAttachment> crmFileAttachments = this.crmAttachFiles(execution);
         if (crmFileAttachments != null) {
@@ -260,8 +279,12 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 String crmId = String.valueOf(execution.getVariables().get(CRM_ID));
                 url = getEndpointUrl(INCIDENTS +"/"+ crmId);
                 System.out.println("Update CRM incident with ID :" + crmId);
+
+                String filteredRequest = objectMapper.writeValueAsString(crmIncidentPostRequest);
+                filteredRequest = removeNullValues(filteredRequest);
+
                 response = httpServiceInvoker.execute(
-                    url, HttpMethod.POST, objectMapper.writeValueAsString(crmIncidentPostRequest), isUpdate, "CRM");
+                    url, HttpMethod.POST, filteredRequest, isUpdate, "CRM");
                 CrmIncidentPostResponse crmIncidentPostResponse = new CrmIncidentPostResponse(Integer.parseInt(crmId), String.valueOf(execution.getVariables().get("crmLookupName")));
                 // Sending an email by calling /incidentReponse endpoint
                 CrmIdObject crmIncident = new CrmIdObject(Integer.parseInt(crmId));
@@ -290,6 +313,31 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private String removeNullValues(String jsonString) {
+        try {
+            // Convert JSON string to object
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonString);
+            
+            // Remove keys with null values
+            if (jsonNode.has("category") && jsonNode.get("category").isNull()) {
+                ((ObjectNode) jsonNode).remove("category");
+            }
+            if (jsonNode.has("product") && jsonNode.get("product").isNull()) {
+                ((ObjectNode) jsonNode).remove("product");
+            }
+            if (jsonNode.has("assignedTo") && jsonNode.get("assignedTo").isNull()) {
+                ((ObjectNode) jsonNode).remove("assignedTo");
+            }
+            
+            // Convert JSON object back to string
+            return objectMapper.writeValueAsString(jsonNode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return jsonString;
         }
     }
 

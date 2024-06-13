@@ -7,7 +7,7 @@ public class CrmIncidentPostRequest {
   private String subject;
   private ArrayList<CrmThread> crmThreads;
   private CrmLookupNameObject crmProduct;
-  private CrmLookupNameObject crmCategory;
+  private Object crmCategory;
   private CrmAssignedTo crmAssignedTo;
   private CrmCustomFields crmCustomFields;
   private CrmStatusWithType crmStatusWithType;
@@ -27,6 +27,15 @@ public class CrmIncidentPostRequest {
     this.crmCategory = crmCategory;
     this.crmProduct = crmProduct;
     this.crmAssignedTo = crmAssignedTo;
+    this.crmCustomFields = crmCustomFields;
+    this.crmStatusWithType = crmStatusWithType;
+  }
+
+  public CrmIncidentPostRequest(CrmIdObject crmPrimaryContact, String subject, ArrayList<CrmThread> crmThreads, 
+    CrmCustomFields crmCustomFields, CrmStatusWithType crmStatusWithType) {
+    this.crmPrimaryContact = crmPrimaryContact;
+    this.subject = subject;
+    this.crmThreads = crmThreads;
     this.crmCustomFields = crmCustomFields;
     this.crmStatusWithType = crmStatusWithType;
   }
@@ -63,12 +72,17 @@ public class CrmIncidentPostRequest {
     this.crmProduct = crmProduct;
   }
 
-  public CrmLookupNameObject getCategory() {
-    return crmCategory;
+  public void setCategory(Object crmCategory) {
+    if (crmCategory instanceof CrmIdObject) {
+      this.crmCategory = (CrmIdObject) crmCategory;
+    }
+    if (crmCategory instanceof CrmLookupNameObject) {
+      this.crmCategory = (CrmLookupNameObject) crmCategory;
+    }
   }
 
-  public void setCategory(CrmLookupNameObject crmCategory) {
-    this.crmCategory = crmCategory;
+  public Object getCategory() {
+    return crmCategory;
   }
 
   public CrmAssignedTo getAssignedTo() {
