@@ -36,6 +36,6 @@ jobs:
           oc exec ${podNames[0]} -- sh -c """
             mkdir -p /tmp/file-backups && \
             find /tmp/file-backups/ -maxdepth 1 -mtime +5 -type d -exec rm -r  {} \; && \
-            find /uploads/ -maxdepth 1 -mtime +90 -exec rm -r  {} \; && \
+            find /uploads/ -maxdepth 1 -mtime +365 -exec rm -r  {} \; && \
             echo 'PROJECT NAMESPACE is: '  ${{ matrix.namespace }} && \
             rsync -rz /uploads/ /tmp/file-backups/uploads-${{ matrix.namespace }}-$(date "+%Y.%m.%d-%H.%M.%S")"""
