@@ -14,6 +14,18 @@ This README file provides instructions on how to create a CRM ticket using the p
 - **crmId** : A unique identifier for the ticket. Default it will be blank.
 - **crmFileFields** : Fields related to any files attached to the ticket from the form. By default, it should display file names separated by commas. If you want to provide dynamic or static names, attach the name to the file using a colon (:).
 
+Filename Specification Format
+The filename specification format prioritizes construction from right to left:
+`<FieldName>:<StaticFileName>:<Prefix>`
+
+Examples:
+1. Using a Static Filename:
+To set the filename as "SupervisorFileName.pdf"
+`SupervisorField:SupervisorFileName`
+2. Attaching a Prefix:
+To prefix "Sup_" to the filename:
+`SupervisorField::Sup_`
+
 *Example script*
 ```
 /* let's say we have three component with file attachments, employeeFieldOne, employeeFieldTwo, SupervisorField */

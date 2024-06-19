@@ -539,7 +539,11 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                         String fileName = currentItem.get("name").asText();
                         attachment.setFileName(fileName);
                         // Max limit for name field is 40
-                        if (fileAlias.length > 1) {
+                        if (fileAlias.length > 2) {
+                            String tmpFileName = fileAlias[2] + "" + fileName;
+                            attachment.setName(tmpFileName.substring(0, Math.min(tmpFileName.length(), 39)));
+                            attachment.setFileName(tmpFileName);
+                        } else if (fileAlias.length == 2) {
                             attachment.setName(fileAlias[1].substring(0, Math.min(fileAlias[1].length(), 39)));
                         } else {
                             attachment.setName(fileName.substring(0, Math.min(fileName.length(), 39)));
