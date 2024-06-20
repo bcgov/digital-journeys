@@ -54,6 +54,8 @@ import { redirectToSuccessPage } from "../../../constants/successTypes";
 import { printToPDF } from "../../../services/PdfService";
 import MessageModal from "../../../containers/MessageModal";
 
+import { toast } from "react-toastify";
+
 const ServiceFlowTaskDetails = React.memo(() => {
   const { t } = useTranslation();
   const { taskId } = useParams();
@@ -277,6 +279,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
               redirectToSuccessPage(dispatch, push, successPage);
             } else {
               dispatch(setBPMTaskDetailLoader(false));
+              setIsCustomFormSubmissionLoading(false);
+              toast.error("Create CRM Failed.");
             }
           }
         )
