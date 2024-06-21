@@ -231,7 +231,9 @@ const View = React.memo((props) => {
         dispatch(
           draftUpdateMethod(payload, draftSubmissionId, (err) => {
             if (exitType === "UNMOUNT" && !err && isAuthenticated) {
-              toast.success(t("Submission saved to draft."));
+              if (!getUserRolePermission(userRoles, ANONYMOUS_USER)) {
+                toast.success(t("Submission saved to draft."));
+              }
               /* issue/722
               before this requirement, it creates new draft on form load.
               Now is is not saving it as draft "if few fields in form" are
