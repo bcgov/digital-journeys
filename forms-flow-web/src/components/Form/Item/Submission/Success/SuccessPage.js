@@ -740,6 +740,12 @@ export default React.memo(() => {
             Thank you for submitting your ERIP application, it is currently
             being processed
           </span>
+          <div className="success-content-body">
+            Please allow up to two weeks to receive an ERIP approval
+            confirmation and additional instructions from the date we receive
+            your application.
+          </div>
+          <span className="success-content-intro"></span>
           <div className="success-content-intro">
             <span>Next steps:</span>
           </div>
