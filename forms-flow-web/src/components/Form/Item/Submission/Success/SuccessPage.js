@@ -745,7 +745,7 @@ export default React.memo(() => {
               <li>
                 Please allow up to two weeks to receive an ERIP approval
                 confirmation and additional instructions from the date we
-                receive your application.
+                receive your application
               </li>
             </ul>
           </div>
