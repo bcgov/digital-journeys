@@ -202,13 +202,26 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 })
                 .map(fileData -> {
                     try {
-                        JSONObject fileDetails = (JSONObject) fileData.get("data");
-                        String formUrl = fileData.getString("url");
-                        fileDetails.put("submission", submissionId);
+                        if (fileData.getString("storage").equals("base64")) {
+                            String base64Data = removeBase64TextFromData(fileData.getString("url"));
+                            String fileType = fileData.getString("type");
+                            if (fileType == "") {
+                                fileType = extractMimeType(fileData.getString("url"));
+                            }
 
-                        // Retrieve attachment from file service
-                        DataSource source = this.attachmentService.getAttachment(formUrl, fileData);
-                        return new Attachment(fileData.getString("originalName"), fileData.getString("type"), source);
+                            // Convert base64 data into byteArray.
+                            byte[] pdfBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Data);
+                            DataSource dataSource = new ByteArrayDataSource(pdfBytes, fileType);
+                            return new Attachment(fileData.getString("originalName"), fileType, dataSource);
+                        } else {
+                            JSONObject fileDetails = (JSONObject) fileData.get("data");
+                            String formUrl = fileData.getString("url");
+                            fileDetails.put("submission", submissionId);
+    
+                            // Retrieve attachment from file service
+                            DataSource source = this.attachmentService.getAttachment(formUrl, fileData);
+                            return new Attachment(fileData.getString("originalName"), fileData.getString("type"), source);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -573,5 +586,20 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         return fn;
+    }
+
+    private static String removeBase64TextFromData(String base64) {
+        return base64.replaceAll("data:.*?;base64,","");
+    }
+
+    private static String extractMimeType(String dataUri) {
+        // Check if the URI starts with "data:"
+        if (dataUri.startsWith("data:")) {
+            // Find the index of the first semicolon ';' after "data:"
+            int semicolonIndex = dataUri.indexOf(';');
+            // Extract substring between "data:" and the first semicolon ';' or end of string
+            return semicolonIndex != -1 ? dataUri.substring(5, semicolonIndex) : dataUri.substring(5);
+        }
+        return "application/octet-stream";
     }
 }
