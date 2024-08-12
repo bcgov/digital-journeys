@@ -15,7 +15,9 @@ export const MATERNITY_AND_PARENTAL_LEAVE_FORM_APPROVED = "MATERNITY_AND_PARENTA
 export const MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED = "MATERNITY_AND_PARENTAL_LEAVE_FORM_DENIED";
 export const DELETE_TELEWORK = "DELETE_TELEWORK";
 export const COI_SUBMISSION = 'COI_SUBMISSION';
+export const COI_SUBMISSION_LDB = 'COI_SUBMISSION_LDB';
 export const COI_SUPERVISOR_SUBMISSION_APPROVED = 'COI_SUPERVISOR_SUBMISSION_APPROVED';
+export const COI_SUPERVISOR_SUBMISSION_LDB_APPROVED = 'COI_SUPERVISOR_SUBMISSION_LDB_APPROVED';
 export const ERIP_SUBMISSION = 'ERIP_SUBMISSION';
 
 
@@ -29,6 +31,7 @@ const submitSuccessPage = {
   "maternity-parental-leave-and-allowance": MATERNITY_AND_PARENTAL_LEAVE_FORM,
   "maternity-parental-leave-and-allowance-ineligible": MATERNITY_AND_PARENTAL_LEAVE_FORM_INELIGIBLE,
   "conflict-of-interest-disclosure": COI_SUBMISSION,
+  "conflict-of-interest-disclosure-ldb": COI_SUBMISSION_LDB,
   "early-retirement-incentive-plan": ERIP_SUBMISSION,
 };
 
@@ -47,6 +50,11 @@ export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) =
   if (formKey === "maternity-parental-leave-and-allowance") {
     if (submission?.data?.empCtg === "K" || submission?.data?.empCtg === "L") {
       formKey = `${formKey}-ineligible`;
+    }
+  }
+  if (formKey === "conflict-of-interest-disclosure") {
+    if (submission?.data?.employeeOrganization === "ldb") {
+      formKey = `${formKey}-ldb`;
     }
   }
 
