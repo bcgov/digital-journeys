@@ -667,52 +667,6 @@ export default React.memo(() => {
           </span>
         </>
       );
-    } else if (search.includes(successTypes.COI_SUBMISSION)) {
-      return (
-        <>
-          <span className="success-content-intro">
-            Your form has been sent to your supervisor
-          </span>
-          <div className="success-content-body">
-            <ul>
-              <li>
-                You will receive an email confirming your submission. Your
-                supervisor will also be notified via email about your form
-                submission
-              </li>
-              <li>
-                You can modify your form prior to final submission by your
-                supervisor. You can find your submitted form in the&nbsp;
-                <a
-                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Submitted Forms
-                </a>
-                &nbsp;tab
-              </li>
-            </ul>
-          </div>
-
-          <span className="success-content-intro">Next steps</span>
-          <div className="success-content-body">
-            <ul>
-              <li>
-                After your supervisor reviews your disclosure, documents a
-                decision on the outcome and submits, you will receive a
-                confirmation and a copy of your form in your email. Your form
-                will be automatically sent to AskMyHR for placement on your
-                personnel file
-              </li>
-              <li>
-                Your supervisor will reach out to you if they need some
-                additional information
-              </li>
-            </ul>
-          </div>
-        </>
-      );
     } else if (search.includes(successTypes.COI_SUBMISSION_LDB)) {
       return (
         <>
@@ -751,6 +705,52 @@ export default React.memo(() => {
                 will be automatically sent to the LDB Ethics Advisor, and a
                 final copy will be sent to LDB Human Resources for placement on
                 your employee file
+              </li>
+              <li>
+                Your supervisor will reach out to you if they need some
+                additional information
+              </li>
+            </ul>
+          </div>
+        </>
+      );
+    } else if (search.includes(successTypes.COI_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Your form has been sent to your supervisor
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                You will receive an email confirming your submission. Your
+                supervisor will also be notified via email about your form
+                submission
+              </li>
+              <li>
+                You can modify your form prior to final submission by your
+                supervisor. You can find your submitted form in the&nbsp;
+                <a
+                  href="https://digital-journeys.apps.silver.devops.gov.bc.ca/application"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Submitted Forms
+                </a>
+                &nbsp;tab
+              </li>
+            </ul>
+          </div>
+
+          <span className="success-content-intro">Next steps</span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                After your supervisor reviews your disclosure, documents a
+                decision on the outcome and submits, you will receive a
+                confirmation and a copy of your form in your email. Your form
+                will be automatically sent to AskMyHR for placement on your
+                personnel file
               </li>
               <li>
                 Your supervisor will reach out to you if they need some
