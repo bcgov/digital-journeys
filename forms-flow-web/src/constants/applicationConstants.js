@@ -14,6 +14,7 @@ export const SUBMITTED_FINAL_STATUS = "Submitted - Final";
 export const APPROVED_STATUS = "APPROVED";
 export const DENIED_STATUS = "DENIED";
 export const NEW_STATUS = "NEW";
+export const NEW_S_STATUS = "New";
 export const COMPLETED_STATUS = "Completed";
 
 // No longer need this, as edit access is now controlled by the formEditStatusMap in forms-flow-web/src/helper/access.js
