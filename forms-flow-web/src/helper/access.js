@@ -6,6 +6,7 @@ import {
   APPROVED_STATUS,
   DENIED_STATUS,
   NEW_STATUS,
+  NEW_S_STATUS
 } from "../constants/applicationConstants";
 import { convertObjectKeyValueToLowercase } from './helper';
 /**
@@ -100,6 +101,7 @@ const formEditStatusMap = {
   [FORM_NAMES.SL_REVIEW]: [SUBMITTED_VALIDATION_STATUS, SUBMITTED_FINAL_STATUS],
   [FORM_NAMES.SENIOR_LEADER_REVIEW]: [SUBMITTED_VALIDATION_STATUS, SUBMITTED_FINAL_STATUS],
   [FORM_NAMES.COI]: [NEW_STATUS],
+  [FORM_NAMES.TELEWORK]: [NEW_S_STATUS],
 };
 
 export const hasFormEditAccessByStatus = (formName, status) => {
