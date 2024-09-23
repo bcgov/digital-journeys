@@ -88,6 +88,11 @@ public class UserGroupAssignmentListener  extends BaseListener implements TaskLi
         String managerEmail = String.valueOf(execution.getVariables().get("managerEmail"));
         String managerUsername = managerEmail + "_idir";
         String groupPathToBeAdded = String.valueOf(this.groupPath.getValue(execution));
+        String givenUsername = String.valueOf(execution.getVariables().get("givenUsername"));
+
+        if (!givenUsername.isEmpty() && givenUsername != null && givenUsername != "" && givenUsername != "null") {
+            managerUsername = givenUsername;
+        }
         
         if (managerEmail == null || managerEmail.isEmpty() || 
             groupPathToBeAdded == null || groupPathToBeAdded.isEmpty()) {
