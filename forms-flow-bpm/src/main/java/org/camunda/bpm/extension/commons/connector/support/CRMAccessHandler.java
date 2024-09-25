@@ -38,7 +38,8 @@ public class CRMAccessHandler extends AbstractAccessHandler {
     
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         payload = (payload == null) ? new JsonObject().toString() : payload;
-
+        System.out.println("payload");
+        System.out.println(payload);
         try {
             HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -51,6 +52,8 @@ public class CRMAccessHandler extends AbstractAccessHandler {
                 requestBuilder.GET();
             } else if (method == HttpMethod.POST) {
                 requestBuilder.POST(HttpRequest.BodyPublishers.ofString(payload));
+                System.out.println("HttpRequest.BodyPublishers.ofString(payload)");
+                System.out.println(HttpRequest.BodyPublishers.ofString(payload));
             } // Add other HTTP methods as needed
 
             HttpRequest request = requestBuilder.build();
