@@ -280,7 +280,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
             } else {
               dispatch(setBPMTaskDetailLoader(false));
               setIsCustomFormSubmissionLoading(false);
-              toast.error("Create CRM Failed.");
+              console.error(err);
+              toast.error("Something went wrong! Please contact the Digital Journey team for assistance."); 
             }
           }
         )
