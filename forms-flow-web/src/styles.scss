@@ -207,16 +207,15 @@ i.fa.fa-plus-square-o.text-muted, i.fa.fa-minus-square-o.text-muted {
 .formio-errors .error {
   color: $red;
 }
-.formio-wizard-nav-container 
-{
+.formio-wizard-nav-container {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   margin: 0;
   justify-content: space-between;
-  .btn-wizard-nav-next:only-child {
-    margin-left: auto;
-  }
+}
+.formio-wizard-nav-container > li:only-child {
+  margin-left: auto;
 }
 .btn-wizard-nav-submit,
 .btn-wizard-nav-next,
