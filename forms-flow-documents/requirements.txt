@@ -39,7 +39,7 @@ pytz==2022.2.1
 requests==2.28.1
 rsa==4.9
 six==1.16.0
-urllib3==1.26.11
+urllib3==1.26.18
 zipp==3.8.1
 nested-lookup==0.2.25
 git+https://github.com/bcgov/digital-journeys.git@DGJ_1236-update-to-the-new-helm-chart-deployment#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
