@@ -69,12 +69,10 @@ jobs:
     if: github.repository == 'bcgov/digital-journeys'
     runs-on: ubuntu-latest
     steps:
-      - name: Install OpenShift CLI
-        run: |
-          curl -Lo openshift-client-linux.tar.gz https://github.com/openshift/oc/releases/download/openshift-4.9.0/openshift-client-linux-4.9.0.tar.gz
-          tar -xzvf openshift-client-linux.tar.gz
-          sudo mv oc /usr/local/bin/
-          sudo chmod +x /usr/local/bin/oc
+      - name: Install OpenShift CLI (oc)
+        uses: redhat-actions/oc-installer@v1
+        with:
+          oc_version: '4.6'
 
       - name: Log in to OpenShift
         run: |
