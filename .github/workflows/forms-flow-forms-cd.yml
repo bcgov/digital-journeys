@@ -71,8 +71,8 @@ jobs:
     steps:
       - name: Install OpenShift CLI
         run: |
-          curl -LO https://github.com/openshift/oc/releases/download/v4.9.0/openshift-client-linux-4.9.0.tar.gz
-          tar -xzvf openshift-client-linux-4.9.0.tar.gz
+          curl -Lo openshift-client-linux.tar.gz https://github.com/openshift/oc/releases/download/openshift-4.9.0/openshift-client-linux-4.9.0.tar.gz
+          tar -xzvf openshift-client-linux.tar.gz
           sudo mv oc /usr/local/bin/
           sudo chmod +x /usr/local/bin/oc
 
