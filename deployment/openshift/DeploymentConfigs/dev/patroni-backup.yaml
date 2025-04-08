@@ -1,0 +1,142 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"name":"patroni-backup","namespace":"d89793-dev"},"spec":{"replicas":1,"revisionHistoryLimit":10,"selector":{"deploymentconfig":"patroni-backup"},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"deploymentconfig":"patroni-backup"}},"spec":{"containers":[{"env":[{"name":"BUILD_ID","value":""},{"name":"BACKUP_STRATEGY","value":"rolling"},{"name":"BACKUP_DIR","value":"/backups/"},{"name":"DAILY_BACKUPS","value":"5"},{"name":"WEEKLY_BACKUPS","value":"1"},{"name":"MONTHLY_BACKUPS","value":"1"},{"name":"PATRONI_USER","valueFrom":{"secretKeyRef":{"key":"app-db-username","name":"patroni"}}},{"name":"DATABASE_USER","valueFrom":{"secretKeyRef":{"key":"app-db-username","name":"patroni"}}},{"name":"PATRONI_PASSWORD","valueFrom":{"secretKeyRef":{"key":"app-db-password","name":"patroni"}}},{"name":"DATABASE_PASSWORD","valueFrom":{"secretKeyRef":{"key":"app-db-password","name":"patroni"}}},{"name":"PATRONI_DATABASE","value":"app"},{"name":"DATABASE_NAME","value":"app"},{"name":"DATABASE_SERVER_TIMEOUT","value":"600"},{"name":"ENVIRONMENT_NAME","value":"digital_journeys_patroni_backup"},{"name":"ENVIRONMENT_FRIENDLY_NAME","value":"digital_journeys_patroni_backup"},{"name":"DATABASE_SERVICE_NAME","value":"patroni-0.patroni"}],"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/patroni-backup:latest","imagePullPolicy":"Always","name":"patroni-backup","ports":[{"containerPort":5432}],"resources":{"limits":{"cpu":"125m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"volumeMounts":[{"mountPath":"/backups/","name":"patroni-backup-data-vol"},{"mountPath":"/home/postgres/pgdata","name":"patroni-backup-verification-vol"},{"mountPath":"/backup.conf","name":"patroni-backup-config-vol","subPath":"backup.conf"}]}],"volumes":[{"name":"patroni-backup-data-vol","persistentVolumeClaim":{"claimName":"patroni-backup-data"}},{"name":"patroni-backup-verification-vol","persistentVolumeClaim":{"claimName":"patroni-backup-verification"}},{"configMap":{"items":[{"key":"backup.conf","path":"backup.conf"}],"name":"patroni-backup-config"},"name":"patroni-backup-config-vol"}]}},"triggers":[{"type":"ConfigChange"}]}}
+  creationTimestamp: "2022-08-03T20:07:15Z"
+  generation: 7
+  name: patroni-backup
+  namespace: d89793-dev
+  resourceVersion: "12349763684"
+  uid: 7f63d848-4106-4132-b32f-62d3b668a3d4
+spec:
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    deploymentconfig: patroni-backup
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deploymentconfig: patroni-backup
+    spec:
+      containers:
+      - env:
+        - name: BUILD_ID
+        - name: BACKUP_STRATEGY
+          value: rolling
+        - name: BACKUP_DIR
+          value: /backups/
+        - name: DAILY_BACKUPS
+          value: "5"
+        - name: WEEKLY_BACKUPS
+          value: "1"
+        - name: MONTHLY_BACKUPS
+          value: "1"
+        - name: PATRONI_USER
+          valueFrom:
+            secretKeyRef:
+              key: app-db-username
+              name: patroni
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              key: app-db-username
+              name: patroni
+        - name: PATRONI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: app-db-password
+              name: patroni
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: app-db-password
+              name: patroni
+        - name: PATRONI_DATABASE
+          value: app
+        - name: DATABASE_NAME
+          value: app
+        - name: DATABASE_SERVER_TIMEOUT
+          value: "600"
+        - name: ENVIRONMENT_NAME
+          value: digital_journeys_patroni_backup
+        - name: ENVIRONMENT_FRIENDLY_NAME
+          value: digital_journeys_patroni_backup
+        - name: DATABASE_SERVICE_NAME
+          value: patroni-0.patroni
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/patroni-backup:latest
+        imagePullPolicy: Always
+        name: patroni-backup
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "0"
+            memory: "0"
+          requests:
+            cpu: "0"
+            memory: "0"
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /backups/
+          name: patroni-backup-data-vol
+        - mountPath: /home/postgres/pgdata
+          name: patroni-backup-verification-vol
+        - mountPath: /backup.conf
+          name: patroni-backup-config-vol
+          subPath: backup.conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: patroni-backup-data-vol
+        persistentVolumeClaim:
+          claimName: patroni-backup-data
+      - name: patroni-backup-verification-vol
+        persistentVolumeClaim:
+          claimName: patroni-backup-verification
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: backup.conf
+            path: backup.conf
+          name: patroni-backup-config
+        name: patroni-backup-config-vol
+  test: false
+  triggers:
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  conditions:
+  - lastTransitionTime: "2023-11-22T22:07:47Z"
+    lastUpdateTime: "2023-11-22T22:08:04Z"
+    message: replication controller "patroni-backup-6" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2024-11-26T16:07:42Z"
+    lastUpdateTime: "2024-11-26T16:07:42Z"
+    message: Deployment config does not have minimum availability.
+    status: "False"
+    type: Available
+  details:
+    causes:
+    - type: ConfigChange
+    message: config change
+  latestVersion: 6
+  observedGeneration: 7
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

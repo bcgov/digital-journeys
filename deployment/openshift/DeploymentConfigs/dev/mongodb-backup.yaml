@@ -1,0 +1,142 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"name":"mongodb-backup","namespace":"d89793-dev"},"spec":{"replicas":1,"revisionHistoryLimit":10,"selector":{"deploymentconfig":"mongodb-backup"},"strategy":{"type":"Recreate"},"template":{"metadata":{"labels":{"deploymentconfig":"mongodb-backup"}},"spec":{"containers":[{"env":[{"name":"BUILD_ID","value":""},{"name":"BACKUP_STRATEGY","value":"rolling"},{"name":"BACKUP_DIR","value":"/backups/"},{"name":"DAILY_BACKUPS","value":"5"},{"name":"WEEKLY_BACKUPS","value":"1"},{"name":"MONTHLY_BACKUPS","value":"1"},{"name":"MONGODB_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"mongodb-creds"}}},{"name":"DATABASE_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"mongodb-creds"}}},{"name":"MONGODB_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mongodb-creds"}}},{"name":"DATABASE_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"mongodb-creds"}}},{"name":"MONGODB_DATABASE","value":"formiodb"},{"name":"DATABASE_NAME","value":"formiodb"},{"name":"DATABASE_SERVER_TIMEOUT","value":"600"},{"name":"ENVIRONMENT_NAME","value":"digital_journeys"},{"name":"ENVIRONMENT_FRIENDLY_NAME","value":"digital_journeys"},{"name":"DATABASE_SERVICE_NAME","value":"hamongo-0.hamongo"}],"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/mongodb-backup:latest","imagePullPolicy":"Always","name":"mongodb-backup","ports":[{"containerPort":27017}],"resources":{"limits":{"cpu":"125m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"128Mi"}},"volumeMounts":[{"mountPath":"/backups/","name":"mongodb-backup-data-vol"},{"mountPath":"/var/lib/mongodb/data","name":"mongodb-backup-verification-vol"},{"mountPath":"/backup.conf","name":"mongodb-backup-config-vol","subPath":"backup.conf"}]}],"volumes":[{"name":"mongodb-backup-data-vol","persistentVolumeClaim":{"claimName":"mongodb-backup-data"}},{"name":"mongodb-backup-verification-vol","persistentVolumeClaim":{"claimName":"mongodb-backup-verification"}},{"configMap":{"items":[{"key":"backup.conf","path":"backup.conf"}],"name":"mongodb-backup-config"},"name":"mongodb-backup-config-vol"}]}},"triggers":[{"type":"ConfigChange"}]}}
+  creationTimestamp: "2022-08-03T20:26:20Z"
+  generation: 6
+  name: mongodb-backup
+  namespace: d89793-dev
+  resourceVersion: "8827579854"
+  uid: 8e9d0ead-6fb6-41a3-a1ab-1c1a4dfd54c5
+spec:
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    deploymentconfig: mongodb-backup
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deploymentconfig: mongodb-backup
+    spec:
+      containers:
+      - env:
+        - name: BUILD_ID
+        - name: BACKUP_STRATEGY
+          value: rolling
+        - name: BACKUP_DIR
+          value: /backups/
+        - name: DAILY_BACKUPS
+          value: "5"
+        - name: WEEKLY_BACKUPS
+          value: "1"
+        - name: MONTHLY_BACKUPS
+          value: "1"
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mongodb-creds
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mongodb-creds
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mongodb-creds
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mongodb-creds
+        - name: MONGODB_DATABASE
+          value: formiodb
+        - name: DATABASE_NAME
+          value: formiodb
+        - name: DATABASE_SERVER_TIMEOUT
+          value: "600"
+        - name: ENVIRONMENT_NAME
+          value: digital_journeys
+        - name: ENVIRONMENT_FRIENDLY_NAME
+          value: digital_journeys
+        - name: DATABASE_SERVICE_NAME
+          value: hamongo-0.hamongo
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/mongodb-backup:latest
+        imagePullPolicy: Always
+        name: mongodb-backup
+        ports:
+        - containerPort: 27017
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 25m
+            memory: 64Mi
+          requests:
+            cpu: 1m
+            memory: 32Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /backups/
+          name: mongodb-backup-data-vol
+        - mountPath: /var/lib/mongodb/data
+          name: mongodb-backup-verification-vol
+        - mountPath: /backup.conf
+          name: mongodb-backup-config-vol
+          subPath: backup.conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: mongodb-backup-data-vol
+        persistentVolumeClaim:
+          claimName: mongodb-backup-data
+      - name: mongodb-backup-verification-vol
+        persistentVolumeClaim:
+          claimName: mongodb-backup-verification
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: backup.conf
+            path: backup.conf
+          name: mongodb-backup-config
+        name: mongodb-backup-config-vol
+  test: false
+  triggers:
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  conditions:
+  - lastTransitionTime: "2023-01-20T00:16:09Z"
+    lastUpdateTime: "2023-01-20T00:16:32Z"
+    message: replication controller "mongodb-backup-3" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2024-01-23T16:07:08Z"
+    lastUpdateTime: "2024-01-23T16:07:08Z"
+    message: Deployment config does not have minimum availability.
+    status: "False"
+    type: Available
+  details:
+    causes:
+    - type: ConfigChange
+    message: config change
+  latestVersion: 3
+  observedGeneration: 6
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

@@ -1,0 +1,116 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"labels":{"app":"forms-flow-web"},"name":"forms-flow-web","namespace":"d89793-dev"},"spec":{"replicas":1,"selector":{"app":"forms-flow-web"},"strategy":{"activeDeadlineSeconds":21600,"resources":{"limits":{"cpu":"200m","memory":"2Gi"},"requests":{"cpu":"100m","memory":"100Mi"}},"rollingParams":{"intervalSeconds":1,"maxSurge":"25%","maxUnavailable":"25%","timeoutSeconds":600,"updatePeriodSeconds":1},"type":"Recreate"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"forms-flow-web"}},"spec":{"containers":[{"env":null,"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-web:dev","name":"forms-flow-web","ports":[{"containerPort":8080}],"resources":{},"tty":true,"volumeMounts":[{"mountPath":"/usr/share/nginx/html/config/kc","name":"forms-flow-web-keycloak-config","readOnly":true},{"mountPath":"/usr/share/nginx/html/config/","name":"forms-flow-web-config","readOnly":true}]}],"restartPolicy":"Always","volumes":[{"configMap":{"defaultMode":420,"name":"forms-flow-web-keycloak-config"},"name":"forms-flow-web-keycloak-config"},{"configMap":{"defaultMode":420,"name":"forms-flow-web-config"},"name":"forms-flow-web-config"}]}},"test":false,"triggers":[{"type":"ConfigChange"},{"imageChangeParams":{"automatic":true,"containerNames":["forms-flow-web"],"from":{"kind":"ImageStreamTag","name":"forms-flow-web:dev","namespace":"d89793-tools"}},"type":"ImageChange"}]}}
+  creationTimestamp: "2022-12-17T15:49:58Z"
+  generation: 464
+  labels:
+    app: forms-flow-web
+  name: forms-flow-web
+  namespace: d89793-dev
+  resourceVersion: "13782846906"
+  uid: 4a7ecaa0-7c0d-4113-b57c-abaa1a0f1571
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: forms-flow-web
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources:
+      limits:
+        cpu: 200m
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: forms-flow-web
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-web@sha256:77157d367008d7d9b0e994de04400de4b19bc5346f0498a5dbdb38e14ee41438
+        imagePullPolicy: IfNotPresent
+        name: forms-flow-web
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/config/kc
+          name: forms-flow-web-keycloak-config
+          readOnly: true
+        - mountPath: /usr/share/nginx/html/config/
+          name: forms-flow-web-config
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: forms-flow-web-keycloak-config
+        name: forms-flow-web-keycloak-config
+      - configMap:
+          defaultMode: 420
+          name: forms-flow-web-config
+        name: forms-flow-web-config
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - forms-flow-web
+      from:
+        kind: ImageStreamTag
+        name: forms-flow-web:dev
+        namespace: d89793-tools
+      lastTriggeredImage: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-web@sha256:77157d367008d7d9b0e994de04400de4b19bc5346f0498a5dbdb38e14ee41438
+    type: ImageChange
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2024-11-07T18:39:46Z"
+    lastUpdateTime: "2024-11-07T18:39:46Z"
+    message: replication controller "forms-flow-web-366" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2025-03-24T23:04:50Z"
+    lastUpdateTime: "2025-03-24T23:04:50Z"
+    message: Deployment config has minimum availability.
+    status: "True"
+    type: Available
+  details:
+    causes:
+    - imageTrigger:
+        from:
+          kind: DockerImage
+          name: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-web@sha256:77157d367008d7d9b0e994de04400de4b19bc5346f0498a5dbdb38e14ee41438
+      type: ImageChange
+    message: image change
+  latestVersion: 366
+  observedGeneration: 464
+  readyReplicas: 1
+  replicas: 1
+  unavailableReplicas: 0
+  updatedReplicas: 1

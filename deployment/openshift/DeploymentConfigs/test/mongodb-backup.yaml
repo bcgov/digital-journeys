@@ -1,0 +1,139 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: "2023-09-13T21:13:22Z"
+  generation: 2
+  name: mongodb-backup
+  namespace: d89793-test
+  resourceVersion: "11397857682"
+  uid: abdb1904-5e57-4223-94fa-33d9e703e642
+spec:
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    deploymentconfig: mongodb-backup
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deploymentconfig: mongodb-backup
+    spec:
+      containers:
+      - env:
+        - name: BUILD_ID
+        - name: BACKUP_STRATEGY
+          value: rolling
+        - name: BACKUP_DIR
+          value: /backups/
+        - name: DAILY_BACKUPS
+          value: "5"
+        - name: WEEKLY_BACKUPS
+          value: "1"
+        - name: MONTHLY_BACKUPS
+          value: "1"
+        - name: MONGODB_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mongodb-creds
+        - name: DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: mongodb-creds
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mongodb-creds
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mongodb-creds
+        - name: MONGODB_DATABASE
+          value: formiodb
+        - name: DATABASE_NAME
+          value: formiodb
+        - name: DATABASE_SERVER_TIMEOUT
+          value: "600"
+        - name: ENVIRONMENT_NAME
+          value: digital_journeys
+        - name: ENVIRONMENT_FRIENDLY_NAME
+          value: digital_journeys
+        - name: DATABASE_SERVICE_NAME
+          value: hamongo-0.hamongo
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/mongodb-backup:latest
+        imagePullPolicy: Always
+        name: mongodb-backup
+        ports:
+        - containerPort: 27017
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 25m
+            memory: 64Mi
+          requests:
+            cpu: 1m
+            memory: 32Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /backups/
+          name: mongodb-backup-data-vol
+        - mountPath: /var/lib/mongodb/data
+          name: mongodb-backup-verification-vol
+        - mountPath: /backup.conf
+          name: mongodb-backup-config-vol
+          subPath: backup.conf
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: mongodb-backup-data-vol
+        persistentVolumeClaim:
+          claimName: mongodb-backup-data
+      - name: mongodb-backup-verification-vol
+        persistentVolumeClaim:
+          claimName: mongodb-backup-verification
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: backup.conf
+            path: backup.conf
+          name: mongodb-backup-config
+        name: mongodb-backup-config-vol
+  test: false
+  triggers:
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  conditions:
+  - lastTransitionTime: "2023-09-13T21:13:26Z"
+    lastUpdateTime: "2023-09-13T21:14:07Z"
+    message: replication controller "mongodb-backup-1" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2024-09-17T16:12:03Z"
+    lastUpdateTime: "2024-09-17T16:12:03Z"
+    message: Deployment config does not have minimum availability.
+    status: "False"
+    type: Available
+  details:
+    causes:
+    - type: ConfigChange
+    message: config change
+  latestVersion: 1
+  observedGeneration: 2
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

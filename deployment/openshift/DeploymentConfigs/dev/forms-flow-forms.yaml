@@ -1,0 +1,146 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"app":"forms-flow-forms"},"name":"forms-flow-forms","namespace":"d89793-dev"},"spec":{"replicas":1,"selector":{"app":"forms-flow-forms"},"strategy":{"rollingParams":{"intervalSeconds":1,"maxSurge":"25%","maxUnavailable":"25%","timeoutSeconds":600,"updatePeriodSeconds":1},"type":"Rolling"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"forms-flow-forms"}},"spec":{"containers":[{"env":[{"name":"DEBUG","valueFrom":{"secretKeyRef":{"key":"DEBUG","name":"forms-flow-ai-secret"}}},{"name":"NODE_CONFIG","valueFrom":{"secretKeyRef":{"key":"NODE_CONFIG","name":"forms-flow-ai-secret"}}},{"name":"ROOT_EMAIL","valueFrom":{"secretKeyRef":{"key":"formio_root_email","name":"forms-flow-ai-secret"}}},{"name":"ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"formio_root_password","name":"forms-flow-ai-secret"}}},{"name":"FORMIO_DOMAIN","valueFrom":{"secretKeyRef":{"key":"FORMIO_DOMAIN","name":"forms-flow-ai-secret"}}},{"name":"FORMIO_JWT_SECRET","valueFrom":{"secretKeyRef":{"key":"formio_jwt_secret","name":"forms-flow-ai-secret"}}}],"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-forms:dev","imagePullPolicy":"Always","livenessProbe":{"failureThreshold":3,"periodSeconds":10,"successThreshold":1,"tcpSocket":{"path":"/ops/healthz","port":3001,"scheme":"HTTP"},"timeoutSeconds":1},"name":"forms-flow-forms","ports":[{"containerPort":3001}],"readinessProbe":{"failureThreshold":3,"periodSeconds":10,"successThreshold":1,"tcpSocket":{"path":"/ops/readyz","port":3001,"scheme":"HTTP"},"timeoutSeconds":1},"resources":{"limits":{"cpu":"200m","memory":"2Gi"},"requests":{"cpu":"100m","memory":"100Mi"}},"stdin":true,"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","tty":true}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30}},"test":false,"triggers":[{"type":"ConfigChange"},{"imageChangeParams":{"automatic":true,"containerNames":["forms-flow-forms"],"from":{"kind":"ImageStreamTag","name":"forms-flow-forms:dev","namespace":"d89793-tools"}},"type":"ImageChange"}]},"status":{}}
+  creationTimestamp: "2022-01-17T11:49:16Z"
+  generation: 159
+  labels:
+    app: forms-flow-forms
+  name: forms-flow-forms
+  namespace: d89793-dev
+  resourceVersion: "13891625362"
+  uid: 367995b4-de0f-4706-a143-22b747e8eb9d
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    app: forms-flow-forms
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: forms-flow-forms
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          valueFrom:
+            secretKeyRef:
+              key: DEBUG
+              name: forms-flow-ai-secret
+        - name: NODE_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: NODE_CONFIG
+              name: forms-flow-ai-secret
+        - name: ROOT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              key: formio_root_email
+              name: forms-flow-ai-secret
+        - name: ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: formio_root_password
+              name: forms-flow-ai-secret
+        - name: FORMIO_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_DOMAIN
+              name: forms-flow-ai-secret
+        - name: FORMIO_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: formio_jwt_secret
+              name: forms-flow-ai-secret
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-forms@sha256:9c0ba2c8f66b2b0e815b841ccb6a5e69010906aac68bb5832bcb18491daca9b8
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 3001
+          timeoutSeconds: 1
+        name: forms-flow-forms
+        ports:
+        - containerPort: 3001
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 3001
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - forms-flow-forms
+      from:
+        kind: ImageStreamTag
+        name: forms-flow-forms:dev
+        namespace: d89793-tools
+      lastTriggeredImage: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-forms@sha256:9c0ba2c8f66b2b0e815b841ccb6a5e69010906aac68bb5832bcb18491daca9b8
+    type: ImageChange
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2025-04-01T19:13:13Z"
+    lastUpdateTime: "2025-04-01T19:13:13Z"
+    message: replication controller "forms-flow-forms-94" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2025-04-01T19:17:35Z"
+    lastUpdateTime: "2025-04-01T19:17:35Z"
+    message: Deployment config has minimum availability.
+    status: "True"
+    type: Available
+  details:
+    causes:
+    - imageTrigger:
+        from:
+          kind: DockerImage
+          name: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-forms@sha256:9c0ba2c8f66b2b0e815b841ccb6a5e69010906aac68bb5832bcb18491daca9b8
+      type: ImageChange
+    message: image change
+  latestVersion: 94
+  observedGeneration: 159
+  readyReplicas: 1
+  replicas: 1
+  unavailableReplicas: 0
+  updatedReplicas: 1

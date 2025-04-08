@@ -1,0 +1,249 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"app":"forms-flow-webapi"},"name":"forms-flow-webapi","namespace":"d89793-dev"},"spec":{"replicas":1,"selector":{"app":"forms-flow-webapi"},"strategy":{"activeDeadlineSeconds":21600,"resources":{},"rollingParams":{"intervalSeconds":1,"maxSurge":"25%","maxUnavailable":"25%","timeoutSeconds":700,"updatePeriodSeconds":1},"type":"Rolling"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"forms-flow-webapi"}},"spec":{"containers":[{"env":[{"name":"BPM_API_URL","valueFrom":{"configMapKeyRef":{"key":"BPM_API_URL","name":"forms-flow-ai-config"}}},{"name":"INSIGHT_API_URL","valueFrom":{"secretKeyRef":{"key":"INSIGHTS_API_BASE","name":"forms-flow-ai-config"}}},{"name":"INSIGHT_API_KEY","valueFrom":{"secretKeyRef":{"key":"INSIGHTS_API_KEY","name":"forms-flow-ai-config"}}},{"name":"KEYCLOAK_URL","valueFrom":{"secretKeyRef":{"key":"keycloak_url","name":"forms-flow-ai-secret"}}},{"name":"KEYCLOAK_URL_REALM","valueFrom":{"secretKeyRef":{"key":"keycloak_realm","name":"forms-flow-ai-secret"}}},{"name":"BPM_CLIENT_ID","valueFrom":{"secretKeyRef":{"key":"BPM_CLIENT_ID","name":"forms-flow-ai-config"}}},{"name":"BPM_CLIENT_SECRET","valueFrom":{"secretKeyRef":{"key":"BPM_CLIENT_SECRET","name":"forms-flow-ai-config"}}},{"name":"BPM_TOKEN_API","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_TOKEN_URL","name":"forms-flow-ai-config"}}},{"name":"DATABASE_URL","valueFrom":{"secretKeyRef":{"key":"DATABASE_URL","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_ALGORITHMS","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_ALGORITHMS","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_AUDIENCE","valueFrom":{"secretKeyRef":{"key":"WEB_CLIENTID","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_CACHING_ENABLED","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_CACHING_ENABLED","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_ISSUER","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_ISSUER","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_JWKS_CACHE_TIMEOUT","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_JWKS_URI","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_JWKS_URI","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_WELL_KNOWN_CONFIG","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_JWT_OIDC_CONFIG","name":"forms-flow-ai-config"}}},{"name":"WEB_API_BASE_URL","valueFrom":{"configMapKeyRef":{"key":"WEB_API_BASE_URL","name":"forms-flow-ai-config"}}},{"name":"FORMSFLOW_API_CORS_ORIGINS","value":"*"},{"name":"EMPLOYEE_DATA_API_URL","valueFrom":{"secretKeyRef":{"key":"EMPLOYEE_DATA_API_URL","name":"forms-flow-ai-config"}}},{"name":"EMPLOYEE_SEARCH_API_URL","valueFrom":{"secretKeyRef":{"key":"EMPLOYEE_SEARCH_API_URL","name":"forms-flow-ai-config"}}},{"name":"MINISTRY_NAMES_API_URL","valueFrom":{"secretKeyRef":{"key":"MINISTRY_NAMES_API_URL","name":"forms-flow-ai-config"}}},{"name":"ODS_AUTH_TOKEN","valueFrom":{"secretKeyRef":{"key":"ODS_AUTH_TOKEN","name":"forms-flow-ai-config"}}},{"name":"FORMIO_URL","valueFrom":{"secretKeyRef":{"key":"FORMIO_URL","name":"forms-flow-ai-config"}}},{"name":"FORMIO_ROOT_EMAIL","valueFrom":{"secretKeyRef":{"key":"FORMIO_ROOT_EMAIL","name":"forms-flow-ai-config"}}},{"name":"FORMIO_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"FORMIO_ROOT_PASSWORD","name":"forms-flow-ai-config"}}},{"name":"FORMIO_JWT_SECRET","valueFrom":{"secretKeyRef":{"key":"FORMIO_JWT_SECRET","name":"forms-flow-ai-config"}}},{"name":"KEYCLOAK_ENABLE_CLIENT_AUTH","valueFrom":{"secretKeyRef":{"key":"KEYCLOAK_ENABLE_CLIENT_AUTH","name":"forms-flow-ai-config"}}},{"name":"SL_REVIEW_ENDPOINT","valueFrom":{"secretKeyRef":{"key":"SL_REVIEW_ENDPOINT","name":"forms-flow-ai-config"}}},{"name":"ODS_URL","valueFrom":{"secretKeyRef":{"key":"ODS_URL","name":"forms-flow-ai-config"}}},{"name":"SL_REVIEW_PROCESS_KEY","valueFrom":{"configMapKeyRef":{"key":"SL_REVIEW_PROCESS_KEY","name":"forms-flow-ai-config"}}},{"name":"INFLUENZA_WORKSITE_PROCESS_KEY","valueFrom":{"configMapKeyRef":{"key":"INFLUENZA_WORKSITE_PROCESS_KEY","name":"forms-flow-ai-config"}}}],"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-webapi:dev","name":"forms-flow-webapi","ports":[{"containerPort":5000}],"resources":{},"stdin":true,"tty":true}],"restartPolicy":"Always"}},"test":false,"triggers":[{"type":"ConfigChange"},{"imageChangeParams":{"automatic":true,"containerNames":["forms-flow-webapi"],"from":{"kind":"ImageStreamTag","name":"forms-flow-webapi:dev","namespace":"d89793-tools"}},"type":"ImageChange"}]},"status":{}}
+  creationTimestamp: "2022-01-18T12:50:38Z"
+  generation: 921
+  labels:
+    app: forms-flow-webapi
+  name: forms-flow-webapi
+  namespace: d89793-dev
+  resourceVersion: "13900050065"
+  uid: 361e782d-8be5-473b-9e15-06f52a637102
+spec:
+  replicas: 1
+  revisionHistoryLimit: 11
+  selector:
+    app: forms-flow-webapi
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 700
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: forms-flow-webapi
+    spec:
+      containers:
+      - env:
+        - name: BPM_API_URL
+          valueFrom:
+            configMapKeyRef:
+              key: BPM_API_URL
+              name: forms-flow-ai-config
+        - name: INSIGHT_API_URL
+          valueFrom:
+            secretKeyRef:
+              key: INSIGHTS_API_BASE
+              name: forms-flow-ai-config
+        - name: INSIGHT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: INSIGHTS_API_KEY
+              name: forms-flow-ai-config
+        - name: KEYCLOAK_URL
+          valueFrom:
+            secretKeyRef:
+              key: keycloak_url
+              name: forms-flow-ai-secret
+        - name: KEYCLOAK_URL_REALM
+          valueFrom:
+            secretKeyRef:
+              key: keycloak_realm
+              name: forms-flow-ai-secret
+        - name: BPM_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: BPM_CLIENT_ID
+              name: forms-flow-ai-config
+        - name: BPM_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: BPM_CLIENT_SECRET
+              name: forms-flow-ai-config
+        - name: BPM_TOKEN_API
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_TOKEN_URL
+              name: forms-flow-ai-config
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: DATABASE_URL
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_ALGORITHMS
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_ALGORITHMS
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_AUDIENCE
+          valueFrom:
+            secretKeyRef:
+              key: WEB_CLIENTID
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_CACHING_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_ISSUER
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_ISSUER
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_JWKS_URI
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_JWKS_URI
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_WELL_KNOWN_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_JWT_OIDC_CONFIG
+              name: forms-flow-ai-config
+        - name: WEB_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: WEB_API_BASE_URL
+              name: forms-flow-ai-config
+        - name: FORMSFLOW_API_CORS_ORIGINS
+          value: '*'
+        - name: EMPLOYEE_DATA_API_URL
+          valueFrom:
+            secretKeyRef:
+              key: EMPLOYEE_DATA_API_URL
+              name: forms-flow-ai-config
+        - name: EMPLOYEE_SEARCH_API_URL
+          valueFrom:
+            secretKeyRef:
+              key: EMPLOYEE_SEARCH_API_URL
+              name: forms-flow-ai-config
+        - name: MINISTRY_NAMES_API_URL
+          valueFrom:
+            secretKeyRef:
+              key: MINISTRY_NAMES_API_URL
+              name: forms-flow-ai-config
+        - name: ODS_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: ODS_AUTH_TOKEN
+              name: forms-flow-ai-config
+        - name: FORMIO_URL
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_URL
+              name: forms-flow-ai-config
+        - name: FORMIO_ROOT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_ROOT_EMAIL
+              name: forms-flow-ai-config
+        - name: FORMIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_ROOT_PASSWORD
+              name: forms-flow-ai-config
+        - name: FORMIO_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_JWT_SECRET
+              name: forms-flow-ai-config
+        - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+          valueFrom:
+            secretKeyRef:
+              key: KEYCLOAK_ENABLE_CLIENT_AUTH
+              name: forms-flow-ai-config
+        - name: SL_REVIEW_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              key: SL_REVIEW_ENDPOINT
+              name: forms-flow-ai-config
+        - name: ODS_URL
+          valueFrom:
+            secretKeyRef:
+              key: ODS_URL
+              name: forms-flow-ai-config
+        - name: SL_REVIEW_PROCESS_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SL_REVIEW_PROCESS_KEY
+              name: forms-flow-ai-config
+        - name: INFLUENZA_WORKSITE_PROCESS_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: INFLUENZA_WORKSITE_PROCESS_KEY
+              name: forms-flow-ai-config
+        envFrom:
+        - secretRef:
+            name: forms-flow-ai-config
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-webapi@sha256:5bdffd65541b82d4251d5d25a56762f82e87a04e866ba39e6a54280d7e315924
+        imagePullPolicy: Always
+        name: forms-flow-webapi
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        resources: {}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - forms-flow-webapi
+      from:
+        kind: ImageStreamTag
+        name: forms-flow-webapi:dev
+        namespace: d89793-tools
+      lastTriggeredImage: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-webapi@sha256:5bdffd65541b82d4251d5d25a56762f82e87a04e866ba39e6a54280d7e315924
+    type: ImageChange
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2024-07-26T19:37:13Z"
+    lastUpdateTime: "2024-07-26T19:37:18Z"
+    message: replication controller "forms-flow-webapi-730" successfully rolled out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2025-04-02T12:57:55Z"
+    lastUpdateTime: "2025-04-02T12:57:55Z"
+    message: Deployment config has minimum availability.
+    status: "True"
+    type: Available
+  details:
+    causes:
+    - imageTrigger:
+        from:
+          kind: DockerImage
+          name: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-webapi@sha256:5bdffd65541b82d4251d5d25a56762f82e87a04e866ba39e6a54280d7e315924
+      type: ImageChange
+    message: image change
+  latestVersion: 730
+  observedGeneration: 921
+  readyReplicas: 1
+  replicas: 1
+  unavailableReplicas: 0
+  updatedReplicas: 1

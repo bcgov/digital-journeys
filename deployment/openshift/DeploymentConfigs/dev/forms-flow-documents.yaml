@@ -1,0 +1,183 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","metadata":{"annotations":{},"creationTimestamp":null,"labels":{"app":"forms-flow-documents"},"name":"forms-flow-documents","namespace":"d89793-dev"},"spec":{"replicas":1,"selector":{"app":"forms-flow-documents"},"strategy":{"activeDeadlineSeconds":21600,"resources":{},"rollingParams":{"intervalSeconds":1,"maxSurge":"25%","maxUnavailable":"25%","timeoutSeconds":700,"updatePeriodSeconds":1},"type":"Rolling"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"forms-flow-documents"}},"spec":{"containers":[{"env":[{"name":"KEYCLOAK_URL","valueFrom":{"secretKeyRef":{"key":"keycloak_url","name":"forms-flow-ai-secret"}}},{"name":"KEYCLOAK_URL_REALM","valueFrom":{"secretKeyRef":{"key":"keycloak_realm","name":"forms-flow-ai-secret"}}},{"name":"DATABASE_URL","valueFrom":{"secretKeyRef":{"key":"DATABASE_URL","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_AUDIENCE","valueFrom":{"secretKeyRef":{"key":"JWT_OIDC_AUDIENCE","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_CACHING_ENABLED","valueFrom":{"secretKeyRef":{"key":"JWT_OIDC_CACHING_ENABLED","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_ISSUER","valueFrom":{"secretKeyRef":{"key":"JWT_OIDC_ISSUER","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_JWKS_URI","valueFrom":{"secretKeyRef":{"key":"JWT_OIDC_JWKS_URI","name":"forms-flow-ai-config"}}},{"name":"JWT_OIDC_WELL_KNOWN_CONFIG","valueFrom":{"secretKeyRef":{"key":"JWT_OIDC_WELL_KNOWN_CONFIG","name":"forms-flow-ai-config"}}},{"name":"FORMSFLOW_API_CORS_ORIGINS","value":"*"},{"name":"FORMIO_URL","valueFrom":{"secretKeyRef":{"key":"FORMIO_URL","name":"forms-flow-ai-config"}}},{"name":"FORMIO_ROOT_EMAIL","valueFrom":{"secretKeyRef":{"key":"FORMIO_ROOT_EMAIL","name":"forms-flow-ai-config"}}},{"name":"FORMIO_ROOT_PASSWORD","valueFrom":{"secretKeyRef":{"key":"FORMIO_ROOT_PASSWORD","name":"forms-flow-ai-config"}}},{"name":"KEYCLOAK_ENABLE_CLIENT_AUTH","valueFrom":{"configMapKeyRef":{"key":"KEYCLOAK_ENABLE_CLIENT_AUTH","name":"forms-flow-ai-config"}}},{"name":"FORMSFLOW_API_URL","valueFrom":{"configMapKeyRef":{"key":"WEB_API_BASE_URL","name":"forms-flow-ai-config"}}},{"name":"FORMSFLOW_DOC_API_URL","valueFrom":{"configMapKeyRef":{"key":"FORMSFLOW_DOC_API_URL","name":"forms-flow-ai-config"}}},{"name":"CHROME_DRIVER_PATH","valueFrom":{"configMapKeyRef":{"key":"CHROME_DRIVER_PATH","name":"forms-flow-ai-config"}}},{"name":"FORMIO_JWT_SECRET","valueFrom":{"secretKeyRef":{"key":"FORMIO_JWT_SECRET","name":"forms-flow-ai-config"}}}],"image":"image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-documents:dev","name":"forms-flow-documents","ports":[{"containerPort":5006}],"resources":{},"stdin":true,"tty":true}],"restartPolicy":"Always"}},"test":false,"triggers":[{"type":"ConfigChange"},{"imageChangeParams":{"automatic":true,"containerNames":["forms-flow-documents"],"from":{"kind":"ImageStreamTag","name":"forms-flow-documents:dev","namespace":"d89793-tools"}},"type":"ImageChange"}]},"status":{}}
+  creationTimestamp: "2022-12-03T02:35:28Z"
+  generation: 243
+  labels:
+    app: forms-flow-documents
+    project: digital-journeys
+  name: forms-flow-documents
+  namespace: d89793-dev
+  resourceVersion: "13972261777"
+  uid: 42dc7e4e-545d-48c2-baf4-07aa4a88b902
+spec:
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    app: forms-flow-documents
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 700
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: forms-flow-documents
+    spec:
+      containers:
+      - env:
+        - name: KEYCLOAK_URL
+          valueFrom:
+            secretKeyRef:
+              key: keycloak_url
+              name: forms-flow-ai-secret
+        - name: KEYCLOAK_URL_REALM
+          valueFrom:
+            secretKeyRef:
+              key: keycloak_realm
+              name: forms-flow-ai-secret
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              key: DATABASE_URL
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_AUDIENCE
+          valueFrom:
+            secretKeyRef:
+              key: JWT_OIDC_AUDIENCE
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_CACHING_ENABLED
+          valueFrom:
+            secretKeyRef:
+              key: JWT_OIDC_CACHING_ENABLED
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_ISSUER
+          valueFrom:
+            secretKeyRef:
+              key: JWT_OIDC_ISSUER
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_JWKS_URI
+          valueFrom:
+            secretKeyRef:
+              key: JWT_OIDC_JWKS_URI
+              name: forms-flow-ai-config
+        - name: JWT_OIDC_WELL_KNOWN_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: JWT_OIDC_WELL_KNOWN_CONFIG
+              name: forms-flow-ai-config
+        - name: FORMSFLOW_API_CORS_ORIGINS
+          value: '*'
+        - name: FORMIO_URL
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_URL
+              name: forms-flow-ai-config
+        - name: FORMIO_ROOT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_ROOT_EMAIL
+              name: forms-flow-ai-config
+        - name: FORMIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_ROOT_PASSWORD
+              name: forms-flow-ai-config
+        - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+          valueFrom:
+            configMapKeyRef:
+              key: KEYCLOAK_ENABLE_CLIENT_AUTH
+              name: forms-flow-ai-config
+        - name: FORMSFLOW_API_URL
+          valueFrom:
+            configMapKeyRef:
+              key: WEB_API_BASE_URL
+              name: forms-flow-ai-config
+        - name: FORMSFLOW_DOC_API_URL
+          valueFrom:
+            configMapKeyRef:
+              key: FORMSFLOW_DOC_API_URL
+              name: forms-flow-ai-config
+        - name: CHROME_DRIVER_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: CHROME_DRIVER_PATH
+              name: forms-flow-ai-config
+        - name: FORMIO_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: FORMIO_JWT_SECRET
+              name: forms-flow-ai-config
+        image: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-documents@sha256:0b9259b54f4d63ec26a2b3032a3530bddc869582cae028e30424465ba62f1eb6
+        imagePullPolicy: IfNotPresent
+        name: forms-flow-documents
+        ports:
+        - containerPort: 5006
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "0"
+            memory: "0"
+          requests:
+            cpu: "0"
+            memory: "0"
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - forms-flow-documents
+      from:
+        kind: ImageStreamTag
+        name: forms-flow-documents:dev
+        namespace: d89793-tools
+      lastTriggeredImage: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-documents@sha256:0b9259b54f4d63ec26a2b3032a3530bddc869582cae028e30424465ba62f1eb6
+    type: ImageChange
+status:
+  availableReplicas: 0
+  conditions:
+  - lastTransitionTime: "2024-03-19T20:40:52Z"
+    lastUpdateTime: "2024-03-19T20:40:58Z"
+    message: replication controller "forms-flow-documents-181" successfully rolled
+      out
+    reason: NewReplicationControllerAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2025-04-08T16:07:37Z"
+    lastUpdateTime: "2025-04-08T16:07:37Z"
+    message: Deployment config does not have minimum availability.
+    status: "False"
+    type: Available
+  details:
+    causes:
+    - imageTrigger:
+        from:
+          kind: DockerImage
+          name: image-registry.openshift-image-registry.svc:5000/d89793-tools/forms-flow-documents@sha256:0b9259b54f4d63ec26a2b3032a3530bddc869582cae028e30424465ba62f1eb6
+      type: ImageChange
+    message: image change
+  latestVersion: 181
+  observedGeneration: 243
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
