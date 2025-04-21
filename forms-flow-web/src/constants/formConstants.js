@@ -3,7 +3,7 @@ export const FORM_NAMES = {
   SENIOR_LEADER_REVIEW: 'Senior Leadership Review Form',
   TELEWORK: 'Telework agreement',
   COMPLIANT_1_10: 'Bullying / Misuse of Authority Complaint Form (Article 1.10)',
-  INFLUENZA_WORKSITE_REGISTRATION: '2024 Influenza Worksite Clinic Registration',
+  INFLUENZA_WORKSITE_REGISTRATION: `${new Date().getFullYear()} Influenza Worksite Clinic Registration`,
   MATERNITY_AND_PARENTAL_LEAVE_FORM: 'Maternity and parental leave form',
   MATERNITY_PARENTAL_LEAVE_AND_ALLOWANCE_FORM: 'Maternity, Parental Leave and Allowance form',
   COI: 'Conflict of Interest Disclosure',
