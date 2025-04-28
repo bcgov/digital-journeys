@@ -798,6 +798,30 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.LEADERSHIP_SURVEY_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for providing feedback
+          </span>
+          <div className="success-content-body">
+            <ul>
+              <li>
+                Your feedback is highly valued and essential in identifying
+                Senior Leader strengths and areas for development. These
+                insights contribute to fostering an adaptable, authentic, and
+                resilient leadership culture, supporting the vision of a
+                future-focused, modern BC Public Service
+              </li>
+              <li>
+                If you have any questions, comments or would like to reach
+                someone about the survey responses you submitted, contact&nbsp;
+                <a href="mailto:email@gov.bc.ca">email@gov.bc.ca</a>
+              </li>
+            </ul>
+          </div>
+        </>
+      );
     } else if (search.includes(successTypes.ERIP_SUBMISSION)) {
       return (
         <>
