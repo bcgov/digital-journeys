@@ -8,6 +8,7 @@ export const FORM_NAMES = {
   MATERNITY_PARENTAL_LEAVE_AND_ALLOWANCE_FORM: 'Maternity, Parental Leave and Allowance form',
   COI: 'Conflict of Interest Disclosure',
   ERIP: 'Early Retirement Incentive Plan',
+  LEADERSHIP_SURVEY: 'Senior Leadership Feedback Survey',
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
