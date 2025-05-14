@@ -107,9 +107,12 @@ const formEditStatusMap = {
 export const hasFormEditAccessByStatus = (formName, status) => {
   // convert form names and status to lowercase for comparison
   const lowerCaseFormName = formName.toLowerCase();
+  console.log({lowerCaseFormName});
   const lowerCaseStatus = status.toLowerCase();
   const lowerCaseFormEditStatusMap = convertObjectKeyValueToLowercase(formEditStatusMap);
+  console.log({lowerCaseFormEditStatusMap});
 
   const validStatuses = lowerCaseFormEditStatusMap[lowerCaseFormName] || [];
+  console.log({validStatuses});
   return validStatuses.includes(lowerCaseStatus);
 };
