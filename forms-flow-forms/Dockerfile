@@ -45,7 +45,10 @@ ENV DEBUG=""
 
 # Copy AOT formio first and then copy DGJ formio on top of it to add/overwrite the files with customizations
 RUN cp -r /aot-formio/* /forms-flow-forms/app
-COPY . /forms-flow-forms/app
+###COPY ./src/middleware/tokenHandler.js /forms-flow-forms/app/src/middleware/
+COPY ./config/default.json /forms-flow-forms/app/config/
+###
+COPY . /forms-flow-forms/app 
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/

@@ -5,27 +5,13 @@ volumes:
   postgres:
   
 networks:
-  keycloak-server-network:
+  forms-flow-network:
     driver: 'bridge'
 
 services:
-  keycloak-db:
-    image: postgres:latest
-    restart: always
-    container_name: keycloak_db
-    volumes:
-      - ./postgres/keycloak:/data/postgres
-    environment:
-      POSTGRES_DB: ${KEYCLOAK_JDBC_DB:-keycloak}
-      POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}
-      POSTGRES_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD:-changeme}
-    ports:
-      - 5431:5431
-    networks:
-      - keycloak-server-network
-
+  
   keycloak:
-    image: quay.io/keycloak/keycloak:14.0.0
+    image: quay.io/keycloak/keycloak:26.0.0
     restart: unless-stopped
     container_name: keycloak
     volumes:
@@ -33,19 +19,14 @@ services:
       - ./themes/formsflow:/opt/jboss/keycloak/themes/formsflow
       
     command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - "start-dev"
     environment:
-      - DB_VENDOR=POSTGRES
-      - DB_ADDR=keycloak-db
-      - DB_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
-      - DB_USER=${KEYCLOAK_JDBC_USER-admin}
-      - DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER:-admin}
       - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
     ports:
-      - 8080:8080
-    depends_on:
-      - keycloak-db
+      - 4000:8080
     networks:
-      - keycloak-server-network
+      - forms-flow-network
    

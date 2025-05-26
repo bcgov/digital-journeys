@@ -11,7 +11,7 @@ RUN apk update && apk upgrade && \
 
 # install and cache app dependencies
 
-COPY package-lock.json /app/package-lock.json
+COPY package-lock.txt /app/package-lock.json
 COPY package.json /app/package.json
 
 RUN npm install
@@ -19,9 +19,8 @@ COPY . /app/
 
 COPY ./lsyncd.conf lsyncd.conf
 
-EXPOSE 8080:8080
+EXPOSE 3000:3000
 
 RUN ls
 
 CMD ["/bin/bash", "-c", "lsyncd lsyncd.conf; npm start"]
-

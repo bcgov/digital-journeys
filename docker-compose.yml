@@ -16,7 +16,7 @@ services:
     restart: always
     networks:
       - forms-flow-network
-
+  
   forms-flow-bpm:
     container_name: forms-flow-bpm
     build:
@@ -117,7 +117,7 @@ services:
       args:
         FORMIO_SOURCE_REPO_URL: ${FORMIO_SOURCE_REPO_URL:-https://github.com/AOT-Technologies/formio}
         FORMIO_SOURCE_REPO_BRANCH: ${FORMIO_SOURCE_REPO_BRANCH:-fv5.1.1}
-
+    #image: formsflow/forms-flow-forms:v7.0.0
     # The app will restart until Mongo is listening
     restart: always
     depends_on:
@@ -131,10 +131,10 @@ services:
       DEBUG: formio:*
       NODE_CONFIG: '{"mongo":"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin"}'
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
-      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-password}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
-      FORMIO_CLIENT_UI: ${FORMIO_CLIENT_UI:-false}
+      FORMIO_CLIENT_UI: ${FORMIO_CLIENT_UI:-true}
       MULTI_TENANCY_ENABLED: ${MULTI_TENANCY_ENABLED:-false}
 
     stdin_open: true # -i
@@ -242,7 +242,7 @@ services:
       - forms-flow-forms
     # entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
-      - "5001:5000"
+      - "5000:5000"
     volumes:
       - ./forms-flow-api:/digital-journeys:cached,rw
     environment:
@@ -262,6 +262,7 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: "True"
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      JWT_OIDC_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
@@ -346,6 +347,7 @@ services:
       JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
+      JWT_OIDC_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
@@ -364,6 +366,22 @@ services:
     networks:
       - forms-flow-network
 
+  keycloak:
+    restart: unless-stopped
+    container_name: keycloak
+    build:
+      context: ./forms-flow-idm/keycloak
+      dockerfile: Dockerfile
+   
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER:-admin}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+    ports:
+      - 8080:8080
+    networks:
+      - forms-flow-network
 networks:
   forms-flow-network:
     driver: "bridge"

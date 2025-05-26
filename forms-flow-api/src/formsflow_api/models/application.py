@@ -51,7 +51,7 @@ class Application(
             ]
             application.submission_id = application_info["submission_id"]
             application.latest_form_id = application_info["form_id"]            
-            application.submission_display_name = application_info["submission_display_name"]
+            application.submission_display_name = application_info.get("submission_display_name", "Unnamed") #PB Changed to .get in order to avoid KeyError
             application.save()
             return application
         return None

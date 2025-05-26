@@ -24,7 +24,7 @@
     "recaptcha"
   ],
   "jwt": {
-    "secret": "--- change me now ---",
+    "secret": "AllYourBaseAreBelongToUs?!",
     "expireTime": 240
   },
   "email": {

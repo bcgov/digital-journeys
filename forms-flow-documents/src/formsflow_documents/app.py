@@ -92,7 +92,11 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
                 HTTPStatus.FORBIDDEN,
                 HTTPStatus.NOT_FOUND,
             ]:
-                lang = g.token_info["locale"]
+                # PB Account for KeyErrors
+                try:
+                    lang = g.token_info.get("locale", "en")
+                except AttributeError:
+                    lang = "en"
                 if lang == "en":
                     return response
                 json_response = response.get_json()

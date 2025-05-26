@@ -1,5 +1,5 @@
-FROM jboss/keycloak
+FROM quay.io/keycloak/keycloak:26.0.0
 
-RUN sed -i -E "s/(<staticMaxAge>)2592000(<\/staticMaxAge>)/\1\-1\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
-RUN sed -i -E "s/(<cacheThemes>)true(<\/cacheThemes>)/\1false\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
-RUN sed -i -E "s/(<cacheTemplates>)true(<\/cacheTemplates>)/\1false\2/" /opt/jboss/keycloak/standalone/configuration/standalone.xml
+COPY ./realm-config/formsflow-ai-realm.json /opt/keycloak/data/import/realm-config.json
+
+ENTRYPOINT [ "/opt/keycloak/bin/kc.sh", "start-dev", "--http-relative-path=/auth", "--hostname-strict=false", "--import-realm" ]

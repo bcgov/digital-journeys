@@ -1,10 +1,15 @@
-FROM python:3.9-slim-buster
+# PB Updated to Python 3.12
+FROM python:3.12-bookworm
 
 WORKDIR /forms-flow-api/app
 
 # install curl, gnupg2 and unzip
-RUN  apt-get update \
-  && apt-get install -y git && apt-get install lsyncd -y
+# PB Added allow-authenticated to apt-get update
+# PB Added apt-get install debian-archive-keyring
+RUN apt-get update --allow-unauthenticated && \
+    apt-get install -y debian-archive-keyring && \
+    apt-get update && \
+    apt-get install -y git lsyncd -y
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH

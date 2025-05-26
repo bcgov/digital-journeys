@@ -41,6 +41,7 @@ import {
   DRAFT_ENABLED,
   DRAFT_POLLING_RATE,
   STAFF_DESIGNER,
+  CLIENT // PB Added CLIENT role for form access
 } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import SubmissionError from "../../containers/SubmissionError";
@@ -172,7 +173,7 @@ const View = React.memo((props) => {
   }, [authToken]);
 
   useEffect(() => {
-    if (user && user.role.some(el => el === STAFF_DESIGNER)) {
+    if (user && user.role.some(el => el === STAFF_DESIGNER || el === CLIENT )) { // PB Added CLIENT role for form access
       setHasFormAccess(true);
     } else if (user && !user.role.some(el => el === STAFF_DESIGNER)) {
       /* check formRef before calling function of formio */

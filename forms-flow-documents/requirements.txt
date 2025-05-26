@@ -29,7 +29,7 @@ jsonschema==4.9.1
 marshmallow-sqlalchemy==0.28.1
 marshmallow==3.17.0
 packaging==21.3
-psycopg2-binary==2.9.3
+psycopg2-binary # PB removed version
 pyasn1==0.4.8
 pyparsing==3.0.9
 pyrsistent==0.18.1
@@ -42,5 +42,6 @@ six==1.16.0
 urllib3==1.26.11
 zipp==3.8.1
 nested-lookup==0.2.25
+blinker==1.7.0 # PB required by selenium
 git+https://github.com/bcgov/digital-journeys.git@DGJ_1236-update-to-the-new-helm-chart-deployment#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
 # git+https://github.com/bcgov/digital-journeys.git@main#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

@@ -47,6 +47,8 @@ const initKeycloak = (store, ...rest) => {
       window.location.origin + "/silent-check-sso.html",
     pkceMethod: "S256",
     checkLoginIframe: false,
+    enableLogging: true,
+    useNonce: false // PB Removed nonce for local testing
   }).then((authenticated) => {
     if (authenticated) {
       if (KeycloakData.resourceAccess[clientId]) {
@@ -78,9 +80,14 @@ const initKeycloak = (store, ...rest) => {
       }
     } else {
       console.warn("not authenticated!");
-      doLogin();
+      // PB Added some extra logging
+      try {
+        doLogin();
+      } catch (e) {
+        console.error("Keycloak login error", e);
+      }
     }
-  });
+  }).catch(e => { console.error("Promise error: ", e); });
 };
 
 const getTokenExpireTime = (keycloak) => {
