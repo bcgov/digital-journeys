@@ -12,7 +12,7 @@ services:
     volumes:
       - ./postgres/camunda:/var/lib/postgresql/data:cached
     ports:
-      - "5432:5432"
+      - "6431:5432"
     restart: always
     networks:
       - forms-flow-network
@@ -242,7 +242,7 @@ services:
       - forms-flow-forms
     # entrypoint: "/wait-for-service.sh forms-flow-webapi-db:5432 -s -- ./entrypoint.sh"
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - ./forms-flow-api:/digital-journeys:cached,rw
     environment:
@@ -382,9 +382,23 @@ services:
       - 8080:8080
     networks:
       - forms-flow-network
+
+  forms-flow-redis:
+    container_name: forms-flow-redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - ":6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSCODE:-changeme}
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - forms-flow-network
 networks:
   forms-flow-network:
     driver: "bridge"
+
+
 
 volumes:
   mdb-data:
