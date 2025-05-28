@@ -371,7 +371,7 @@ export default React.memo(() => {
               <li>
                 You may check the&nbsp;
                 <a
-                  href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/safety-health-well-being/health/cold-flu"
+                  href="https://www2.gov.bc.ca/gov/content?id=F984C626E4814C69B14DA210716F170F"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -405,7 +405,7 @@ export default React.memo(() => {
               <li>
                 You may check the&nbsp;
                 <a
-                  href="https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/health-safety-and-sick-leave-resources/health/cold-flu"
+                  href="https://www2.gov.bc.ca/gov/content?id=F984C626E4814C69B14DA210716F170F"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
