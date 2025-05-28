@@ -366,7 +366,7 @@ export default React.memo(() => {
             <ul>
               <li>
                 Our nurse teams will reach out to you July-August to begin
-                organizing your clinic.
+                organizing your clinic
               </li>
               <li>
                 You may check the&nbsp;
@@ -375,15 +375,13 @@ export default React.memo(() => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Cold & Flu page on the Careers & MyHR website
+                  Careers & MyHR
                 </a>
-                &nbsp; regularly for the most current information on the
-                program.
+                &nbsp; for the most current information on the program
               </li>
-
               <li>
                 If you have any questions, please email the&nbsp;
-                <a href="mailto:Cold.Flu@gov.bc.ca">Cold and Flu team</a>.
+                <a href="mailto:Cold.Flu@gov.bc.ca">Cold and Flu team</a>
               </li>
             </ul>
           </div>
