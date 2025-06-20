@@ -1,0 +1,8 @@
+flask 
+flask_cors 
+dotenv 
+openai
+json
+re
+ast
+better-profanity
