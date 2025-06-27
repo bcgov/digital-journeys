@@ -1,0 +1,19 @@
+services:
+  manners:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5005:8080"
+    working_dir: /app
+    environment:
+     
+      AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT}
+      AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT}
+      FLASK_DEBUG: ${FLASK_DEBUG:-false}
+      FLASK_PORT: ${FLASK_PORT:-8080}
+      API_KEY: ${API_KEY:-your_default_api_key}
+    volumes:
+      - .:/app
+    restart: unless-stopped
