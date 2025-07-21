@@ -323,7 +323,7 @@ def prfnty() -> Response:
                                 #"PHONE_NUMBER": OperatorConfig("mask", {"type": "mask", "masking_char" : "#", "chars_to_mask" : 12, "from_end" : True}),
                                 "PHONE_NUMBER": OperatorConfig("replace", {"new_value": "[PHONE_NUMBER]"}),
                                 "PERSON": OperatorConfig("replace", {"new_value": "[PERSON]"}), 
-                                "DATE": OperatorConfig("replace", {"new_value": "[DATE]"}), 
+                                "DATE_TIME": OperatorConfig("replace", {"new_value": "[DATE]"}), 
                                 "EMAIL_ADDRESS": OperatorConfig("replace", {"new_value": "[EMAIL]"}), 
                               }
   )

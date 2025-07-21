@@ -6,6 +6,7 @@ WORKDIR /app
 COPY . /app
 
 # Install other project dependencies
+
 RUN pip install -r requirements.txt
 RUN python -m spacy download en_core_web_lg
 

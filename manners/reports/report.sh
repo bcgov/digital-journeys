@@ -11,6 +11,8 @@ if [[ "x$DOWNLOAD" == "xdownload" ]]; then
 
   INSTANCE=$(oc -n $NAMESPACE get pods | grep $POD_NAME | awk '{print $1}')
 
+  echo "Syncing data from pod $INSTANCE to ./data/"
+
   oc -n $NAMESPACE rsync $INSTANCE:./data/ ./data/
 
   echo "Data synced to ./data/"
