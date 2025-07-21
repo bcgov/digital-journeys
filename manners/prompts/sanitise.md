@@ -30,7 +30,7 @@ If the original sentence is already appropriate, return it exactly as is.
 
 ### Output Format
 
-- Return a **single rewritten sentence** (or the original if the current sentence has no p).
+- Return a **single rewritten sentence** (or the original if the current sentence has no profanity).
 
 ---
 
