@@ -1,1 +1,47 @@
-kubernetesClusterDomain: cluster.local
+name: forms-flow-forms
+appName: forms-flow-forms
+replicas: 1
+imageName: forms-flow-forms
+imageTag: ':test'
+ports:
+  containerPort: 3001
+  servicePort: 3001
+  servicePortName: "3001"
+resources:
+  limits:
+    cpu: 200m
+    memory: 2Gi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+readinessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+livenessProbe:
+  initialDelaySeconds: 10
+  timeoutSeconds: 1
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 3
+terminationGracePeriodSeconds: 30
+dnsPolicy: ClusterFirst
+schedulerName: default-scheduler
+strategy:
+  rollingUpdate:
+    maxUnavailable: 25%
+    maxSurge: 25%
+route:
+  host: digital-journeys-forms-flow-dev.apps.silver.devops.gov.bc.ca
+  weight: 100
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+
+imageNamespace: d89793-tools
+
+secrets:
+  aiSecretName: forms-flow-ai-secret

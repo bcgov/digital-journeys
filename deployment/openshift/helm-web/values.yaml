@@ -1,1 +1,12 @@
-kubernetesClusterDomain: cluster.local
+appName: forms-flow-web
+name: forms-flow-web
+imageNamespace: d89793-tools
+tagName: "@sha256:365edc1d6810fa23bd6b97515605e77c3db9e66240a11d04a6ded63b43e76f9b"
+cpuRequest: 100m
+cpuLimit: 250m
+memoryRequest: 100Mi
+memoryLimit: 2Gi
+kcMountPath: /usr/share/nginx/html/config/kc
+mountPath: /usr/share/nginx/html/config/
+ffawebUrl: digital-journeys-dev.apps.silver.devops.gov.bc.ca
+

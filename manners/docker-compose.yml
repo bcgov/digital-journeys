@@ -17,3 +17,20 @@ services:
     volumes:
       - .:/app
     restart: unless-stopped
+
+  superset:
+    image: apache/superset:latest
+    ports:
+      - "8088:8088"
+    environment:
+      - SUPERSET_ENV=development
+      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY:-your_default_secret_key}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:////app/superset.db}
+    volumes:
+      - superset_home:/app/superset_home
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py
+      - ./superset/report.db:/app/report.db:rw
+    restart: unless-stopped
+
+volumes:
+  superset_home:

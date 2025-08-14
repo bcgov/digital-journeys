@@ -10,9 +10,9 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
+from sqlalchemy import create_engine
+
 from collections import defaultdict
-
-
 
 # download nltk corpus (first time only)
 import nltk
@@ -28,43 +28,25 @@ df = pd.read_csv(report_file, sep='\t')
 
 def preprocess_text(text):
 
-  # Tokenize the text
-
-  tokens = word_tokenize(text.lower())
-
-  # Remove stop words
+  tokens = word_tokenize(str(text).lower())
 
   filtered_tokens = [token for token in tokens if token not in stopwords.words('english')]
-
-  # Lemmatize the tokens
 
   lemmatizer = WordNetLemmatizer()
 
   lemmatized_tokens = [lemmatizer.lemmatize(token) for token in filtered_tokens]
 
-  # Join the tokens back into a string
-
   processed_text = ' '.join(lemmatized_tokens)
 
   return processed_text
 
-
-df['processedText'] = df['oldValue'].apply(preprocess_text)
-
 analyzer = SentimentIntensityAnalyzer()
-
-
-# create get_sentiment function
 
 def get_sentiment(text):
 
     scores = analyzer.polarity_scores(text)
     
     return 'positive' if scores['pos'] > 0 else 'negative'
-
-# apply get_sentiment function
-
-df['sentiment'] = df['processedText'].apply(get_sentiment)
 
 def load_nrc_lexicon(filepath):
     emotion_lexicon = defaultdict(set)
@@ -76,21 +58,54 @@ def load_nrc_lexicon(filepath):
     return emotion_lexicon
 
 
-# Detect emotions in a sentence
 def detect_emotions(text, lexicon):
-    tokens = nltk.word_tokenize(text.lower())
+    tokens = nltk.word_tokenize(str(text).lower())
     emotion_counts = defaultdict(int)
     for token in tokens:
         for emotion in lexicon.get(token, []):
             emotion_counts[emotion] += 1
-    #return max(emotion_counts, key=emotion_counts.get) if emotion_counts else 'neutral'
-    return ", ".join([x for x in emotion_counts.keys()])
+    return max(emotion_counts, key=emotion_counts.get) if emotion_counts else 'neutral'
+    #return ", ".join([x for x in emotion_counts.keys()])
+
+def get_flagged_words(tokens):
+    
+    flagged_words = [
+        "bully", "bullies", "bullied", "bullying",
+        "harass", "harasses", "harassed", "harassing", "harassment",
+        "abuse", "abuses", "abused", "abusing", "abusive",
+        "threaten", "threatens", "threatened", "threatening", "threat",
+        "discriminate", "discriminates", "discriminated", "discriminating", "discrimination",
+        "insult", "insults", "insulted", "insulting", "insultingness",
+        "offend", "offends", "offended", "offending", "offensive",
+        "demean", "demeans", "demeaned", "demeaning",
+        "belittle", "belittles", "belittled", "belittling",
+        "intimidating", "intimidate", "intimidates", "intimidated", "intimidation",
+        "racist", "racism", "sexist", "sexism", "homophobic", "homophobia",
+    ]
+
+    words = [token for token in tokens if str(token).lower() in flagged_words]
+
+    return ', '.join(words)
 
 lexicon = load_nrc_lexicon('NRC-Emotion-Lexicon-Wordlevel-v0.92.txt')
 
-df['emotion'] = df['processedText'].apply(lambda x: detect_emotions(x, lexicon))
+fields = [
+            'whatDoYouAppreciateMostAboutNameSLeadershipStyle1', 
+            'whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader', 
+            'whatIsYourGreatestStrengthAsALeader',
+            'whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader2'
+        ]
 
-print(df[['processedText', 'sentiment', 'emotion']])
+for field in fields:
+    df[f'{field}_processedText'] = df[f'{field}_newValue'].apply(preprocess_text)
+    df[f'{field}_sentiment'] = df[f'{field}_processedText'].apply(get_sentiment)
+    df[f'{field}_emotion'] = df[f'{field}_processedText'].apply(lambda x: detect_emotions(x, lexicon))
+    df[f'{field}_flagged'] = df[f'{field}_processedText'].apply(lambda x: get_flagged_words(x.split()))
+
+print(df)
 
 df.to_csv(report_file, sep='\t', index=False)
 
+con = create_engine('sqlite:///../superset/report.db')
+
+df.to_sql('report', con, if_exists='replace', index=False)

@@ -1,5 +1,113 @@
-kubernetesClusterDomain: cluster.local
+# charts/helm-forms-flow-bpm/values.yaml
+formsFlowBpm:
+  name: forms-flow-bpm
+  appName: forms-flow-bpm
+  replicas: 1
+  imageName: forms-flow-bpm
+  imageTag: "@sha256:b82b3ac45a541d752e855d4d3194c1877eb628d7f7df0a51f352f6aab05f9b3b"
+  ports:
+    containerPort: 8080
+    servicePort: 8080
+  volumes:
+    mailConfig:
+      name: forms-flow-bpm-mail-config
+      configMapName: forms-flow-bpm-mail-config
+      mountPath: /app/mail-config.properties
+      subPath: mail-config.properties
+      items:
+        key: mail-config.properties
+        path: mail-config.properties
+      defaultMode: 420
+  resources:
+    limits:
+      cpu: 400m
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 1Gi
+  probes:
+    readiness:
+      httpGet:
+        path: /camunda/actuator/health
+        scheme: HTTP
+      initialDelaySeconds: 120
+      timeoutSeconds: 4
+      periodSeconds: 120
+      successThreshold: 1
+      failureThreshold: 4
+    liveness:
+      httpGet:
+        path: /camunda/actuator/health
+        scheme: HTTP
+      initialDelaySeconds: 120
+      timeoutSeconds: 90
+      periodSeconds: 20
+      successThreshold: 1
+      failureThreshold: 4
+  env:
+    appSecurityOrigin: "*"
+    debug: "False"
+    mailConfigPath: /app/mail-config.properties
+    timezone: UTC
+    dataBufferSize: "32"
+    identityProviderMaxResultSize: "250"
+  route:
+    host: digital-journeys-camunda-dev.apps.silver.devops.gov.bc.ca
+    path: /camunda
+    weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: ClusterFirst
+  schedulerName: default-scheduler
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+  affinity: {} # You can define affinity rules here if needed
 
+database:
+  serviceName: patroni
+  port: "5432"
+  name: formsflow-bpm
 
+camunda:
+  maxPoolSize: "20"
+  connTimeout: "90000"
+  hikariMaxPoolSize: "10"
+  jobCorePoolSize: "3"
+  jobLockTimeMillis: "90000"
+  jdbcDriver: org.postgresql.Driver
+  hikariIdleTimeout: "90000"
+  hikariValidTimeout: "90000"
+  jobWaitTimeMillis: "90000"
+  jobQueueSize: "3"
+  jobMaxWait: "60000"
+  bpmHistoryLevel: NONE
+  hikariConnTimeout: "60000"
+  jobMaxJobsPerAcquisition: "3"
+  appRootLogFlag: info
+  jobMaxPoolSize: "10"
 
+camundaAnalytics:
+  hikariConnTimeout: "90000"
+  hikariIdleTimeout: "90000"
+  hikariMaxPoolSize: "10"
+  jdbcDriver: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  hikariValidTimeout: "90000"
 
+websocket:
+  encryptKey: "8vmDx5EtU6gsCenxfg43eY74vVXaNxmPYaSMqabvJzQQkPT"
+  messageType: TASK_EVENT
+  securityOrigin: "https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca"
+
+imageRegistry: image-registry.openshift-image-registry.svc:5000
+imageNamespace: d89793-tools
+
+secrets:
+  aiSecretName: forms-flow-ai-secret
+  aiConfigName: forms-flow-ai-config

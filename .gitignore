@@ -269,3 +269,8 @@ mongodb
 /forms-flow-bpm/src/main/resources/mail-config.properties
 
 .file-uploads
+redis-data/dump.rdb
+*.rdb
+/manners/reports/nltk_data
+/manners/reports/data
+*.xlsx

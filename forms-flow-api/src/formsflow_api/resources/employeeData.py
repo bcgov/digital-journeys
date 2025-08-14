@@ -120,3 +120,23 @@ class EmployeeInfo(Resource):
             return err.error, err.status_code
         
         return employee_info, HTTPStatus.OK
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/query", methods=["GET", "OPTIONS"])
+class EmployeeQuery(Resource):
+    """Perform queries"""
+
+    @staticmethod
+    @profiletime
+    @auth.require
+    def get():
+        """Perform query on Datamart."""
+        args = request.args
+    
+        try:
+            employee_info = EmployeeDataService.perform_query(args)
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+        
+        return employee_info, HTTPStatus.OK

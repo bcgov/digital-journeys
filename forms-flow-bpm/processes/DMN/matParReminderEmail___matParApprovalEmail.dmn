@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0l0n0w2" name="matParDMN" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0">
+  <decision id="matParReminderEmail" name="matParReminderEmail">
+    <decisionTable id="DecisionTable_160h36b" hitPolicy="FIRST">
+      <input id="Input_1" label="topUpAllowanceReviewSync" biodi:width="388">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>topUpAllowanceReviewSync</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0y08vx4" label="whichTopUpAllowanceOptionWillYouChoose1" biodi:width="568">
+        <inputExpression id="LiteralExpression_0yqw9km" typeRef="string">
+          <text>whichTopUpAllowanceOptionWillYouChoose1</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_0rdrc27" label="to" name="to" typeRef="string" />
+      <output id="OutputClause_0w8szjk" label="cc" name="cc" typeRef="string" />
+      <output id="OutputClause_0wxj751" label="subject" name="subject" typeRef="string" />
+      <output id="Output_1" label="body" name="body" typeRef="string" biodi:width="1823" />
+      <rule id="DecisionRule_1r01meb">
+        <inputEntry id="UnaryTests_0jln6ye">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0n3aix7">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_10xwysn">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0bw37oi">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0oolqpa">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0q6iz2w">
+          <text>"
+&lt;p&gt;
+  This is to inform you that you must notify your supervisor about your intent
+  to return to work at least 4 weeks before your intended return date. To notify
+  your supervisor complete this
+  &lt;a
+    class='VXqH9lW2iuelPh86QVEd'
+    href='https://www2.gov.bc.ca/assets/download/E7ED327147F843678802958B9310F218'
+    rel='noopener noreferrer nofollow'
+    target='_blank'
+    &gt;letter template&lt;/a
+  &gt;
+  and ask your supervisor to submit an
+  &lt;a
+    class='VXqH9lW2iuelPh86QVEd'
+    href='https://sfs7.gov.bc.ca/affwebservices/public/saml2sso?SPID=urn:ca:bc:gov:customerportal:prod'
+    rel='noopener noreferrer nofollow'
+    target='_blank'
+    &gt;AskMyHR&lt;/a
+  &gt;
+  service request for 'My Team or Organization' under the following category
+  'Leave &amp; Time Off &gt; Maternity, Parental, Adoption' with the letter attached.
+&lt;/p&gt;
+&lt;p&gt;You must also inform your supervisor if:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    You're requesting an extension to your leave, and you have not taken the
+    maximum parental leave and extended childcare leave (combined maximum of 78
+    weeks total).
+  &lt;/li&gt;
+  &lt;li&gt;
+    You're wanting to return earlier than the date you indicated on your digital
+    application; or
+  &lt;/li&gt;
+  &lt;li&gt;You're resigning and not returning to work.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;
+  Ask your supervisor to submit an AskMyHR service request for 'My Team or
+  Organization' under the following category 'Leave &amp; Time Off &gt; Maternity,
+  Parental, Adoption' advising that you're returning early, extending your leave
+  or resigning. AskMyHR will process the request and confirm when the request is
+  completed.
+&lt;/p&gt;
+&lt;p&gt;
+  There are things to consider if you're extending your leave, returning to work
+  or resigning.
+&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    If you're extending your parental leave and not receiving leave allowance,
+    there won't be any pay to deduct your premiums for any of the optional life
+    insurance plans. If you would like to pay the premiums to maintain any
+    optional life insurance, complete an
+    &lt;a
+      class='VXqH9lW2iuelPh86QVEd'
+      href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/leave-and-time-off/continue_benefits_esa_loa_without_pay.pdf'
+      rel='noopener noreferrer nofollow'
+      target='_blank'
+      &gt;Option to Continue Benefits While on Employment Standards Act Leave of
+      Absence Without Pay form&lt;/a
+    &gt;. Submit it to your supervisor to submit to AskMyHR. You will receive a
+    statement of cost.
+  &lt;/li&gt;
+  &lt;li&gt;
+    If you're taking extended childcare leave, your benefits will be cancelled
+    at the end of the month in which you start extended childcare leave. You can
+    pay the premiums to maintain any of your benefits by completing the
+    &lt;a
+      class='VXqH9lW2iuelPh86QVEd'
+      href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/leave-and-time-off/continue_benefits_loa_without_pay_layoff.pdf'
+      rel='noopener noreferrer nofollow'
+      target='_blank'
+      &gt;Option to Continue Benefits While on Leave of Absence Without Pay or
+      Layoff&lt;/a
+    &gt;. Submit it to your supervisor to submit to AskMyHR. You will receive a
+    statement of cost.
+  &lt;/li&gt;
+  &lt;li&gt;
+    If you have deferred your allowance and you wish to claim it when you
+    return, submit a copy of 'My Latest Claim' (which can be found by logging
+    into your account with EI) and submitting it to
+    &lt;a
+      class='VXqH9lW2iuelPh86QVEd'
+      href='https://sfs7.gov.bc.ca/affwebservices/public/saml2sso?SPID=urn:ca:bc:gov:customerportal:prod'
+      rel='noopener noreferrer nofollow'
+      target='_blank'
+      &gt;AskMyHR&lt;/a
+    &gt;
+    service request for 'Myself' under the following category 'Leave &amp; Time Off
+    &gt; Maternity, Parental, Adoption'.
+  &lt;/li&gt;
+  &lt;li&gt;
+    If you cancelled your benefits while you were on leave and want to reinstate
+    them upon your return to work, you must complete the applicable application
+    form and submit it to AskMyHR under the following category 'Myself &gt;
+    Benefits &gt; Bargaining Unit or Excluded Employees'
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;a
+          class='VXqH9lW2iuelPh86QVEd'
+          href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf'
+          rel='noopener noreferrer nofollow'
+          target='_blank'
+          &gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a
+        &gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          class='VXqH9lW2iuelPh86QVEd'
+          href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf'
+          rel='noopener noreferrer nofollow'
+          target='_blank'
+          &gt;Flexible Benefits Program Enrolment/Change Form&lt;/a
+        &gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    If you suspended any
+    &lt;a
+      class='VXqH9lW2iuelPh86QVEd'
+      href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/leave-time-off/cancel-deductions'
+      rel='noopener noreferrer nofollow'
+      target='_blank'
+      &gt;deductions&lt;/a
+    &gt;
+    during your leave, such as bus pass, charitable donations, deferred salary
+    leave, etc., contact AskMyHR to reinstate them.
+  &lt;/li&gt;
+  &lt;li&gt;
+    Your pension contributions are based on the leave allowance you received
+    while on leave. You can purchase the remaining service for your leave within
+    five years of the end of your leave period or before termination of
+    employment, whichever occurs first. For more information, refer to the:
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;a
+          class='VXqH9lW2iuelPh86QVEd'
+          href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits/pension/purchase-service'
+          rel='noopener noreferrer nofollow'
+          target='_blank'
+          &gt;Purchasing Service&lt;/a
+        &gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;a
+          class='VXqH9lW2iuelPh86QVEd'
+          href='https://pspp.pensionsbc.ca/'
+          rel='noopener noreferrer nofollow'
+          target='_blank'
+          &gt;Public Service Pension Plan website&lt;/a
+        &gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    If you're resigning to care for your dependent, you may be eligible for
+    &lt;a
+      class='VXqH9lW2iuelPh86QVEd'
+      href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/leaving-the-public-service/bridging-service'
+      rel='noopener noreferrer nofollow'
+      target='_blank'
+      &gt;Bridging of Service&lt;/a
+    &gt;.
+    &lt;ul&gt;
+      &lt;li&gt;
+        You must notify your supervisor and note that you're Bridging Service in
+        your resignation letter.
+      &lt;/li&gt;
+      &lt;li&gt;Bridging of service cannot be claimed retroactively.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+"
+</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="matParApprovalEmail" name="matParApprovalEmail">
+    <decisionTable id="DecisionTable_0ztox6p" hitPolicy="FIRST">
+      <input id="InputClause_0k7zs2u" label="action" biodi:width="379">
+        <inputExpression id="LiteralExpression_02agyu8" typeRef="string">
+          <text>action</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1ok6x9h" label="empCtg_2">
+        <inputExpression id="LiteralExpression_1okdj0c" typeRef="string">
+          <text>empCtg_2</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1jqma5e" label="topUpAllowanceReviewSync">
+        <inputExpression id="LiteralExpression_10tt7za" typeRef="string">
+          <text>topUpAllowanceReviewSync</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0uf4hu3" label="salAdminPlan_2">
+        <inputExpression id="LiteralExpression_03bfxcq" typeRef="string">
+          <text>salAdminPlan_2</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1d194uj" label="takingParentalLeave1">
+        <inputExpression id="LiteralExpression_0127cal" typeRef="string">
+          <text>takingParentalLeave1</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_119z765" label="whichTopUpAllowanceOptionWillYouChoose1">
+        <inputExpression id="LiteralExpression_1bm7ki9" typeRef="string">
+          <text>whichTopUpAllowanceOptionWillYouChoose1</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0ubx2ld">
+        <inputExpression id="LiteralExpression_106znzo" typeRef="string">
+          <text>birthingParent</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_087z3ju" label="to" name="to" typeRef="string" biodi:width="150" />
+      <output id="OutputClause_006ffos" label="cc" name="cc" typeRef="string" />
+      <output id="OutputClause_0bh1ugk" label="subject" name="subject" typeRef="string" biodi:width="355" />
+      <output id="OutputClause_0edhsnc" label="body" name="body" typeRef="string" biodi:width="1153" />
+      <rule id="DecisionRule_1iizxry">
+        <description>denied</description>
+        <inputEntry id="UnaryTests_1vkn3tw">
+          <text>"DENIED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02ltwm6">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mvqigj">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01lama2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_078kdw2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ib7h30">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mfswx5">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_04aes5p">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0m1bddv">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0xbqlah">
+          <text>"@formName Denied"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1t8l6cz">
+          <text>"&lt;p&gt;This is to inform you that your application for maternity/parental leave has been denied by your supervisor. Please reach out to your supervisor to learn more. You can edit and resubmit the application again for approval from the 'Submitted Forms' tab on &lt;a
+    href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;
+    Digital Journeys&lt;/a&gt;
+&lt;/p&gt;"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_01xu7kl">
+        <description>resubmit, parental</description>
+        <inputEntry id="UnaryTests_1hs0qba">
+          <text>"NEW"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08nurft">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ndb207">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0247vra">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0sab8c1">
+          <text>"yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_09yx3qt">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_103j9q8">
+          <text>"no"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lua3uh">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1i6ld71">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1uhm6lr">
+          <text>"@formName Received"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_021h6do">
+          <text>"&lt;p&gt;This is to confirm that we have received your application for maternity/parental leave.&lt;/p&gt;
+&lt;p&gt;Your application has been forwarded to your supervisor for review and approval. Once your supervisor approves your leave, we will notify you via email. You can also check the status of your application in the 'Submitted Forms' tab on &lt;a href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;NOTE&amp;#58;&lt;/b&gt; Your supervisor can approve your parental leave with a future date of birth, however, it is both your &lt;b&gt; and your supervisor's responsibility to ensure parental leave is started only after the child is born&lt;/b&gt;. If there is any change in the date of the birth or leave start date, the employee or supervisor can edit them on &lt;a href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt; and resubmit. Not doing so can lead to payroll errors.&lt;/p&gt;"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1hcbmsv">
+        <description>resubmit, no parental</description>
+        <inputEntry id="UnaryTests_1olc783">
+          <text>"NEW"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ltnswi">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1uo9mzl">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15d4d0l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0chfbe0">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1upcjta">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bymzrt">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1gxqanw">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1s5b0fh">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1gzp1li">
+          <text>"@formName Received"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0o9ay26">
+          <text>"&lt;p&gt;This is to confirm that we have received your application for maternity/parental leave.&lt;/p&gt;
+&lt;p&gt;Your application has been forwarded to your supervisor for review and approval. Once your supervisor approves your leave, we will notify you via email. You can also check the status of your application in the 'Submitted Forms' tab on &lt;a href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;
+&lt;/p&gt;
+&lt;p&gt;Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.
+&lt;/p&gt;"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_08ne3vz">
+        <description>no allowance</description>
+        <inputEntry id="UnaryTests_02kyuhz">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_113rss8">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_11pjafu">
+          <text>"iDoNotWantToClaimAnyTopUpAllowanceIUnderstandThatThisDecisionIsIrrevocable"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k374by">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0euslz7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ul8mjd">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pcnyiw">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1vmzocy">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1kvaplf">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0407z8i">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0pi2b8f">
+          <text>"&lt;p&gt;
+        This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.
+        &lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+        &lt;ul&gt;
+        &lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+        &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+        &lt;ul&gt;
+        &lt;li&gt;Fill out the following forms and send them to your supervisor:
+        &lt;ul&gt;
+        &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+        &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;/li&gt;
+        &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+        &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;    
+       &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ibejjm">
+        <description>top up, mat only</description>
+        <inputEntry id="UnaryTests_1imdaae">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0642oej">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p94vr2">
+          <text>"iWantToReceiveMyTopUpAllowanceDuringMyLeaveAfterAcceptanceFromEi"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01yajhr">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0162mf4">
+          <text>not( "yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0f43q88">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1kh5q3k">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_19gs6xf">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0n5829g">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1y7o44r">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1pomhzq">
+          <text>"&lt;p&gt;
+    This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;One of the supporting documents needed for EI is the Record of Employment (ROE). &lt;b&gt;You do not need to do anything as the ROE will be submitted directly to the Government of Canada by BC Public Service&lt;/b&gt;. You will not receive a hard copy. The earliest a Record of Employment (ROE) is issued is 5 days after the end of the pay period in which your leave starts.
+&lt;/li&gt;
+    &lt;li&gt;To receive your allowance, &lt;strong&gt;you must apply for &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html' rel='noopener noreferrer nofollow' target='_blank'&gt;Employment Insurance&lt;/a&gt;&lt;/strong&gt; after you start your leave. After your EI is approved, you must provide proof of approval and send it to the supervisor. To do so you need to:
+    &lt;ol&gt;
+    &lt;li&gt;Log into the Service Canada website. Click on 'My Latest Claim'.&lt;/li&gt;
+    &lt;li&gt;Take a picture or screenshot of the contents on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://images.zenhubusercontent.com/62e986a3ff9c07df27cce462/6420bdc4-e678-4348-a9c9-94f63d22a233' rel='noopener noreferrer nofollow' target='_blank'&gt;'My Latest Claim' page&lt;/a&gt;. This information confirms that you have been approved by Service Canada to receive the Maternity/Parental benefits.&lt;/li&gt;
+&lt;li&gt;Ensure the waiting period dates are in the 'My Latest Claims' page before you take the screenshot. Sometimes it takes 2 - 3 days for the waiting period dates to appear. Please wait until it appears before taking the screenshot as those dates are needed to calculate your leave allowance.&lt;/li&gt;
+    &lt;li&gt;Send this to your supervisor and ask them to create a &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://sfs7.gov.bc.ca/affwebservices/public/saml2sso?SPID=urn:ca:bc:gov:customerportal:prod' rel='noopener noreferrer nofollow' target='_blank'&gt;AskMyHR&lt;/a&gt; service request for 'My Team or Organization' under the following category 'Leave &amp;amp; Time Off &amp;gt; Maternity, Parental, Adoption'.&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;/li&gt;
+&lt;li&gt;
+You have the option to make continuous pension contributions monthly throughout your leave. You must decide within the first 30 days of your leave and submit a completed &lt;a href='https://pspp.pensionsbc.ca/documents/824580/824628/pspp-form-purchase-of-service-application.pdf/cb05328f-fec7-4758-8e4a-faae3e389590' rel='noopener noreferrer nofollow' target='_blank'&gt;Purchase of Service Application&lt;/a&gt; through an AskMyHR Service request. Use the category Myself &gt; Benefits &gt; Pension/Purchase of Service.
+&lt;/li&gt;
+&lt;li&gt;Income tax is deducted from maternity/parental leave allowance and EI payments &amp;mdash; you may want to discuss your personal tax situation with an independent financial adviser.
+    &lt;ul&gt;
+    &lt;li&gt;You can choose to have additional taxes deducted to cover the income earned from both sources. Submit a federal TD1 form through an AskMyHR service request using the categories Myself (or) My Team or Organization &gt; Submit a Form or Document &gt; Direct Deposit/Tax Forms (TD1).
+    &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+    &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+    &lt;ul&gt;
+    &lt;li&gt;Fill out the following forms and send them to your supervisor:
+    &lt;ul&gt;
+    &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+
+    &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;
+    &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0o47ont">
+        <description>top up, parental, standard allowance</description>
+        <inputEntry id="UnaryTests_1mhrbda">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1by2xea">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_080dj8l">
+          <text>"iWantToReceiveMyTopUpAllowanceDuringMyLeaveAfterAcceptanceFromEi"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mk2rim">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qmymdc">
+          <text>"yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ggdg4q">
+          <text>not("extendedLowerPaymentsOverMoreWeeksCanBeSelectedOnlyIfYouIntendTakeExtendedEi")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mlvmc6">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1mlv4zq">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1o5dc65">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1tw53ga">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1595mgp">
+          <text>"&lt;p&gt;
+    This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;One of the supporting documents needed for EI is the Record of Employment (ROE). &lt;b&gt;You do not need to do anything as the ROE will be submitted directly to the Government of Canada by BC Public Service&lt;/b&gt;. You will not receive a hard copy. The earliest a Record of Employment (ROE) is issued is 5 days after the end of the pay period in which your leave starts.
+&lt;/li&gt;
+    &lt;li&gt;To receive your allowance, &lt;strong&gt;you must apply for &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html' rel='noopener noreferrer nofollow' target='_blank'&gt;Employment Insurance&lt;/a&gt;&lt;/strong&gt; after you start your leave. After your EI is approved, you must provide proof of approval and send it to the supervisor. To do so you need to:
+    &lt;ol&gt;
+    &lt;li&gt;Log into the Service Canada website. Click on 'My Latest Claim'.&lt;/li&gt;
+    &lt;li&gt;Take a picture or screenshot of the contents on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://images.zenhubusercontent.com/62e986a3ff9c07df27cce462/6420bdc4-e678-4348-a9c9-94f63d22a233' rel='noopener noreferrer nofollow' target='_blank'&gt;'My Latest Claim' page&lt;/a&gt;. This information confirms that you have been approved by Service Canada to receive the Maternity/Parental benefits.&lt;/li&gt;
+&lt;li&gt;Ensure the waiting period dates are in the 'My Latest Claims' page before you take the screenshot. Sometimes it takes 2 - 3 days for the waiting period dates to appear. Please wait until it appears before taking the screenshot as those dates are needed to calculate your leave allowance.&lt;/li&gt;
+    &lt;li&gt;Send this to your supervisor and ask them to create a &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://sfs7.gov.bc.ca/affwebservices/public/saml2sso?SPID=urn:ca:bc:gov:customerportal:prod' rel='noopener noreferrer nofollow' target='_blank'&gt;AskMyHR&lt;/a&gt; service request for 'My Team or Organization' under the following category 'Leave &amp;amp; Time Off &amp;gt; Maternity, Parental, Adoption'.&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;/li&gt;  
+&lt;li&gt;
+You have the option to make continuous pension contributions monthly throughout your leave. You must decide within the first 30 days of your leave and submit a completed &lt;a href='https://pspp.pensionsbc.ca/documents/824580/824628/pspp-form-purchase-of-service-application.pdf/cb05328f-fec7-4758-8e4a-faae3e389590' rel='noopener noreferrer nofollow' target='_blank'&gt;Purchase of Service Application&lt;/a&gt; through an AskMyHR Service request. Use the category Myself &gt; Benefits &gt; Pension/Purchase of Service.
+&lt;/li&gt;
+&lt;li&gt;Income tax is deducted from maternity/parental leave allowance and EI payments &amp;mdash; you may want to discuss your personal tax situation with an independent financial adviser.
+    &lt;ul&gt;
+    &lt;li&gt;You can choose to have additional taxes deducted to cover the income earned from both sources. Submit a federal TD1 form through an AskMyHR service request using the categories Myself (or) My Team or Organization &gt; Submit a Form or Document &gt; Direct Deposit/Tax Forms (TD1).
+    &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+    &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+    &lt;ul&gt;
+    &lt;li&gt;Fill out the following forms and send them to your supervisor:
+    &lt;ul&gt;
+    &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+    
+    
+    &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;
+    &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1d5jrg5">
+        <description>top up, parental, extended allowance</description>
+        <inputEntry id="UnaryTests_0vg1syj">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0s1nxnv">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_16235yu">
+          <text>"iWantToReceiveMyTopUpAllowanceDuringMyLeaveAfterAcceptanceFromEi"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bz6z99">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06k06bf">
+          <text>"yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0g2e37h">
+          <text>"extendedLowerPaymentsOverMoreWeeksCanBeSelectedOnlyIfYouIntendTakeExtendedEi"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1878mhc">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_08pauuw">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06gp7uj">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0fofoql">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_11fkvse">
+          <text>"&lt;p&gt;
+    This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;One of the supporting documents needed for EI is the Record of Employment (ROE). &lt;b&gt;You do not need to do anything as the ROE will be submitted directly to the Government of Canada by BC Public Service&lt;/b&gt;. You will not receive a hard copy. The earliest a Record of Employment (ROE) is issued is 5 days after the end of the pay period in which your leave starts.
+&lt;/li&gt;
+    &lt;li&gt;To receive your allowance, &lt;strong&gt;you must apply for &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html' rel='noopener noreferrer nofollow' target='_blank'&gt;Employment Insurance&lt;/a&gt;&lt;/strong&gt; after you start your leave. After your EI is approved, you must provide proof of approval and send it to the supervisor. To do so you need to:
+    &lt;ol&gt;
+    &lt;li&gt;Log into the Service Canada website. Click on 'My Latest Claim'.&lt;/li&gt;
+    &lt;li&gt;Take a picture or screenshot of the contents on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://images.zenhubusercontent.com/62e986a3ff9c07df27cce462/6420bdc4-e678-4348-a9c9-94f63d22a233' rel='noopener noreferrer nofollow' target='_blank'&gt;'My Latest Claim' page&lt;/a&gt;. This information confirms that you have been approved by Service Canada to receive the Maternity/Parental benefits.&lt;/li&gt;
+&lt;li&gt;Ensure the waiting period dates are in the 'My Latest Claims' page before you take the screenshot. Sometimes it takes 2 - 3 days for the waiting period dates to appear. Please wait until it appears before taking the screenshot as those dates are needed to calculate your leave allowance.&lt;/li&gt;
+    &lt;li&gt;Send this to your supervisor and ask them to create a &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://sfs7.gov.bc.ca/affwebservices/public/saml2sso?SPID=urn:ca:bc:gov:customerportal:prod' rel='noopener noreferrer nofollow' target='_blank'&gt;AskMyHR&lt;/a&gt; service request for 'My Team or Organization' under the following category 'Leave &amp;amp; Time Off &amp;gt; Maternity, Parental, Adoption'.&lt;/li&gt;
+    &lt;li&gt;Since you opted for extended parental leave allowance, you must provide the proof of approval again after you start your parental leave. You should complete the above steps again after you start your parental leave to receive your parental leave allowance.&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;/li&gt;
+&lt;li&gt;
+You have the option to make continuous pension contributions monthly throughout your leave. You must decide within the first 30 days of your leave and submit a completed &lt;a href='https://pspp.pensionsbc.ca/documents/824580/824628/pspp-form-purchase-of-service-application.pdf/cb05328f-fec7-4758-8e4a-faae3e389590' rel='noopener noreferrer nofollow' target='_blank'&gt;Purchase of Service Application&lt;/a&gt; through an AskMyHR Service request. Use the category Myself &gt; Benefits &gt; Pension/Purchase of Service.
+&lt;/li&gt;
+&lt;li&gt;Income tax is deducted from maternity/parental leave allowance and EI payments &amp;mdash; you may want to discuss your personal tax situation with an independent financial adviser.
+    &lt;ul&gt;
+    &lt;li&gt;You can choose to have additional taxes deducted to cover the income earned from both sources. Submit a federal TD1 form through an AskMyHR service request using the categories Myself (or) My Team or Organization &gt; Submit a Form or Document &gt; Direct Deposit/Tax Forms (TD1).
+    &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+    &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+    &lt;ul&gt;
+    &lt;li&gt;Fill out the following forms and send them to your supervisor:
+    &lt;ul&gt;
+    &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+    
+   
+    &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;
+    &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1886d85">
+        <description>defer, parental</description>
+        <inputEntry id="UnaryTests_0z1urec">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1pnsvbb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1bdb57m">
+          <text>"deferTopUp"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ew8anx">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1inm09j">
+          <text>"yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0k64coc">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_178usk8">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1er35u9">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_197oejv">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1dyz3bs">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1jhenwc">
+          <text>"&lt;p&gt;
+    This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;One of the supporting documents needed for EI is the Record of Employment (ROE). &lt;b&gt;You do not need to do anything as the ROE will be submitted directly to the Government of Canada by BC Public Service&lt;/b&gt;. You will not receive a hard copy. The earliest a Record of Employment (ROE) is issued is 5 days after the end of the pay period in which your leave starts.
+&lt;/li&gt;
+    &lt;li&gt;To claim your allowance after you return to work, &lt;strong&gt;you must apply for &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html' rel='noopener noreferrer nofollow' target='_blank'&gt;Employment Insurance&lt;/a&gt;&lt;/strong&gt; after you start your leave. After your EI is approved, please save a copy of your proof of approval. You will need it to claim your allowance after you return to work. To save a copy:
+    &lt;ol&gt;
+    &lt;li&gt;Log into the Service Canada website. Click on 'My Latest Claim'.&lt;/li&gt;
+    &lt;li&gt;Take a picture or screenshot of the contents on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://images.zenhubusercontent.com/62e986a3ff9c07df27cce462/6420bdc4-e678-4348-a9c9-94f63d22a233' rel='noopener noreferrer nofollow' target='_blank'&gt;'My Latest Claim' page&lt;/a&gt;. This information confirms that you have been approved by Service Canada to receive the Maternity/Parental benefits.&lt;/li&gt;
+&lt;li&gt;Ensure the waiting period dates are in the 'My Latest Claims' page before you take the screenshot. Sometimes it takes 2 - 3 days for the waiting period dates to appear. Please wait until it appears before taking the screenshot as those dates are needed to calculate your leave allowance.&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;/li&gt;
+&lt;li&gt;
+You have the option to make continuous pension contributions monthly throughout your leave. You must decide within the first 30 days of your leave and submit a completed &lt;a href='https://pspp.pensionsbc.ca/documents/824580/824628/pspp-form-purchase-of-service-application.pdf/cb05328f-fec7-4758-8e4a-faae3e389590' rel='noopener noreferrer nofollow' target='_blank'&gt;Purchase of Service Application&lt;/a&gt; through an AskMyHR Service request. Use the category Myself &gt; Benefits &gt; Pension/Purchase of Service.
+&lt;/li&gt;
+  &lt;li&gt;Income tax is deducted from maternity/parental leave allowance and EI payments &amp;mdash; you may want to discuss your personal tax situation with an independent financial adviser.
+    &lt;ul&gt;
+    &lt;li&gt;You can choose to have additional taxes deducted to cover the income earned from both sources. Submit a federal TD1 form through an AskMyHR service request using the categories Myself (or) My Team or Organization &gt; Submit a Form or Document &gt; Direct Deposit/Tax Forms (TD1).
+    &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+    &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+    &lt;ul&gt;
+    &lt;li&gt;Fill out the following forms and send them to your supervisor:
+    &lt;ul&gt;
+    &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+
+    
+    &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;
+    &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ddv374">
+        <description>defer, mat only</description>
+        <inputEntry id="UnaryTests_07wpw5k">
+          <text>"APPROVED"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0h8b4ea">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17ftbnn">
+          <text>"deferTopUp"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1neom0h">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0n7wbfr">
+          <text>not("yesHoweverOnlyIWillBeTakingParentalLeave","yesBothMyPartnerAndIWillBeTakingParentalLeave")</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0qlm7va">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_07tfdhd">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1v1hc8u">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0rjg41x">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1a1zzyt">
+          <text>"@formName Approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0unjciv">
+          <text>"&lt;p&gt;
+    This is to confirm that your application for maternity/parental leave has been approved. You can find a pdf of your application attached in the email. Please save the copy for future reference. You can also find your application in the 'Submitted Forms' tab on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digitaljourneys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Next Steps&lt;/strong&gt;&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;One of the supporting documents needed for EI is the Record of Employment (ROE). &lt;b&gt;You do not need to do anything as the ROE will be submitted directly to the Government of Canada by BC Public Service&lt;/b&gt;. You will not receive a hard copy. The earliest a Record of Employment (ROE) is issued is 5 days after the end of the pay period in which your leave starts.
+&lt;/li&gt;
+    &lt;li&gt;To claim your allowance after you return to work, &lt;strong&gt;you must apply for &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www.canada.ca/en/services/benefits/ei/ei-maternity-parental/apply.html' rel='noopener noreferrer nofollow' target='_blank'&gt;Employment Insurance&lt;/a&gt;&lt;/strong&gt; after you start your leave. After your EI is approved, please save a copy of your proof of approval. You will need it to claim your allowance after you return to work. To save a copy:
+    &lt;ol&gt;
+    &lt;li&gt;Log into the Service Canada website. Click on 'My Latest Claim'.&lt;/li&gt;
+    &lt;li&gt;Take a picture or screenshot of the contents on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://images.zenhubusercontent.com/62e986a3ff9c07df27cce462/6420bdc4-e678-4348-a9c9-94f63d22a233' rel='noopener noreferrer nofollow' target='_blank'&gt;'My Latest Claim' page&lt;/a&gt;. This information confirms that you have been approved by Service Canada to receive the Maternity/Parental benefits.&lt;/li&gt;
+&lt;li&gt;Ensure the waiting period dates are in the 'My Latest Claims' page before you take the screenshot. Sometimes it takes 2 - 3 days for the waiting period dates to appear. Please wait until it appears before taking the screenshot as those dates are needed to calculate your leave allowance.&lt;/li&gt;
+    &lt;/ol&gt;
+    &lt;/li&gt;
+&lt;li&gt;
+You have the option to make continuous pension contributions monthly throughout your leave. You must decide within the first 30 days of your leave and submit a completed &lt;a href='https://pspp.pensionsbc.ca/documents/824580/824628/pspp-form-purchase-of-service-application.pdf/cb05328f-fec7-4758-8e4a-faae3e389590' rel='noopener noreferrer nofollow' target='_blank'&gt;Purchase of Service Application&lt;/a&gt; through an AskMyHR Service request. Use the category Myself &gt; Benefits &gt; Pension/Purchase of Service.
+&lt;/li&gt;
+    &lt;li&gt;Income tax is deducted from maternity/parental leave allowance and EI payments &amp;mdash; you may want to discuss your personal tax situation with an independent financial adviser.
+    &lt;ul&gt;
+    &lt;li&gt;You can choose to have additional taxes deducted to cover the income earned from both sources. Submit a federal TD1 form through an AskMyHR service request using the categories Myself (or) My Team or Organization &gt; Submit a Form or Document &gt; Direct Deposit/Tax Forms (TD1).
+    &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Benefits in place before your leave will remain in place during your leave unless you cancel them. You must maintain Employee Basic Life Insurance and long-term disability coverage, there is no option to waive this coverage.&lt;/li&gt;
+    &lt;li&gt;Add your baby to your benefits within 60 days of the birth of your baby. To do so:
+    &lt;ul&gt;
+    &lt;li&gt;Fill out the following forms and send them to your supervisor:
+    &lt;ul&gt;
+    &lt;li&gt;For Excluded Employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-excluded-employees/flexible_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Flexible Benefits Enrolment/Change Form&lt;/a&gt; or for Bargaining Unit employees - &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/all-employees/pay-and-benefits/benefits-for-bargaining-unit-employees/bargaining_unit_benefits_enrolment_change.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Bargaining Unit Benefits Program Enrolment/Change Form&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/group_life_beneficiary_designation.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Group Life Beneficiary Designation&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;li&gt;&lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/assets/gov/careers/forms-tools/all-employees/evidence_of_insurability_bu.pdf' rel='noopener noreferrer nofollow' target='_blank'&gt;Evidence of Insurability&lt;/a&gt; (if applicable)&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Ask your supervisor to submit an AskMyHR service request for 'My Team or Organization' under the following category 'Benefits &amp;gt; Submit a Health Benefit Form/Application'&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;You can learn more about benefits on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://www2.gov.bc.ca/gov/content/careers-myhr/all-employees/pay-benefits/benefits' rel='noopener noreferrer nofollow' target='_blank'&gt;Careers &amp;amp; MyHR&lt;/a&gt;.&lt;/li&gt;
+
+    &lt;li&gt;After you go on leave, your supervisor will be your point of contact. Please direct any questions or concerns regarding your leave to your supervisor.&lt;/li&gt;
+    &lt;li&gt;You can edit the form before your leave start date by going to 'Submitted Forms' on &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;. If you need to edit the form after your leave start date, please contact your supervisor. Your supervisor can make limited changes to your form on your behalf. They can update your leave start date, length of leave and parental leave allowance dates. They can access your form on 'Review and Process' tab in &lt;a class='VXqH9lW2iuelPh86QVEd' href='https://digital-journeys.apps.silver.devops.gov.bc.ca/form' rel='noopener noreferrer nofollow' target='_blank'&gt;Digital Journeys&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul &gt;
+&lt;p&gt;NOTE&amp;#58; You will lose access to your work email after you start your leave. Please save a copy of this email or forward it to your personal address for your reference.&lt;/p&gt;
+"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="matParReminderEmail">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0g38mc2" dmnElementRef="matParApprovalEmail">
+        <dc:Bounds height="80" width="180" x="460" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

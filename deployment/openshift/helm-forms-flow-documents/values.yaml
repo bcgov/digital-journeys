@@ -1,1 +1,42 @@
-kubernetesClusterDomain: cluster.local
+
+name: forms-flow-documents
+appName: forms-flow-documents
+replicas: 1
+imageName: forms-flow-documents
+imageTag: "@sha256:eae103ff7e92371d043a4c2f747dacf52443f8de1e911b5ea2e5a0bdb7a8117e" # Or the specific sha256 you had
+ports:
+  containerPort: 5006
+  servicePort: 5006
+resources:
+  limits:
+    cpu: 1700m
+    memory: 3Gi
+  requests:
+    cpu: 600m
+imagePullPolicy: IfNotPresent
+terminationGracePeriodSeconds: 30
+dnsPolicy: ClusterFirst
+schedulerName: default-scheduler
+strategy:
+  rollingUpdate:
+    maxUnavailable: 25%
+    maxSurge: 25%
+route:
+  host: digital-journeys-forms-flow-docs-dev.apps.silver.devops.gov.bc.ca
+  weight: 100
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+
+imageRegistry: image-registry.openshift-image-registry.svc:5000
+imageNamespace: d89793-tools
+
+
+secrets:
+  aiSecretName: forms-flow-ai-secret
+  aiConfigName: forms-flow-ai-config
+
+defaultResources:
+  requests:
+    memory: 100Mi # Default memory request if not specified in formsFlowDocuments

@@ -80,6 +80,23 @@
     />
 
     <title>Digital Journeys</title>
+
+    <script>
+
+      // DGJ-1995 - Load content sanitizer script dynamically
+
+      (function () {
+        let src = 'https://digital-journeys-content-sanitiser-d89793-dev.apps.silver.devops.gov.bc.ca/script';
+        if ( window.location.protocol !== 'https:' || window.location.hostname == 'localhost' ) {
+          src = 'http://localhost:5005/script'; // Use local script for development
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        document.head.appendChild(script);
+      })();
+
+    </script>
+    
   </head>
   <body class="no-scroll">
     <div id="app" class="scrollable-page"></div>

@@ -16,6 +16,8 @@ You are helping a supervisor review and prepare feedback from survey comments. Y
    - Micro-aggression
    - Racism
    - Sexism
+   - Discrimination
+   - Harassment
 
 ---
 

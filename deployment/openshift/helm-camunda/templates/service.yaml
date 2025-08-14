@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.formsFlowBpm.name }}
+  labels:
+    app: {{ .Values.formsFlowBpm.appName }}
+  annotations:
+    meta.version/v: v1
+spec:
+  ports:
+    - name: web
+      protocol: TCP
+      port: {{ .Values.formsFlowBpm.ports.servicePort }}
+      targetPort: {{ .Values.formsFlowBpm.ports.containerPort }}
+  selector:
+    app: {{ .Values.formsFlowBpm.appName }}

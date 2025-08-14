@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.appName }}
+    app.kubernetes.io/managed-by: Helm
+    meta.helm.sh/release-name: {{ .Values.releaseName }}
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+  annotations:
+    meta.release/v: v1
+  name: {{ .Values.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/{{ .Values.imageNamespace }}/{{ .Values.name }}{{ .Values.tagName }}
+        name: {{ .Values.name }}
+        ports:
+         - containerPort: 5000
+        imagePullPolicy: Always
+        terminationMessagePolicy: File
+        envFrom:
+          - secretRef:
+              name: forms-flow-ai-secret
+          - secretRef:
+              name: forms-flow-ai-config
+          - secretRef:
+              name: forms-flow-ai-config
+        env:
+          - name: BPM_API_URL
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: BPM_API_URL
+          - name: INSIGHT_API_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: INSIGHTS_API_BASE
+          - name: INSIGHT_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: INSIGHTS_API_KEY
+          - name: KEYCLOAK_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-secret
+                key: keycloak_url
+          - name: KEYCLOAK_URL_REALM
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-secret
+                key: keycloak_realm
+          - name: BPM_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: BPM_CLIENT_ID
+          - name: BPM_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: BPM_CLIENT_SECRET
+          - name: BPM_TOKEN_API
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_TOKEN_URL
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: DATABASE_URL
+          - name: JWT_OIDC_ALGORITHMS
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_ALGORITHMS
+          - name: JWT_OIDC_AUDIENCE
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: WEB_CLIENTID
+          - name: JWT_OIDC_CACHING_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
+          - name: JWT_OIDC_ISSUER
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_ISSUER
+          - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
+          - name: JWT_OIDC_JWKS_URI
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_JWKS_URI
+          - name: JWT_OIDC_WELL_KNOWN_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_JWT_OIDC_CONFIG
+          - name: WEB_API_BASE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: WEB_API_BASE_URL
+          - name: FORMSFLOW_API_CORS_ORIGINS
+            value: '*'
+          - name: EMPLOYEE_DATA_API_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: EMPLOYEE_DATA_API_URL
+          - name: EMPLOYEE_SEARCH_API_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: EMPLOYEE_SEARCH_API_URL
+          - name: MINISTRY_NAMES_API_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: MINISTRY_NAMES_API_URL
+          - name: ODS_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: ODS_AUTH_TOKEN
+          - name: FORMIO_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: FORMIO_URL
+          - name: FORMIO_ROOT_EMAIL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: FORMIO_ROOT_EMAIL
+          - name: FORMIO_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: FORMIO_ROOT_PASSWORD
+          - name: FORMIO_JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: FORMIO_JWT_SECRET
+          - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: KEYCLOAK_ENABLE_CLIENT_AUTH
+          - name: SL_REVIEW_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: SL_REVIEW_ENDPOINT
+          - name: ODS_URL
+            valueFrom:
+              secretKeyRef:
+                name: forms-flow-ai-config
+                key: ODS_URL
+          - name: SL_REVIEW_PROCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: SL_REVIEW_PROCESS_KEY
+          - name: INFLUENZA_WORKSITE_PROCESS_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: forms-flow-ai-config
+                key: INFLUENZA_WORKSITE_PROCESS_KEY
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.appName }}
+  annotations:
+    meta.release/v: v1
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      volumes:
+        - name: {{ .Values.name }}-keycloak-config
+          configMap:
+            name: {{ .Values.name }}-keycloak-config
+            defaultMode: 420
+        - name: {{ .Values.name }}-config
+          configMap:
+            name: {{ .Values.name }}-config
+            defaultMode: 420
+      containers:
+        - resources:
+          terminationMessagePath: /dev/termination-log
+          name: {{ .Values.name }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: {{ .Values.name }}-keycloak-config
+              readOnly: true
+              mountPath: {{ .Values.kcMountPath }}
+            - name: {{ .Values.name }}-config
+              readOnly: true
+              mountPath: {{ .Values.mountPath }}
+          terminationMessagePolicy: File
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.name }}-config
+            - configMapRef:
+                name: {{ .Values.name }}-keycloak-config
+          tty: true
+          image: 'image-registry.openshift-image-registry.svc:5000/{{ .Values.imageNamespace }}/{{ .Values.name }}@sha256:365edc1d6810fa23bd6b97515605e77c3db9e66240a11d04a6ded63b43e76f9b'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler

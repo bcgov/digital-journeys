@@ -50,6 +50,15 @@ class FormProcessMapperService:
         process_key: list = None,
     ):  # pylint: disable=too-many-arguments
         """Get all form process mappers."""
+        print("Get all mappers with params: ", {
+            "page_number": page_number,
+            "limit": limit,
+            "form_name": form_name,
+            "sort_by": sort_by,
+            "sort_order": sort_order,
+            "supported_idp": supported_idp,
+            "process_key": process_key
+        })
         mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
             page_number=page_number,
             limit=limit,

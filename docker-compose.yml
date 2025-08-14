@@ -163,8 +163,8 @@ services:
   forms-flow-web:
     container_name: forms-flow-web
     restart: always
-    depends_on :
-      - forms-flow-webapi
+    #depends_on :
+    #  - forms-flow-webapi
     build:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
@@ -208,11 +208,13 @@ services:
       - REACT_APP_SL_REVIEW_PROCESS_KEY=${SL_REVIEW_PROCESS_KEY}
       - REACT_APP_INFLUENZA_WORKSITE_PROCESS_KEY=${INFLUENZA_WORKSITE_PROCESS_KEY}
       - REACT_APP_SNOWPLOW_COLLECTOR=${SNOWPLOW_COLLECTOR:-https://spm.apps.gov.bc.ca}
+      - SKIP_PREFLIGHT_CHECK=true
+      - NODE_OPTIONS=--openssl-legacy-provider
     volumes:
       - ".:/forms-flow"
       - "/forms-flow/node_modules"
     ports:
-      - "3000:3000"
+      - "3003:3000"
     networks:
       - forms-flow-network
 

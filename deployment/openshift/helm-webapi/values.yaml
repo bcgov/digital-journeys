@@ -1,1 +1,13 @@
-kubernetesClusterDomain: cluster.local
+appName: forms-flow-webapi
+namespace: d89793-dev
+name: forms-flow-webapi
+imageNamespace: d89793-tools
+releaseName: helm-forms-flow-webapi
+tagName: "@sha256:7797200fc2358f13201715b9bf9561f7e828a7a2573d884dad2eb18711878a81"
+cpuRequest: 100m
+cpuLimit: 250m
+memoryRequest: 100Mi
+memoryLimit: 2Gi
+kcMountPath: /usr/share/nginx/html/config/kc
+mountPath: /usr/share/nginx/html/config/
+ffawebUrl: digital-journeys-forms-flow-api-dev.apps.silver.devops.gov.bc.ca

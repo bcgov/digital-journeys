@@ -1,0 +1,278 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.formsFlowBpm.name }}
+  labels:
+    app: {{ .Values.formsFlowBpm.appName }}
+  annotations:
+    meta.version/v: v1
+spec:
+  replicas: {{ .Values.formsFlowBpm.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.formsFlowBpm.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.formsFlowBpm.appName }}
+    spec:
+      volumes:
+        - name: {{ .Values.formsFlowBpm.volumes.mailConfig.name }}
+          configMap:
+            name: {{ .Values.formsFlowBpm.volumes.mailConfig.configMapName }}
+            items:
+              - key: {{ .Values.formsFlowBpm.volumes.mailConfig.items.key }}
+                path: {{ .Values.formsFlowBpm.volumes.mailConfig.items.path }}
+            defaultMode: {{ .Values.formsFlowBpm.volumes.mailConfig.defaultMode }}
+      containers:
+        - resources:
+            limits:
+              cpu: {{ .Values.formsFlowBpm.resources.limits.cpu }}
+              memory: {{ .Values.formsFlowBpm.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.formsFlowBpm.resources.requests.cpu }}
+              memory: {{ .Values.formsFlowBpm.resources.requests.memory }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.formsFlowBpm.probes.readiness.httpGet.path }}
+              port: {{ .Values.formsFlowBpm.ports.containerPort }}
+              scheme: {{ .Values.formsFlowBpm.probes.readiness.httpGet.scheme }}
+            initialDelaySeconds: {{ .Values.formsFlowBpm.probes.readiness.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.formsFlowBpm.probes.readiness.timeoutSeconds }}
+            periodSeconds: {{ .Values.formsFlowBpm.probes.readiness.periodSeconds }}
+            successThreshold: {{ .Values.formsFlowBpm.probes.readiness.successThreshold }}
+            failureThreshold: {{ .Values.formsFlowBpm.probes.readiness.failureThreshold }}
+          terminationMessagePath: /dev/termination-log
+          name: {{ .Values.formsFlowBpm.name }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.formsFlowBpm.probes.liveness.httpGet.path }}
+              port: {{ .Values.formsFlowBpm.ports.containerPort }}
+              scheme: {{ .Values.formsFlowBpm.probes.liveness.httpGet.scheme }}
+            initialDelaySeconds: {{ .Values.formsFlowBpm.probes.liveness.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.formsFlowBpm.probes.liveness.timeoutSeconds }}
+            periodSeconds: {{ .Values.formsFlowBpm.probes.liveness.periodSeconds }}
+            successThreshold: {{ .Values.formsFlowBpm.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.formsFlowBpm.probes.liveness.failureThreshold }}
+          env:
+            - name: APP_SECURITY_ORIGIN
+              value: "{{ .Values.formsFlowBpm.env.appSecurityOrigin }}"
+            - name: CAMUNDA_JDBC_URL
+              value: "jdbc:postgresql://{{ .Values.database.serviceName }}:{{ .Values.database.port }}/{{ .Values.database.name }}"
+            - name: WAIT_FOR
+              value: "{{ .Values.database.serviceName }}:{{ .Values.database.port }}"
+            - name: KEYCLOAK_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: KEYCLOAK_URL
+            - name: KEYCLOAK_URL_REALM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: keycloak_realm
+            - name: KEYCLOAK_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: keycloak_clientid
+            - name: KEYCLOAK_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: keycloak_clientsecret
+            - name: DEBUG
+              value: "{{ .Values.formsFlowBpm.env.debug }}"
+            - name: MAIL_CONFIG
+              value: {{ .Values.formsFlowBpm.env.mailConfigPath }}
+            - name: TZ
+              value: {{ .Values.formsFlowBpm.env.timezone }}
+            - name: CAMUNDA_MAX_POOLSIZE
+              value: "{{ .Values.camunda.maxPoolSize }}"
+            - name: CAMUNDA_CONN_TIMEOUT
+              value: "{{ .Values.camunda.connTimeout }}"
+            - name: CAMUNDA_HIKARI_MAX_POOLSIZE
+              value: "{{ .Values.camunda.hikariMaxPoolSize }}"
+            - name: CAMUNDA_ANALYTICS_JDBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CAMUNDA_ANALYTICS_JDBC_URL
+            - name: CAMUNDA_FORMBUILDER_PIPELINE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: camunda_formbuilder_pipeline_username
+            - name: CAMUNDA_JOB_CORE_POOL_SIZE
+              value: "{{ .Values.camunda.jobCorePoolSize }}"
+            - name: CAMUNDA_JOB_LOCK_TIME_MILLIS
+              value: "{{ .Values.camunda.jobLockTimeMillis }}"
+            - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+              value: "{{ .Values.camundaAnalytics.hikariValidTimeout }}"
+            - name: CAMUNDA_JDBC_DRIVER
+              value: "{{ .Values.camunda.jdbcDriver }}"
+            - name: FORMIO_ROOT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: formio_root_email
+            - name: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
+              value: "{{ .Values.camundaAnalytics.hikariIdleTimeout }}"
+            - name: FORMIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: formio_root_password
+            - name: CAMUNDA_JDBC_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CAMUNDA_JDBC_USER
+            - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
+              value: "{{ .Values.camundaAnalytics.hikariMaxPoolSize }}"
+            - name: CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: camunda_formbuilder_pipeline_password
+            - name: CAMUNDA_ANALYTICS_JDBC_DRIVER
+              value: "{{ .Values.camundaAnalytics.jdbcDriver }}"
+            - name: CAMUNDA_HIKARI_VALID_TIMEOUT
+              value: "{{ .Values.camunda.hikariValidTimeout }}"
+            - name: CAMUNDA_ANALYTICS_JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: camunda_analytics_jdbc_user
+            - name: CAMUNDA_JOB_WAIT_TIME_MILLIS
+              value: "{{ .Values.camunda.jobWaitTimeMillis }}"
+            - name: CAMUNDA_JOB_QUEUE_SIZE
+              value: "{{ .Values.camunda.jobQueueSize }}"
+            - name: CAMUNDA_JOB_MAX_WAIT
+              value: "{{ .Values.camunda.jobMaxWait }}"
+            - name: CAMUNDA_BPM_HISTORY_LEVEL
+              value: "{{ .Values.camunda.bpmHistoryLevel }}"
+            - name: CAMUNDA_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: db_password
+            - name: CAMUNDA_HIKARI_CONN_TIMEOUT
+              value: "{{ .Values.camunda.hikariConnTimeout }}"
+            - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+            - name: CAMUNDA_JDBC_DB
+              value: "{{ .Values.database.dbName }}"
+            - name: FORMSFLOW_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: WEB_API_BASE_URL
+            - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
+              value: "{{ .Values.camunda.jobMaxJobsPerAcquisition }}"
+            - name: FORMIO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMIO_URL
+            - name: FORMIO_FILE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CAMUNDA_FORMIO_FILE_URL
+            - name: CAMUNDA_ANALYTICS_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: camunda_analytics_jdbc_password
+            - name: CAMUNDA_APP_ROOT_LOG_FLAG
+              value: "{{ .Values.camunda.appRootLogFlag }}"
+            - name: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
+              value: "{{ .Values.camundaAnalytics.hikariConnTimeout }}"
+            - name: CAMUNDA_HIKARI_IDLE_TIMEOUT
+              value: "{{ .Values.camunda.hikariIdleTimeout }}"
+            - name: CAMUNDA_JOB_MAX_POOL_SIZE
+              value: "{{ .Values.camunda.jobMaxPoolSize }}"
+            - name: WEBSOCKET_ENCRYPT_KEY
+              value: "{{ .Values.websocket.encryptKey }}"
+            - name: WEBSOCKET_MESSAGE_TYPE
+              value: "{{ .Values.websocket.messageType }}"
+            - name: WEBSOCKET_SECURITY_ORIGIN
+              value: "{{ .Values.websocket.securityOrigin }}"
+            - name: DATA_BUFFER_SIZE
+              value: "{{ .Values.formsFlowBpm.env.dataBufferSize }}"
+            - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
+              value: "{{ .Values.formsFlowBpm.env.identityProviderMaxResultSize }}"
+            - name: WEB_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: WEB_BASE_URL
+            - name: ODS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: ODS_URL
+            - name: ODS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: ODS_AUTH_TOKEN
+            - name: FORMSFLOW_DOC_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMSFLOW_DOC_API_URL
+            - name: BPM_CLIENT_CONN_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: BPM_CLIENT_CONN_TIMEOUT
+            - name: CRM_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CRM_URL
+            - name: CRM_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CRM_AUTH_TOKEN
+          ports:
+            - containerPort: {{ .Values.formsFlowBpm.ports.containerPort }}
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: {{ .Values.formsFlowBpm.volumes.mailConfig.name }}
+              mountPath: {{ .Values.formsFlowBpm.volumes.mailConfig.mountPath }}
+              subPath: {{ .Values.formsFlowBpm.volumes.mailConfig.subPath }}
+          terminationMessagePolicy: File
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secrets.aiSecretName }}
+          image: '{{ .Values.imageRegistry }}/{{ .Values.imageNamespace }}/{{ .Values.formsFlowBpm.imageName }}{{ .Values.formsFlowBpm.imageTag }}'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: {{ .Values.formsFlowBpm.terminationGracePeriodSeconds }}
+      dnsPolicy: {{ .Values.formsFlowBpm.dnsPolicy }}
+      securityContext: {}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                      - {{ .Values.formsFlowBpm.name }}
+              topologyKey: kubernetes.io/hostname
+      schedulerName: {{ .Values.formsFlowBpm.schedulerName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.formsFlowBpm.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.formsFlowBpm.strategy.rollingUpdate.maxSurge }}
+  revisionHistoryLimit: {{ .Values.formsFlowBpm.revisionHistoryLimit }}
+  progressDeadlineSeconds: {{ .Values.formsFlowBpm.progressDeadlineSeconds }}

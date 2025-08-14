@@ -840,6 +840,28 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.BANANAS_FORM_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            That is a good monkey
+          </span>
+        </>
+      );
+    } else {
+      // Generic catch-all response
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for your submission.
+          </span>
+          <div className="success-content-body">
+            Your form has been received and is being processed. 
+            If you have any questions, please contact your administrator.
+             
+          </div>
+        </>
+      );
     }
   };
 

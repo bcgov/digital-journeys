@@ -1,9 +1,51 @@
 const MindYourManners = {
+  v: 202508081,
   debouncers: {},
   errors: {},
   responses: {},
   delay: 2000, // Default delay for debouncing
   busyWith: null,
+  store: {},
+  init() {
+
+    if ( window.Formio && window.Formio.forms ) {
+      const form = Object.values(window.Formio.forms)[0];
+
+      if ( form != null ) {
+
+        const formId = form.form.parentFormId;
+        
+        if ( MindYourManners.store[formId] == null ) {
+
+          MindYourManners.store = {};
+
+          console.log("Creating new MindYourManners instance for form:", formId);
+          this.form = form;
+          this.submissionId = performance.now();
+          
+          const includedField = this.getFieldFromName("includedFields");
+
+          if ( includedField != null ) {
+
+            this.includedFields = includedField.getValue();
+            console.log("Included fields:", this.includedFields);
+        
+          }
+
+          MindYourManners.store[formId] = this;
+        }
+      }
+      else {
+        console.error("Could not find Formio form instance.");
+      }
+    } else {
+      console.error("Formio is not available or forms are not initialized.");
+    }
+
+  },
+  getFieldFromName: function(key) {
+    return this.form.root.getComponent(key);
+  },
   accept: function(form, target, action="accept") {
 
     const strip = (text) => text ? text.replace(/^\s+|\s+$/g, '') : '';
@@ -28,6 +70,7 @@ const MindYourManners = {
     }
 
     delete this.responses[componentKey];
+    this.mindYourMannersComponent.setValue(performance.now());
 
     this.telemetry(action, formName, componentKey, { oldValue, newValue: component.getValue(), reasoning: strip(parts[1])});
   },
@@ -39,6 +82,22 @@ const MindYourManners = {
 
     //console.log(`Telemetry action: ${action}, formName: ${formName}, componentKey: ${componentKey}`, data);
 
+    const { sub } = JSON.parse(localStorage.getItem("UserDetails") || "{ \"sub\": \"unknown\" }");
+
+    const etc = {};
+    
+    (this.includedFields || "").split(',').forEach(f => {
+      f = f.trim();
+      const field = this.getFieldFromName(f);
+
+      if ( field != null ) {
+        etc[field.key] = field.getValue();
+      }
+
+    });
+
+    //console.log("Telemetry etc:", etc);
+
     fetch(`${protocol}://${api}/telemetry`, {
       method: "POST",
       headers: {
@@ -46,12 +105,15 @@ const MindYourManners = {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
+        submissionId: this.submissionId,
+        sub,
         formName,
         action,
         componentKey,
         oldValue: data.oldValue || null,
         newValue: data.newValue || null,
-        reasoning: data.reasoning || null
+        reasoning: data.reasoning || null,
+        etc
       })
     });
 
@@ -83,6 +145,12 @@ const MindYourManners = {
     if ( instance.id !== changed.instance.id ) return;
     
     this.mindYourMannersComponent = this.mindYourMannersComponent || instance.root.getComponent("mindYourMannersComponent");
+
+    if ( this.mindYourMannersComponent == null ) {
+      console.error("MindYourMannersComponent not found in the form.");
+      return;
+    }
+
     const componentKey = instance.component.key;
 
     if ( params.maxLength && input && input.length > params.maxLength ) {
@@ -191,7 +259,7 @@ const MindYourManners = {
     request
     .then(response => response.json())
     .then(result => { 
-      console.log("Result, ", result);
+      //console.log("Result, ", result);
       if ( result.error ) {
         
         this.handleError(componentKey, parsedChunk);
@@ -250,12 +318,12 @@ const MindYourManners = {
 
     if ( this.isBusyWith(componentKey) ) return true;
 
-    return this.hasResponse(componentKey) || this.errors[componentKey];
+    return this.hasResponse(componentKey) === true || ( this.errors[componentKey] !== null && this.errors[componentKey] !== undefined );
   },
 
   hasResponse: function(componentKey) {
 
-    if ( !this.responses[componentKey] ) return false;
+    if ( this.responses[componentKey] == null || !this.responses[componentKey] ) return false;
 
     return this.responses[componentKey].length > 0;
   },

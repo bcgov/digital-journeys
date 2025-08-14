@@ -1,0 +1,19 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.formsFlowBpm.name }}
+  labels:
+    app: {{ .Values.formsFlowBpm.appName }}
+  annotations:
+    meta.version/v: v1
+spec:
+  host: {{ .Values.formsFlowBpm.route.host }}
+  path: {{ .Values.formsFlowBpm.route.path }}
+  to:
+    kind: Service
+    name: {{ .Values.formsFlowBpm.name }}
+    weight: {{ .Values.formsFlowBpm.route.weight }}
+  tls:
+    termination: {{ .Values.formsFlowBpm.route.tls.termination }}
+    insecureEdgeTerminationPolicy: {{ .Values.formsFlowBpm.route.tls.insecureEdgeTerminationPolicy }}
+  wildcardPolicy: {{ .Values.formsFlowBpm.route.wildcardPolicy }}

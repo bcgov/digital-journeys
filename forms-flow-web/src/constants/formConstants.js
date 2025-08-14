@@ -12,6 +12,7 @@ export const FORM_NAMES = {
   COI: 'Conflict of Interest Disclosure',
   ERIP: 'Early Retirement Incentive Plan',
   LEADERSHIP_SURVEY: 'Senior Leadership Feedback Survey',
+  BANANAS: 'Bananas'
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
@@ -20,3 +21,8 @@ export const FORM_NAMES = {
 
 export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME =
   'formSupportedIdentityProviders';
+
+export const FORM_HIDDEN_LIST = [
+
+  FORM_NAMES.BANANAS
+];

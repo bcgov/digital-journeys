@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.appName }}
+  annotations:
+    meta.release/v: v1
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory | default .Values.defaultResources.requests.memory }}
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          name: {{ .Values.name }}
+          env:
+            - name: KEYCLOAK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: keycloak_url
+            - name: KEYCLOAK_URL_REALM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: keycloak_realm
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: DATABASE_URL
+            - name: JWT_OIDC_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: JWT_OIDC_AUDIENCE
+            - name: JWT_OIDC_CACHING_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: JWT_OIDC_CACHING_ENABLED
+            - name: JWT_OIDC_ISSUER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: JWT_OIDC_ISSUER
+            - name: JWT_OIDC_JWKS_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: JWT_OIDC_JWKS_URI
+            - name: JWT_OIDC_WELL_KNOWN_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: JWT_OIDC_WELL_KNOWN_CONFIG
+            - name: FORMSFLOW_API_CORS_ORIGINS
+              value: '*'
+            - name: FORMIO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMIO_URL
+            - name: FORMIO_ROOT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMIO_ROOT_EMAIL
+            - name: FORMIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMIO_ROOT_PASSWORD
+            - name: KEYCLOAK_ENABLE_CLIENT_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: KEYCLOAK_ENABLE_CLIENT_AUTH
+            - name: FORMSFLOW_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: WEB_API_BASE_URL
+            - name: FORMSFLOW_DOC_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMSFLOW_DOC_API_URL
+            - name: CHROME_DRIVER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: CHROME_DRIVER_PATH
+            - name: FORMIO_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiConfigName }}
+                  key: FORMIO_JWT_SECRET
+          ports:
+            - containerPort: {{ .Values.ports.containerPort }}
+              protocol: TCP
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          terminationMessagePolicy: File
+          tty: true
+          image: '{{ .Values.imageRegistry }}/{{ .Values.imageNamespace }}/{{ .Values.imageName }}{{ .Values.imageTag }}'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      securityContext: {}
+      schedulerName: {{ .Values.schedulerName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}

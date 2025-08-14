@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.appName }}
+  annotations:
+    meta.release/v: v1
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.ports.containerPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          stdin: true
+          terminationMessagePath: /dev/termination-log
+          name: {{ .Values.name }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.ports.containerPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          env:
+            - name: DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: DEBUG
+            - name: NODE_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: NODE_CONFIG
+            - name: ROOT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: formio_root_email
+            - name: ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: formio_root_password
+            - name: FORMIO_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: FORMIO_DOMAIN
+            - name: FORMIO_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.aiSecretName }}
+                  key: formio_jwt_secret
+          ports:
+            - containerPort: {{ .Values.ports.containerPort }}
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          tty: true
+          image: 'image-registry.openshift-image-registry.svc:5000/{{ .Values.imageNamespace }}/{{ .Values.imageName }}{{ .Values.imageTag }}'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      securityContext: {}
+      schedulerName: {{ .Values.schedulerName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  progressDeadlineSeconds: {{ .Values.progressDeadlineSeconds }}

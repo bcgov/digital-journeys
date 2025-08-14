@@ -1,4 +1,4 @@
-FROM maven:3.8.1-openjdk-17-slim AS MAVEN_TOOL_CHAIN
+FROM maven:3.8.7-openjdk-18-slim AS MAVEN_TOOL_CHAIN
 RUN apt-get update   && apt-get install -y lsyncd
 COPY pom*.xml /tmp/
 COPY settings-docker.xml /usr/share/maven/ref/

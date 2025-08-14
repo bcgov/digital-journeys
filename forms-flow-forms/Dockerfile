@@ -4,7 +4,7 @@
 # -----------------------------------------------------------
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM node:16-buster
+FROM node:20-bookworm
 # set working directory
 WORKDIR /forms-flow-forms/app
 

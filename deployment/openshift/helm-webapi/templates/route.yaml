@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: {{ .Values.appName }}
+    app.kubernetes.io/managed-by: Helm
+  name: {{ .Values.name }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Values.releaseName }}
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+    meta.release/v: v1
+spec:
+  host: {{ .Values.ffawebUrl }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: {{ .Values.name }}
+  wildcardPolicy: None

@@ -234,6 +234,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             cls.form_id,
             cls.form_name,
         )
+        print(f"Query, {query}")
+        compiled = query.statement.compile()
+        print(compiled.params)
+        print(f"DEFAULT_PROCESS_KEY: {DEFAULT_PROCESS_KEY}")
+        print(f"Process key: {cls.process_key}")
+
         limit = total_count if limit is None else limit
         query = query.paginate(page_number, limit)
         return query.items, total_count
