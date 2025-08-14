@@ -132,6 +132,8 @@ class EmployeeDataService:
       # Get the query params
       email = args.get("email")
       emp_id = args.get("employeeId")
+      supervisor_email = args.get("supervisorEmail")
+      want_multiple = args.get("wantMultiple", 0)
       select = args.get("select")
 
       # Generate the filter query
@@ -141,7 +143,10 @@ class EmployeeDataService:
       
       if emp_id:
         filter_list.append(f"EMPLID eq '{emp_id}'")
-      
+
+      if supervisor_email:
+        filter_list.append(f"supervisor_email eq '{supervisor_email}'")
+
       if not filter_list:
         raise BusinessException(
           {"message": "No filter provided"}, HTTPStatus.BAD_REQUEST
@@ -167,6 +172,8 @@ class EmployeeDataService:
 
       employee_info = ods_response.json().get("value")
       if employee_info and len(employee_info) > 0:
+        if want_multiple:
+          return employee_info
         return employee_info[0]
       else:
         raise BusinessException(
