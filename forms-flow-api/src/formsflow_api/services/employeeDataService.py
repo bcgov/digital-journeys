@@ -179,3 +179,50 @@ class EmployeeDataService:
         raise BusinessException(
           {"message": "No user info found"}, HTTPStatus.NOT_FOUND
         )
+      
+    @staticmethod
+    def perform_query(args):
+      employee_data_api_url = current_app.config.get("EMPLOYEE_DATA_API_URL")
+      auth_token = current_app.config.get("ODS_AUTH_TOKEN")
+      
+      # Get the query params
+      field = args.get("field")
+      query = args.get("query")
+      
+      
+      fields = ["name","first_name","last_name","middle_name","Organization","level1_program",
+        "EMPLID","position_title","office_city","city","level2_division","level3_branch","DEPTID",
+        "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name", "email"]
+      
+      select_fields = ",".join(fields)
+
+      allowed_fields = ['supervisor_email']
+
+      if field not in allowed_fields:
+        raise BusinessException(
+          {"message": f"Field '{field}' is not allowed"}, HTTPStatus.BAD_REQUEST
+        )
+      if not query:
+        raise BusinessException(
+          {"message": "No query provided"}, HTTPStatus.BAD_REQUEST
+        )
+
+      filter_query = "$filter={} eq '{}'".format(field, query)
+     
+
+      try:
+        url = f"{employee_data_api_url}?{filter_query}&$select={select_fields}"
+        print(f"{url=}")
+        ods_response = requests.get(url, headers={"Authorization": auth_token})
+      except:
+        raise BusinessException(
+          {"message": "Failed to look up user info in ODS"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+
+      employee_info = ods_response.json().get("value")
+      if employee_info and len(employee_info) > 0:
+        return employee_info
+      else:
+        raise BusinessException(
+          {"message": "No user info found"}, HTTPStatus.NOT_FOUND
+        )
