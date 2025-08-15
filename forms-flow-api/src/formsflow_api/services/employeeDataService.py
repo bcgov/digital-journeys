@@ -33,7 +33,12 @@ class EmployeeDataService:
         employee_data_res = response_from_BCGov.json()
 
         if employee_data_res and employee_data_res["value"] and len(employee_data_res["value"]) > 0:
-          emp_data = EmployeeData(employee_data_res["value"][0], len(employee_data_res["value"]))
+          noofrecords = len(employee_data_res["value"])
+          if len(employee_data_res["value"]) > 1:
+            positions = set(job['position_number'] for job in employee_data_res["value"])
+            emp_data = EmployeeData(employee_data_res["value"][0], noofrecords, len(positions))
+          else:
+            emp_data = EmployeeData(employee_data_res["value"][0], noofrecords, 1)
           cache.set(guid, emp_data, timeout=14400)
           return emp_data.__dict__
       else:
