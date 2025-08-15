@@ -158,6 +158,12 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v3
 
+      - name: Install OpenShift CLI
+        run: |
+          curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o oc.tar.gz
+          tar -xzvf oc.tar.gz
+          sudo mv oc /usr/local/bin/
+
       - name: Log in to OpenShift
         run: |
           oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
