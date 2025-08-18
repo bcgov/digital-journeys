@@ -108,7 +108,7 @@ class EmployeeDataService:
 
         fields = ["name","first_name","last_name","middle_name","Organization","level1_program",
         "EMPLID","position_title","office_city","city","level2_division","level3_branch","DEPTID",
-        "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name"]
+        "supervisor_email","supervisor_name","supervisor_first_name","supervisor_last_name", "email"] # PB Added email to field list
         select_fields = ",".join(fields)
 
         url="{}?$select={}&$orderby=name{}{}{}".format(employee_data_api_url, select_fields, query, top, skip)
@@ -144,6 +144,7 @@ class EmployeeDataService:
       if emp_id:
         filter_list.append(f"EMPLID eq '{emp_id}'")
 
+      # PB Added supervisor email as a filter option
       if supervisor_email:
         filter_list.append(f"supervisor_email eq '{supervisor_email}'")
 
