@@ -20,6 +20,8 @@ export const COI_SUPERVISOR_SUBMISSION_APPROVED = 'COI_SUPERVISOR_SUBMISSION_APP
 export const COI_SUPERVISOR_SUBMISSION_LDB_APPROVED = 'COI_SUPERVISOR_SUBMISSION_LDB_APPROVED';
 export const ERIP_SUBMISSION = 'ERIP_SUBMISSION';
 export const LEADERSHIP_SURVEY_SUBMISSION = 'LEADERSHIP_SURVEY_SUBMISSION';
+export const SLFS_RESPONDENT_SELECTION = 'SLFS_RESPONDENT_SELECTION';
+
 
 
 const submitSuccessPage = {
@@ -35,6 +37,7 @@ const submitSuccessPage = {
   "conflict-of-interest-disclosure-ldb": COI_SUBMISSION_LDB,
   "early-retirement-incentive-plan": ERIP_SUBMISSION,
   "senior-leadership-feedback-survey": LEADERSHIP_SURVEY_SUBMISSION,
+  "nominationform": SLFS_RESPONDENT_SELECTION
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {
@@ -59,7 +62,7 @@ export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) =
       formKey = `${formKey}-ldb`;
     }
   }
-
+  
   return redirectToSuccessPage(dispatch, push, submitSuccessPage[formKey]);
 };
 

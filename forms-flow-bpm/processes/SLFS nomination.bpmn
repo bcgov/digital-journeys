@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1gblxi8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="SLFSNomination" name="SLFS nomination" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Default Flow Started">
+      <bpmn:outgoing>Flow_09rbji4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Audit_Task_Executed" name="Execute Audit Task">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'Completed');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09rbji4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0klorcg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vk1ju4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1fj268w</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_09rbji4" sourceRef="StartEvent_1" targetRef="Audit_Task_Executed">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1ws2h5w" name="Default Flow Ended">
+      <bpmn:incoming>Flow_11xhirk</bpmn:incoming>
+      <bpmn:incoming>Flow_18wc60f</bpmn:incoming>
+      <bpmn:incoming>Flow_16gc484</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0klorcg" sourceRef="Audit_Task_Executed" targetRef="Activity_0ukkgg5">
+      <bpmn:extensionElements />
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_sendNominationEmailToSupervisor" name="Send nomination email to supervisor" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">${result.body}</camunda:inputParameter>
+          <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">paul@bothma.ca</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ggok9j</bpmn:incoming>
+      <bpmn:outgoing>Flow_11xhirk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Activity_0ukkgg5" name="Construct Supervisor email" camunda:resultVariable="result" camunda:decisionRef="SLFSNomination" camunda:mapDecisionResult="singleResult">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="recipient">supervisor</camunda:inputParameter>
+          <camunda:inputParameter name="employeeName">${firstName} ${lastName}</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineDate">Oct 1, 2025</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineTime">12 noon</camunda:inputParameter>
+          <camunda:inputParameter name="surveyLink">https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/form</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0klorcg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ggok9j</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_0ggok9j" sourceRef="Activity_0ukkgg5" targetRef="Activity_sendNominationEmailToSupervisor">
+      <bpmn:extensionElements />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_11xhirk" sourceRef="Activity_sendNominationEmailToSupervisor" targetRef="Event_1ws2h5w" />
+    <bpmn:sequenceFlow id="Flow_0vk1ju4" sourceRef="Audit_Task_Executed" targetRef="Activity_0ihi2b8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:businessRuleTask id="Activity_0ihi2b8" name="Construct Submitter email" camunda:resultVariable="result" camunda:decisionRef="SLFSNomination" camunda:mapDecisionResult="singleResult">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="recipient">submitter</camunda:inputParameter>
+          <camunda:inputParameter name="employeeName">${firstName} ${lastName}</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineDate">Oct 1, 2025</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineTime">12 noon</camunda:inputParameter>
+          <camunda:inputParameter name="surveyLink">https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/form</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vk1ju4</bpmn:incoming>
+      <bpmn:outgoing>Flow_16u8kkz</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:serviceTask id="Activity_1rhw45x" name="Send nomination email to submitter" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">${result.body}</camunda:inputParameter>
+          <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">paul@bothma.ca</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16u8kkz</bpmn:incoming>
+      <bpmn:outgoing>Flow_18wc60f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16u8kkz" sourceRef="Activity_0ihi2b8" targetRef="Activity_1rhw45x" />
+    <bpmn:sequenceFlow id="Flow_18wc60f" sourceRef="Activity_1rhw45x" targetRef="Event_1ws2h5w" />
+    <bpmn:businessRuleTask id="Activity_0dwqqd2" name="Construct Colleague email" camunda:resultVariable="result" camunda:decisionRef="SLFSNomination" camunda:mapDecisionResult="singleResult">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="recipient">colleagues</camunda:inputParameter>
+          <camunda:inputParameter name="employeeName">${firstName} ${lastName}</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineDate">Oct 1, 2025</camunda:inputParameter>
+          <camunda:inputParameter name="deadlineTime">12 noon</camunda:inputParameter>
+          <camunda:inputParameter name="surveyLink">https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/form</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fj268w</bpmn:incoming>
+      <bpmn:outgoing>Flow_07o3rnu</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_1fj268w" sourceRef="Audit_Task_Executed" targetRef="Activity_0dwqqd2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="javascript">true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0qftqai" name="Send nomination email to colleagues" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="body">${result.body}</camunda:inputParameter>
+          <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">paul@bothma.ca,jeff@bothma.ca</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07o3rnu</bpmn:incoming>
+      <bpmn:outgoing>Flow_16gc484</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_07o3rnu" sourceRef="Activity_0dwqqd2" targetRef="Activity_0qftqai" />
+    <bpmn:sequenceFlow id="Flow_16gc484" sourceRef="Activity_0qftqai" targetRef="Event_1ws2h5w" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SLFSNomination">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="265" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qmqqen_di" bpmnElement="Audit_Task_Executed">
+        <dc:Bounds x="310" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ws2h5w_di" bpmnElement="Event_1ws2h5w">
+        <dc:Bounds x="1252" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1239" y="185" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1lmglhx" bpmnElement="Activity_sendNominationEmailToSupervisor">
+        <dc:Bounds x="880" y="200" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ukkgg5_di" bpmnElement="Activity_0ukkgg5">
+        <dc:Bounds x="650" y="200" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ea9pn4" bpmnElement="Activity_0ihi2b8">
+        <dc:Bounds x="650" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ljuyea" bpmnElement="Activity_1rhw45x">
+        <dc:Bounds x="880" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1vdzvph" bpmnElement="Activity_0dwqqd2">
+        <dc:Bounds x="650" y="310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_17dwbrn" bpmnElement="Activity_0qftqai">
+        <dc:Bounds x="880" y="310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_09rbji4_di" bpmnElement="Flow_09rbji4">
+        <di:waypoint x="208" y="240" />
+        <di:waypoint x="310" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0klorcg_di" bpmnElement="Flow_0klorcg">
+        <di:waypoint x="410" y="250" />
+        <di:waypoint x="650" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vk1ju4_di" bpmnElement="Flow_0vk1ju4">
+        <di:waypoint x="410" y="240" />
+        <di:waypoint x="530" y="240" />
+        <di:waypoint x="530" y="120" />
+        <di:waypoint x="650" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11xhirk_di" bpmnElement="Flow_11xhirk">
+        <di:waypoint x="980" y="240" />
+        <di:waypoint x="1252" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ggok9j_di" bpmnElement="Flow_0ggok9j">
+        <di:waypoint x="750" y="240" />
+        <di:waypoint x="880" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16u8kkz_di" bpmnElement="Flow_16u8kkz">
+        <di:waypoint x="750" y="120" />
+        <di:waypoint x="880" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18wc60f_di" bpmnElement="Flow_18wc60f">
+        <di:waypoint x="980" y="120" />
+        <di:waypoint x="1116" y="120" />
+        <di:waypoint x="1116" y="240" />
+        <di:waypoint x="1252" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fj268w_di" bpmnElement="Flow_1fj268w">
+        <di:waypoint x="410" y="260" />
+        <di:waypoint x="530" y="260" />
+        <di:waypoint x="530" y="350" />
+        <di:waypoint x="650" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07o3rnu_di" bpmnElement="Flow_07o3rnu">
+        <di:waypoint x="750" y="350" />
+        <di:waypoint x="880" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16gc484_di" bpmnElement="Flow_16gc484">
+        <di:waypoint x="980" y="350" />
+        <di:waypoint x="1116" y="350" />
+        <di:waypoint x="1116" y="240" />
+        <di:waypoint x="1252" y="240" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

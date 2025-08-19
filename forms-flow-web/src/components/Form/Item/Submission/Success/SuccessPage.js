@@ -838,6 +838,49 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.SLFS_RESPONDENT_SELECTION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for submitting your nomination for the Senior Leadership
+            Feedback Survey
+          </span>
+          <span className="success-content-intro">Next Steps</span>
+          <div className="success-content-body">
+
+            <ul>
+              <li>An automated email will be sent to all the survey respondents 
+                you identified inviting them to complete the Senior Leader Feedback Survey.</li>
+              <li>You will receive a separate email inviting you to complete the 
+                survey as your self-assessment.</li>
+              <li>Everyone must complete the survey before it closes on [date and time].</li>
+              <li>As a reminder, you will receive a personalized feedback 
+                report once the survey closes, along with a companion 
+                guide to help reflect on the results.</li>
+              <li>We encourage you to connect with your supervisor or 
+                schedule a follow-up conversation after [date] to 
+                discuss your feedback and next steps.</li>
+            </ul>
+
+            Questions? Reach out to 
+            <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+          </div>
+        </>
+      );
+    } else {
+      // Generic catch-all response
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for your submission.
+          </span>
+          <div className="success-content-body">
+            Your form has been received and is being processed. 
+            If you have any questions, please contact your administrator.
+             
+          </div>
+        </>
+      );
     }
   };
 
