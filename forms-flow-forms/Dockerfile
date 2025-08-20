@@ -4,7 +4,7 @@
 # -----------------------------------------------------------
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM node:20-bookworm
+FROM node:20.19.4
 # set working directory
 WORKDIR /forms-flow-forms/app
 
