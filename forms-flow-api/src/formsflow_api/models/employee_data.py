@@ -67,3 +67,5 @@ class EmployeeData():
    # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
    self.jobIndicator = data.get("job_indicator")
    self.noofrecords = noofrecords
+
+   self.userIdir = data.get("IDIR") #PB Added IDIR to /me endpoint
