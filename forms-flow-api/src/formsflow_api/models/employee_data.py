@@ -68,4 +68,4 @@ class EmployeeData():
    self.jobIndicator = data.get("job_indicator")
    self.noofrecords = noofrecords
 
-   self.user_idir = data.get("IDIR")
+   self.userIdir = data.get("IDIR") #PB Added IDIR to /me endpoint
