@@ -67,3 +67,5 @@ class EmployeeData():
    # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
    self.jobIndicator = data.get("job_indicator")
    self.noofrecords = noofrecords
+
+   self.user_idir = data.get("IDIR")

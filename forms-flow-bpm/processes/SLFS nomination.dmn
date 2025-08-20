@@ -81,7 +81,7 @@
     &lt;p&gt;Complete by: " +deadlineDate+ ", " +deadlineTime+ "&lt;/p&gt;
 
     &lt;ul&gt;
-    &lt;li&gt;Getting started Visit the SLFS SharePoint site for helpful resources&lt;/li&gt;
+    &lt;li&gt;Getting started Visit the SLFS SharePoint site for helpful resources.&lt;/li&gt;
     &lt;li&gt;The survey takes about 20 minutes and includes 18 scale-based questions plus 2 optional open-ended questions.&lt;/li&gt;
     &lt;li&gt;At the end of the survey, you'll be asked if you'd like to work with a coach to confidentially debrief your survey report. 
       Coaches are from both the PSA's Coaching Services team and ministries. If you're not sure, you can request a coach later.&lt;/li&gt;
@@ -125,7 +125,7 @@
 
     What to expect:
     &lt;ul&gt;
-    &lt;li&gt;Before you begin visit the SLFS Teams site for helpful resources&lt;/li&gt;
+    &lt;li&gt;Before you begin visit the SLFS Teams site for helpful resources.&lt;/li&gt;
     &lt;li&gt;The survey takes about 20 minutes and includes 18 scale-based questions plus 2 optional open-ended ones.&lt;/li&gt;
     &lt;li&gt;To help protect anonymity if you wish, please avoid including identifying details in your responses.&lt;/li&gt;
     &lt;li&gt;The open-ended questions use technology to help ensure your responses are constructive for the senior leader.&lt;/li&gt;
@@ -153,6 +153,65 @@
         </outputEntry>
         <outputEntry id="LiteralExpression_0q96wqf">
           <text>"Senior Leader Feedback Survey - time to provide feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0cjkdp4">
+        <inputEntry id="UnaryTests_0ises6y">
+          <text>"directReports"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1eo517g">
+          <text>"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;
+
+    &lt;p&gt;Hello, &lt;/p&gt;
+    &lt;p&gt;
+    You've been invited to provide feedback as part of the Senior Leader Feedback Survey (SLFS) for &lt;strong&gt;" +employeeName+ "&lt;/strong&gt;.
+    &lt;/p&gt;
+    &lt;p&gt;
+    Through the SLFS, you can share your experience working with &lt;strong&gt;" +employeeName+ "&lt;/strong&gt; in their role as a leader. 
+    The survey will ask you to reflect on how applies common leadership behaviours in everyday workplace situations.
+    &lt;/p&gt;
+
+    What to expect:
+    &lt;ul&gt;
+    &lt;li&gt;Before you begin visit the SLFS Teams site for helpful resources.&lt;/li&gt;
+    &lt;li&gt;The survey takes about 20 minutes and includes 18 scale-based questions plus 2 optional open-ended ones.&lt;/li&gt;
+    &lt;li&gt;To help protect anonymity if you wish, please avoid including identifying details in your responses.&lt;/li&gt;
+    &lt;li&gt;The open-ended questions use technology to help ensure your responses are constructive for the senior leader.&lt;/li&gt;
+    &lt;li&gt;You may be offered alternative wording suggestions, which you can choose to accept or ignore.&lt;/li&gt;
+    &lt;li&gt;For example, if you write something like &amp;quot;I can never reach my senior leader. When I do, they change their mind, I never know what to expect.&amp;quot; 
+      the system might suggest &amp;quot;I find it difficult to get in touch with my senior leader, and when I do, their feedback or decisions often change, 
+      which makes it hard to know what to expect.&amp;quot;&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;Survey link: &lt;a href='" +surveyLink+ "'&gt;" +surveyLink+ "&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;Complete by: " +deadlineDate+ ", " +deadlineTime+ ".&lt;/p&gt;
+
+
+    &lt;p&gt;Thank you for contributing to leadership growth across the PSA.&lt;/p&gt;
+
+    &lt;p&gt;Signature:&lt;/p&gt;
+    &lt;p&gt;If you have any questions or need support, please contact your supervisor or the SLFS project team at &lt;a href='mailto:CorporateLeadership@gov.bc.ca'&gt;CorporateLeadership@gov.bc.ca&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;Warm regards,&lt;/p&gt;
+    &lt;p&gt;The SLFS Project Team&lt;/p&gt;
+
+    &lt;/body&gt;
+  &lt;/html&gt;"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1psjioq">
+          <text>"Senior Leader Feedback Survey - time to provide feedback"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0e1s52z">
+        <inputEntry id="UnaryTests_0v7www7">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1e8p3rf">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ja52g2">
+          <text></text>
         </outputEntry>
       </rule>
     </decisionTable>

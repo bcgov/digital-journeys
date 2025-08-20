@@ -35,6 +35,8 @@ class EmployeeDataResource(Resource):
         except:
             return {"message": "Something went wrong!"}, HTTPStatus.INTERNAL_SERVER_ERROR
 
+        GUID = "88F4E39A8DA74C889EB4C4EEE50087A5"
+
         try:
             if BCeID:
                 userData = EmployeeDataService.get_employee_data_from_bceid()
