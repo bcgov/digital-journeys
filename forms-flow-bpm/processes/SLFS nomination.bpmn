@@ -48,9 +48,11 @@
     <bpmn:serviceTask id="Activity_sendNominationEmailToSupervisor" name="Send nomination email to supervisor" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="body">${result.body} Recipient: ${supervisorEmailAddress}</camunda:inputParameter>
+          <camunda:inputParameter name="body">${result.body} &lt;!--Recipient: ${supervisorEmailAddress}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
           <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="sender">CorporateLeadership</camunda:inputParameter>
+          <camunda:inputParameter name="senderAlias">Corporate Leadership</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ggok9j</bpmn:incoming>
@@ -92,9 +94,11 @@
     <bpmn:serviceTask id="Activity_1rhw45x" name="Send nomination email to submitter" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="body">${result.body} Recipient: ${email}</camunda:inputParameter>
+          <camunda:inputParameter name="body">${result.body} &lt;!--Recipient: ${email}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
           <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="sender">Corporateleadership@gov.bc.ca</camunda:inputParameter>
+          <camunda:inputParameter name="senderAlias">Corporate leadership</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_16u8kkz</bpmn:incoming>
@@ -121,7 +125,7 @@
     <bpmn:serviceTask id="Activity_0qftqai" name="Send nomination email to colleagues" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="body">${result.body} Recipients: ${colleagueEmailAddresses}</camunda:inputParameter>
+          <camunda:inputParameter name="body">${result.body} &lt;!--Recipients: ${colleagueEmailAddresses}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
           <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
         </camunda:inputOutput>
@@ -150,7 +154,7 @@
     <bpmn:serviceTask id="Activity_1dm30p0" name="Send nomination email to direct reports" camunda:class="org.camunda.bpm.extension.hooks.listeners.TaskAssignmentListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="body">${result.body} Recipients: ${directReportEmailAddresses}</camunda:inputParameter>
+          <camunda:inputParameter name="body">${result.body} &lt;!--Recipients: ${directReportEmailAddresses}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
           <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
         </camunda:inputOutput>
