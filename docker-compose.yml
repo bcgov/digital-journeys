@@ -370,10 +370,11 @@ services:
 
   keycloak:
     restart: unless-stopped
-    container_name: keycloak
+    container_name: forms-flow-keycloak
     build:
       context: ./forms-flow-idm/keycloak
       dockerfile: Dockerfile
+    platform: linux/amd64
    
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USER:-admin}

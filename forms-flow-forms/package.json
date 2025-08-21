@@ -64,7 +64,9 @@
     "vanilla-text-mask": "^5.1.1",
     "vm2": "^3.9.9",
     "winston": "^3.11.0",
-    "winston-daily-rotate-file": "^4.7.1"
+    "winston-daily-rotate-file": "^4.7.1",
+    "mssql": "11.0.1",
+    "mysql": "2.18.1"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
@@ -73,7 +75,8 @@
     "pre-commit": "^1.2.2",
     "superagent-use": "^0.1.0",
     "supertest": "^6.3.0",
-    "supertest-capture-error": "^1.0.0"
+    "supertest-capture-error": "^1.0.0",
+    "nodemailer-sendgrid-transport": "0.2.0"
   },
   "directories": {
     "test": "test"
