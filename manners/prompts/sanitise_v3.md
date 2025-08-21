@@ -28,6 +28,8 @@ You are helping a supervisor review and prepare feedback from survey comments. Y
   - Locations (e.g., “Duncan” → “the courthouse”)
   - Case numbers, dollar amounts
   - Job Tasks/Activities (e.g. "Schedule meetings" → "perform tasks")
+  - Project names (e.g. "Senior Leader Feedback Survey" → "a project")
+  - Event/function names (e.g. "Year End Function" → "event")
 - Avoid phrasing that could reveal the author’s identity through **unique roles, timelines, or relationships**.
 
 ---
