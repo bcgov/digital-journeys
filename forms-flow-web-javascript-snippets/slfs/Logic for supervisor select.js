@@ -4,13 +4,6 @@
 const evt = ([...arguments].pop() || [{}])[0] || {};
 const { changed={instance: {}} } = evt;
 
-/*
-console.log(arguments);
-console.log(evt);
-console.log(changed);
-console.log(instance);
-*/
-
 if ( instance.id !== changed.instance.id ) return;
 
 const theForm = Object.values(window.Formio.forms)[0];
@@ -23,10 +16,6 @@ const _form = {
       console.log(`Component not found: ${name}`);
     }
     return component ? component : null;
-  },
-  apiUrl: () => {
-    
-    return localStorage.getItem("formsflow.ai.api.url");
   }
 
 }
@@ -44,6 +33,7 @@ if (_.isObject(input) && Object.keys(input).length > 0) {
     ['first_name', 'supervisorFirstName'],
     ['last_name', 'supervisorLastName'],
     ['email', 'supervisorEmailAddress'],
+    ['IDIR', 'supervisorIdir']
   ];
 
   const control = fields[0];
@@ -65,29 +55,6 @@ if (_.isObject(input) && Object.keys(input).length > 0) {
         }
       }
     });
-
-    if ( input['email'] == null ) {
-
-      console.log('Fetching employee data for supervisor...');
-
-      const response = fetch(_form.apiUrl() + '/employee-data/info?employeeId=' + _form.getComponent('supervisorEmployeeId').getValue(), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-        }
-      })
-
-      response.then(r => {
-        r.json().then(data => {
-          console.log('Employee data fetched successfully:', data);
-          const { email } = data;
-
-          _form.getComponent('supervisorEmailAddress').setValue(email);
-        });
-      });
-    }
 
     
   }

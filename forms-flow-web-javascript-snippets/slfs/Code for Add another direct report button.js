@@ -5,7 +5,7 @@
 
   const _form = {
 
-    getComponent: (name, index=1) => {
+    getComponent: (name, index=0) => {
       const component = theForm.getComponent(`directReports[${index}].${name}`);
       if (!component || typeof(component.getValue) != "function" ) {
         console.log(`Component not found: ${name}`);
@@ -27,7 +27,8 @@
       break;
     }
   }
-  
+
+  console.log(component);
   component.setValue("@");
   const action = _form.getComponent("selectOneOfTheFollowingOptions", index);
   action.setValue("changeThisDirectReport");
