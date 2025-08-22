@@ -71,7 +71,7 @@
           <text>
   "&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;
 
-    &lt;p&gt;Hello, " +employeeName + ",&lt;/p&gt;
+    &lt;p&gt;Hello " +employeeName + ",&lt;/p&gt;
 
     &lt;p&gt;Thank you for confirming and thoughtfully selecting respondents in the Senior Leader Feedback Survey (SLFS). 
     It's time to complete your self-assessment. Your self-assessment is an important opportunity to reflect on your own leadership.&lt;/p&gt;
