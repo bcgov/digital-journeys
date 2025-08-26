@@ -13,7 +13,7 @@ const hooks = () => {
   const _form = {
 
     getComponent: (name, index=0) => {
-      const component = theForm.getComponent(`colleagues[${index}].${name}`);
+      const component = theForm.getComponent(`colleagueList[${index}].${name}`);
       if (!component || typeof(component.getValue) != "function" ) {
         console.log(`Component not found: ${name}`);
       }

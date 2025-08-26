@@ -1,44 +1,45 @@
 // Code for submit button
 
-(function () { 
+(function (subs) { 
   
-  const constructEmailAddresses = (key) => {
-    const emails = data[`${key}s`].map(e => e[`${key}EmailAddress`]).filter(e => e != null && e.indexOf("@") > 0);
+  const constructEmailAddresses = (source, key) => {
+    const emails = data[source].map(e => e[`${key}EmailAddress`]).filter(e => e != null && e.indexOf("@") > 0);
 
-    data[`${key}sEmailAddresses`] = emails.join(",");
+    return emails.join(",");
 
   };
-  
-  constructEmailAddresses("colleague");
-  constructEmailAddresses("directReport");
+
+  data.colleaguesEmailAddresses = constructEmailAddresses("colleagueList", "colleague");
+  data.directReportsEmailAddresses = constructEmailAddresses("directReports", "directReport");
 
   const etlForOds = () => {
     // Perform ETL operations for ODS
     console.log("Performing ETL for ODS...");
 
     const payload = {
-      
+
+      application_id: performance.now(),
       cohort: data.cohort,
-      SubmissionDateTime: new Date().toISOString(),
-      email: data.email,
-      SL_emplid:  data.empId,
-      SL_name: data.lastName + "," + data.firstName,
-      SL_position: data.positionTitle,
-      SL_classification: 'TODO',
-      SL_ministry: data.organization,
-      SL_division: data.divisionLevel2,
-      SL_IDIR: data.userIdir,
+      submission_datetime: new Date().toISOString(),
+      sl_email: data.email,
+      sl_emplid:  data.empId,
+      sl_name: data.lastName + "," + data.firstName,
+      sl_position: data.positionTitle,
+      sl_classification: 'TODO',
+      sl_ministry: data.organization,
+      sl_division: data.divisionLevel2,
+      sl_idir: data.userIdir,
       super_emplid: data.supervisorEmployeeId,
       super_email: data.supervisorEmailAddress,
       super_name: data.supervisorLastName+ ", " + data.supervisorFirstName,
-      super_IDIR: data.supervisorIdir,
+      super_idir: data.supervisorIdir,
       super_position: data.supervisorPositionTitle,
       super_classification: data.supervisorClassification,
       super_ministry: data.supervisorMinistry,
       super_division: data.supervisorDivision,
-      drep: data.directReports.map(report => {
+      dreps: data.directReports.map(report => {
         return {
-          IDIR: report.directReportIdir,
+          idir: report.directReportIdir,
           emplid: report.directReportEmployeeId,
           email: report.directReportEmailAddress,
           name: report.directReportName,
@@ -48,9 +49,9 @@
           division: report.directReportDivision
         };
       }).filter(report => report.email && report.name),
-      colleague: data.colleagues.map(colleague => {
+      colleagues: data.colleagueList.map(colleague => {
         return {
-          IDIR: colleague.colleagueIdir,
+          idir: colleague.colleagueIdir,
           emplid: colleague.colleagueEmployeeId,
           email: colleague.colleagueEmailAddress,
           name: colleague.colleagueName,
@@ -84,12 +85,16 @@
     }
   }
 
-  _form.getComponent("odsPayload").setValue(data.odsPayload);
+  //_form.getComponent("odsPayload").setValue(data.odsPayload);
   _form.getComponent("directReportsEmailAddresses").setValue(data.directReportsEmailAddresses);
   _form.getComponent("colleaguesEmailAddresses").setValue(data.colleaguesEmailAddresses);
+
+  for ( let key in data.odsPayload ) {
+    _form.getComponent(key).setValue(data.odsPayload[key]);
+  }
 
   theForm.submit();
   
   return true;
 
-})();
+})(submission);
