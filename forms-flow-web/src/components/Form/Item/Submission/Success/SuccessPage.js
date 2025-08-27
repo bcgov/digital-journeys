@@ -862,8 +862,8 @@ export default React.memo(() => {
                 discuss your feedback and next steps.</li>
             </ul>
 
-            Questions? Reach out to 
-            <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+            Questions? Reach out
+            to <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
           </div>
         </>
       );
