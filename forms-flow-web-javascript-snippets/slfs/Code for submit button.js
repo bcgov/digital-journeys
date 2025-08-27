@@ -18,7 +18,6 @@
 
     const payload = {
 
-      application_id: performance.now(),
       cohort: data.cohort,
       submission_datetime: new Date().toISOString(),
       sl_email: data.email,
