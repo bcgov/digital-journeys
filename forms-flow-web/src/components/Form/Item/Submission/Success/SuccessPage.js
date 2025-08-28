@@ -805,16 +805,15 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                Your feedback is highly valued and essential in identifying
-                Senior Leader strengths and areas for development. These
-                insights contribute to fostering an adaptable, authentic, and
-                resilient leadership culture, supporting the vision of a
-                future-focused, modern BC Public Service
+                Your feedback is highly valued. These insights contribute to
+                fostering an adaptable, authentic, and resilient leadership
+                culture, supporting the vision of a future-focused, modern BC
+                Public Service
               </li>
               <li>
                 If you have any questions, comments or would like to reach
-                someone about the survey responses you submitted, contact&nbsp;
-                <a href="mailto:email@gov.bc.ca">email@gov.bc.ca</a>
+                someone about the survey, contact&nbsp;
+                <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
               </li>
             </ul>
           </div>
@@ -849,20 +848,20 @@ export default React.memo(() => {
           <div className="success-content-body">
 
             <ul>
-              <li>An automated email will be sent to all the survey respondents 
+              <li>An automated email will be sent to all the survey respondents
                 you identified inviting them to complete the Senior Leader Feedback Survey.</li>
-              <li>You will receive a separate email inviting you to complete the 
+              <li>You will receive a separate email inviting you to complete the
                 survey as your self-assessment.</li>
               <li>Everyone must complete the survey before it closes on [date and time].</li>
-              <li>As a reminder, you will receive a personalized feedback 
-                report once the survey closes, along with a companion 
+              <li>As a reminder, you will receive a personalized feedback
+                report once the survey closes, along with a companion
                 guide to help reflect on the results.</li>
-              <li>We encourage you to connect with your supervisor or 
-                schedule a follow-up conversation after [date] to 
+              <li>We encourage you to connect with your supervisor or
+                schedule a follow-up conversation after [date] to
                 discuss your feedback and next steps.</li>
             </ul>
 
-            Questions? Reach out to 
+            Questions? Reach out to
             <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
           </div>
         </>
@@ -875,9 +874,9 @@ export default React.memo(() => {
             Thank you for your submission.
           </span>
           <div className="success-content-body">
-            Your form has been received and is being processed. 
+            Your form has been received and is being processed.
             If you have any questions, please contact your administrator.
-             
+
           </div>
         </>
       );
