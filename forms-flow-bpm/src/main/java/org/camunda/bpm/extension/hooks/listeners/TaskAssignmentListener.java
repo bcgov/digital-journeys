@@ -117,6 +117,9 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         InternetAddress[] recipients = getRecipients(execution);
 
+        String emailSender = getSenderValue(execution);
+        String emailSenderAlias = getSenderAliasValue(execution);
+
         // Create empty request and interceptors for the SendMailInvocation
         SendMailRequest request = getRequest();
         List<ConnectorRequestInterceptor> requestInterceptors = getInterceptors();
@@ -148,7 +151,22 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         if (recipients.length > 0) {
             try {
-                Message message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                Message message;
+
+                if ( emailSender != null && emailSenderAlias != null && emailSender.indexOf("@") > 0 ) {
+                    try {
+
+                        InternetAddress sender = new InternetAddress(emailSender, emailSenderAlias);
+                        message = createMessage(sender, recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                    } catch (Exception e) {
+                        logger.error("Failed to create message with sender: {}, sender alias: {}", emailSender, emailSenderAlias, e);
+                        message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                    }
+
+                } else {
+                    message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                }
+
                 SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
 
                 invocation.proceed();
@@ -262,9 +280,22 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     }
 
     public Message createMessage(InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {
+        
         MailConfiguration configuration = getConfiguration();
+        
+        String senderValue = configuration.getSender();
+        String senderAliasValue = configuration.getSenderAlias();
+
+        InternetAddress sender = new InternetAddress(senderValue, senderAliasValue);
+
+        return createMessage(sender, recipients, body, subject, taskId, attachments, session);
+    }
+
+    public Message createMessage(InternetAddress sender, InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {
+
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(configuration.getSender(), configuration.getSenderAlias()));
+        
+        message.setFrom(sender);
         Address[] addresses;
         message.setRecipients(RecipientType.TO, recipients);
 
@@ -484,6 +515,26 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         return String.valueOf(subject);
     }
 
+    private String getSenderValue(DelegateExecution delegateExecution) {
+        Object sender = delegateExecution.getVariable("sender");
+
+        if ( sender == null ) {
+            return null;
+        }
+
+        return String.valueOf(sender);
+    }
+    
+    private String getSenderAliasValue(DelegateExecution delegateExecution) {
+        Object alias = delegateExecution.getVariable("senderAlias");
+
+        if ( alias == null ) {
+            return null;
+        }
+
+        return String.valueOf(alias);
+    }
+
     private String[] getRecipientsValue(DelegateExecution delegateExecution) {
         Object recipientEmails = delegateExecution.getVariable("recipientEmails");
         if(recipientEmails == null) {
@@ -494,9 +545,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
 
         return recipientArray;
     }
-    
-
-
 
     private InternetAddress[] getRecipients(DelegateExecution delegateExecution) throws AddressException {
         String[] recipientArray = getRecipientsValue(delegateExecution);

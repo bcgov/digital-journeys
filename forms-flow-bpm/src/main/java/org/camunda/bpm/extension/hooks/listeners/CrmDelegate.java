@@ -65,6 +65,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
     private static final String ATTACHMENT_FILE_NAME = "attachment.pdf";
     private static final String IDIR_POSTFIX = "@idir";
     private static final String CRM_ID = "crmId";
+    private static final String USER_IDIR = "userIdir";
     private static final String CRM_LOOKUP_NAME = "crmLookupName";
     private static final String CRM_MAT_PAT_PRODUCT_LOOKUP_NAME_FIELD = "crmProductLookupName";
     private static final String CRM_MAT_PAT_CATEGORY_LOOKUP_NAME_FIELD = "crmCategoryLookupName";
@@ -133,6 +134,9 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("No idir user found! Exception: " + e);
+            }
+            if (currentUserIdir == null) {
+                currentUserIdir = String.valueOf(execution.getVariables().get(USER_IDIR));
             }
             if (currentUserIdir == null) {
                 System.out.println("currentUserIdir is null: " + currentUserIdir);
