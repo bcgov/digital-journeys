@@ -9,19 +9,23 @@ import re
 import ast
 from string import Template
 import hashlib
-
-from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
-
-from presidio_analyzer.nlp_engine import NlpEngineProvider
-
-from presidio_anonymizer import AnonymizerEngine, OperatorConfig # Importing the AnonymizerEngine for text anonymization
-
-from even_better_profanity import EvenBetterProfanity
-
 import logging
 from logging import Logger
 
 from typing import Any, Generator, Final
+
+import requests
+
+from even_better_profanity import EvenBetterProfanity
+
+DEPLOYMENT_TYPE: Final[str] = os.getenv("DEPLOYMENT_TYPE", "ai")
+
+if DEPLOYMENT_TYPE != "ai":
+
+  from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
+  from presidio_analyzer.nlp_engine import NlpEngineProvider
+  from presidio_anonymizer import AnonymizerEngine, OperatorConfig # Importing the AnonymizerEngine for text anonymization
+
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -31,7 +35,11 @@ log: Logger = None # Initialize the logger variable
 client: Any = None # Initialize the Azure OpenAI client variable
 controller: Flask | None = None  # Initialize the Flask application variable
 better_profanity: EvenBetterProfanity = None # Initialize the profanity filter
-analyzer: AnalyzerEngine = None  # Initialize the Presidio analyzer engine for text analysis
+
+if DEPLOYMENT_TYPE != "ai":
+
+  analyzer: AnalyzerEngine = None  # Initialize the Presidio analyzer engine for text analysis
+  engine: AnonymizerEngine = None  # Initialize the Presidio anonymizer engine for text anonymization
 
 AZURE_OPENAI_ENDPOINT: Final[str] = os.getenv("AZURE_OPENAI_ENDPOINT")  # Retrieve the Azure OpenAI endpoint from environment variables
 AZURE_OPENAI_KEY: Final[str] = os.getenv("AZURE_OPENAI_API_KEY")  # Retrieve the Azure OpenAI API key from environment variables
@@ -39,6 +47,7 @@ AZURE_OPENAI_DEPLOYMENT: Final[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT")  # Re
 AZURE_OPENAI_VERSION: Final[str] = os.getenv("AZURE_OPENAI_API_VERSION", "2024-10-21")  # Retrieve the Azure OpenAI API version, defaulting to a specific version if not set
 API_KEY: Final[str] = os.getenv("API_KEY", "")  # Retrieve the API key for authentication, defaulting to an empty string if not set
 FLASK_PROTOCOL: Final[str] = os.getenv("FLASK_PROTOCOL", "https")  # Retrieve the protocol (http or https) for the Flask application, defaulting to http
+ANONYMIZER_HOST: Final[str] = os.getenv("ANONYMIZER_HOST", "localhost:8800")  # Retrieve the host for the anonymizer service, defaulting to localhost:8800
 
 # Function to initialize the Flask application, Azure OpenAI client, and profanity filter
 def init() -> None:
@@ -46,8 +55,6 @@ def init() -> None:
   global client
   global controller
   global log
-  global analyzer
-  global better_profanity
 
   log = logging.getLogger(__name__)
 
@@ -68,26 +75,35 @@ def init() -> None:
     azure_endpoint=AZURE_OPENAI_ENDPOINT
   )
 
+  global better_profanity
   better_profanity = EvenBetterProfanity()  # Initialize the profanity filter
-
-  configuration = {
-      "nlp_engine_name": "spacy",
-      "models": [{"lang_code": "en", "model_name": "en_core_web_lg"}]
-  }
-
-  provider = NlpEngineProvider(nlp_configuration=configuration)
-  nlp_engine = provider.create_engine()
-
-  analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["en"])
-
-  sin_recognizer = PatternRecognizer(supported_entity="SIN", patterns=[Pattern(name="SIN", regex=r"\d{3}-\d{3}-\d{3}", score=0.8)])
-  analyzer.registry.add_recognizer(sin_recognizer)  # Add a custom recognizer for SIN (Social Insurance Number) patterns
-
+  
   if ( "profanity_wordlist.txt" in os.listdir() ):
 
     with open("profanity_wordlist.txt", "r") as file:
       custom_words = [line.strip() for line in file if line.strip()]  # Read custom profanity words from a file, stripping whitespace
       better_profanity.add_censor_words(custom_words)  # Add custom profanity words to the censor list
+  
+  if DEPLOYMENT_TYPE != "ai":
+
+    global analyzer
+    global engine
+
+    engine = AnonymizerEngine()
+
+    configuration = {
+        "nlp_engine_name": "spacy",
+        "models": [{"lang_code": "en", "model_name": "en_core_web_lg"}]
+    }
+
+    provider = NlpEngineProvider(nlp_configuration=configuration)
+    nlp_engine = provider.create_engine()
+
+    analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["en"])
+
+    sin_recognizer = PatternRecognizer(supported_entity="SIN", patterns=[Pattern(name="SIN", regex=r"\d{3}-\d{3}-\d{3}", score=0.8)])
+    analyzer.registry.add_recognizer(sin_recognizer)  # Add a custom recognizer for SIN (Social Insurance Number) patterns
+
 
 init()  # Call the initialization function to set up the Azure OpenAI client
 
@@ -241,7 +257,18 @@ def load_prompt(file_path: str, **kwargs) -> str:
 # It replaces entities like PERSON, PHONE_NUMBER, EMAIL_ADDRESS, and DATE_TIME with generic placeholders
 def anonymize(text: str) -> dict[str, Any]:
 
-  engine: AnonymizerEngine = AnonymizerEngine()
+  response: Any = requests.post(f"http://{ANONYMIZER_HOST}/anonymize", json={"text": text}, headers={"Authorization": f"Bearer {API_KEY}"})
+  return response.json()
+
+@controller.route('/anonymize', methods=['POST'])
+def anonymize_endpoint() -> Response:
+
+  data: dict[str, object] | None = request.get_json()
+  if not data or 'text' not in data or len(data['text'].strip()) == 0:
+    # No text found in the request
+    return jsonify({'error': 'No text provided.'}), 400
+  
+  text: str = data['text']
 
   results: Any = analyzer.analyze(text=text, entities=["PERSON", "PHONE_NUMBER", "EMAIL_ADDRESS", "DATE_TIME", "SIN"], language="en")
 
@@ -259,7 +286,7 @@ def anonymize(text: str) -> dict[str, Any]:
 
   #print(f"Anonymised text: {anon_text}")
 
-  return { "text": anon_text.text, "changed": len(results) > 0 }  # Return the anonymized text and the analysis results
+  return jsonify({ "text": anon_text.text, "changed": len(results) > 0 })  # Return the anonymized text and the analysis results
 
 @controller.route('/sanitise', methods=['POST'])
 def sanitise() -> Response:
@@ -420,4 +447,5 @@ def serve_script() -> tuple[str, int, dict[str, str]]:
 
 if __name__ == '__main__':
     # Run the Flask application on port 5005
-    controller.run(host='0.0.0.0', port=5005, debug=True, use_reloader=True, extra_files=['./prompts/sanitise_v3.md', './prompts/style.md', './static/script.js'])
+    port: int = DEPLOYMENT_TYPE == "ai" and 5005 or 8800
+    controller.run(host='0.0.0.0', port=port, debug=True, use_reloader=True, extra_files=['./prompts/sanitise_v3.md', './prompts/style.md', './static/script.js'])

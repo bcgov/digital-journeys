@@ -38,7 +38,7 @@ You are helping a supervisor review and prepare feedback from survey comments. Y
 - Before responding with your answer, make sure that both tasks have been completed successfully. Pay special attention to any subtle hints in the original text that you might have missed. 
 - Return a **single rewritten sentence** (or the original if no changes are needed).
 - The rewritten sentence has to be **less than ${max_length} characters**.
-- Add your **reasoning for changes** as a new sentence to the output.
+- Add your **reasoning for changes** as a new sentence to the output. Start the sentence with the word "Reasoning"
 
 
 ### ✅ Guidelines
