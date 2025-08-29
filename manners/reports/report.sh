@@ -13,7 +13,7 @@ rm -f ./data/*.json
 
 if [[ "$DOWNLOAD" == "download" ]]; then
 
-  INSTANCE=$(oc -n $NAMESPACE get pods | grep $POD_NAME | awk '{print $1}')
+  INSTANCE=$(oc -n $NAMESPACE get pods | grep $POD_NAME | head -n 1 | awk '{print $1}')
 
   echo "Syncing data from pod $INSTANCE to ./data/"
 
