@@ -274,3 +274,6 @@ redis-data/dump.rdb
 /manners/reports/nltk_data
 /manners/reports/data
 *.xlsx
+/manners/data
+manners/superset/report.db
+manners/superset/report.db
