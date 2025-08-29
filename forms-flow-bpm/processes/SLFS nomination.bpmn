@@ -113,7 +113,7 @@
           <camunda:outputParameter name="employeeName">${firstName} ${lastName}</camunda:outputParameter>
           <camunda:outputParameter name="deadlineDate">Oct 1, 2025</camunda:outputParameter>
           <camunda:outputParameter name="deadlineTime">12 noon</camunda:outputParameter>
-          <camunda:outputParameter name="surveyLink">https://digital-journeys-dev.apps.silver.devops.gov.bc.ca/form/689e4a61e5fa1a2e28ef933c?respondent_form_id=${applicationId}</camunda:outputParameter>
+          <camunda:outputParameter name="surveyLink">https://${surveyUrl}?respondent_form_id=${applicationId}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1bbnq2k</bpmn:incoming>
@@ -140,11 +140,11 @@
     <bpmn:sequenceFlow id="Flow_09rbji4" sourceRef="StartEvent_1" targetRef="Audit_Task_Executed">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New'); execution.setVariable('respondent_form_id', execution.getVariable("applicationId"));</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New'); execution.setVariable('respondent_form_id', execution.getVariable("applicationId"));execution.setVariable('application_id', execution.getVariable("applicationId"));</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
           <camunda:field name="fields">
-            <camunda:expression>["applicationId","applicationStatus","respondent_form_id"]</camunda:expression>
+            <camunda:expression>["applicationId","applicationStatus","respondent_form_id","application_id"]</camunda:expression>
           </camunda:field>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="take" />
