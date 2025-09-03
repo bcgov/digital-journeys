@@ -261,18 +261,33 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
             crmIncidentPostRequest.setAssignedTo(crmAssignedTo);
         }
         
-        ArrayList<CrmFileAttachment> formPdfAttachments = this.formPDFAttachInCRM(execution);
-        ArrayList<CrmFileAttachment> crmFileAttachments = this.crmAttachFiles(execution);
-        if (crmFileAttachments != null) {
-            if (formPdfAttachments != null) {
-                crmFileAttachments.addAll(formPdfAttachments);
+        // Check flag to determine if attachments should be generated
+        boolean generateCrmAttachment = true;
+        Object flagObj = execution.getVariable("generateCrmAttachment");
+        if (flagObj != null) {
+            if (flagObj instanceof Boolean) {
+                generateCrmAttachment = (Boolean) flagObj;
+            } else {
+                generateCrmAttachment = Boolean.parseBoolean(flagObj.toString());
             }
-            crmIncidentPostRequest.setFileAttachments(crmFileAttachments);
+        }
+
+        if (generateCrmAttachment) {
+            ArrayList<CrmFileAttachment> formPdfAttachments = this.formPDFAttachInCRM(execution);
+            ArrayList<CrmFileAttachment> crmFileAttachments = this.crmAttachFiles(execution);
+            if (crmFileAttachments != null) {
+                if (formPdfAttachments != null) {
+                    crmFileAttachments.addAll(formPdfAttachments);
+                }
+                crmIncidentPostRequest.setFileAttachments(crmFileAttachments);
+            } else {
+                System.out.println("No file attachment found for CRM in form");
+                if (formPdfAttachments != null) {
+                    crmIncidentPostRequest.setFileAttachments(formPdfAttachments);
+                }
+            }
         } else {
-            System.out.println("No file attachment found for CRM in form");
-            if (formPdfAttachments != null) {
-                crmIncidentPostRequest.setFileAttachments(formPdfAttachments);
-            }
+            System.out.println("Attachment generation skipped due to flag.");
         }
         
         String url = getEndpointUrl(INCIDENTS);
