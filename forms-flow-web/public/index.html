@@ -86,9 +86,23 @@
       // DGJ-1995 - Load content sanitizer script dynamically
 
       (function () {
-        let src = 'https://digital-journeys-content-sanitiser-d89793-dev.apps.silver.devops.gov.bc.ca/script';
+
+        var src;
+        
         if ( window.location.protocol !== 'https:' || window.location.hostname == 'localhost' ) {
           src = 'http://localhost:5005/script'; // Use local script for development
+        }
+        else {
+          const url = document.location.href;
+          const matches = url.match(/-(dev|test)/);
+          let environment = "prod";
+
+          if ( matches && matches[1] != null ) {
+
+            environment = matches[1];
+          }
+
+          src = `https://digital-journeys-content-sanitiser-d89793-${environment}.apps.silver.devops.gov.bc.ca/script`;
         }
         const script = document.createElement('script');
         script.src = src;
