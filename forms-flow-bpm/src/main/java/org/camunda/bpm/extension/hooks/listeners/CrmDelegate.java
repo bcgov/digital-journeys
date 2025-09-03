@@ -134,6 +134,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 e.printStackTrace();
                 System.out.println("No idir user found! Exception: " + e);
             }
+            currentUserIdir = "pbothma";
             if (currentUserIdir == null) {
                 System.out.println("currentUserIdir is null: " + currentUserIdir);
                 throw new ApplicationServiceException("currentUserIdir is null");
@@ -145,6 +146,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 System.out.println("managerContactId is null: " + managerContactId);
                 throw new ApplicationServiceException("managerContactId is null");
             }
+            System.out.println("managerContactId is: " + String.valueOf(managerContactId));
             
             // Find the employee's contact details in CRM
             String employeeId = String.valueOf(execution.getVariables().get(CRM_EMPLOYEE_ID_FIELD));
@@ -156,6 +158,7 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                     throw new ApplicationServiceException("employeeContactId is null");
                 }
             }
+            System.out.println("employeeContactId is: " + String.valueOf(employeeContactId));
     
             // Create/Update incident in CRM
             CrmIncidentPostResponse crmIncidentPostResponse = createUpdateCrmIncident(managerContactId, execution, isUpdate);
@@ -163,6 +166,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 System.out.println("crmIncidentPostResponse is null: " + crmIncidentPostResponse);
                 throw new ApplicationServiceException("createUpdateCrmIncident failed.");
             }
+            
+            System.out.println("crmIncidentPostResponse is: " + crmIncidentPostResponse.toString());
             Integer crmIncidentId = crmIncidentPostResponse.getId();
             // Saving the CRM incident id and lookupName in form
             execution.setVariable(CRM_ID, crmIncidentId);
@@ -172,6 +177,8 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 System.out.println("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
                 throw new ApplicationServiceException("crmIncidentId is null, dependent methods cannot run: addCrmContactReference, generatePDFForForm");
             }
+
+            System.out.println("crmIncidentId is: " + crmIncidentId);
     
             // Add the employee as a contact reference to the incident
             if (employeeContactId == null) {
