@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.springframework.http.ResponseEntity;
 
 @Named("SendSubmissionToODSDelegate")
 public class SendSubmissionToODSDelegate extends BaseListener implements JavaDelegate {
@@ -103,14 +104,23 @@ public class SendSubmissionToODSDelegate extends BaseListener implements JavaDel
             System.out.println("Sending values to ODS: " + json);
         }
 
+        ResponseEntity entity;
+
         if (httpMethod.equals("put")) {
-            this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.PUT, json);
+            entity = this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.PUT, json);
         } else if (httpMethod.equals("delete")) {
-            this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.DELETE, json);
+            entity = this.httpServiceInvoker.execute(getEndpointUrl(endpoint, applicationId), HttpMethod.DELETE, json);
         } else {
-            this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
+            entity = this.httpServiceInvoker.execute(getEndpointUrl(endpoint), HttpMethod.POST, json);
         }
+
         LOGGER.warn(String.format("Sent values of form to ODS. Form: %s. ODS Endpoint: %s", formUrl, endpoint));
+        
+        if ( debug && entity != null ) {
+
+            String body = entity.getBody().toString();
+            System.out.println(String.format("Received response from ODS: %s", body));
+        }
     }
 
     public String getEndpointUrl(String endpoint) {
