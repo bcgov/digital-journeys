@@ -3,7 +3,7 @@
 
 # Define variables
 BUILD_NAME="digital-journeys-content-sanitiser"
-NAMESPACE="d89793-dev"
+NAMESPACE="d89793-test"
 TEMP_DIR=$(mktemp -d)
 
 # Copy files excluding ./venv
@@ -16,6 +16,8 @@ rsync -av \
   --exclude='reports' \
   --exclude='superset' \
   ./ "$TEMP_DIR"
+
+#oc -n ${NAMESPACE} new-build --name=${BUILD_NAME} --binary --strategy=docker
 
 # Start the OpenShift build
 oc -n "$NAMESPACE" start-build "$BUILD_NAME" --from-dir="$TEMP_DIR" --follow
