@@ -23,13 +23,24 @@ const MindYourManners = {
           this.form = form;
           this.submissionId = performance.now();
           
-          const includedField = this.getFieldFromName("includedFields");
 
-          if ( includedField != null ) {
+          this.mindYourMannersComponent = this.getFieldFromName("mindYourMannersComponent");
 
-            this.includedFields = includedField.getValue();
-            console.log("Included fields:", this.includedFields);
-        
+          if ( this.mindYourMannersComponent == null ) {
+            console.error("MindYourMannersComponent not found in the form.");
+            return;
+          }
+
+          try {
+
+            const m = JSON.parse(this.mindYourMannersComponent.getValue());
+            this.constants = m.constants;
+            this.includedFields = m.includedFields;
+
+            console.log("Included fields ", this.includedFields);
+
+          } catch {
+            this.constants = {};
           }
 
           MindYourManners.store[formId] = this;
@@ -43,12 +54,23 @@ const MindYourManners = {
     }
 
   },
+
+  getConstantValue: function(key) {
+
+    if ( this.constants == null ) return key;
+
+    return this.constants[key] || key;
+  },
   getFieldFromName: function(key) {
     return this.form.root.getComponent(key);
   },
   accept: function(form, target, action="accept") {
 
     const strip = (text) => text ? text.replace(/^\s+|\s+$/g, '') : '';
+
+    if ( target.startsWith("FIELD") ) {
+      target = this.getConstantValue(target);
+    }
 
     const component = form.getComponent(target);
 
@@ -70,7 +92,7 @@ const MindYourManners = {
     }
 
     delete this.responses[componentKey];
-    this.mindYourMannersComponent.setValue(performance.now());
+    this.redraw();
 
     this.telemetry(action, formName, componentKey, { oldValue, newValue: component.getValue(), reasoning: strip(parts[1])});
   },
@@ -86,7 +108,7 @@ const MindYourManners = {
 
     const etc = {};
     
-    (this.includedFields || "").split(',').forEach(f => {
+    (this.includedFields || []).forEach(f => {
       f = f.trim();
       const field = this.getFieldFromName(f);
 
@@ -144,8 +166,6 @@ const MindYourManners = {
 
     if ( instance.id !== changed.instance.id ) return;
     
-    this.mindYourMannersComponent = this.mindYourMannersComponent || instance.root.getComponent("mindYourMannersComponent");
-
     if ( this.mindYourMannersComponent == null ) {
       console.error("MindYourMannersComponent not found in the form.");
       return;
@@ -288,7 +308,7 @@ const MindYourManners = {
     this.busyWith = componentKey;
     this.errors[componentKey] = null; // Clear any previous errors for this component
     this.responses[componentKey] = null; // Clear any previous responses for this component
-    this.mindYourMannersComponent.setValue(performance.now());
+    this.redraw();
     //console.log("Setting busy with:", componentKey);
   },
 
@@ -302,10 +322,14 @@ const MindYourManners = {
   setResponseValue: function(componentKey, value) {
 
     this.responses[componentKey] = value;
-    this.mindYourMannersComponent.setValue(performance.now());
+    this.redraw();
   },
 
   getResponseValue: function(componentKey, prefix="&#10023; ") {
+
+    if ( componentKey.startsWith("FIELD") ) {
+      componentKey = this.getConstantValue(componentKey);
+    }
 
     if ( this.isBusyWith(componentKey) ) return prefix + "...";
     
@@ -316,12 +340,20 @@ const MindYourManners = {
 
   isVisible: function(componentKey) {
 
+    if ( componentKey.startsWith("FIELD") ) {
+      componentKey = this.getConstantValue(componentKey);
+    }
+
     if ( this.isBusyWith(componentKey) ) return true;
 
     return this.hasResponse(componentKey) === true || ( this.errors[componentKey] !== null && this.errors[componentKey] !== undefined );
   },
 
   hasResponse: function(componentKey) {
+
+    if ( componentKey.startsWith("FIELD") ) {
+      componentKey = this.getConstantValue(componentKey);
+    }
 
     if ( this.responses[componentKey] == null || !this.responses[componentKey] ) return false;
 
@@ -357,6 +389,16 @@ const MindYourManners = {
       this.errors[componentKey] = "An unexpected error occurred. Please try again later.";
     }
 
-    this.mindYourMannersComponent.setValue(performance.now());
+    this.redraw();
+  },
+  redraw: function() {
+
+    const m = {
+      constants: this.constants,
+      includedFields: this.includedFields,
+      v: performance.now()
+    }
+
+    this.mindYourMannersComponent.setValue(JSON.stringify(m));
   }
 };
