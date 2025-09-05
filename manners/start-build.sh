@@ -3,7 +3,8 @@
 
 # Define variables
 BUILD_NAME="digital-journeys-content-sanitiser"
-NAMESPACE="d89793-test"
+ENVIRONMENT="test"
+NAMESPACE="d89793-${ENVIRONMENT}"
 TEMP_DIR=$(mktemp -d)
 
 # Copy files excluding ./venv
