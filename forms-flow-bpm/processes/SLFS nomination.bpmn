@@ -167,6 +167,12 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="endpoint">ods_datamart_slr_insert_survey_respondent</camunda:inputParameter>
           <camunda:inputParameter name="debug">true</camunda:inputParameter>
+          <camunda:inputParameter name="flatObjectExclusionList">
+            <camunda:list>
+              <camunda:value>colleagues</camunda:value>
+              <camunda:value>dreps</camunda:value>
+            </camunda:list>
+          </camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0o1rab3</bpmn:incoming>
