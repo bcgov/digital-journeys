@@ -802,18 +802,22 @@ export default React.memo(() => {
           <span className="success-content-intro">
             Thank you for providing feedback
           </span>
-          <div className="success-content-body">
+          <div
+            className="success-content-body"
+            style="color: rgb(21, 96, 130);"
+          >
             <ul>
               <li>
-                Your feedback is highly valued. These insights contribute to
-                fostering an adaptable, authentic, and resilient leadership
-                culture, supporting the vision of a future-focused, modern BC
-                Public Service
+                Your feedback is highly valued. These insights will help in
+                developing strong, human-centered leadership in the BC Public
+                Service.
               </li>
               <li>
                 If you have any questions, comments or would like to reach
-                someone about the survey, contact&nbsp;
-                <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+                someone about the survey, contact your supervisor or&nbsp;
+                <a href="mailto:Corporateleadership@gov.bc.ca">
+                  Corporateleadership@gov.bc.ca
+                </a>
               </li>
             </ul>
           </div>
@@ -840,29 +844,49 @@ export default React.memo(() => {
     } else if (search.includes(successTypes.SLFS_RESPONDENT_SELECTION)) {
       return (
         <>
-          <span className="success-content-intro">
+          <span
+            className="success-content-intro"
+            style="color: rgb(21, 96, 130);"
+          >
             Thank you for submitting your nomination for the Senior Leadership
             Feedback Survey
           </span>
-          <span className="success-content-intro">Next Steps</span>
+          <span
+            className="success-content-intro"
+            style="color: rgb(21, 96, 130);"
+          >
+            Next Steps
+          </span>
           <div className="success-content-body">
-
             <ul>
-              <li>An automated email will be sent to all the survey respondents
-                you identified inviting them to complete the Senior Leader Feedback Survey.</li>
-              <li>You will receive a separate email inviting you to complete the
-                survey as your self-assessment.</li>
-              <li>Everyone must complete the survey before it closes on [date and time].</li>
-              <li>As a reminder, you will receive a personalized feedback
-                report once the survey closes, along with a companion
-                guide to help reflect on the results.</li>
-              <li>We encourage you to connect with your supervisor or
-                schedule a follow-up conversation after [date] to
-                discuss your feedback and next steps.</li>
+              <li>
+                An automated email will be sent to all the survey respondents
+                you identified inviting them to complete the Senior Leader
+                Feedback Survey.
+              </li>
+              <li>
+                You will receive a separate email inviting you to complete the
+                survey as your self-assessment.
+              </li>
+              <li>
+                Everyone must complete the survey before it closes on [date and
+                time].
+              </li>
+              <li>
+                As a reminder, you will receive a personalized feedback report
+                once the survey closes, along with a companion guide to help
+                reflect on the results.
+              </li>
+              <li>
+                We encourage you to connect with your supervisor or schedule a
+                follow-up conversation after [date] to discuss your feedback and
+                next steps.
+              </li>
             </ul>
-
-            Questions? Reach out
-            to <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+            Questions? Reach out to{" "}
+            <a href="mailto:Corporateleadership@gov.bc.ca">
+              Corporateleadership@gov.bc.ca
+            </a>
           </div>
         </>
       );
@@ -874,9 +898,8 @@ export default React.memo(() => {
             Thank you for your submission.
           </span>
           <div className="success-content-body">
-            Your form has been received and is being processed.
-            If you have any questions, please contact your administrator.
-
+            Your form has been received and is being processed. If you have any
+            questions, please contact your administrator.
           </div>
         </>
       );
