@@ -3,7 +3,53 @@
 const evt = arguments[17].events;
 //console.log(arguments);
 
+const entries = new Array(20).fill(0);
+
+const theForm = Object.values(window.Formio.forms)[0];
+
+const _form = {
+
+  getComponent: (name, index=0) => {
+    let component;
+    
+    try {
+
+      component = theForm.getComponent(`directReports[${index}].${name}`);
+    }
+    catch {
+      console.log("Path does not exist: ", `directReports[${index}].${name}`);
+      return null;
+    }
+
+    if (!component || typeof(component.getValue) != "function" ) {
+      console.log(`Component not found: ${name}`);
+    }
+    return component ? component : null;
+  }
+}
+
 if ( evt.event == "formio.render" ) {
+  //console.log("We have a render in directReportsComponent");
+
+  entries.forEach((_, index) => {
+
+    const getComponent = key => {
+      let idx = index;
+      return _form.getComponent(`${key}`, idx);
+    };
+
+    if ( getComponent(`directReportEmailAddress`) == null ) return;
+
+    if ( getComponent(`directReportEmailAddress`).getValue().indexOf("@") < 0 ) {
+ 
+      const node = document.querySelector(`tbody[data-key='datagrid-directReports'] > tr:nth-child(${index + 1})`);
+      //console.log(`tbody[data-key='datagrid-directReports'] > tr:nth-child(${index + 1})`, node);
+      if ( node != null ) {
+        node.style.display = "none";
+      }
+    }
+
+  });
   return false;
 }
 
@@ -18,31 +64,18 @@ if ( data.email == data._email ) {
 
 data._email = data.email;
 
-console.log("email ", data.email);
+//console.log("email ", data.email);
 
 const apiUrl = localStorage.getItem("formsflow.ai.api.url");
 
 const populate = async r => {
 
-  const theForm = Object.values(window.Formio.forms)[0];
-
-  const _form = {
-
-    getComponent: (name, index=0) => {
-      const component = theForm.getComponent(`directReports[${index}].${name}`);
-      if (!component || typeof(component.getValue) != "function" ) {
-        console.log(`Component not found: ${name}`);
-      }
-      return component ? component : null;
-    }
-  }
+  
   
   const data = await r.json();
-  if ( Array.isArray(data) && data.length > 0 ) {
+  if ( true /*Array.isArray(data) && data.length > 0*/ ) {
     
     //console.log("Employee data fetched successfully:", data);
-
-    const entries = new Array(10).fill(0);
 
     entries.forEach((_, index) => {
 
@@ -54,6 +87,8 @@ const populate = async r => {
       };
 
       if ( getComponent(`directReportEmailAddress`) == null ) return;
+      const node = document.querySelector(`tbody[data-key='datagrid-directReports'] > tr:nth-child(${index + 1})`);
+      //console.log(`tbody[data-key='datagrid-directReports'] > tr:nth-child(${index + 1})`, node);
 
       if ( employee != null ) {
 
@@ -69,6 +104,18 @@ const populate = async r => {
 
         // TODO
         getComponent(`directReportDivision`).setValue(employee.division);
+
+        if ( node != null ) {
+          node.style.display = "";
+        }
+      
+      } else {
+
+        
+        if ( node != null ) {
+          node.style.display = "none";
+        }
+        getComponent(`selectOneOfTheFollowingOptions`).setValue("changeThisDirectReport");
       }
 
       let action = getComponent(`selectOneOfTheFollowingOptions`);
@@ -140,5 +187,23 @@ fetch(`${apiUrl}/employee-data/info?${qs}`, {
     'Accept': 'application/json',
     'Authorization': 'Bearer ' + localStorage.getItem('authToken')
   }
-}).then(populate);
+}).then(r => {
+  
+  const check = () => {
+
+    const root = document.querySelector(`tbody[data-key='datagrid-directReports']`);
+
+    if ( root == null ) {
+
+      //console.log("Root is still null");
+      return setTimeout(check, 1000);
+    } else {
+      console.log("populate fields");
+      populate(r);
+    }
+
+  };
+
+  check();
+});
 

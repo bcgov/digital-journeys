@@ -14,9 +14,11 @@
     }
   }
   
-  let index = 0, component;
+  let index = 0;
   
   for ( ; index<10; index++ ) {
+    
+    let component;
     
     component = _form.getComponent("directReportEmailAddress", index);
 
@@ -24,12 +26,20 @@
 
     console.log("email at ", index, component.data.directReportEmailAddress);
     if ( component.data.directReportEmailAddress == null || component.data.directReportEmailAddress == undefined || component.data?.directReportEmailAddress.indexOf("@") < 0 ) {
+      
+      const node = document.querySelector(`tbody[data-key='datagrid-directReports'] > tr:nth-child(${index + 1})`);
+      if ( node != null ) {
+
+        node.style.display = "";
+      }      
+
+      const action = _form.getComponent("selectOneOfTheFollowingOptions", index);
+      action.setValue("changeThisDirectReport");
+      
       break;
     }
+  
+  
   }
 
-  console.log(component);
-  component.setValue("@");
-  const action = _form.getComponent("selectOneOfTheFollowingOptions", index);
-  action.setValue("changeThisDirectReport");
 })();

@@ -13,7 +13,19 @@ const hooks = () => {
   const _form = {
 
     getComponent: (name, index=0) => {
-      const component = theForm.getComponent(`colleagueList[${index}].${name}`);
+      
+      let component;
+      
+      try
+      {
+        component = theForm.getComponent(`colleagueList[${index}].${name}`);
+      }
+      catch {
+        
+        console.log(`Path does not exist: colleagueList[${index}].${name}`);
+        return null;
+      }
+        
       if (!component || typeof(component.getValue) != "function" ) {
         console.log(`Component not found: ${name}`);
       }
@@ -37,14 +49,34 @@ const hooks = () => {
     if ( action == null ) return;
 
     action.events.on("formio.change", (args) => {
-
+      //console.log(args)
       const component = args.changed?.instance,
         value = args.changed?.value;
 
       if ( component == null || value == null ) return;
 
+      //if (value == "undefined, undefined") {
+        //console.log("UNDEFINED DETECTED");
+        //console.log("Colleague component selected:", getComponent(`colleagueEmailAddress`));
+
+        //getComponent(`colleagueEmailAddress`).setValue("");
+        //getComponent(`colleagueName`).setValue("");
+        //getComponent(`colleagueEmployeeId`).setValue("");
+        //getComponent(`colleaguePosition`).setValue("");
+        //getComponent(`colleagueMinistry`).setValue("");
+        //getComponent(`colleagueClassification`).setValue("");
+        //getComponent(`colleagueIdir`).setValue("");
+  
+        // TODO
+        //getComponent(`colleagueDivision`).setValue("");
+        //return;
+      //}
+
       if ( component == null || component.path != action.path ) return;
       
+      if ( getComponent(`colleagueEmailAddress`) == null ) return;
+
+      console.log("Colleague component selected:", getComponent(`colleagueEmailAddress`));
       getComponent(`colleagueEmailAddress`).setValue(value.email);
       getComponent(`colleagueName`).setValue(value.last_name + ", " + value.first_name);
       getComponent(`colleagueEmployeeId`).setValue(value.EMPLID);
