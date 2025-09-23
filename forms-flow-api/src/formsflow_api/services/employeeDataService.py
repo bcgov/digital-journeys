@@ -98,9 +98,50 @@ class EmployeeDataService:
         print("employee_data_api_url")
         print(employee_data_api_url)
         search = args.get("search", None)
-        if search and not search.isalpha():
-          search = re.sub(r'[^A-Za-z]+', '_', unquote(search))
-        query = f"&$search='{search}'" if search else ""
+
+        v = args.get("v", None)
+
+        query = ""
+
+        if v and v == "v2":
+          
+          sanitize = lambda term: re.sub(r'[^A-Za-z\-]+', '', unquote(term))
+          """
+          fields = contains.split(",")
+          search = [f"startswith({x}, '{sanitize(term)}')" for x in fields for term in search.split(',')]
+          filter = " or ".join(search)
+          query = f"&$filter={filter}"
+          """
+
+          search_parts = re.split(r'[, ]+', search)
+          name_filter = ""
+          email_filter = ""
+
+          [last_name, first_name] = [search_parts[0], None]
+
+          if ( len(search_parts) > 1 ):
+            first_name = search_parts[1]
+
+          if last_name is not None:
+            name_filter = f"startswith(last_name, '{sanitize(last_name)}')"
+            email_filter = f"contains(email, '.{sanitize(last_name)}')"
+          
+          if first_name is not None:
+            name_filter += f" and startswith(first_name, '{sanitize(first_name)}')"
+            email_filter = f"startswith(email, '{sanitize(first_name)}') and {email_filter}"
+
+          query = f"&$filter=({name_filter}) or ({email_filter})"  
+
+        else:  
+
+          if search and not search.isalpha():
+            search = re.sub(r'[^A-Za-z]+', '_', unquote(search))
+
+          query = f"&$search='{search}'" if search else ""
+        
+
+        print(f"Search query: {query}")
+
         limit = args.get("limit", 10)
         top = f"&$top={limit}"
         offset = args.get("skip", 0)
