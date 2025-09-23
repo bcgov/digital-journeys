@@ -359,6 +359,17 @@ const MindYourManners = {
 
     return this.responses[componentKey].length > 0;
   },
+  
+  getErrorMessage: function(componentKey) {
+
+    if ( componentKey.startsWith("FIELD") ) {
+      componentKey = this.getConstantValue(componentKey);
+    }
+
+    if ( this.errors[componentKey] == null || !this.errors[componentKey] ) return true;
+
+    return this.errors[componentKey];
+  },
 
   handleError: function(componentKey, err) {
 
