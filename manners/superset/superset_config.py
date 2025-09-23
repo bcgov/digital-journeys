@@ -13,6 +13,7 @@ JINJA_CONTEXT_ADDONS = {
 
             SELECT 
                 employeeName AS Name, 
+                organization AS Organization,
                 {name}_flagged AS Terms 
             FROM 
                 report 
@@ -20,7 +21,7 @@ JINJA_CONTEXT_ADDONS = {
                 {name}_flagged <> ''
         )
 
-        SELECT *, COUNT(*) AS Occurrences from {name}_flagged_cte GROUP BY Name
+        SELECT *, COUNT(*) AS Occurrences from {name}_flagged_cte GROUP BY Name, Organization
     """,
 
     'sql_action': lambda name: f"""

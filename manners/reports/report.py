@@ -90,10 +90,10 @@ def get_flagged_words(tokens):
 lexicon = load_nrc_lexicon('NRC-Emotion-Lexicon-Wordlevel-v0.92.txt')
 
 fields = [
-            'whatDoYouAppreciateMostAboutNameSLeadershipStyle1', 
-            'whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader', 
-            'whatIsYourGreatestStrengthAsALeader',
-            'whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader2'
+            'nominee_text_1', 
+            'nominee_text_2', 
+            'SL_text_1',
+            'SL_text_2'
         ]
 
 for field in fields:

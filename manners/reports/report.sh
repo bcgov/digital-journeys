@@ -29,10 +29,10 @@ fi
 
 # Original fields
 fields=(
-    "whatDoYouAppreciateMostAboutNameSLeadershipStyle1"
-    "whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader"
-    "whatIsYourGreatestStrengthAsALeader"
-    "whatAdviceWouldYouGiveToHelpThemBecomeAnEvenBetterLeader2"
+    "nominee_text_1"
+    "nominee_text_2"
+    "SL_text_1"
+    "SL_text_2"
 )
 
 # Suffixes to append
@@ -61,13 +61,13 @@ JSON_FIELDS_JOINED=${JSON_FIELDS_JOINED%','}  # Remove trailing comma
 echo "$FIELDS_JOINED"
 echo "$JSON_FIELDS_JOINED"
 
-echo -e "sub\tdate\tformName\t${FIELDS_JOINED}\temployeeName" > "$REPORT_FILE"
+echo -e "sub\tdate\tformName\t${FIELDS_JOINED}\temployeeName\torganization" > "$REPORT_FILE"
 
 for file in ./data/*.json; do
   if [[ -f $file ]]; then
     echo "Processing file: $file"
 
-    cat $file | jq -r "[.metadata.sub, .metadata.date, .metadata.formName, ${JSON_FIELDS_JOINED}, .etc.employeeName] | @tsv" >> "$REPORT_FILE"
+    cat $file | jq -r "[.metadata.sub, .metadata.date, .metadata.formName, ${JSON_FIELDS_JOINED}, .etc.employeeName, .etc.sl_organization] | @tsv" >> "$REPORT_FILE"
 
   fi
 done
