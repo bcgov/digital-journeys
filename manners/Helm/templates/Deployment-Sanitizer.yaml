@@ -1,0 +1,79 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: digital-journeys-content-sanitiser
+  labels:
+    app: digital-journeys-content-sanitiser
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: digital-journeys-content-sanitiser
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: digital-journeys-content-sanitiser
+    spec:
+      volumes:
+        - name: profanity-wordlist
+          configMap:
+            name: digital-journeys-content-sanitiser
+            defaultMode: 420
+        - name: sanitise-prompt
+          configMap:
+            name: digital-journeys-content-sanitiser
+            defaultMode: 420
+        - name: data-digital-journeys-content-sanitiser
+          persistentVolumeClaim:
+            claimName: data-digital-journeys-content-sanitiser
+      containers:
+        - resources:
+            limits:
+              cpu: 100m
+              memory: 750Mi
+            requests:
+              cpu: 100m
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          name: container
+          env:
+            - name: FLASK_PORT
+              value: '5005'
+            - name: FLASK_DEBUG
+              value: 'False'
+            - name: FLASK_PROTOCOL
+              value: https
+            - name: FLASK_WORKERS
+              value: '10'
+            - name: DEPLOYMENT_TYPE
+              value: ai
+            - name: ANONYMIZER_HOST
+              value: 'digital-journeys-content-anonymizer.{{ .Release.Namespace }}.svc.cluster.local:5005'
+          ports:
+            - containerPort: 5005
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: profanity-wordlist
+              readOnly: true
+              mountPath: /app/profanity_wordlist.txt
+              subPath: profanity_wordlist.txt
+            - name: sanitise-prompt
+              readOnly: true
+              mountPath: /app/prompts/sanitise_v3.md
+              subPath: sanitise_v3.md
+            - name: data-digital-journeys-content-sanitiser
+              mountPath: /app/data
+          terminationMessagePolicy: File
+          envFrom:
+            - secretRef:
+                name: digital-journeys-content-sanitiser
+          image: 'image-registry.openshift-image-registry.svc:5000/{{ .Release.Namespace }}/digital-journeys-content-sanitiser:latest'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: digital-journeys-content-anonymizer
+  labels:
+    app: digital-journeys-content-anonymizer
+spec:
+  ports:
+    - protocol: TCP
+      port: 5005
+      targetPort: 5005
+  selector:
+    app: digital-journeys-content-anonymizer
+status:
+  loadBalancer: {}

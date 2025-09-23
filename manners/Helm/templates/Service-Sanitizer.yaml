@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: digital-journeys-content-sanitiser
+  labels:
+    app: digital-journeys-content-sanitiser
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 5005
+  selector:
+    app: digital-journeys-content-sanitiser
+status:
+  loadBalancer: {}

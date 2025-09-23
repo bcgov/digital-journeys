@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: digital-journeys-content-sanitiser
+spec:
+  host: digital-journeys-content-sanitiser-{{ .Release.Namespace }}.apps.silver.devops.gov.bc.ca
+  to:
+    kind: Service
+    name: digital-journeys-content-sanitiser
+    weight: 100
+  port:
+    targetPort: 5005
+  tls:
+    termination: edge
+  wildcardPolicy: None
