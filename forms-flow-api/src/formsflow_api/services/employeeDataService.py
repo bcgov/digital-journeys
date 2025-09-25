@@ -103,6 +103,7 @@ class EmployeeDataService:
 
         query = ""
 
+        # 2069 Added additional search capabilities
         if v and v == "v2":
           
           sanitize = lambda term: re.sub(r'[^A-Za-z\-]+', '', unquote(term))
@@ -123,11 +124,11 @@ class EmployeeDataService:
             first_name = search_parts[1]
 
           if last_name is not None:
-            name_filter = f"startswith(last_name, '{sanitize(last_name)}')"
+            name_filter = f"contains(name, '{sanitize(last_name)}')"
             email_filter = f"contains(email, '.{sanitize(last_name)}')"
           
           if first_name is not None:
-            name_filter += f" and startswith(first_name, '{sanitize(first_name)}')"
+            name_filter += f" and contains(name, '{sanitize(first_name)}')"
             email_filter = f"startswith(email, '{sanitize(first_name)}') and {email_filter}"
 
           query = f"&$filter=({name_filter}) or ({email_filter})"  
@@ -162,7 +163,10 @@ class EmployeeDataService:
       
       employee_names_res = response_from_ods.json()
       if employee_names_res and employee_names_res["value"] and len(employee_names_res["value"]) > 0:
-        return employee_names_res["value"]
+        #2069 Returning array of objects that will make use of new name format
+        employees = [ {**employee, "name": EmployeeData.format_name(employee["name"]) } for employee in employee_names_res["value"]]
+        return employees
+        #return employee_names_res["value"]
       return []
     
     @staticmethod
@@ -213,10 +217,16 @@ class EmployeeDataService:
         )
 
       employee_info = ods_response.json().get("value")
+      #2069 Returning array/single object(s) that will make use of new name format
       if employee_info and len(employee_info) > 0:
         if want_multiple:
-          return employee_info
-        return employee_info[0]
+          employees = [ {**employee, "name": EmployeeData.format_name(employee["name"]) } for employee in employee_info]
+          return employees
+          #return employee_info
+        else:
+
+          employee = {**employee_info[0], "name": EmployeeData.format_name(employee_info[0]["name"]) }
+          return employee
       else:
         raise BusinessException(
           {"message": "No user info found"}, HTTPStatus.NOT_FOUND
