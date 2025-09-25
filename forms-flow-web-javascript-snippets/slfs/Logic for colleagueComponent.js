@@ -78,7 +78,7 @@ const hooks = () => {
 
       console.log("Colleague component selected:", getComponent(`colleagueEmailAddress`));
       getComponent(`colleagueEmailAddress`).setValue(value.email);
-      getComponent(`colleagueName`).setValue(value.last_name + ", " + value.first_name);
+      getComponent(`colleagueName`).setValue(value.name);
       getComponent(`colleagueEmployeeId`).setValue(value.EMPLID);
       getComponent(`colleaguePosition`).setValue(value.position_title);
       getComponent(`colleagueMinistry`).setValue(value.Organization);

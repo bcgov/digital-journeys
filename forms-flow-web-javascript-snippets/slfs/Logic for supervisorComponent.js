@@ -1,4 +1,4 @@
-// Logic to load additional manager information
+// Logic for supervisorComponent
 
 (function() {
 
@@ -43,8 +43,10 @@
       response.then(r => {
         r.json().then(data => {
           console.log('Employee data fetched successfully:', data);
-          const { IDIR, ClassificationGroup, Organization, EMPLID, position_title, level2_division } = data;
+          const { IDIR, ClassificationGroup, Organization, EMPLID, position_title, level2_division, name } = data;
           
+          _form.getComponent('supervisorFirstName').setValue(name.split(/,/).slice(1).join(' '));
+          _form.getComponent('supervisorLastName').setValue(name.split(/,/).shift());
           _form.getComponent('supervisorIdir').setValue(IDIR);
           _form.getComponent('supervisorDivision').setValue(level2_division);
           _form.getComponent('supervisorClassification').setValue(ClassificationGroup);

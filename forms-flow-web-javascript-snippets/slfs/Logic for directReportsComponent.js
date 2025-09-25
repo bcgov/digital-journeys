@@ -95,7 +95,7 @@ const populate = async r => {
         console.log(employee)
  
         getComponent(`directReportEmailAddress`).setValue(employee.email);
-        getComponent(`directReportName`).setValue(employee.last_name + ", " + employee.first_name);
+        getComponent(`directReportName`).setValue(employee.name);
         getComponent(`directReportEmployeeId`).setValue(employee.EMPLID);
         getComponent(`directReportPosition`).setValue(employee.position_title);
         getComponent(`directReportMinistry`).setValue(employee.Organization);
@@ -154,7 +154,7 @@ const populate = async r => {
         console.log(`Direct report ${index + 1} changed:`, value);
 
         getComponent(`directReportEmailAddress`).setValue(value.email);
-        getComponent(`directReportName`).setValue(value.last_name + ", " + value.first_name);
+        getComponent(`directReportName`).setValue(value.name);
         getComponent(`directReportEmployeeId`).setValue(value.EMPLID);
         getComponent(`directReportPosition`).setValue(value.position_title);
         getComponent(`directReportMinistry`).setValue(value.Organization);
@@ -175,7 +175,7 @@ const populate = async r => {
 
 }
 
-const qs = `supervisorEmail=${data.email}&wantMultiple=1&select=first_name,last_name,email,ClassificationGroup,EMPLID,IDIR,Organization,position_title`;
+const qs = `supervisorEmail=${data.email}&wantMultiple=1&select=name,first_name,last_name,email,ClassificationGroup,EMPLID,IDIR,Organization,position_title`;
 
 console.log(`Fetching employee data with query: ${qs}`);
 
