@@ -1,12 +1,18 @@
 ####
 # Mapping of data from the ODS that is made available for use in the Form Builder
 ###
+import re
+
 class EmployeeData():
   # data: Response retrieved from the ODS
   # Spec of possible values can be found at: https://analytics-testapi.psa.gov.bc.ca/apiserver/api.rst#Datamart_Telework_employee_demo
   def __init__(self, data, noofrecords=1):
    self.displayName = " ".join(filter(None, (data.get("first_name"), data.get("last_name"))))
-   self.name = data.get("name")
+   
+   # 2069 - Using the new name returned by Endpoint and formatting as Last, First. Also removing potential suffixes
+   
+   self.name = EmployeeData.format_name(data.get("name"))
+
    self.firstName = data.get("first_name")
    self.lastName = data.get("last_name")
    self.email = data.get("email")
@@ -69,3 +75,20 @@ class EmployeeData():
    self.noofrecords = noofrecords
 
    self.userIdir = data.get("IDIR") #PB Added IDIR to /me endpoint
+
+  # 2069 - Using the new name returned by Endpoint and formatting as Last, First. Also removing potential suffixes
+  def format_name(name):
+    
+    if ":" in name:
+        name = re.sub(r'\s\w{1,}:\w{1,}', '', name)
+
+    # Format First Last to be Last, First
+    if "," not in name:
+        parts = name.split(" ")
+        if len(parts) > 1:
+            name = parts[-1] + ", "
+            parts.pop()
+            name = name + " ".join(parts)
+    
+    return name
+
