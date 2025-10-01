@@ -210,6 +210,7 @@ services:
       - REACT_APP_SNOWPLOW_COLLECTOR=${SNOWPLOW_COLLECTOR:-https://spm.apps.gov.bc.ca}
       - SKIP_PREFLIGHT_CHECK=true
       - NODE_OPTIONS=--openssl-legacy-provider
+      - REACT_APP_FORM_HIDDEN_LIST=${FORMSFLOW_FORM_HIDDEN_LIST:-""}
     volumes:
       - ".:/forms-flow"
       - "/forms-flow/node_modules"
