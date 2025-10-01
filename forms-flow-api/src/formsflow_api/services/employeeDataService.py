@@ -137,8 +137,9 @@ class EmployeeDataService:
 
           # 2069 New search in _v2 Endpoint does not work when non-alpha chars are replaced
           
-          #if search and not search.isalpha():
-          #  search = re.sub(r'[^A-Za-z]+', '_', unquote(search))
+          if search and not search.isalpha():
+            #search = re.sub(r'[^A-Za-z]+', '_', unquote(search))
+            search = re.sub(r',(\w)', ', \g<1>', unquote(search))
 
           query = f"&$search='{search}'" if search else ""
         
