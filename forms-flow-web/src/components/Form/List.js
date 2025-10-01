@@ -56,6 +56,8 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
 import { getFormattedForm, INACTIVE } from "./constants/formListConstants";
  
+import { FORM_HIDDEN_LIST } from "../../constants/formConstants";
+
 import { getFormSupportedIDPFromJSON } from "../../helper/formUtils";
 
 const List = React.memo((props) => {
@@ -481,7 +483,13 @@ const List = React.memo((props) => {
       </span>
     );
   };
-  const formData = (() => bpmForms.forms)() || [];
+  const formData = (() => isDesigner ? bpmForms.forms : bpmForms.forms.filter(
+    (form) => {
+      // DGJ-2029 Hide designated forms from Clients
+      
+      return !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
+    }
+  ))() || [];
   
   return (
     <>
