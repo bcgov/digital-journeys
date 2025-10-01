@@ -22,9 +22,9 @@ export const FORM_NAMES = {
 export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME =
   'formSupportedIdentityProviders';
 
-// #2029 Array with list of forms to hide from Clients  
+// DGJ-2029 Array with list of forms to hide from Clients  
 export const FORM_HIDDEN_LIST = (
 
-  (window._env_ && window._env_.REACT_APP_FORM_HIDDEN_LIST) ||
-  process.env.REACT_APP_FORM_HIDDEN_LIST || ""
-).split(",").map(form => FORM_NAMES[form]).filter(form => form && form != null);
+  (window._env_ && window._env_.REACT_APP_FORM_HIDDEN_LIST) || process.env.REACT_APP_FORM_HIDDEN_LIST || ""
+
+).split(",").map((form) => FORM_NAMES[form]).filter((form) => form && form != null);
