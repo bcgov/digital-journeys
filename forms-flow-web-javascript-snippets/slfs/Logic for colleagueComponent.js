@@ -1,14 +1,14 @@
 // Logic for colleagueComponent
 
-const evt = arguments[17].events;
+//const evt = arguments[17].events;
 
-if ( evt.event == "formio.render" ) {
-  return false;
-}
+//if ( evt.event == "formio.render" ) {
+  //return false;
+//}
 
-const hooks = () => {
+const hooks = (theForm) => {
 
-  const theForm = Object.values(window.Formio.forms)[0];
+  //const theForm = Object.values(window.Formio.forms)[0];
 
   const _form = {
 
@@ -34,10 +34,9 @@ const hooks = () => {
   }
   
   
-  const entries = new Array(9).fill(0);
+  const entries = new Array(10).fill(0);
 
   entries.forEach((_, index) => {
-
     const getComponent = key => {
         let idx = index;
         return _form.getComponent(`${key}`, idx);
@@ -49,30 +48,32 @@ const hooks = () => {
     if ( action == null ) return;
 
     action.events.on("formio.change", (args) => {
-      //console.log(args)
       const component = args.changed?.instance,
-        value = args.changed?.value;
-
+      value = args.changed?.value;
+      
+      //console.log(args)
       if ( component == null || value == null ) return;
-
-      //if (value == "undefined, undefined") {
-        //console.log("UNDEFINED DETECTED");
-        //console.log("Colleague component selected:", getComponent(`colleagueEmailAddress`));
-
-        //getComponent(`colleagueEmailAddress`).setValue("");
-        //getComponent(`colleagueName`).setValue("");
-        //getComponent(`colleagueEmployeeId`).setValue("");
-        //getComponent(`colleaguePosition`).setValue("");
-        //getComponent(`colleagueMinistry`).setValue("");
-        //getComponent(`colleagueClassification`).setValue("");
-        //getComponent(`colleagueIdir`).setValue("");
-  
-        // TODO
-        //getComponent(`colleagueDivision`).setValue("");
-        //return;
-      //}
-
       if ( component == null || component.path != action.path ) return;
+
+      //console.log("Value: "); 
+      //console.log(value);
+      
+    if (value && Object.keys(value).length === 0) {
+        //console.log(getComponent(`colleagueEmailAddress`));
+        getComponent(`colleagueEmailAddress`).setValue("");
+        getComponent(`colleagueName`).setValue("");
+        getComponent(`colleagueEmployeeId`).setValue("");
+        getComponent(`colleaguePosition`).setValue("");
+        getComponent(`colleagueMinistry`).setValue("");
+        getComponent(`colleagueClassification`).setValue("");
+        getComponent(`colleagueIdir`).setValue("");
+
+        //   // TODO
+        getComponent(`colleagueDivision`).setValue("");
+        return;
+      }
+
+      
       
       if ( getComponent(`colleagueEmailAddress`) == null ) return;
 
@@ -95,4 +96,23 @@ const hooks = () => {
 }
 
 
-hooks();
+const runWhenFormReady = (callback, attempts = 20) => {
+  const forms = Object.values(window.Formio.forms || {});
+  const form = forms[0];
+ 
+  if (!form) {
+    if (attempts > 0) {
+      console.log("Waiting for form to be available...");
+      setTimeout(() => runWhenFormReady(callback, attempts - 1), 200);
+    } else {
+      console.warn("Form not found after waiting.");
+    }
+    return;
+  }
+ 
+  callback(form);
+};
+ 
+runWhenFormReady((form) => {
+  hooks(form);
+});
