@@ -486,6 +486,8 @@ const List = React.memo((props) => {
   const formData = (() => isDesigner ? bpmForms.forms : bpmForms.forms.filter(
     (form) => {
       // DGJ-2029 Hide designated forms from Clients
+      console.log(FORM_HIDDEN_LIST);
+      console.log(form.title);
       
       return !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
     }
