@@ -803,20 +803,14 @@ export default React.memo(() => {
             Thank you for providing feedback
           </span>
           <div className="success-content-body">
-            <ul>
-              <li>
-                Your feedback is highly valued. These insights contribute to
-                fostering an adaptable, authentic, and resilient leadership
-                culture, supporting the vision of a future-focused, modern BC
-                Public Service
-              </li>
-              <li>
-                If you have any questions, comments or would like to reach
-                someone about the survey, contact&nbsp;
-                <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
-              </li>
-            </ul>
+            Your feedback is highly valued. These insights will help in developing strong, 
+            human-centered leadership in the BC Public Service.
+            <br />
+            If you have any questions or comments, or would like to reach
+            someone about the survey, contact your supervisor or&nbsp;
+            <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
           </div>
+
         </>
       );
     } else if (search.includes(successTypes.ERIP_SUBMISSION)) {
