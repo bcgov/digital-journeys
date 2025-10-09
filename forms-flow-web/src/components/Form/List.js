@@ -98,7 +98,8 @@ const List = React.memo((props) => {
   
   const filteredForms = useSelector((state) => { 
 
-    const forms = isDesigner ? state.bpmForms.forms : state.bpmForms.forms.filter(
+    const limit = false; // isDesigner
+    const forms = !limit ? state.bpmForms.forms : state.bpmForms.forms.filter(
       (form) => {
         
         const visible = !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
