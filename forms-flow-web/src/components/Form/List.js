@@ -114,7 +114,7 @@ const List = React.memo((props) => {
 
     return {
       forms,
-      totalForms: forms.length,
+      totalForms: state.bpmForms.totalForms,
       page: state.bpmForms.page,
       limit: state.bpmForms.limit,
       sortBy: state.bpmForms.sortBy,
