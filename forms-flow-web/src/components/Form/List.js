@@ -114,7 +114,7 @@ const List = React.memo((props) => {
 
     return {
       forms,
-      totalForms: state.bpmForms.totalCount - (state.bpmForms.totalCount - forms.length),
+      totalForms: state.bpmForms.totalCount,
       page: state.bpmForms.page,
       limit: state.bpmForms.limit,
       sortBy: state.bpmForms.sortBy,
@@ -253,7 +253,7 @@ const List = React.memo((props) => {
 
   const handleTypeChange = (type) => {
     dispatch(setBPMFormListPage(1));
-    dispatch(setBPMFormLimit(10));
+    dispatch(setBPMFormLimit(5));
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
