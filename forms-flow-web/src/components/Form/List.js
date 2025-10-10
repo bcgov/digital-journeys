@@ -94,13 +94,38 @@ const List = React.memo((props) => {
   const formType = useSelector((state) => state.bpmForms.formType);
 
 
+  // DGJ-2029 Hide designated forms from Clients. Created new filteredForms object that now contains the updated .forms, .length and other values.
+  
+  const filteredForms = useSelector((state) => { 
+
+    const limit = !isDesigner;
+    const forms = !limit ? state.bpmForms.forms : state.bpmForms.forms.filter(
+      (form) => {
+        
+        const visible = !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
+      
+        return visible;
+      }
+    );
+    
+    return {
+      forms,
+      totalForms: state.bpmForms.totalForms - (+state.bpmForms.totalForms - forms.length),
+      page: state.bpmForms.page,
+      limit: state.bpmForms.limit,
+      sortBy: state.bpmForms.sortBy,
+      sortOrder: state.bpmForms.sortOrder
+    };
+
+  });
+
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const bpmForms = useSelector((state) => state.bpmForms);
-  const pageNo = useSelector((state) => state.bpmForms.page);
-  const limit = useSelector((state) => state.bpmForms.limit);
-  const totalForms = useSelector((state) => state.bpmForms.totalForms);
-  const sortBy = useSelector((state) => state.bpmForms.sortBy);
-  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const bpmForms = filteredForms;
+  const pageNo = filteredForms.page;
+  const limit = filteredForms.limit;
+  const totalForms = filteredForms.totalForms;
+  const sortBy = filteredForms.sortBy;
+  const sortOrder = filteredForms.sortOrder;
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
  
@@ -224,7 +249,7 @@ const List = React.memo((props) => {
 
   const handleTypeChange = (type) => {
     dispatch(setBPMFormListPage(1));
-    dispatch(setBPMFormLimit(5));
+    dispatch(setBPMFormLimit(10)); // DGJ-2029 Changed default to 10 entries for API limit
     dispatch(setBpmFormType(type));
   };
   const onClear = () => {
@@ -483,15 +508,8 @@ const List = React.memo((props) => {
       </span>
     );
   };
-  const formData = (() => isDesigner ? bpmForms.forms : bpmForms.forms.filter(
-    (form) => {
-      // DGJ-2029 Hide designated forms from Clients
-      console.log(FORM_HIDDEN_LIST);
-      console.log(form.title);
-      
-      return !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
-    }
-  ))() || [];
+  // DGJ 2029 Reverted back to original in order to fix pagination. Forms are now filtered in bpmForms constant
+  const formData = bpmForms.forms || [];
   
   return (
     <>

@@ -5,7 +5,7 @@ const initialState = {
   error: "",
   forms: [],
   isActive: false,
-  limit: 5,
+  limit: 10,  // DGJ-2029 Changed default to 10 entries for API limit
   page: 1,
   totalForms: 0,
   bpmFormLoading: false,
