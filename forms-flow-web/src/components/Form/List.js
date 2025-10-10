@@ -94,42 +94,13 @@ const List = React.memo((props) => {
   const formType = useSelector((state) => state.bpmForms.formType);
 
 
-  // DGJ-2029 Hide designated forms from Clients. Created new filteredForms object that now contains the updated .forms, .length and other values.
-  
-  const filteredForms = useSelector((state) => { 
-
-    const limit = !isDesigner;
-    const forms = !limit ? state.bpmForms.forms : state.bpmForms.forms.filter(
-      (form) => {
-        
-        const visible = !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
-        console.log(FORM_HIDDEN_LIST);
-        console.log(form.title, visible);
-        
-        return visible;
-      }
-    );
-    
-    console.log("Forms: ", forms);
-
-    return {
-      forms,
-      totalForms: state.bpmForms.totalCount,
-      page: state.bpmForms.page,
-      limit: state.bpmForms.limit,
-      sortBy: state.bpmForms.sortBy,
-      sortOrder: state.bpmForms.sortOrder
-    };
-
-  });
-
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const bpmForms = filteredForms;
-  const pageNo = filteredForms.page;
-  const limit = filteredForms.limit;
-  const totalForms = filteredForms.totalForms;
-  const sortBy = filteredForms.sortBy;
-  const sortOrder = filteredForms.sortOrder;
+  const bpmForms = useSelector((state) => state.bpmForms);
+  const pageNo = useSelector((state) => state.bpmForms.page);
+  const limit = useSelector((state) => state.bpmForms.limit);
+  const totalForms = useSelector((state) => state.bpmForms.totalForms);
+  const sortBy = useSelector((state) => state.bpmForms.sortBy);
+  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums(t) : userColumns(t);
  
@@ -512,8 +483,15 @@ const List = React.memo((props) => {
       </span>
     );
   };
-  // DGJ 2029 Reverted back to original in order to fix pagination. Forms are now filtered in bpmForms constant
-  const formData = bpmForms.forms || [];
+  const formData = (() => isDesigner ? bpmForms.forms : bpmForms.forms.filter(
+    (form) => {
+      // DGJ-2029 Hide designated forms from Clients
+      console.log(FORM_HIDDEN_LIST);
+      console.log(form.title);
+      
+      return !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
+    }
+  ))() || [];
   
   return (
     <>
