@@ -93,6 +93,7 @@ const List = React.memo((props) => {
 
   const formType = useSelector((state) => state.bpmForms.formType);
 
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
 
   // DGJ-2029 Hide designated forms from Clients. Created new filteredForms object that now contains the updated .forms, .length and other values.
   
@@ -119,7 +120,6 @@ const List = React.memo((props) => {
 
   });
 
-  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const bpmForms = filteredForms;
   const pageNo = filteredForms.page;
   const limit = filteredForms.limit;
