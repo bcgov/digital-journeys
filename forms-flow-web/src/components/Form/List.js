@@ -98,7 +98,7 @@ const List = React.memo((props) => {
   
   const filteredForms = useSelector((state) => { 
 
-    const limit = false; // isDesigner
+    const limit = !isDesigner;
     const forms = !limit ? state.bpmForms.forms : state.bpmForms.forms.filter(
       (form) => {
         
