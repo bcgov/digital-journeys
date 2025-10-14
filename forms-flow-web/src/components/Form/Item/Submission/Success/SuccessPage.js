@@ -851,7 +851,7 @@ export default React.memo(() => {
                 report once the survey closes, along with a companion
                 guide to help reflect on the results.</li>
               <li>We encourage you to connect with your supervisor or
-                schedule a follow-up conversation after November 12 to
+                schedule a follow-up conversation after December 1 to
                 discuss your feedback and next steps.</li>
             </ul>
 
