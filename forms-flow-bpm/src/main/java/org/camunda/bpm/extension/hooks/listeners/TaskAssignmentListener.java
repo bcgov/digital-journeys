@@ -179,7 +179,6 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 } catch (Exception e) {
                     throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
                 }
-
             }
         }
     }
