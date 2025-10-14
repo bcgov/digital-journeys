@@ -6,7 +6,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="body">${result.body} &lt;!--Recipient: ${supervisorEmailAddress}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
-          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${supervisorEmailAddress}</camunda:inputParameter>
           <camunda:inputParameter name="sender">Corporateleadership@gov.bc.ca</camunda:inputParameter>
           <camunda:inputParameter name="senderAlias">Corporate Leadership</camunda:inputParameter>
         </camunda:inputOutput>
@@ -59,7 +59,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="body">${result.body} &lt;!--Recipients: ${colleaguesEmailAddresses}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
-          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${colleaguesEmailAddresses}</camunda:inputParameter>
           <camunda:inputParameter name="sender">Corporateleadership@gov.bc.ca</camunda:inputParameter>
           <camunda:inputParameter name="senderAlias">Corporate Leadership</camunda:inputParameter>
         </camunda:inputOutput>
@@ -81,7 +81,7 @@
         <camunda:inputOutput>
           <camunda:inputParameter name="body">${result.body} &lt;!--Recipients: ${directReportsEmailAddresses}--&gt;</camunda:inputParameter>
           <camunda:inputParameter name="subject">${result.subject}</camunda:inputParameter>
-          <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
+          <camunda:inputParameter name="recipientEmails">${directReportsEmailAddresses}</camunda:inputParameter>
           <camunda:inputParameter name="sender">Corporateleadership@gov.bc.ca</camunda:inputParameter>
           <camunda:inputParameter name="senderAlias">Corporate Leadership</camunda:inputParameter>
         </camunda:inputOutput>

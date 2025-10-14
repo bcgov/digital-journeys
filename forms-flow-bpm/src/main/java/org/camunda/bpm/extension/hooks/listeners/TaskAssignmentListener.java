@@ -150,29 +150,36 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         }
 
         if (recipients.length > 0) {
-            try {
-                Message message;
 
-                if ( emailSender != null && emailSenderAlias != null && emailSender.indexOf("@") > 0 ) {
-                    try {
+            // DGJ-2108 Send individual email to each recipient in the list
+            for ( InternetAddress part : recipients ) {
+                try {
 
-                        InternetAddress sender = new InternetAddress(emailSender, emailSenderAlias);
-                        message = createMessage(sender, recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
-                    } catch (Exception e) {
-                        logger.error("Failed to create message with sender: {}, sender alias: {}", emailSender, emailSenderAlias, e);
-                        message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                    Message message;
+                    InternetAddress[] singleRecipientList = new InternetAddress[] { part };
+                    logger.error("Sending individual email to {}", part.toString());
+
+                    if ( emailSender != null && emailSenderAlias != null && emailSender.indexOf("@") > 0 ) {
+                        try {
+
+                            InternetAddress sender = new InternetAddress(emailSender, emailSenderAlias);
+                            message = createMessage(sender, singleRecipientList, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                        } catch (Exception e) {
+                            logger.error("Failed to create message with sender: {}, sender alias: {}", emailSender, emailSenderAlias, e);
+                            message = createMessage(singleRecipientList, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                        }
+
+                    } else {
+                        message = createMessage(singleRecipientList, emailBody, emailSubject, taskId, attachments, mailService.getSession());
                     }
 
-                } else {
-                    message = createMessage(recipients, emailBody, emailSubject, taskId, attachments, mailService.getSession());
+                    SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
+
+                    invocation.proceed();
+                } catch (Exception e) {
+                    throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
                 }
 
-                SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
-
-                invocation.proceed();
-
-            } catch (Exception e) {
-                throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
             }
         }
     }
