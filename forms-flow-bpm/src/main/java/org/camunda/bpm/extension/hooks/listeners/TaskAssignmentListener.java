@@ -51,6 +51,8 @@ import java.util.stream.StreamSupport;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import static java.lang.Thread.currentThread;
 
+import java.lang.System.*;
+
 @Named("TaskAssignmentListener")
 @Scope(value = "prototype")
 public class TaskAssignmentListener extends BaseListener implements TaskListener, ExecutionListener, JavaDelegate, IMessageEvent {
@@ -152,12 +154,13 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         if (recipients.length > 0) {
 
             // DGJ-2108 Send individual email to each recipient in the list
-            for ( InternetAddress part : recipients ) {
+            //for ( InternetAddress part : recipients ) {
                 try {
 
                     Message message;
-                    InternetAddress[] singleRecipientList = new InternetAddress[] { part };
-                    logger.error("Sending individual email to {}", part.toString());
+                    //InternetAddress[] singleRecipientList = new InternetAddress[] { part };
+                    InternetAddress[] singleRecipientList = recipients;
+                    //logger.error("Sending individual email to {}", part.toString());
 
                     if ( emailSender != null && emailSenderAlias != null && emailSender.indexOf("@") > 0 ) {
                         try {
@@ -179,7 +182,7 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                 } catch (Exception e) {
                     throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
                 }
-            }
+            //}
         }
     }
 
@@ -300,10 +303,18 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
     public Message createMessage(InternetAddress sender, InternetAddress[] recipients, String body, String subject, String taskId, List<Attachment> attachments, Session session) throws Exception {
 
         Message message = new MimeMessage(session);
+
+        //DGJ-2108 Send individual email to each recipient in the list using BCC
         
+        String recipientEmailAddress = Optional.ofNullable(System.getenv("DJ_RECIPIENT_EMAILADDRESS"))
+                            .orElse("digitaljourneys@gov.bc.ca");
+
+        InternetAddress[] noreply = new InternetAddress[] { new InternetAddress(recipientEmailAddress) };
+
         message.setFrom(sender);
         Address[] addresses;
-        message.setRecipients(RecipientType.TO, recipients);
+        message.setRecipients(RecipientType.BCC, recipients);
+        message.setRecipients(RecipientType.TO, noreply);
 
         // Create a multipart message
         Multipart multipart = new MimeMultipart();
