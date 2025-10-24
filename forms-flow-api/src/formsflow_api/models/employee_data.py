@@ -60,6 +60,7 @@ class EmployeeData():
    self.officePostal = data.get("office_postal")
    self.officeStateprovince = data.get("office_stateprovince")
    self.organization = data.get("Organization")
+   self.programLevel1 = data.get("level1_program")
    self.divisionLevel2 = data.get("level2_division")
    self.supervisorName = data.get("supervisor_name")
    self.managerEmail = data.get("supervisor_email")
