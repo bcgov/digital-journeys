@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMESPACE=d89793-dev
+NAMESPACE=d89793-prod
 POD_NAME=digital-journeys-content-sanitiser
 
 DATE=$(date +%Y-%m-%d)
