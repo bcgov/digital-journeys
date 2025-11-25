@@ -74,6 +74,7 @@ class EmployeeData():
    # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
    self.jobIndicator = data.get("job_indicator")
    self.noofrecords = noofrecords
+   self.classificationGroup = data.get("ClassificationGroup") # Added ClassificationGroup to /me endpoint
 
    self.userIdir = data.get("IDIR") #PB Added IDIR to /me endpoint
 
