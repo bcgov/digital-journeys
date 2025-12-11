@@ -70,7 +70,7 @@ class EmployeeData():
    self.salAdminPlan = data.get("sal_admin_plan")
    self.phone = data.get("phone")
    # Possible values: "F" for full-time, "P" for part-time, "D" for on demand     
-   self.fullPartTime = data.get("FULL_PART_TIME")
+   self.fullPartTime = data.get("full_parrt_time")
    # Possible values:  "P" for Primary, "S" for Secondary and "N" for Not Applicable
    self.jobIndicator = data.get("job_indicator")
    self.noofrecords = noofrecords
