@@ -10,8 +10,10 @@ class EmployeeData():
    self.displayName = " ".join(filter(None, (data.get("first_name"), data.get("last_name"))))
    
    # 2069 - Using the new name returned by Endpoint and formatting as Last, First. Also removing potential suffixes
-   
-   self.name = EmployeeData.format_name(data.get("name"))
+   # 2139 - Updating .name to be lastName, firstName instead of relying on name from ODS
+
+   #self.name = EmployeeData.format_name(data.get("name"))
+   self.name = data.get("last_name")+ ", " +data.get("first_name")
 
    self.firstName = data.get("first_name")
    self.lastName = data.get("last_name")
