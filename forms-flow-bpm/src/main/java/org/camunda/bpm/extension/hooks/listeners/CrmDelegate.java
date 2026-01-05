@@ -134,7 +134,6 @@ public class CrmDelegate extends BaseListener implements JavaDelegate {
                 e.printStackTrace();
                 System.out.println("No idir user found! Exception: " + e);
             }
-            currentUserIdir = "pbothma";
             if (currentUserIdir == null) {
                 System.out.println("currentUserIdir is null: " + currentUserIdir);
                 throw new ApplicationServiceException("currentUserIdir is null");
