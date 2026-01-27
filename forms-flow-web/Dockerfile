@@ -14,7 +14,8 @@ RUN apk update && apk upgrade && \
 COPY package-lock.json /app/package-lock.json
 COPY package.json /app/package.json
 
-RUN npm install
+# TODO: fix peer dependency issues
+RUN npm install --legacy-peer-deps
 COPY . /app/
 
 COPY ./lsyncd.conf lsyncd.conf
