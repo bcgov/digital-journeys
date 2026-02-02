@@ -29,6 +29,8 @@ class EmployeeData():
    self.address2 = data.get("address2")
    self.postal = data.get("postal")
    self.city = data.get("city")
+   self.country = data.get("country")
+   self.stateprovince = data.get("stateprovince")
    self.officePhone = data.get("office_phone")
    self.empId = data.get("EMPLID")
    self.positionTitle = data.get("position_title")
