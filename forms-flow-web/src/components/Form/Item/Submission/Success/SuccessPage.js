@@ -338,8 +338,8 @@ export default React.memo(() => {
                 days of your complaint.
               </li>
               <li>
-                PSA will assess your complaint and contact you regarding the
-                process and timeline for next steps.
+                Your complaint will be assessed, and you will be contacted
+                regarding the process and timeline for next steps.
               </li>
               <li>
                 You may ask for assistance from your union representative either
@@ -803,7 +803,7 @@ export default React.memo(() => {
             Thank you for providing feedback
           </span>
           <div className="success-content-body">
-            Your feedback is highly valued. These insights will help in developing strong, 
+            Your feedback is highly valued. These insights will help in developing strong,
             human-centered leadership in the BC Public Service.
             <br />
             If you have any questions or comments, or would like to reach
@@ -857,6 +857,19 @@ export default React.memo(() => {
 
             Questions? Reach out
             to <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+          </div>
+        </>
+      );
+    } else if (search.includes(successTypes.VRIP_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for your submission.
+          </span>
+          <div className="success-content-body">
+            Your form has been received and is being processed.
+            If you have any questions, please contact your ministry leadership.
+
           </div>
         </>
       );
