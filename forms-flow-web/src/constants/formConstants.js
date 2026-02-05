@@ -12,7 +12,8 @@ export const FORM_NAMES = {
   COI: 'Conflict of Interest Disclosure',
   ERIP: 'Early Retirement Incentive Plan',
   LEADERSHIP_SURVEY: 'Senior Leadership Feedback Survey',
-  SLFS_RESPONDENT_SELECTION: 'SLFS Respondent Selection'
+  SLFS_RESPONDENT_SELECTION: 'SLFS Respondent Selection',
+  VRIP: 'Voluntary Retirement Incentive Program'
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
