@@ -12,25 +12,29 @@
   data.colleaguesEmailAddresses = constructEmailAddresses("colleagueList", "colleague");
   data.directReportsEmailAddresses = constructEmailAddresses("directReports", "directReport");
 
+  data.etc = btoa(JSON.stringify( { "email": data.email, "firstName": data.firstName, "lastName": data.lastName } ));
+
+  console.log("Etc ", data.etc);
+
   const etlForOds = () => {
     // Perform ETL operations for ODS
     console.log("Performing ETL for ODS...");
 
     const payload = {
 
-      cohort: data.cohort,
+      cohort: +data.cohort,
       submission_datetime: new Date().toISOString(),
       sl_email: data.email,
       sl_emplid:  data.empId,
       sl_name: data.lastName + "," + data.firstName,
       sl_position: data.positionTitle,
-      sl_classification: 'TODO',
+      sl_classification: data.classificationGroup,
       sl_ministry: data.organization,
-      sl_division: data.divisionLevel2,
+      sl_division: data.programLevel1,
       sl_idir: data.userIdir,
       super_emplid: data.supervisorEmployeeId,
       super_email: data.supervisorEmailAddress,
-      super_name: data.supervisorLastName+ ", " + data.supervisorFirstName,
+      super_name: ( (data.supervisorLastName || '').trim() ) + ', ' + ( (data.supervisorFirstName || '').trim() ),
       super_idir: data.supervisorIdir,
       super_position: data.supervisorPositionTitle,
       super_classification: data.supervisorClassification,

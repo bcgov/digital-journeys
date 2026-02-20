@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_1t7n45d" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <decision id="Shopping" name="Shopping">
+    <decisionTable id="DecisionTable_17tfbpy" hitPolicy="FIRST">
+      <input id="Input_1" biodi:width="360">
+        <inputExpression id="InputExpression_1" typeRef="string" expressionLanguage="feel">
+          <text>fruit</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="rhyme" typeRef="string" />
+      <output id="OutputClause_1ivu0hb" name="reason" typeRef="string" />
+      <rule id="DecisionRule_1ufq2wu">
+        <inputEntry id="UnaryTests_1mra3hz">
+          <text>starts with(fruit, "Ban")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0het01r">
+          <text>"B Bananas"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06qhqlz">
+          <text>"Cos it is yellow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1k3yduv">
+        <inputEntry id="UnaryTests_1441a6b">
+          <text>lower case(fruit) = "apple"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1f1l4kd">
+          <text>"A Apples"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1frh10r">
+          <text>"Because doctors"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1p2ts6y">
+        <inputEntry id="UnaryTests_0tfofwl">
+          <text>not("tomato")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0is3n3j">
+          <text>"Not a tomato"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1wbt0fa">
+          <text>"Is it a fruit?"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1rajkfl">
+        <inputEntry id="UnaryTests_0exi3a2">
+          <text>"tomato"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1l0ibxo">
+          <text>"A tomato"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1e70byp">
+          <text>"It is red"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Shopping">
+        <dc:Bounds height="80" width="180" x="160" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
