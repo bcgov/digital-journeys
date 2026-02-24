@@ -73,6 +73,37 @@
   <script defer src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
   <script defer src="https://unpkg.com/formsflow-formio-custom-elements/dist/customformio.js"></script>
   <script defer src="{{ url_for('static', filename='js/from_io_render.js') }}"></script>
+
+  <script>
+
+  // DGJ-1995 - Load content sanitizer script dynamically
+
+  (function () {
+
+    var src;
+    
+    if ( false /*window.location.protocol !== 'https:' || window.location.hostname == 'localhost' */ ) {
+      src = 'http://localhost:5005/script'; // Use local script for development
+    }
+    else {
+      const url = document.location.href;
+      const matches = url.match(/-(dev|test)/);
+      let environment = "prod";
+
+      if ( matches && matches[1] != null ) {
+
+        environment = matches[1];
+      }
+
+      src = `https://digital-journeys-content-sanitiser-d89793-${environment}.apps.silver.devops.gov.bc.ca/script`;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    document.head.appendChild(script);
+  })();
+
+</script>
+
   <script defer type="text/javascript">
     form_info = {{ form | tojson }}
   </script>
