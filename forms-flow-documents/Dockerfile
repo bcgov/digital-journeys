@@ -1,4 +1,4 @@
-# PB Using purpuse built Selenium image for forms-flow-documents
+# PB Using purpose built Selenium image for forms-flow-documents
 FROM selenium/standalone-chromium:136.0
 
 USER root
