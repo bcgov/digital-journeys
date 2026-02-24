@@ -1,7 +1,5 @@
-# PB Using purpose built Selenium image for forms-flow-documents
-FROM selenium/standalone-chromium:136.0
-
-USER root
+#Author: Kurian Benoy
+FROM python:slim-trixie
 
 WORKDIR /forms-flow-documents/app
 
@@ -11,9 +9,31 @@ RUN  apt-get update \
   && apt-get install -y curl \
   && apt-get install -y unzip \
   && apt-get install -y git \
-  && apt-get install lsyncd -y \
   && apt-get install wget -y \
   && rm -rf /var/lib/apt/lists/*
+
+# Install Chrome WebDriver
+RUN CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_114` && \
+    mkdir -p /opt/chromedriver-$CHROMEDRIVER_VERSION && \
+    curl -sS -o /tmp/chromedriver_linux64.zip http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
+    unzip -qq /tmp/chromedriver_linux64.zip -d /opt/chromedriver-$CHROMEDRIVER_VERSION && \
+    rm /tmp/chromedriver_linux64.zip && \
+    chmod +x /opt/chromedriver-$CHROMEDRIVER_VERSION/chromedriver && \
+    ln -fs /opt/chromedriver-$CHROMEDRIVER_VERSION/chromedriver /usr/local/bin/chromedriver
+
+# Install Google Chrome
+RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get -yqq update && \
+    CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_114` &&\
+    wget --no-verbose -O /tmp/chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROMEDRIVER_VERSION}-1_amd64.deb && \
+    apt-get install -y /tmp/chrome.deb && \
+    rm /tmp/chrome.deb && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# set display port to avoid crash
+ENV DISPLAY=:99
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
@@ -26,13 +46,6 @@ RUN : \
 ADD . /forms-flow-documents/app
 RUN pip install -e .
 
-COPY ./lsyncd.conf lsyncd.conf
-
-# PB Modified pdf.py from _utils to work with latest selenium version
-COPY ./rootfs/pdf.py /venv/lib/python3.12/site-packages/formsflow_api_utils/utils/pdf.py
-
 EXPOSE 5006
-RUN chmod u+x ./entrypoint.dev
-
-CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
-
+RUN chmod u+x ./entrypoint
+ENTRYPOINT ["/bin/sh", "entrypoint"]

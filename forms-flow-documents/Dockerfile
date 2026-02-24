@@ -1,7 +1,5 @@
-# PB Using purpose built Selenium image for forms-flow-documents
-FROM selenium/standalone-chromium:136.0
-
-USER root
+#Author: Kurian Benoy
+FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-documents/app
 
