@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.9-slim-buster
+FROM python:slim-trixie
 
 WORKDIR /forms-flow-documents/app
 
