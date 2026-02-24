@@ -413,3 +413,5 @@ const MindYourManners = {
     this.mindYourMannersComponent.setValue(JSON.stringify(m));
   }
 };
+
+window.MindYourManners = MindYourManners;
