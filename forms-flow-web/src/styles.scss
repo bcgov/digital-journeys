@@ -613,9 +613,11 @@ a.back-link {
 .tippy-content {
   color: white!important;
   background-color: black !important;
-  border: 0.5px solid !important;
   text-align: left;
   padding: 5px 10px !important;
+}
+.tippy-content:empty {
+  padding: 0 !important;
 }
 
 

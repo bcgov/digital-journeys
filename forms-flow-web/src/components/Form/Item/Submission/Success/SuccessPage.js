@@ -273,8 +273,8 @@ export default React.memo(() => {
                 within 10 days of your complaint.
               </li>
               <li>
-                LDB will assess your complaint and contact you regarding the
-                process and timeline for next steps.
+                Your complaint will be assessed, and you will be contacted regarding the process
+                and timeline for next steps.
               </li>
               <li>
                 You may ask for assistance from your union representative either
@@ -308,7 +308,7 @@ export default React.memo(() => {
                 within 10 days of your complaint.
               </li>
               <li>
-                LDB will assess your complaint and contact you regarding the
+                Your complaint will be assessed, and you will be contacted regarding the
                 process and timeline for next steps.
               </li>
               <li>
