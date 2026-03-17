@@ -803,11 +803,8 @@ export default React.memo(() => {
             Thank you for providing feedback
           </span>
           <div className="success-content-body">
-            Your feedback is highly valued. These insights will help in developing strong,
-            human-centered leadership in the BC Public Service.
-            <br />
-            If you have any questions or comments, or would like to reach
-            someone about the survey, contact your supervisor or&nbsp;
+            If you have any questions,comments or would like to reach
+            someone about the survey, contact&nbsp;
             <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
           </div>
 
