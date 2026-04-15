@@ -23,6 +23,7 @@ import TextFieldComponent from "./formComponents/TextField";
 import TextAreaComponent from "./formComponents/TextArea";
 import DGJSelectComponent from "./formComponents/SelectComponent";
 import DGJCurrencyComponent from "./formComponents/CurrencyComponent";
+import DGJRadioComponent from "./formComponents/RadioComponent";
 
 // disable react-dev-tools for this project
 if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
@@ -53,7 +54,7 @@ Components.setComponent("textfield", TextFieldComponent);
 Components.setComponent("textarea", TextAreaComponent);
 Components.setComponent("select", DGJSelectComponent);
 Components.setComponent("currency", DGJCurrencyComponent);
-
+Components.setComponent("radio", DGJRadioComponent);
 // Adding two remote select components extending original formio Select
 Components.addComponent("remoteSelect", RemoteSelect);
 Components.addComponent("ministrySelect", MinistrySelect);
