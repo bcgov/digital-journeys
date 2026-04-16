@@ -397,7 +397,7 @@ export default React.memo(() => {
           <div className="success-content-body">
             <ul>
               <li>
-                Our nurse teams will reach out to you July-August to begin
+                Our nurse teams will reach out to you August-September to begin
                 organizing your clinic
               </li>
               <li>
