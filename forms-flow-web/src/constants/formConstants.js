@@ -12,7 +12,9 @@ export const FORM_NAMES = {
   COI: 'Conflict of Interest Disclosure',
   ERIP: 'Early Retirement Incentive Plan',
   LEADERSHIP_SURVEY: 'Senior Leadership Feedback Survey',
-  SLFS_RESPONDENT_SELECTION: 'SLFS Respondent Selection'
+  SLFS_RESPONDENT_SELECTION: 'SLFS Respondent Selection',
+  VRIP: 'Voluntary Retirement Incentive Program',
+  ERIPI: 'Early Retirement Incentive Plan (by invitation only)',
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
@@ -25,6 +27,6 @@ export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME =
 // DGJ-2029 Array with list of forms to hide from Clients  
 export const FORM_HIDDEN_LIST = (
 
-  (window._env_ && window._env_.REACT_APP_FORM_HIDDEN_LIST) || process.env.REACT_APP_FORM_HIDDEN_LIST || "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY"
+  (window._env_ && window._env_.REACT_APP_FORM_HIDDEN_LIST) || process.env.REACT_APP_FORM_HIDDEN_LIST || "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY,ERIPI"
 
 ).split(",").map((form) => FORM_NAMES[form]).filter((form) => form && form != null);
