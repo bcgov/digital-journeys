@@ -40,6 +40,7 @@
           <camunda:inputParameter name="recipientEmails">${email}</camunda:inputParameter>
           <camunda:inputParameter name="sender">Corporateleadership@gov.bc.ca</camunda:inputParameter>
           <camunda:inputParameter name="senderAlias">Corporate Leadership</camunda:inputParameter>
+          <camunda:inputParameter name="attachSubmission">true</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_16u8kkz</bpmn:incoming>

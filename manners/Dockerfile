@@ -15,7 +15,15 @@ USER 1001
 EXPOSE 5005
 
 # Use exec form with shell to allow env var substitution
-ENTRYPOINT ["/bin/sh", "-c", "gunicorn app:controller --workers=${FLASK_WORKERS:-2} -b 0.0.0.0:${FLASK_PORT}"]
+ENTRYPOINT ["/bin/sh", "-c", "gunicorn app:controller \
+--workers=${FLASK_WORKERS:-2} \
+-b 0.0.0.0:${FLASK_PORT} \
+--worker-tmp-dir /tmp \
+--pid /tmp/gunicorn.pid \
+--access-logfile /tmp/access.log \
+--error-logfile /tmp/error.log"]
+
+
 #ENTRYPOINT ["python3", "app.py"]
 
 #oc new-build --name=digital-journeys-content-sanitiser --binary --strategy=docker

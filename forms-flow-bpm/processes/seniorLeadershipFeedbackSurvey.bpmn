@@ -225,7 +225,7 @@ Corporate Learning Branch, PSA
       <bpmn:outgoing>Flow_1hlteb1</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1rgsxtt" sourceRef="Gateway_0you692" targetRef="Activity_16bc83c">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${relation == 'iAmTheSeniorLeaderDoingASelfAssessment'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${relation == 'senior leader'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ix2blb" sourceRef="Gateway_0you692" targetRef="Activity_049b3in">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${relation == 'supervisor'}</bpmn:conditionExpression>

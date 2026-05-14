@@ -21,7 +21,7 @@
 
     const payload = {
 
-      cohort: data.cohort,
+      cohort: +data.cohort,
       comps: [
         {
           index: 1,
@@ -197,7 +197,14 @@
     };
 
     data.bcomps = payload;
+    const relations = {
+      "directReport": "direct report",
+      "supervisor": "supervisor",
+      "colleague": "colleague",
+      "iAmTheSeniorLeaderDoingASelfAssessment": "senior leader"
+    };
 
+    data.sl_relationX = relations[data.sl_relation];
   };
 
   

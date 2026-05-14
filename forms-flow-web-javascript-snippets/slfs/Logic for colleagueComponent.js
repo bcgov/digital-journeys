@@ -35,15 +35,43 @@ const hooks = (theForm) => {
   
   
   const entries = new Array(10).fill(0);
+  const dataGrid = document.querySelector("tbody[data-key='datagrid-colleagueList']");
+  //console.log(dataGrid)
 
   entries.forEach((_, index) => {
+
+    if (dataGrid != null) {
+      let tr = dataGrid.querySelector("tr:nth-child(" +(index+1)+ ")");
+      if (tr != null) {
+        if ( !tr.classList.contains("colleague-populated") ) {
+
+          tr.classList.add("hidden-in-print") 
+        }
+      }
+    }
     const getComponent = key => {
-        let idx = index;
-        return _form.getComponent(`${key}`, idx);
-      };
+      let idx = index;
+      return _form.getComponent(`${key}`, idx);
+    };
 
+    
+    if (dataGrid != null) {
+      let tr = dataGrid.querySelector("tr:nth-child(" +(index+1)+ ")");
+      if (tr != null) {
+        let field = tr.querySelector("input[name='data[colleagueList][" +index+ "][colleagueEmailAddress]']")
+        if (field != null && field.value.indexOf("@") > 0) {
+
+          tr.classList.remove("hidden-in-print") ;
+          tr.classList.add("colleague-populated") ;
+          let select = tr.querySelector(".formio-component-colleagueRemoteSelect");
+          if (select != null) {
+            select.classList.add("hidden-in-print");
+          }
+        }
+      }
+    }
+      
     if ( getComponent(`colleagueEmailAddress`) == null ) return;
-
     const action = getComponent(`colleagueRemoteSelect`);
     if ( action == null ) return;
 
@@ -77,6 +105,14 @@ const hooks = (theForm) => {
       
       if ( getComponent(`colleagueEmailAddress`) == null ) return;
 
+      if (dataGrid != null) {
+        let tr = dataGrid.querySelector("tr:nth-child(" +(index+1)+ ")");
+        if (tr != null) {
+          tr.classList.remove("hidden-in-print") 
+          tr.classList.add("colleague-populated") 
+        }
+      }
+
       console.log("Colleague component selected:", getComponent(`colleagueEmailAddress`));
       getComponent(`colleagueEmailAddress`).setValue(value.email);
       getComponent(`colleagueName`).setValue(value.name);
@@ -87,7 +123,7 @@ const hooks = (theForm) => {
       getComponent(`colleagueIdir`).setValue(value.IDIR);
 
       // TODO
-      getComponent(`colleagueDivision`).setValue(value.division);
+      getComponent(`colleagueDivision`).setValue(value.level1_program);
       
     });
 

@@ -3,7 +3,7 @@
 
 # Define variables
 BUILD_NAME="digital-journeys-content-sanitiser"
-ENVIRONMENT="dev"
+ENVIRONMENT="test"
 NAMESPACE="d89793-${ENVIRONMENT}"
 TEMP_DIR=$(mktemp -d)
 

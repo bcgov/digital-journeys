@@ -31,12 +31,16 @@ const _form = {
 if ( evt.event == "formio.render" ) {
   //console.log("We have a render in directReportsComponent");
 
+  
   entries.forEach((_, index) => {
-
+    
+    
     const getComponent = key => {
       let idx = index;
       return _form.getComponent(`${key}`, idx);
     };
+    
+    
 
     if ( getComponent(`directReportEmailAddress`) == null ) return;
 
@@ -103,7 +107,7 @@ const populate = async r => {
         getComponent(`directReportIdir`).setValue(employee.IDIR);
 
         // TODO
-        getComponent(`directReportDivision`).setValue(employee.division);
+        getComponent(`directReportDivision`).setValue(employee.level1_program);
 
         if ( node != null ) {
           node.style.display = "";
@@ -162,7 +166,7 @@ const populate = async r => {
         getComponent(`directReportIdir`).setValue(value.IDIR);
 
         // TODO
-        getComponent(`directReportDivision`).setValue(value.division);
+        getComponent(`directReportDivision`).setValue(value.level1_program);
 
 
         getComponent(`selectOneOfTheFollowingOptions`).setValue("acceptThisDirectReport");
@@ -205,5 +209,52 @@ fetch(`${apiUrl}/employee-data/info?${qs}`, {
   };
 
   check();
+});
+
+
+function hideFromPrint() {
+
+  const dataGrid = document.querySelector("tbody[data-key='datagrid-directReports']");
+    
+  if (dataGrid != null) {
+    for (let index=0; index<20; index++) {
+      
+      let tr = dataGrid.querySelector("tr:nth-child(" +(index+1)+ ")");
+      if (tr != null) {
+        tr.classList.add("hidden-in-print");
+        
+        let field = tr.querySelector("input[name='data[directReports][" +index+ "][directReportEmailAddress]']")
+        if (field != null && field.value.indexOf("@") > 0) {
+
+          tr.classList.remove("hidden-in-print") ;
+          tr.classList.add("dr-populated") ;
+          let select = tr.querySelector(".formio-component-directReportRemoteSelect");
+          if (select != null) {
+            select.classList.add("hidden-in-print");
+          }
+        }
+      }
+    }
+  }
+}
+
+const runWhenFormReady = (callback, attempts = 20) => {
+  const dataGrid = document.querySelector("tbody[data-key='datagrid-directReports']");
+ 
+  if (!dataGrid) {
+    if (attempts > 0) {
+      console.log("Waiting for dataGrid to be available...");
+      setTimeout(() => runWhenFormReady(callback, attempts - 1), 200);
+    } else {
+      console.warn("dataGrid not found after waiting.");
+    }
+    return;
+  }
+ 
+  callback();
+};
+ 
+runWhenFormReady(() => {
+  hideFromPrint();
 });
 

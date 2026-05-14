@@ -1,15 +1,17 @@
-# PB Updated to Python 3.12
-FROM python:3.12-bookworm
+FROM python:3.12-bullseye
 
 WORKDIR /forms-flow-api/app
 
-# install curl, gnupg2 and unzip
-# PB Added allow-authenticated to apt-get update
-# PB Added apt-get install debian-archive-keyring
-RUN apt-get update --allow-unauthenticated && \
-    apt-get install -y debian-archive-keyring && \
-    apt-get update && \
-    apt-get install -y git lsyncd -y
+# Fix APT signature issues on Bookworm
+RUN rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+         ca-certificates gnupg debian-archive-keyring \
+    && apt-get install -y --no-install-recommends \
+        git 
+
+RUN apt-get install -y lsyncd python3-setuptools 
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
