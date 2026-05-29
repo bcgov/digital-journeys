@@ -100,11 +100,12 @@ const List = React.memo((props) => {
   const filteredForms = useSelector((state) => { 
 
     console.log(FORM_HIDDEN_LIST);
-
+    
     const limit = !isDesigner;
     const forms = !limit ? state.bpmForms.forms : state.bpmForms.forms.filter(
       (form) => {
         
+        console.log("Form ", form.title);
         const visible = !( FORM_HIDDEN_LIST || [] ).includes(form.title); 
       
         return visible;
