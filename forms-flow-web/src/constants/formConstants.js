@@ -14,7 +14,7 @@ export const FORM_NAMES = {
   LEADERSHIP_SURVEY: 'Senior Leadership Feedback Survey',
   SLFS_RESPONDENT_SELECTION: 'SLFS Respondent Selection',
   VRIP: 'Voluntary Retirement Incentive Program',
-  ERIPI: 'Early Retirement Incentive Plan (by invitation only)',
+  ERIPI: 'Early Retirement Incentive Plan for LTD (by invitation only)',
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
