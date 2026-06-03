@@ -178,9 +178,9 @@ public class FormSubmissionService {
             fieldValue = value.toString();
         }
 
-        if(Objects.equals(fieldValue, "")) {
-            fieldValue = null;
-        }
+        //if(Objects.equals(fieldValue, "")) {
+        //    fieldValue = null;
+        //}
 
         return fieldValue;
     }
