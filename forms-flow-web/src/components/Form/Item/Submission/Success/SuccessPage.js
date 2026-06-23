@@ -843,12 +843,13 @@ export default React.memo(() => {
                 you identified inviting them to complete the Senior Leader Feedback Survey.</li>
               <li>You will receive a separate email inviting you to complete the
                 survey as your self-assessment.</li>
-              <li>Everyone must complete the survey before it closes on November 12, 5 PM.</li>
+              <li>Everyone must complete the survey before it closes on 
+                Friday, August 7, 2026, 5 pm.</li>
               <li>As a reminder, you will receive a personalized feedback
                 report once the survey closes, along with a companion
                 guide to help reflect on the results.</li>
               <li>We encourage you to connect with your supervisor or
-                schedule a follow-up conversation after December 1 to
+                schedule a follow-up conversation after October 1 to
                 discuss your feedback and next steps.</li>
             </ul>
 
