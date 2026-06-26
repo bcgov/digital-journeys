@@ -36,8 +36,8 @@ objects:
       selector:
         app: ${NAME}
 
-  - apiVersion: v1
-    kind: DeploymentConfig
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
       annotations:
       labels:
@@ -47,17 +47,13 @@ objects:
       replicas: 1
       revisionHistoryLimit: 10
       selector:
-        app: ${NAME}
+        matchLabels:
+          app: ${NAME}
       strategy:
-        activeDeadlineSeconds: 21600
-        resources: {}
-        rollingParams:
-          intervalSeconds: 1
+        type: RollingUpdate
+        rollingUpdate:
           maxSurge: 25%
           maxUnavailable: 25%
-          timeoutSeconds: 600
-          updatePeriodSeconds: 1
-        type: Rolling
       template:
         metadata:
           labels:
@@ -314,18 +310,6 @@ objects:
                     path: mail-config.properties
                 name: ${NAME}-mail-config
               name: ${NAME}-mail-config
-      test: false
-      triggers:
-      - type: ConfigChange
-      - imageChangeParams:
-          automatic: true
-          containerNames:
-          - ${NAME}
-          from:
-            kind: ImageStreamTag
-            namespace: "${TOOLS_WORKSPACE}"
-            name: "${NAME}:${IMAGE_TAG}"
-        type: ImageChange
 
 parameters:
   - name: NAME
