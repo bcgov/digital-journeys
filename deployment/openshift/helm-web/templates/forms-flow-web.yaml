@@ -3,8 +3,8 @@ kind: Template
 metadata:
   name: helm-forms-flow-web
 objects:
-- apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
+- apiVersion: apps/v1
+  kind: Deployment
   metadata:
     labels:
       app: ${APP_NAME}
@@ -12,9 +12,9 @@ objects:
   spec:
     replicas: 1
     selector:
-      app: ${APP_NAME}
+      matchLabels:
+        app: ${APP_NAME}
     strategy:
-      activeDeadlineSeconds: 21600
       resources:
         limits:
           cpu: ${CPU_LIMIT}
@@ -23,12 +23,9 @@ objects:
           cpu: ${CPU_REQUEST}
           memory: ${MEMORY_REQUEST}
       rollingParams:
-        intervalSeconds: 1
         maxSurge: 25%
         maxUnavailable: 25%
-        timeoutSeconds: 600
-        updatePeriodSeconds: 1
-      type: Recreate
+      type: RollingUpdate
     template:
       metadata:
         creationTimestamp: null
@@ -60,18 +57,6 @@ objects:
           configMap:
             defaultMode: 420
             name: ${NAME}-config
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}
-        from:
-          kind: ImageStreamTag
-          name: ${NAME}:${TAG_NAME}
-          namespace: ${IMAGE_NAMESPACE}
-      type: ImageChange
 - apiVersion: v1
   kind: Service
   metadata:
