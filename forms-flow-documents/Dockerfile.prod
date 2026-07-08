@@ -59,9 +59,7 @@ RUN : \
 ADD . /forms-flow-documents/app
 RUN pip install -e .
 
-COPY ./lsyncd.conf lsyncd.conf
-
 EXPOSE 5006
 RUN chmod u+x ./entrypoint
 
-CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
+ENTRYPOINT ["/bin/sh", "entrypoint"]
