@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - production
+          - dev
+          - test
+          - production
   push:
     branches: [main]
     paths:
-    - "forms-flow-web/**"
-    - "deployment/openshift/web_bc.yaml"
-    - "deployment/openshift/web_dc.yaml"
-    - ".github/workflows/forms-flow-web-cd.yml"
-    - "deployment/openshift/helm-web/**"
+      - "forms-flow-web/**"
+      - "deployment/openshift/web_bc.yaml"
+      - "deployment/openshift/web_dc.yaml"
+      - ".github/workflows/forms-flow-web-cd.yml"
+      - "deployment/openshift/helm-web/**"
 
 defaults:
   run:
@@ -61,7 +61,7 @@ jobs:
           echo docker file name: $DOCKER_FILE_NAME
           echo namespace: $NAMESPACE
           echo APP_URL: $APP_URL
-  
+
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
@@ -72,12 +72,20 @@ jobs:
       - name: Install OpenShift CLI (oc)
         uses: redhat-actions/oc-installer@v1
         with:
-          oc_version: '4.6'
+          oc_version: "4.6"
 
       - name: Log in to OpenShift
         run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
-
+          for i in {1..3}; do
+            if oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}; then
+              echo "Login successful"
+              break
+            fi
+            if [ $i -lt 3 ]; then
+              echo "Login attempt $i failed, retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -93,7 +101,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     needs:
       - apply-openshift-buildConfigs
 
@@ -158,12 +166,20 @@ jobs:
       - name: Install OpenShift CLI (oc)
         uses: redhat-actions/oc-installer@v1
         with:
-          oc_version: '4.6'
+          oc_version: "4.6"
 
       - name: Log in to OpenShift
         run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
-
+          for i in {1..3}; do
+            if oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}; then
+              echo "Login successful"
+              break
+            fi
+            if [ $i -lt 3 ]; then
+              echo "Login attempt $i failed, retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
       - name: apply deploymentConfig
         working-directory: ./deployment/openshift
         run: |
@@ -192,7 +208,7 @@ jobs:
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
-      
+
           # oc -n ${NAMESPACE} process -f web_dc.yaml \
           #       -p NAME=${APP_NAME} \
           #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \

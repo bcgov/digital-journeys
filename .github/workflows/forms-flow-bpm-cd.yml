@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - production
+          - dev
+          - test
+          - production
   push:
     branches: [main]
     paths:
@@ -66,7 +66,7 @@ jobs:
           echo docker file name: $DOCKER_FILE_NAME
           echo namespace: $NAMESPACE
           echo CAMUNDA_URL: $CAMUNDA_URL
-  
+
   ##################################### Build and push Image #####################################
   # Apply buildConfigs on Openshift
   apply-openshift-buildConfigs:
@@ -81,8 +81,16 @@ jobs:
           sudo mv oc /usr/local/bin/
       - name: Log in to OpenShift
         run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
-
+          for i in {1..3}; do
+            if oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}; then
+              echo "Login successful"
+              break
+            fi
+            if [ $i -lt 3 ]; then
+              echo "Login attempt $i failed, retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -90,7 +98,7 @@ jobs:
         working-directory: ./deployment/openshift
         run: |
           oc -n ${BUILD_NAMESPACE} process -f bpm_bc.yaml | oc -n ${BUILD_NAMESPACE} apply -f -
-  
+
   build-and-push-image:
     name: Build the image and push it to the registry
     if: github.repository == 'bcgov/digital-journeys'
@@ -98,29 +106,29 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     needs:
       - apply-openshift-buildConfigs
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
         with:
           install: true
-      
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.OPENSHIFT_IMAGE_REGISTRY_URL }}/${{ env.BUILD_NAMESPACE }}/${{ env.APP_NAME }}
           tags: ${{ env.ENVIRONMENT }}
-      
+
       - run: echo ${{ steps.meta.outputs.tags }}
-      
+
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -135,7 +143,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ env.APP_NAME }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ env.APP_NAME }}
-      
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
@@ -144,22 +152,22 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
-  
+
   # ##################################### Deployment #####################################
   apply-deploymentConfigs:
     name: Apply deploymentConfigs
     if: github.repository == 'bcgov/digital-journeys'
     environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    
+
     needs:
       - apply-openshift-buildConfigs
       - build-and-push-image
-    
+
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v3
-        
+
       - name: Install OpenShift CLI
         run: |
           curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o oc.tar.gz
@@ -168,8 +176,16 @@ jobs:
 
       - name: Log in to OpenShift
         run: |
-          oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}
-  
+          for i in {1..3}; do
+            if oc login --token=${OPENSHIFT_TOKEN} --server=${OPENSHIFT_SERVER_URL}; then
+              echo "Login successful"
+              break
+            fi
+            if [ $i -lt 3 ]; then
+              echo "Login attempt $i failed, retrying in 10 seconds..."
+              sleep 10
+            fi
+          done
       - name: apply deploymentConfig
         working-directory: ./deployment/openshift
         run: |
@@ -189,7 +205,7 @@ jobs:
                       #  --set WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                       #  --set WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" \
                        
-          
+
           oc -n ${NAMESPACE} process helm-forms-flow-bpm \
                 -p TOOLS_WORKSPACE=${BUILD_NAMESPACE} \
                 -p SMTP_SERVER=${SMTP_SERVER} \
@@ -200,12 +216,12 @@ jobs:
                 -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                 -p WEBSOCKET_SECURITY_ORIGIN="${WEBSOCKET_SECURITY_ORIGIN}" | \
           oc -n ${NAMESPACE} apply -f -
-      
+
       - name: verify deploymentConfig
         run: |
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP_NAME} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
