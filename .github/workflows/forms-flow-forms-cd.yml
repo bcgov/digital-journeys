@@ -4,14 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - production
+          - dev
+          - test
+          - production
   push:
     branches: [main]
     paths:
@@ -72,7 +72,7 @@ jobs:
       - name: Install OpenShift CLI (oc)
         uses: redhat-actions/oc-installer@v1
         with:
-          oc_version: '4.6'
+          oc_version: "4.6"
 
       - name: Log in to OpenShift
         run: |
@@ -161,7 +161,7 @@ jobs:
       - name: Install OpenShift CLI (oc)
         uses: redhat-actions/oc-installer@v1
         with:
-          oc_version: '4.6'
+          oc_version: "4.6"
 
       - name: Log in to OpenShift
         run: |
@@ -182,7 +182,7 @@ jobs:
                       #  --set CPU_REQUEST=100m \
                       #  --set CPU_LIMIT=200m \
                       #  --set MEMORY_LIMIT=2Gi \
-        
+
 
           oc -n ${NAMESPACE} process helm-forms-flow-forms \
                 -p NAME=${APP_NAME} \
@@ -199,7 +199,7 @@ jobs:
         run: |
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP_NAME} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP_NAME} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
