@@ -54,7 +54,7 @@ ENV PATH=/venv/bin:$PATH
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \
-    && pip install --upgrade setuptools \
+    && pip install --upgrade "setuptools<82" \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-documents/app
