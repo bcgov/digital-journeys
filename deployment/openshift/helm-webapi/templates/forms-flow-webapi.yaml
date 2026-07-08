@@ -28,8 +28,7 @@ objects:
       protocol: TCP
       targetPort: 5000
     selector:
-      matchLabels:
-        app: ${NAME}
+      app: ${NAME}
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
@@ -41,7 +40,8 @@ objects:
   spec:
     replicas: 1
     selector:
-      app: ${NAME}
+      matchLabels:
+        app: ${NAME}
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
