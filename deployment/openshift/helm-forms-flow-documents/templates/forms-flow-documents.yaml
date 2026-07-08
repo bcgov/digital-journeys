@@ -30,7 +30,7 @@ objects:
     selector:
       app: ${NAME}
 - apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
+  kind: Deployment
   metadata:
     annotations: null
     creationTimestamp: null
@@ -40,17 +40,15 @@ objects:
   spec:
     replicas: 1
     selector:
-      app: ${NAME}
+      matchLabels:
+        app: ${NAME}
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
       rollingParams:
-        intervalSeconds: 1
         maxSurge: 25%
         maxUnavailable: 25%
-        timeoutSeconds: 700
-        updatePeriodSeconds: 1
-      type: Rolling
+      type: RollingUpdate
     template:
       metadata:
         creationTimestamp: null
@@ -149,18 +147,6 @@ objects:
           stdin: true
           tty: true
         restartPolicy: Always
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}
-        from:
-          kind: ImageStreamTag
-          name: ${NAME}:${TAG_NAME}
-          namespace: ${IMAGE_NAMESPACE}
-      type: ImageChange
   status: {}
 parameters:
 - description: The name assigned to all of the OpenShift resources associated to the
