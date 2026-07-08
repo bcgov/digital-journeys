@@ -9,7 +9,6 @@ RUN  apt-get update \
     && apt-get install -y curl \
     && apt-get install -y unzip \
     && apt-get install -y git \
-    && apt-get install lsyncd -y \
     && apt-get install wget -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -54,6 +53,7 @@ ENV PATH=/venv/bin:$PATH
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \
+    && pip install --upgrade setuptools \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-documents/app
@@ -64,5 +64,4 @@ COPY ./lsyncd.conf lsyncd.conf
 EXPOSE 5006
 RUN chmod u+x ./entrypoint.dev
 
-CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
-
+CMD ["/bin/sh", "-c", "/bin/sh entrypoint"]
