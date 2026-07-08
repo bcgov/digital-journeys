@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.12-bookworm
+FROM python:3.10-bookworm
 
 WORKDIR /forms-flow-documents/app
 
