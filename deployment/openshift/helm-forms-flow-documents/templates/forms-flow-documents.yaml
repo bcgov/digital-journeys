@@ -29,7 +29,7 @@ objects:
       targetPort: 5006
     selector:
       app: ${NAME}
-- apiVersion: apps.openshift.io/v1
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     annotations: null
