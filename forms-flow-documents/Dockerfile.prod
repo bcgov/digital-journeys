@@ -57,14 +57,11 @@ RUN : \
     && pip install --upgrade "setuptools<82" \
     && pip install -r requirements.txt 
 
-RUN pip show setuptools
-RUN pip show blinker
-RUN pip show selenium-wire
-RUN python -c "import pkg_resources; print('pkg_resources OK')"
-RUN python -c "import blinker._saferef; print('blinker saferef OK')"
-
 ADD . /forms-flow-documents/app
 RUN pip install -e .
+
+# Force install blinker version 1.7.0 to avoid missing blinker._saferef error
+RUN pip install --force-reinstall --no-deps blinker==1.7.0
 
 
 EXPOSE 5006
