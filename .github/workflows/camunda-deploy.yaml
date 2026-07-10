@@ -1,13 +1,13 @@
 # Deploy Camunda On Openshift
 # Builds and Deploys merged PR's to persistent pods/services/routes/etc in the OpenShift Dev environment.
 name: Deploy Camunda to Openshift
-  
+
 on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     # Issue 821, change it to master so it won't take main branch changes
-    branches: [ master ]
+    branches: [master]
     paths:
       - "forms-flow-bpm/**"
       - "deployment/openshift/camunda_bc.yaml"
@@ -15,14 +15,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - production
+          - dev
+          - test
+          - production
 
 jobs:
   #Print variables for logging and debugging purposes
@@ -36,7 +36,7 @@ jobs:
           echo Git Build ID: ${{ github.event.number }}
           echo Git Pull Request Ref: ${{ github.event.pull_request.head.sha }}
           echo OC CLI Version: $(oc version)
-  
+
   # #Build the app
 
   build:
@@ -71,7 +71,6 @@ jobs:
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
-
       # Build the app images
       - name: Build Camunda image
         working-directory: "./deployment/openshift"
@@ -86,9 +85,7 @@ jobs:
                 -p SOURCE_CONTEXT_DIR="/forms-flow-bpm" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
 
-
-
-   # Deploy Camunda image in Dev
+    # Deploy Camunda image in Dev
   deployDev:
     if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     name: Deploy Camunda to Dev environment
@@ -113,9 +110,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -146,7 +143,7 @@ jobs:
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -156,10 +153,9 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
-  
+          echo "${APP} is exposed at 'https://'${ROUTE}"
 
-   # Deploy Camunda in Test
+    # Deploy Camunda in Test
   deployTest:
     name: Deploy Camunda to Test environment
     if: ${{ github.event.inputs.environment == 'test' }}
@@ -184,9 +180,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -213,10 +209,10 @@ jobs:
                 -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                 -p WEBSOCKET_SECURITY_ORIGIN="https://digital-journeys-camunda-test.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow-test.apps.silver.devops.gov.bc.ca" | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          #oc rollout latest deployment/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -226,11 +222,9 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
+          echo "${APP} is exposed at 'https://'${ROUTE}"
 
-
-
-   # Deploy Camunda in Production
+    # Deploy Camunda in Production
   deployProd:
     name: Deploy Camunda to Production environment
     if: ${{ github.event.inputs.environment == 'production' }}
@@ -254,9 +248,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -283,10 +277,10 @@ jobs:
                 -p WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY} \
                 -p WEBSOCKET_SECURITY_ORIGIN="https://digital-journeys-camunda.apps.silver.devops.gov.bc.ca,digital-journeys-forms-flow.apps.silver.devops.gov.bc.ca" | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          #oc rollout latest deployment/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -296,5 +290,4 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
-
+          echo "${APP} is exposed at 'https://'${ROUTE}"

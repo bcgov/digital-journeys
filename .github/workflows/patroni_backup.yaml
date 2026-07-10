@@ -4,19 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - prod
+          - dev
+          - test
+          - prod
 
 jobs:
   # build the backup patroni container
   build:
-    name: 'Build Patroni Backup APP'
+    name: "Build Patroni Backup APP"
     runs-on: ubuntu-latest
     env:
       BUILD_ID: ${{ github.event.number }}
@@ -29,10 +29,10 @@ jobs:
         run: |
           echo BUILD ID: $BUILD_ID
           echo BUILD NAMESPACE: $BUILD_NAMESPACE
-      
+
       - name: Checkout Target Branch
         uses: actions/checkout@v1
-      
+
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
@@ -42,7 +42,7 @@ jobs:
 
       # Build backup container
       - name: Build backup image
-        working-directory: './deployment/openshift/Databases'
+        working-directory: "./deployment/openshift/Databases"
         run: |
           oc -n ${BUILD_NAMESPACE} process -f prebuilt-db-backup-build.yaml \
           -p NAME=${NAME} \
@@ -65,7 +65,7 @@ jobs:
     steps:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
-      
+
       - name: Print env
         run: |
           echo Git Build ID: $BUILD_ID
@@ -92,11 +92,11 @@ jobs:
           -p DB_NAME=${DB_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
-          oc rollout latest dc/${NAME} -n ${NAMESPACE}
+          oc rollout latest deployment/${NAME} -n ${NAMESPACE}
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${NAME} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${NAME} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))

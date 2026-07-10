@@ -1,24 +1,24 @@
 # Static Deploy On Openshift
 # Builds and Deploys merged PR's to persistent pods/services/routes/etc in the OpenShift Dev environment.
 name: Deploy web app/api to Openshift
-  
+
 on:
   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
   push:
     # Edit to the branch(es) you want to build and deploy on each push.
     # Issue 723, change it to master so it won't take main branch changes
-    branches: [ master ] 
+    branches: [master]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment'
+        description: "Environment"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - test
-        - production
+          - dev
+          - test
+          - production
 
 jobs:
   #Print variables for logging and debugging purposes
@@ -32,7 +32,7 @@ jobs:
           echo Git Build ID: ${{ github.event.number }}
           echo Git Pull Request Ref: ${{ github.event.pull_request.head.sha }}
           echo OC CLI Version: $(oc version)
-  
+
   # #Build the app
 
   build:
@@ -69,7 +69,6 @@ jobs:
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
 
-
       # Build the app images
       - name: Build App images
         working-directory: "./deployment/openshift"
@@ -84,8 +83,7 @@ jobs:
                 -p SOURCE_CONTEXT_DIR="/forms-flow-web" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${APP} --no-cache --wait
 
-
-       # Build the api images
+        # Build the api images
       - name: Build API images
         working-directory: "./deployment/openshift"
         run: |
@@ -99,9 +97,7 @@ jobs:
                 -p SOURCE_CONTEXT_DIR="/forms-flow-api" | oc -n ${BUILD_NAMESPACE} apply -f -
           oc -n ${BUILD_NAMESPACE} start-build bc/${API} --no-cache --wait
 
-
-
-   # Deploy App images in Dev
+    # Deploy App images in Dev
   deployDev:
     if: ${{!github.event.inputs.environment || github.event.inputs.environment == 'dev'}}
     name: Deploy APP to Dev environment
@@ -127,9 +123,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -152,7 +148,7 @@ jobs:
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -162,8 +158,8 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
-  
+          echo "${APP} is exposed at 'https://'${ROUTE}"
+
       - name: Deploy API
         run: |
           test -n "${NAMESPACE}"
@@ -182,10 +178,10 @@ jobs:
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
+          #oc rollout latest deployment/"${API}" -n ${NAMESPACE} 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${API} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -195,9 +191,9 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${API}"
           export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
-          echo "${API} is exposed at 'https://'${ROUTE}" 
+          echo "${API} is exposed at 'https://'${ROUTE}"
 
-   # Deploy App and Api images in Test
+    # Deploy App and Api images in Test
   deployTest:
     name: Deploy APP to Test environment
     if: ${{ github.event.inputs.environment == 'test' }}
@@ -223,9 +219,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -244,10 +240,10 @@ jobs:
                 -p MEMORY_LIMIT=2Gi \
                 -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          #oc rollout latest deployment/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -257,7 +253,7 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
+          echo "${APP} is exposed at 'https://'${ROUTE}"
 
       - name: Deploy API
         run: |
@@ -277,10 +273,10 @@ jobs:
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
+          #oc rollout latest deployment/"${API}" -n ${NAMESPACE} 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${API} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -290,10 +286,9 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${API}"
           export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
-          echo "${API} is exposed at 'https://'${ROUTE}" 
+          echo "${API} is exposed at 'https://'${ROUTE}"
 
-
-   # Deploy App and Api images in Production
+    # Deploy App and Api images in Production
   deployProd:
     name: Deploy APP to Production environment
     if: ${{ github.event.inputs.environment == 'production' }}
@@ -319,9 +314,9 @@ jobs:
       - name: Checkout Target Branch
         uses: actions/checkout@v1
 
-       # Log in to OpenShift.
-       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
-       # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
+        # Log in to OpenShift.
+        # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
+        # PR's must originate from a branch off the original repo or else all openshift `oc` commands will fail.
       - name: Log in to OpenShift
         run: |
           oc login --token=${{ secrets.SA_TOKEN }} --server=https://api.silver.devops.gov.bc.ca:6443
@@ -340,10 +335,10 @@ jobs:
                 -p MEMORY_LIMIT=2Gi \
                 -p FFAWEB_URL="${{secrets.FFAWEB_URL}}" | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${APP}" -n ${NAMESPACE}
+          #oc rollout latest deployment/"${APP}" -n ${NAMESPACE}
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${APP} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${APP} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -353,7 +348,7 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${APP}"
           export ROUTE="$(oc get route ${APP} -o jsonpath='{.spec.host}')"
-          echo "${APP} is exposed at 'https://'${ROUTE}" 
+          echo "${APP} is exposed at 'https://'${ROUTE}"
 
       - name: Deploy API
         run: |
@@ -373,10 +368,10 @@ jobs:
                 -p MEMORY_REQUEST=100Mi \
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
-          #oc rollout latest dc/"${API}" -n ${NAMESPACE} 
+          #oc rollout latest deployment/"${API}" -n ${NAMESPACE} 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
-          ROLLOUT_STATUS_CMD="oc rollout status dc/${API} -n ${NAMESPACE}"
+          ROLLOUT_STATUS_CMD="oc rollout status deployment/${API} -n ${NAMESPACE}"
           until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
             $ROLLOUT_STATUS_CMD
             ATTEMPTS=$((attempts + 1))
@@ -386,7 +381,7 @@ jobs:
           echo "Listing pods.."
           oc get pods|grep "${API}"
           export ROUTE="$(oc get route ${API} -o jsonpath='{.spec.host}')"
-          echo "${API} is exposed at 'https://'${ROUTE}" 
+          echo "${API} is exposed at 'https://'${ROUTE}"
 
   deploy-docs:
     runs-on: ubuntu-latest
@@ -395,7 +390,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
-      - run: pip install mkdocs-material 
+      - run: pip install mkdocs-material
       - run: pip install mkdocs-macros-plugin
       - run: pip install pymdown-extensions
       - run: mkdocs gh-deploy --force
