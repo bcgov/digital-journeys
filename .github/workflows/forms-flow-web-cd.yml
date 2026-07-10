@@ -17,7 +17,6 @@ on:
     paths:
       - "forms-flow-web/**"
       - "deployment/openshift/web_bc.yaml"
-      - "deployment/openshift/web_dc.yaml"
       - ".github/workflows/forms-flow-web-cd.yml"
       - "deployment/openshift/helm-web/**"
 
@@ -149,8 +148,8 @@ jobs:
           file: ${{ env.APP_NAME }}/${{ env.DOCKER_FILE_NAME }}
 
   # ##################################### Deployment #####################################
-  apply-deploymentConfigs:
-    name: Apply deploymentConfigs
+  apply-deployment:
+    name: Apply deployment
     if: github.repository == 'bcgov/digital-journeys'
     environment: ${{ !github.event.inputs.environment && 'dev' ||  github.event.inputs.environment }}
     runs-on: ubuntu-latest
@@ -180,7 +179,7 @@ jobs:
               sleep 10
             fi
           done
-      - name: apply deploymentConfig
+      - name: apply deployment
         working-directory: ./deployment/openshift
         run: |
           oc -n ${NAMESPACE} project
@@ -220,7 +219,7 @@ jobs:
           #       -p MEMORY_LIMIT=2Gi | \
           # oc -n ${NAMESPACE} apply -f -
 
-      - name: verify deploymentConfig
+      - name: verify deployment
         run: |
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
