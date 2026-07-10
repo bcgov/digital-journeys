@@ -32,23 +32,22 @@ objects:
       backup.conf: |
         hamongo-internal/${DB_NAME}
         0 9 * * * default ./backup.sh -s
-  - apiVersion: apps.openshift.io/v1
-    kind: DeploymentConfig
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
       name: ${NAME}
     spec:
       replicas: "${{REPLICAS}}"
       revisionHistoryLimit: 10
       selector:
-        deploymentconfig: ${NAME}
+        matchLabels:
+          app: ${NAME}
       strategy:
         type: Recreate
-      triggers:
-        - type: ConfigChange
       template:
         metadata:
           labels:
-            deploymentconfig: ${NAME}
+            app: ${NAME}
         spec:
           volumes:
           - name: ${NAME}-data-vol
