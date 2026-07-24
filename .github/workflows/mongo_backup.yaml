@@ -52,9 +52,9 @@ jobs:
           oc -n ${BUILD_NAMESPACE} process -f docker-build.yml \
           -p NAME=${DB_BACKUP_APP} \
           -p TAG=${BUILD_TAG} \
-          -p BASE_IMAGE_NAME="mongodb-36-rhel7" \
-          -p BASE_IMAGE_TAG="1" \
-          -p BASE_IMAGE_REPO="registry.redhat.io/rhscl/" \
+          -p BASE_IMAGE_NAME="mongodb-community-server" \
+          -p BASE_IMAGE_TAG="6.0.6-ubi8" \
+          -p BASE_IMAGE_REPO="mongodb" \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
           -p SOURCE_REPOSITORY_REF="master" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
