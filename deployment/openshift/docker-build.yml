@@ -1,4 +1,3 @@
-  
 # Generalised template for building from Dockerfile in a git repo.
 # Includes importing the base image as an imagestream.
 apiVersion: template.openshift.io/v1
@@ -13,21 +12,15 @@ objects:
     spec:
       lookupPolicy:
         local: false
-  - apiVersion: v1
-    kind: ImageStreamTag
-    lookupPolicy:
-      local: false
-    metadata:
-      name: ${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-    tag:
-      annotations: null
-      from:
-        kind: DockerImage
-        name: ${BASE_IMAGE_REPO}/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
-      importPolicy:
-        scheduled: true
-      referencePolicy:
-        type: Source
+      tags:
+        - name: "${BASE_IMAGE_TAG}"
+          importPolicy:
+            scheduled: true
+          referencePolicy:
+            type: Source
+          from:
+            kind: DockerImage
+            name: "${BASE_IMAGE_REPO}/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}"
   - kind: ImageStream
     apiVersion: v1
     metadata:
