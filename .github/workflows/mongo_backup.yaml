@@ -54,7 +54,7 @@ jobs:
           -p TAG=${BUILD_TAG} \
           -p BASE_IMAGE_NAME="mongodb-community-server" \
           -p BASE_IMAGE_TAG="6.0.6-ubi8" \
-          -p BASE_IMAGE_REPO="mongodb" \
+          -p BASE_IMAGE_REPO="docker.io/mongodb" \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
           -p SOURCE_REPOSITORY_REF="master" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply -f - 
