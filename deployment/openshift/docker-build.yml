@@ -23,7 +23,7 @@ objects:
       annotations: null
       from:
         kind: DockerImage
-        name: ${BASE_IMAGE_REPO}${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
+        name: ${BASE_IMAGE_REPO}/${BASE_IMAGE_NAME}:${BASE_IMAGE_TAG}
       importPolicy:
         scheduled: true
       referencePolicy:
