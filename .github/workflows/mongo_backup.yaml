@@ -109,7 +109,7 @@ jobs:
           -p DB_NAME=${DB_NAME} | oc -n ${NAMESPACE} apply -f -
 
           sleep 30
-          oc rollout latest deployment/${DB_BACKUP_APP} -n ${NAMESPACE}
+          oc rollout restart deployment/${DB_BACKUP_APP} -n ${NAMESPACE}
 
           # Check deployment rollout status every 10 seconds (max 10 minutes) until complete.
           ATTEMPTS=0
