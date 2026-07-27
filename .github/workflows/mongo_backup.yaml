@@ -84,6 +84,10 @@ jobs:
           echo Git Build ID: $BUILD_ID
           echo Build Env: $BUILD_ENV
           echo Namespace: $NAMESPACE
+      - name: Install OpenShift CLI (oc)
+        uses: redhat-actions/oc-installer@v1
+        with:
+          oc_version: "4.6"
 
       # Log in to OpenShift.
       # Note: The secrets needed to log in are NOT available if the PR comes from a FORK.
