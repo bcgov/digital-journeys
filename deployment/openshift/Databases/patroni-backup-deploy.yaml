@@ -48,7 +48,7 @@ objects:
       template:
         metadata:
           labels:
-            deploymentconfig: ${NAME}
+            name: ${NAME}
         spec:
           volumes:
           - name: ${NAME}-data-vol
