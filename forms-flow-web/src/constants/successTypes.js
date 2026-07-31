@@ -22,6 +22,7 @@ export const ERIP_SUBMISSION = 'ERIP_SUBMISSION';
 export const LEADERSHIP_SURVEY_SUBMISSION = 'LEADERSHIP_SURVEY_SUBMISSION';
 export const SLFS_RESPONDENT_SELECTION = 'SLFS_RESPONDENT_SELECTION';
 export const VRIP_SUBMISSION = 'VRIP_SUBMISSION';
+export const MDT_SUBMISSION = 'MDT_SUBMISSION';
 
 
 
@@ -39,7 +40,8 @@ const submitSuccessPage = {
   "early-retirement-incentive-plan": ERIP_SUBMISSION,
   "senior-leadership-feedback-survey": LEADERSHIP_SURVEY_SUBMISSION,
   "nominationform": SLFS_RESPONDENT_SELECTION,
-  "voluntary-retirement-incentive-program": VRIP_SUBMISSION
+  "voluntary-retirement-incentive-program": VRIP_SUBMISSION,
+  "mdt": MDT_SUBMISSION
 };
 
 export const redirectToFormSuccessPage = (dispatch, push, formKey, submission) => {

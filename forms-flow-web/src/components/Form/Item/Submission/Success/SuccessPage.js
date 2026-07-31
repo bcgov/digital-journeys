@@ -871,6 +871,19 @@ export default React.memo(() => {
           </div>
         </>
       );
+     } else if (search.includes(successTypes.MDT_SUBMISSION)) {
+      return (
+        <>
+          <span className="success-content-intro">
+            Thank you for participating in the MDT pilot survey.
+          </span>
+          <div className="success-content-body">
+            If you have any questions about this survey, please contact the Data and Insights 
+            Office at <a href="mailto:measurement.research@gov.bc.ca">measurement.research@gov.bc.ca</a>.
+
+          </div>
+        </>
+      ); 
     } else {
       // Generic catch-all response
       return (
