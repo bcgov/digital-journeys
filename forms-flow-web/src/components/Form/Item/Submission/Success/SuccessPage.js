@@ -273,8 +273,8 @@ export default React.memo(() => {
                 within 10 days of your complaint.
               </li>
               <li>
-                Your complaint will be assessed, and you will be contacted regarding the process
-                and timeline for next steps.
+                Your complaint will be assessed, and you will be contacted
+                regarding the process and timeline for next steps.
               </li>
               <li>
                 You may ask for assistance from your union representative either
@@ -308,8 +308,8 @@ export default React.memo(() => {
                 within 10 days of your complaint.
               </li>
               <li>
-                Your complaint will be assessed, and you will be contacted regarding the
-                process and timeline for next steps.
+                Your complaint will be assessed, and you will be contacted
+                regarding the process and timeline for next steps.
               </li>
               <li>
                 You may ask for assistance from your union representative either
@@ -803,11 +803,12 @@ export default React.memo(() => {
             Thank you for providing feedback
           </span>
           <div className="success-content-body">
-            If you have any questions,comments or would like to reach
-            someone about the survey, contact&nbsp;
-            <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+            If you have any questions,comments or would like to reach someone
+            about the survey, contact&nbsp;
+            <a href="mailto:Corporateleadership@gov.bc.ca">
+              Corporateleadership@gov.bc.ca
+            </a>
           </div>
-
         </>
       );
     } else if (search.includes(successTypes.ERIP_SUBMISSION)) {
@@ -837,24 +838,35 @@ export default React.memo(() => {
           </span>
           <span className="success-content-intro">Next Steps</span>
           <div className="success-content-body">
-
             <ul>
-              <li>An automated email will be sent to all the survey respondents
-                you identified inviting them to complete the Senior Leader Feedback Survey.</li>
-              <li>You will receive a separate email inviting you to complete the
-                survey as your self-assessment.</li>
-              <li>Everyone must complete the survey before it closes on 
-                Friday, August 7, 2026, 5 pm.</li>
-              <li>As a reminder, you will receive a personalized feedback
-                report once the survey closes, along with a companion
-                guide to help reflect on the results.</li>
-              <li>We encourage you to connect with your supervisor or
-                schedule a follow-up conversation after October 1 to
-                discuss your feedback and next steps.</li>
+              <li>
+                An automated email will be sent to all the survey respondents
+                you identified inviting them to complete the Senior Leader
+                Feedback Survey.
+              </li>
+              <li>
+                You will receive a separate email inviting you to complete the
+                survey as your self-assessment.
+              </li>
+              <li>
+                Everyone must complete the survey before it closes on Friday,
+                August 7, 2026, 5 pm.
+              </li>
+              <li>
+                As a reminder, you will receive a personalized feedback report
+                once the survey closes, along with a companion guide to help
+                reflect on the results.
+              </li>
+              <li>
+                We encourage you to connect with your supervisor or schedule a
+                follow-up conversation after October 1 to discuss your feedback
+                and next steps.
+              </li>
             </ul>
-
-            Questions? Reach out
-            to <a href="mailto:Corporateleadership@gov.bc.ca">Corporateleadership@gov.bc.ca</a>
+            Questions? Reach out to{" "}
+            <a href="mailto:Corporateleadership@gov.bc.ca">
+              Corporateleadership@gov.bc.ca
+            </a>
           </div>
         </>
       );
@@ -865,25 +877,45 @@ export default React.memo(() => {
             Thank you for your submission.
           </span>
           <div className="success-content-body">
-            Your form has been received and is being processed.
-            If you have any questions, please contact your ministry leadership.
-
+            Your form has been received and is being processed. If you have any
+            questions, please contact your ministry leadership.
           </div>
         </>
       );
-     } else if (search.includes(successTypes.MDT_SUBMISSION)) {
+    } else if (search.includes(successTypes.MDT_SUBMISSION)) {
       return (
         <>
           <span className="success-content-intro">
             Thank you for participating in the MDT pilot survey.
           </span>
           <div className="success-content-body">
-            If you have any questions about this survey, please contact the Data and Insights 
-            Office at <a href="mailto:measurement.research@gov.bc.ca">measurement.research@gov.bc.ca</a>.
-
+            If you have any questions about this survey, please contact the Data
+            and Insights Office at{" "}
+            <a href="mailto:measurement.research@gov.bc.ca">
+              measurement.research@gov.bc.ca
+            </a>
+            .
           </div>
         </>
-      ); 
+      );
+    } else if (search.includes(successTypes.MDT_SUBMISSION_INELIGIBLE)) {
+      return (
+        <>
+          <p>
+            Thank you for confirming your circumstances. Based on your response,
+            you are not considered in-scope and will not be asked any further
+            questions.
+          </p>
+          <p>
+            If you have any questions about this survey, please contact the Data
+            and Insights Office at{" "}
+            <a href="mailto:measurement.research@gov.bc.ca">
+              measurement.research@gov.bc.ca
+            </a>
+            .
+          </p>
+        </>
+      );
     } else {
       // Generic catch-all response
       return (
@@ -892,9 +924,8 @@ export default React.memo(() => {
             Thank you for your submission.
           </span>
           <div className="success-content-body">
-            Your form has been received and is being processed.
-            If you have any questions, please contact your administrator.
-
+            Your form has been received and is being processed. If you have any
+            questions, please contact your administrator.
           </div>
         </>
       );
