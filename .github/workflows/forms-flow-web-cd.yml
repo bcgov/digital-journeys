@@ -210,6 +210,12 @@ jobs:
                 -p MEMORY_LIMIT=2Gi | \
           oc -n ${NAMESPACE} apply -f -
 
+          # Ensure pods are restarted so new code/image is picked up
+          if oc -n ${NAMESPACE} get deployment ${APP_NAME} >/dev/null 2>&1; then
+            echo "Restarting deployment ${APP_NAME}"
+            oc -n ${NAMESPACE} rollout restart deployment/${APP_NAME}
+          fi
+
           # oc -n ${NAMESPACE} process -f web_dc.yaml \
           #       -p NAME=${APP_NAME} \
           #       -p IMAGE_NAMESPACE=${BUILD_NAMESPACE} \
