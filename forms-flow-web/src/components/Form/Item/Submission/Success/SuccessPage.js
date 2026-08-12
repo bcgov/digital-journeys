@@ -885,8 +885,12 @@ export default React.memo(() => {
     } else if (search.includes(successTypes.MDT_SUBMISSION_INELIGIBLE)) {
       return (
         <>
+          <span className="success-content-intro">
+            Thank you for confirming your circumstances.
+          </span>
+          <div className="success-content-body">
           <p>
-            Thank you for confirming your circumstances. Based on your response,
+            Based on your response,
             you are not considered in-scope and will not be asked any further
             questions.
           </p>
@@ -898,6 +902,7 @@ export default React.memo(() => {
             </a>
             .
           </p>
+          </div>
         </>
       );
     } else if (search.includes(successTypes.MDT_SUBMISSION)) {
@@ -907,12 +912,7 @@ export default React.memo(() => {
             Thank you for participating in the MDT pilot survey.
           </span>
           <div className="success-content-body">
-            If you have any questions about this survey, please contact the Data
-            and Insights Office at{" "}
-            <a href="mailto:measurement.research@gov.bc.ca">
-              measurement.research@gov.bc.ca
-            </a>
-            . If you have any questions about this survey, please contact the
+            If you have any questions about this survey, please contact the
             Data and Insights Office at{" "}
             <a href="mailto:measurement.research@gov.bc.ca">
               measurement.research@gov.bc.ca
