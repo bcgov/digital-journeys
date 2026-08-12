@@ -90,6 +90,7 @@ export const redirectToFormSuccessPage = (
     }
   }
   if (formKey === "mdt") {
+    console.log("mdt submission", submission);
     if (submission?.data?.question01 === "yes") {
       formKey = `${formKey}`;
     } else {
