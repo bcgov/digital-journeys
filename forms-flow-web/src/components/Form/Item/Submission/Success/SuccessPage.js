@@ -882,6 +882,24 @@ export default React.memo(() => {
           </div>
         </>
       );
+    } else if (search.includes(successTypes.MDT_SUBMISSION_INELIGIBLE)) {
+      return (
+        <>
+          <p>
+            Thank you for confirming your circumstances. Based on your response,
+            you are not considered in-scope and will not be asked any further
+            questions.
+          </p>
+          <p>
+            If you have any questions about this survey, please contact the Data
+            and Insights Office at{" "}
+            <a href="mailto:measurement.research@gov.bc.ca">
+              measurement.research@gov.bc.ca
+            </a>
+            .
+          </p>
+        </>
+      );
     } else if (search.includes(successTypes.MDT_SUBMISSION)) {
       return (
         <>
@@ -901,24 +919,6 @@ export default React.memo(() => {
             </a>
             .
           </div>
-        </>
-      );
-    } else if (search.includes(successTypes.MDT_SUBMISSION_INELIGIBLE)) {
-      return (
-        <>
-          <p>
-            Thank you for confirming your circumstances. Based on your response,
-            you are not considered in-scope and will not be asked any further
-            questions.
-          </p>
-          <p>
-            If you have any questions about this survey, please contact the Data
-            and Insights Office at{" "}
-            <a href="mailto:measurement.research@gov.bc.ca">
-              measurement.research@gov.bc.ca
-            </a>
-            .
-          </p>
         </>
       );
     } else {
