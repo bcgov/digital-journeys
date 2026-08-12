@@ -52,8 +52,8 @@ const submitSuccessPage = {
   "senior-leadership-feedback-survey": LEADERSHIP_SURVEY_SUBMISSION,
   nominationform: SLFS_RESPONDENT_SELECTION,
   "voluntary-retirement-incentive-program": VRIP_SUBMISSION,
-  mdt: MDT_SUBMISSION,
-  "mdt-ineligible": MDT_SUBMISSION_INELIGIBLE,
+  "mdt": MDT_SUBMISSION,
+  "mdt-ineligible": MDT_SUBMISSION_INELIGIBLE
 };
 
 export const redirectToFormSuccessPage = (
@@ -62,6 +62,7 @@ export const redirectToFormSuccessPage = (
   formKey,
   submission
 ) => {
+  console.log("submission", submission);
   if (formKey === "bullying-and-harassment-complaint-article-1-10") {
     if (
       submission?.data?.pleaseSelectTheUnionYouBelongTo ===
@@ -90,12 +91,9 @@ export const redirectToFormSuccessPage = (
     }
   }
   if (formKey === "mdt") {
-    console.log("mdt submission", submission);
-    if (submission?.data?.question01 === "yes") {
-      formKey = `${formKey}`;
-    } else {
+    if (submission?.data?.question01 !== "yes") {
       formKey = `${formKey}-ineligible`;
-    }
+    } 
   }
 
   return redirectToSuccessPage(dispatch, push, submitSuccessPage[formKey]);
