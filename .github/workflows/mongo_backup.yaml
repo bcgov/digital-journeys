@@ -56,7 +56,7 @@ jobs:
           -p BASE_IMAGE_TAG="6.0.6-ubi8" \
           -p BASE_IMAGE_REPO="docker.io/mongodb" \
           -p SOURCE_REPOSITORY_URL="https://github.com/BCDevOps/backup-container.git" \
-          -p SOURCE_REPOSITORY_REF="master" \
+          -p SOURCE_REPOSITORY_REF="v2.10.3" \
           -p SOURCE_CONTEXT_DIR="docker" | oc -n ${BUILD_NAMESPACE} apply --overwrite=true -f - 
 
           oc -n ${BUILD_NAMESPACE} start-build bc/${DB_BACKUP_APP} --wait
