@@ -39,6 +39,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
         args = {}
 
     options = Options()
+    options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
@@ -48,7 +49,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
     options.add_argument("--log-level=3")
     sel_options = {"request_storage_base_dir": "/tmp"}
 
-    service = Service(executable_path=chromedriver)
+    service = Service(executable_path="/usr/bin/chromedriver")
     # pylint: disable=E1123
     driver = webdriver.Chrome(
         service=service, options=options, seleniumwire_options=sel_options
