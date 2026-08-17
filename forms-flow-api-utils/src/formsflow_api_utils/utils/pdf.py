@@ -62,6 +62,7 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
         tz_params = {"timezoneId": args["timezone"]}
         driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
 
+    print("PATH is " . path)
     driver.get(path)
 
     try:
