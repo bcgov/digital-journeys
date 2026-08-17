@@ -48,6 +48,9 @@ RUN pip install -e .
 # Force install blinker version 1.7.0 to avoid missing blinker._saferef error
 RUN pip install --force-reinstall --no-deps blinker==1.7.0
 
+# fix chromium driver path #1305
+RUN ln -sf /usr/bin/chromium-driver /usr/bin/chromedriver
+
 EXPOSE 5006
 RUN chmod u+x ./entrypoint
 
