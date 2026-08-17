@@ -40,13 +40,16 @@ def get_pdf_from_html(path, chromedriver=None, p_options=None, args=None):
 
     options = Options()
     options.binary_location = "/usr/bin/chromium"
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
+    
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--remote-debugging-port=9222")
     options.add_argument("--run-all-compositor-stages-before-draw")
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
+    
     sel_options = {"request_storage_base_dir": "/tmp"}
 
     service = Service(executable_path="/usr/bin/chromedriver")
