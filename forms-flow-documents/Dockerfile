@@ -36,3 +36,4 @@ RUN chmod u+x ./entrypoint.dev
 
 CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
 
+
