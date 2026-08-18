@@ -21,7 +21,7 @@ ecdsa==0.18.0
 flask-jwt-oidc==0.3.0
 flask-marshmallow==0.14.0
 flask-restx==0.5.1
-gunicorn==20.1.0
+gunicorn==21.0.0
 idna==3.3
 importlib-metadata==4.12.0
 itsdangerous==2.1.2
@@ -43,7 +43,8 @@ urllib3==1.26.11
 zipp==3.8.1
 nested-lookup==0.2.25
 blinker==1.7.0 # PB required by selenium
-selenium==4.8.3
-selenium-wire>=5.1.0
-git+https://github.com/bcgov/digital-journeys.git@DGJ_1236-update-to-the-new-helm-chart-deployment#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
-# git+https://github.com/bcgov/digital-journeys.git@main#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+setuptools<81
+wheel
+#git+https://github.com/bcgov/digital-journeys.git@DGJ_1236-update-to-the-new-helm-chart-deployment#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+#git+https://github.com/bcgov/digital-journeys.git@main#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils
+formsflow_api_utils @ git+https://github.com/bcgov/digital-journeys.git@main#subdirectory=forms-flow-api-utils
