@@ -1,5 +1,5 @@
 # PB Using purpose built Selenium image for forms-flow-documents
-FROM selenium/standalone-chromium:136.0
+FROM selenium/standalone-chromium:latest
 
 USER root
 
@@ -11,7 +11,7 @@ RUN  apt-get update \
   && apt-get install -y curl \
   && apt-get install -y unzip \
   && apt-get install -y git \
-  && apt-get install lsyncd -y \
+  #&& apt-get install lsyncd -y \
   && apt-get install wget -y \
   && rm -rf /var/lib/apt/lists/*
 
