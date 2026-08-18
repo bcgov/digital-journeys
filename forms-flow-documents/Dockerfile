@@ -6,7 +6,7 @@ USER root
 WORKDIR /forms-flow-documents/app
 
 # install curl, gnupg2 and unzip
-RUN  apt update \ 
+RUN  apt-get update \
   && apt-get install -y gnupg2 \
   && apt-get install -y curl \
   && apt-get install -y unzip \
@@ -14,8 +14,6 @@ RUN  apt update \
   && apt-get install lsyncd -y \
   && apt-get install wget -y \
   && rm -rf /var/lib/apt/lists/*
-
-#RUN  apt-get install -y git-core
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
