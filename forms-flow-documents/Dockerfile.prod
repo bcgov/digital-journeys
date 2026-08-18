@@ -1,37 +1,19 @@
-#Author: Kurian Benoy
-FROM python:3.12-bookworm
+# PB Using purpose built Selenium image for forms-flow-documents
+FROM selenium/standalone-chromium:136.0
+
+USER root
 
 WORKDIR /forms-flow-documents/app
 
-# Install system dependencies, curl, gnupg2, unzip, and Chromium + Chromium Driver
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-    gnupg2 \
-    curl \
-    unzip \
-    git \
-    lsyncd \
-    wget \
-    chromium \
-    chromium-driver \
-    fonts-liberation \
-    libnss3 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libgbm1 \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y npm \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set display port to avoid crash
-ENV DISPLAY=:99
-
-# Explicitly point Selenium / Chrome to the installed binaries
-ENV CHROME_BIN=/usr/bin/chromium
-ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+# install curl, gnupg2 and unzip
+RUN  apt-get update \
+  && apt-get install -y gnupg2 \
+  && apt-get install -y curl \
+  && apt-get install -y unzip \
+  && apt-get install -y git \
+  && apt-get install lsyncd -y \
+  && apt-get install wget -y \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 ENV PATH=/venv/bin:$PATH
@@ -39,16 +21,18 @@ ENV PATH=/venv/bin:$PATH
 RUN : \
     && python3 -m venv /venv \
     && pip install --upgrade pip \
-    && pip install --upgrade "setuptools<82" \
     && pip install -r requirements.txt 
 
 ADD . /forms-flow-documents/app
 RUN pip install -e .
 
-# Force install blinker version 1.7.0 to avoid missing blinker._saferef error
-RUN pip install --force-reinstall --no-deps blinker==1.7.0
+COPY ./lsyncd.conf lsyncd.conf
+
+# PB Modified pdf.py from _utils to work with latest selenium version
+COPY ./rootfs/pdf.py /venv/lib/python3.12/site-packages/formsflow_api_utils/utils/pdf.py
 
 EXPOSE 5006
-RUN chmod u+x ./entrypoint
+RUN chmod u+x ./entrypoint.dev
 
-ENTRYPOINT ["/bin/sh", "entrypoint"]
+CMD ["/bin/sh", "-c", "lsyncd lsyncd.conf && /bin/sh entrypoint.dev"]
+
