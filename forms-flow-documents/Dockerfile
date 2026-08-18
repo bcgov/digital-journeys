@@ -13,6 +13,7 @@ RUN  apt-get update \
   && apt-get install -y git \
   && apt-get install lsyncd -y \
   && apt-get install wget -y \
+  && apt-get install -y libpq-dev gcc \ 
   && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
