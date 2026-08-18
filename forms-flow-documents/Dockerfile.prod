@@ -1,5 +1,5 @@
 # PB Using purpose built Selenium image for forms-flow-documents
-FROM selenium/standalone-chromium:latest
+FROM selenium/standalone-chromium:140.0
 
 USER root
 
