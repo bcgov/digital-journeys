@@ -33,6 +33,7 @@ export const SLFS_RESPONDENT_SELECTION = "SLFS_RESPONDENT_SELECTION";
 export const VRIP_SUBMISSION = "VRIP_SUBMISSION";
 export const MDT_SUBMISSION = "MDT_SUBMISSION";
 export const MDT_SUBMISSION_INELIGIBLE = "MDT_SUBMISSION_INELIGIBLE";
+export const HRPSA = "HRPSA";
 
 const submitSuccessPage = {
   seniorleadershipreview: SL_REVIEW_SUBMISSION,
@@ -53,7 +54,8 @@ const submitSuccessPage = {
   nominationform: SLFS_RESPONDENT_SELECTION,
   "voluntary-retirement-incentive-program": VRIP_SUBMISSION,
   "mdt": MDT_SUBMISSION,
-  "mdt-ineligible": MDT_SUBMISSION_INELIGIBLE
+  "mdt-ineligible": MDT_SUBMISSION_INELIGIBLE,
+  "hrTalentSkillsInterestSurvey": HRPSA,
 };
 
 export const redirectToFormSuccessPage = (

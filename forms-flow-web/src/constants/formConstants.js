@@ -16,7 +16,7 @@ export const FORM_NAMES = {
   VRIP: 'Voluntary Retirement Incentive Program',
   ERIPI: 'Early Retirement Incentive Plan for LTD (by invitation only)',
   MDT: 'Multi-Disciplinary Team Pilot Survey',
-
+  HRPSA: 'PSA Capability and Career Profile',
 };
 /** 
  * please review "Form display name in draft and submission list" on below link
@@ -29,6 +29,6 @@ export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME =
 // DGJ-2029 Array with list of forms to hide from Clients  
 export const FORM_HIDDEN_LIST = (
 
-  "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY,ERIPI,VRIP"
+  "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY,ERIPI,VRIP,HRPSA"
 
 ).split(",").map((form) => FORM_NAMES[form]).filter((form) => form && form != null);
