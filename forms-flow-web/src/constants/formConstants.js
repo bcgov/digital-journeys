@@ -29,6 +29,6 @@ export const FORM_SUPPORTED_IDENTITY_PROVIDERS_FIELD_NAME =
 // DGJ-2029 Array with list of forms to hide from Clients  
 export const FORM_HIDDEN_LIST = (
 
-  "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY,ERIPI,VRIP,HRPSA"
+  "SLFS_RESPONDENT_SELECTION,LEADERSHIP_SURVEY,ERIPI,ERIP,VRIP,HRPSA"
 
 ).split(",").map((form) => FORM_NAMES[form]).filter((form) => form && form != null);
