@@ -833,7 +833,7 @@ export default React.memo(() => {
       return (
         <>
           <span className="success-content-intro">
-            Thank you for submitting your nomination for the Senior Leadership
+            Thank you for submitting your respondent selection form for the Senior Leadership
             Feedback Survey
           </span>
           <span className="success-content-intro">Next Steps</span>
