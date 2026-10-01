@@ -176,9 +176,13 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
                         message = createMessage(singleRecipientList, emailBody, emailSubject, taskId, attachments, mailService.getSession());
                     }
 
+                    //DGJ-2290 Determine why submission takes very long when sending multiple email messages
+                    logger.error("2290 - Creating invocation");
                     SendMailInvocation invocation = new SendMailInvocation(message, request, requestInterceptors, mailService);
 
                     invocation.proceed();
+                    logger.error("2290 - Proceeded with invocation");
+                    
                 } catch (Exception e) {
                     throw new MailConnectorException("Failed to send mail: " + e.getMessage(), e);
                 }
@@ -308,6 +312,9 @@ public class TaskAssignmentListener extends BaseListener implements TaskListener
         
         String recipientEmailAddress = Optional.ofNullable(System.getenv("DJ_RECIPIENT_EMAILADDRESS"))
                             .orElse("digitaljourneys@gov.bc.ca");
+
+        //DGJ-2290 Determine why submission takes very long when sending multiple email messages
+        logger.error("2290 - Creating email to {}", recipients.toString());
 
         InternetAddress[] noreply = new InternetAddress[] { new InternetAddress(recipientEmailAddress) };
 

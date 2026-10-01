@@ -269,3 +269,5 @@ mongodb
 /forms-flow-bpm/src/main/resources/mail-config.properties
 
 .file-uploads
+redis-data/dump.rdb
+sonar-runner/.gradle/4.7/fileHashes/fileHashes.lock
