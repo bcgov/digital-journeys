@@ -93,7 +93,7 @@ export const redirectToFormSuccessPage = (
     }
   }
   if (formKey === "mdt") {
-    if (submission?.data?.question01 !== "yes") {
+    if (submission?.data?.q1_received !== "yes") {
       formKey = `${formKey}-ineligible`;
     } 
   }
