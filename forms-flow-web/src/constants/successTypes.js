@@ -92,7 +92,7 @@ export const redirectToFormSuccessPage = (
       formKey = `${formKey}-ldb`;
     }
   }
-  if (formKey === "mdt") {
+  if (formKey === "mdt" || formKey.startsWith("mdt")) {
     if (submission?.data?.q1_received !== "yes") {
       formKey = `${formKey}-ineligible`;
     } 
