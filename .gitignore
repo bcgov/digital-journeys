@@ -277,3 +277,4 @@ redis-data/dump.rdb
 /manners/data
 manners/superset/report.db
 manners/superset/report.db
+/sonar-runner

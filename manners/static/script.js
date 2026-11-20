@@ -3,7 +3,7 @@ const MindYourManners = {
   debouncers: {},
   errors: {},
   responses: {},
-  delay: 2000, // Default delay for debouncing
+  delay: 1000, // Default delay for debouncing
   busyWith: null,
   store: {},
   init() {
